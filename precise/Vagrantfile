@@ -1,0 +1,12 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+  config.vm.box = "ubuntu1204"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.host_name = "mbairdev"
+  config.vm.network :bridged, :bridge => 'en0: Wi-Fi (AirPort)'
+  #config.vm.forward_port 80, 8080
+  config.vm.share_folder "web-dev", "/srv/www/web-dev", "/Users/jeremyfelt/Development/wordpress-main"
+  config.vm.provision :shell, :path => "provision.sh"
+end
