@@ -23,4 +23,13 @@ apt-get install --force-yes -y curl
 # I like vi and I like vim better
 apt-get install --force-yes -y vim
 
+# Import any SQL files into databases based on their names
+# these databases must first be created in the create-dbs.sql
+# file so that they exist for the import script to do its job.
+cd /srv/server-conf/
+mysql -u root -pblank < create-dbs.sql
+cd db-dumps/
+chown 666 import.sh
+./import.sh
+
 echo All set!
