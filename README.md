@@ -27,6 +27,17 @@ Start with OS X, then...
 1. Start using your sites!
 1. Or... the more fun part... dig around in your new server by typing `vagrant ssh`
 
+### What do you get?
+A bunch of stuff!
+
+1. Ubuntu 12.04 (Precise Pangolin)
+2. nginx 1.19
+3. mysql 5.5
+4. php 5.3.10 with php-fpm
+6. curl
+7. vim
+8. git
+
 ### Feedback?
 Let me have it! If you have tips that I need to know, send them my way at [@jeremyfelt](http://twitter.com/jeremyfelt) or find me in [other ways](http://jeremyfelt.com).
 
