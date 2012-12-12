@@ -7,7 +7,8 @@ Vagrant::Config.run do |config|
   config.vm.host_name = "mbairdev"
   config.vm.network :bridged, :bridge => 'en0: Wi-Fi (AirPort)'
   #config.vm.forward_port 80, 8080
-  config.vm.share_folder "server-conf", "/tmp", "/Users/jeremyfelt/Development/vagrant-web/server-conf"
-  config.vm.share_folder "web-dev", "/srv/www/web-dev", "/Users/jeremyfelt/Development/wordpress-main"
+  config.vm.share_folder "server-conf", "/srv/server-conf", "/Users/jeremyfelt/Development/vagrant-web/server-conf"
+  config.vm.share_folder "nginx-sites", "/etc/nginx/sites-enabled", "/Users/jeremyfelt/Development/vagrant-web/server-conf/sites"
+  config.vm.share_folder "web-dev", "/srv/www/", "/Users/jeremyfelt/Development/vagrant-sandbox"
   config.vm.provision :shell, :path => "provision.sh"
 end
