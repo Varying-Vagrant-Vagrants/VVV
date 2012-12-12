@@ -1,4 +1,5 @@
 #!/bin/bash
+cd /srv/server-conf/db-dumps/
 
 for file in $( ls *.sql )
 do
