@@ -1,1 +1,2 @@
 .vagrant
+server-conf/sites/*.conf
