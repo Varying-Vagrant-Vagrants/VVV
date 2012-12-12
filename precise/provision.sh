@@ -10,6 +10,9 @@ apt-get install --force-yes -y mysql-server php5-mysql
 apt-get install --force-yes -y git-core
 apt-get install --force-yes -y curl
 
+# I like vi and I like vim better
+apt-get install --force-yes -y vim
+
 cp /srv/www/creditsesame/index.php /tmp/test.php
 
 echo All set!
