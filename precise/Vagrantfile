@@ -9,6 +9,6 @@ Vagrant::Config.run do |config|
   #config.vm.forward_port 80, 8080
   config.vm.share_folder "server-conf", "/srv/server-conf", "/Users/jeremyfelt/Development/vagrant-web/server-conf"
   config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", "/Users/jeremyfelt/Development/vagrant-web/server-conf/sites"
-  config.vm.share_folder "web-dev", "/srv/www/", "/Users/jeremyfelt/Development/vagrant-sandbox"
+  config.vm.share_folder "web-dev", "/srv/www/", "/Users/jeremyfelt/Development/vagrant-sandbox", :owner => "www-data"
   config.vm.provision :shell, :path => "provision.sh"
 end
