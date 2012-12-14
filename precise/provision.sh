@@ -7,6 +7,7 @@ apt-get install --force-yes -y  php5 php5-fpm php-pear php5-common php5-mcrypt p
 
 # add our own default configuration for php-fpm and restart the service
 sudo cp /srv/server-conf/www.conf /etc/php5/fpm/pool.d/www.conf
+sudo cp /srv/server-conf/php.ini /etc/php5/fpm/php.ini
 sudo /etc/init.d/php5-fpm restart
 
 # NGINX
