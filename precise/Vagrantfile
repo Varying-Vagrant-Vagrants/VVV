@@ -5,7 +5,7 @@ Vagrant::Config.run do |config|
   config.vm.box = "ubuntu1204"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
   config.vm.host_name = "mbairdev"
-  config.vm.network :bridged, :bridge => 'en0: Wi-Fi (AirPort)'
+  config.vm.network :hostonly, "192.168.50.4"
   #config.vm.forward_port 80, 8080
   config.vm.share_folder "server-conf", "/srv/server-conf", "/Users/jeremyfelt/Development/vagrant-web/server-conf"
   config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", "/Users/jeremyfelt/Development/vagrant-web/server-conf/sites"
