@@ -34,9 +34,13 @@ A bunch of stuff!
 2. nginx 1.19
 3. mysql 5.5
 4. php 5.3.10 with php-fpm
+5. memcached 1.4.13
+6. PECL [memcache extension](http://pecl.php.net/package/memcache)
 6. curl
 7. vim
 8. git
+9. make
+10. [ngrep](http://ngrep.sourceforge.net/usage.html)
 
 ### Feedback?
 Let me have it! If you have tips that I need to know, send them my way at [@jeremyfelt](http://twitter.com/jeremyfelt) or find me in [other ways](http://jeremyfelt.com).
