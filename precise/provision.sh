@@ -25,6 +25,7 @@ apt-get install --force-yes -y mysql-server php5-mysql
 apt-get install --force-yes -y git-core
 apt-get install --force-yes -y curl
 apt-get install --force-yes -y make
+apt-get install --force-yes -y ngrep
 # I like vi and I like vim better
 apt-get install --force-yes -y vim
 
