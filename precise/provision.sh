@@ -5,11 +5,6 @@ apt-get update --force-yes -y
 # kick of the install swarm with PHP5 and php-fpm
 apt-get install --force-yes -y  php5 php5-fpm php-pear php5-common php5-mcrypt php5-mysql php5-cli php5-gd php-apc
 
-# add our own default configuration for php-fpm and restart the service
-sudo cp /srv/server-conf/www.conf /etc/php5/fpm/pool.d/www.conf
-sudo cp /srv/server-conf/php.ini /etc/php5/fpm/php.ini
-sudo /etc/init.d/php5-fpm restart
-
 # NGINX
 # Install and configure nginx with some basic config files
 apt-get install --force-yes -y nginx
@@ -29,8 +24,22 @@ apt-get install --force-yes -y mysql-server php5-mysql
 # MISC PACKAGES
 apt-get install --force-yes -y git-core
 apt-get install --force-yes -y curl
+apt-get install --force-yes -y make
 # I like vi and I like vim better
 apt-get install --force-yes -y vim
+
+# MEMCACHED
+# Use memcached and the PECL memcache extension. At some point we can move
+# to the PECL memcached extension, but this better mirrors production
+# environments
+apt-get install --force-yes -y memcached
+pecl install memcache
+
+# Now that the PECL extension is installed, we can copy our PHP ini file over
+# and restart php5-fpm
+sudo cp /srv/server-conf/www.conf /etc/php5/fpm/pool.d/www.conf
+sudo cp /srv/server-conf/php.ini /etc/php5/fpm/php.ini
+sudo /etc/init.d/php5-fpm restart
 
 # Import any SQL files into databases based on their names
 # these databases must first be created in the create-dbs.sql
