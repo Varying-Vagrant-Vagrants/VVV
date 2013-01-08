@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-dir = File.expand_path("..",Dir.pwd)
+dir = Dir.pwd
 
 Vagrant::Config.run do |config|
   config.vm.box = "precise32"
@@ -13,5 +13,5 @@ Vagrant::Config.run do |config|
   config.vm.share_folder "server-conf", "/srv/server-conf", dir + "/server-conf"
   config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", dir + "/server-conf/sites"
   config.vm.share_folder "web-dev", "/srv/www/", dir + "/www", :owner => "www-data"
-  config.vm.provision :shell, :path => "provision.sh"
+  config.vm.provision :shell, :path => "provision/provision.sh"
 end
