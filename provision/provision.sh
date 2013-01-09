@@ -34,7 +34,10 @@ apt-get install --force-yes -y vim
 # to the PECL memcached extension, but this better mirrors production
 # environments
 apt-get install --force-yes -y memcached
-pecl install memcache
+# We have to enter yes once. If this install changes, this will no longer work
+# Might consider installing yum package mamager and using yum to install to get
+# around this requiremnt. Without this, the script stalls upon completion.
+printf "yes\n" | pecl install memcache
 
 # Now that the PECL extension is installed, we can copy our PHP ini file over
 # and restart php5-fpm
