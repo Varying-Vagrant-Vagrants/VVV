@@ -16,14 +16,14 @@ Start with OS X, then...
 1. Clone this repo onto your machine.
     * `git clone git://github.com/jeremyfelt/varying-vagrant-vagrants.git`
 1. Poke around and modify the files to fit your needs.
-    * `precise/VagrantFile` requires some path changes as you probably don't have a jeremyfelt in your Users path.
-    * The bridge setting in `precise/VagrantFile` could be wrong if your Mac's wifi card is not on `en0`. If so, remove everything after the comma on that line - `config.vm.network :bridge` - you'll just need to choose a prompt during the build.
+    * Vagrant file picks up its location dynamically, so you may get by without path changes.
+    * The network configuration picks an IP of 192.168.50.4. This works if you are *not* on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you *are* on a 192.168.50.x sub domain already.
     * Move `server-conf/create-dbs.sql.sample` to `server-conf/create-dbs.sql` and edit it to add whichever `CREATE DATABASE` and `GRANT ALL PRIVILEGES` statements you want to run on startup to prepare mysql for SQL imports (see next bullet).
     * Have any SQL files that should be imported in the `server-conf/db-dumps/` directory and named as `db_name.sql`. The `import-sql.sh` script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step's SQL.
     * Check out the example nginx in `server-conf/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for a basic WordPress setup.
     * Other stuff. Familiarize and all that.
-1. Go to the `precise` directory and type `vagrant up`, magic should happen.
-1. After a minute or few, all packages will be installed and you'll be greeted with an `ifconfig` result. This all depends on whether your network serves DHCP and I probably should have covered that in a previous step, but next time. Take the IP address that makes the most sense (i.e. the one that is similar to your computer's) and use it in your local `/etc/hosts` file to setup any domains that you expect to be served with nginx.
+1. Go to the root directory of the project and type `vagrant up`, magic should happen.
+1. After a minute or few, all packages will be installed and you'll be greeted with an `ifconfig` result. Take the IP address - 192.168.50.4 by default - and use it in your local `/etc/hosts` file to setup any domains that you expect to be served with nginx.
 1. Start using your sites!
 1. Or... the more fun part... dig around in your new server by typing `vagrant ssh`
 
@@ -44,4 +44,3 @@ A bunch of stuff!
 
 ### Feedback?
 Let me have it! If you have tips that I need to know, send them my way at [@jeremyfelt](http://twitter.com/jeremyfelt) or find me in [other ways](http://jeremyfelt.com).
-
