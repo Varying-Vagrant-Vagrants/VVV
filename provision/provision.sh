@@ -5,6 +5,10 @@ apt-get update --force-yes -y
 # kick of the install swarm with PHP5 and php-fpm
 apt-get install --force-yes -y  php5 php5-fpm php-pear php5-common php5-mcrypt php5-mysql php5-cli php5-gd php-apc
 
+# XDebug
+# Install XDebug for PHP
+printf "yes\n" | pecl install xdebug
+
 # NGINX
 # Install and configure nginx with some basic config files
 apt-get install --force-yes -y nginx
