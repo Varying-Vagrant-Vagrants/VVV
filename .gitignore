@@ -1,3 +1,4 @@
 .vagrant
 server-conf/sites/*.conf
+www
 *.sql
