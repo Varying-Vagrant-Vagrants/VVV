@@ -29,6 +29,10 @@ apt-get install --force-yes -y ngrep
 # I like vi and I like vim better
 apt-get install --force-yes -y vim
 
+# XDebug
+# Install XDebug for PHP
+printf "yes\n" | pecl install xdebug
+
 # MEMCACHED
 # Use memcached and the PECL memcache extension. At some point we can move
 # to the PECL memcached extension, but this better mirrors production
