@@ -58,4 +58,11 @@ mysql -u root -pblank < /srv/server-conf/create-dbs.sql
 # grab the IP for configuring host entries on your local machine
 ifconfig
 
+# copy over our bash profile script
+cp /srv/server-conf/.bashrc /home/vagrant/.bashrc
+source /home/vagrant/.bashrc
+
+# turn off xdebug by default
+xdebug_off
+
 echo All set!
