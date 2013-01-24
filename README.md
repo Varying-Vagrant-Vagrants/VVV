@@ -41,6 +41,7 @@ A bunch of stuff!
 8. git
 9. make
 10. [ngrep](http://ngrep.sourceforge.net/usage.html)
+11. xdebug ( 'off' by default, to toggle `vagrant ssh` and perform `xdebug_on` or `xdebug_off` )
 
 ### Feedback?
 Let me have it! If you have tips that I need to know, send them my way at [@jeremyfelt](http://twitter.com/jeremyfelt) or find me in [other ways](http://jeremyfelt.com).
