@@ -29,10 +29,6 @@ apt-get install --force-yes -y ngrep
 # I like vi and I like vim better
 apt-get install --force-yes -y vim
 
-# XDebug
-# Install XDebug for PHP
-printf "yes\n" | pecl install xdebug
-
 # MEMCACHED
 # Use memcached and the PECL memcache extension. At some point we can move
 # to the PECL memcached extension, but this better mirrors production
@@ -57,12 +53,5 @@ mysql -u root -pblank < /srv/server-conf/create-dbs.sql
 
 # grab the IP for configuring host entries on your local machine
 ifconfig
-
-# copy over our bash profile script
-cp /srv/server-conf/.bashrc /home/vagrant/.bashrc
-source /home/vagrant/.bashrc
-
-# turn off xdebug by default
-xdebug_off
 
 echo All set!
