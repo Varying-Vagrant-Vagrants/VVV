@@ -1,46 +1,23 @@
-# update all of the package references before installing anything
-apt-get update --force-yes -y
-
-# PHP-FPM
-# kick of the install swarm with PHP5 and php-fpm
-apt-get install --force-yes -y  php5 php5-fpm php-pear php5-common php5-mcrypt php5-mysql php5-cli php5-gd php-apc
-
 # NGINX
-# Install and configure nginx with some basic config files
-apt-get install --force-yes -y nginx
+# Configure nginx with some basic config files
 sudo cp /srv/server-conf/nginx.conf /etc/nginx/nginx.conf
 sudo cp /srv/server-conf/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
 sudo /etc/init.d/nginx restart
 
-# MYSQL
-# We need to set the selections to automatically fill the password prompt
-# for mysql while it is being installed. The password in the following two
-# lines *is* actually set to the word 'blank' for the root user.
-echo mysql-server mysql-server/root_password password blank | sudo debconf-set-selections
-echo mysql-server mysql-server/root_password_again password blank | sudo debconf-set-selections
-
-apt-get install --force-yes -y mysql-server php5-mysql
-
-# MISC PACKAGES
-apt-get install --force-yes -y git-core
-apt-get install --force-yes -y curl
-apt-get install --force-yes -y make
-apt-get install --force-yes -y ngrep
-# I like vi and I like vim better
-apt-get install --force-yes -y vim
+# When installing PECL Memcache below, we run into a phpize error
+# if the php5-dev package is not available.
+# @todo Include php5-dev and pecl memcache in package
+sudo apt-get install --force-yes -y php5-dev
 
 # MEMCACHED
-# Use memcached and the PECL memcache extension. At some point we can move
-# to the PECL memcached extension, but this better mirrors production
-# environments
-apt-get install --force-yes -y memcached
+# Install the PECL Memcache extension.
+#
 # We have to enter yes once. If this install changes, this will no longer work
 # Might consider installing yum package mamager and using yum to install to get
 # around this requiremnt. Without this, the script stalls upon completion.
 printf "yes\n" | pecl install memcache
 
-# Now that the PECL extension is installed, we can copy our PHP ini file over
-# and restart php5-fpm
+# Copy custom configuration files over and restart php5-fpm
 sudo cp /srv/server-conf/www.conf /etc/php5/fpm/pool.d/www.conf
 sudo cp /srv/server-conf/php.ini /etc/php5/fpm/php.ini
 sudo /etc/init.d/php5-fpm restart

@@ -4,10 +4,10 @@
 dir = Dir.pwd
 
 Vagrant::Config.run do |config|
-  config.vm.box = "quantal32-official"
-  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/quantal/current/quantal-server-cloudimg-i386-vagrant-disk1.box"
-  config.vm.host_name = "mbairdev"
-  config.vm.customize ["modifyvm", :id, "--memory", 512]
+  config.vm.box = "10up-quantal-0.1"
+  config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-quantal-0.1.box"
+  config.vm.host_name = "quantal-dev"
+  config.vm.customize ["modifyvm", :id, "--memory", 360]
   config.vm.network :hostonly, "192.168.50.4"
   config.vm.share_folder "server-conf", "/srv/server-conf", File.join( dir, "server-conf" )
   config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", File.join( dir, "server-conf", "sites" )
