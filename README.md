@@ -31,9 +31,9 @@ Start with any operating system, then...
 A bunch of stuff!
 
 1. Ubuntu 12.04 (Precise Pangolin)
-2. nginx 1.1.19
-3. mysql 5.5.29
-4. php 5.3.10 with php-fpm
+2. nginx 1.2.6
+3. mysql 5.5.30
+4. php-fpm 5.3.21
 5. memcached 1.4.13
 6. PECL [memcache extension](http://pecl.php.net/package/memcache)
 6. curl
