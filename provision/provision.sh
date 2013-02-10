@@ -16,6 +16,7 @@ sudo service mysql restart
 # Import any SQL files into databases based on their names
 # these databases must first be created in the create-dbs.sql
 # file so that they exist for the import script to do its job.
+mysql -u root -pblank < /srv/server-conf/default-dbs.sql
 mysql -u root -pblank < /srv/server-conf/create-dbs.sql
 /srv/server-conf/db-dumps/import-sql.sh
 
