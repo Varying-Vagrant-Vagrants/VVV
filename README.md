@@ -1,8 +1,8 @@
 Varying Vagrant Vagrants
 ========================
 
-A series of varying Vagrant setups from @jeremyfelt
-* with awesome assists from fellow 10upers @carldanley, @ericmann and @lkwdwrd
+A series of varying Vagrant setups from [@jeremyfelt](http://github.com/jeremyfelt)
+* with awesome assists from fellow 10upers [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann) and [@lkwdwrd](http://github.com/lkwdwrd)
 
 ### So this is Vagrant...
 I'm still learning this [Vagrant](http://vagrantup.com) stuff, so take anything I say or put into this repo right now with a huge grain of salt.
@@ -19,10 +19,10 @@ Start with any operating system, then...
 1. Change into this new directory created with the repo:
     * `cd vagrant-local-dev`
 1. Start Vagrant:
-	* `vagrant up` - *omg magic*
+	* `vagrant up` - *omg magic happens*
 	* Once this build process is initiated, the ~600MB Virtual Machine will download and start up as a sandboxed local environment.
-1. Add a record to your hosts file:
-	* 192.168.50.4  local.wordpress.dev
+1. Add a record to your hosts file so that we can access the default WordPress installation:
+	* `192.168.50.4  local.wordpress.dev`
 1. Visit `http://local.wordpress.dev/` in your browser and install WordPress
 
 Fancy, yeah?
@@ -30,7 +30,7 @@ Fancy, yeah?
 ### Now What?
 Now that you're up and running with a default configuration, start poking around and modifying things.
 
-1. Access the server with `vagrant ssh` in your `vagrant-local-dev` directory. You can do pretty much anything you would do with a standard Ubuntu installation on a full server.
+1. Access the server with `vagrant ssh` from your `vagrant-local-dev` directory. You can do pretty much anything you would do with a standard Ubuntu installation on a full server.
 1. Destroy the box and start from scratch (don't worry, the initial ~600MB file will be cached on your machine ) with `vagrant destroy`
 1. Power off the box with `vagrant halt` or suspend it with `vagrant suspend` - if you suspend it, you can bring it back quickly with `vagrant resume`
 1. Start modifying and adding local files to fit your needs.
