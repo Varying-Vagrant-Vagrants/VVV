@@ -2,5 +2,8 @@
 .DS_Store
 .vagrant
 server-conf/sites/*.conf
-www
+www/*
 *.sql
+
+!server-conf/sites/default.conf
+!www/default/
