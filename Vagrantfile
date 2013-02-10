@@ -5,7 +5,7 @@ dir = Dir.pwd
 
 Vagrant::Config.run do |config|
   config.vm.box = "10up-precise32-0.3"
-  config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-precise32-0.2.box"
+  config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-precise32-0.3.box"
   config.vm.host_name = "precise32-dev"
   config.vm.customize ["modifyvm", :id, "--memory", 512]
   config.vm.network :hostonly, "192.168.50.4", :auto_config => true, :adapter => 2
