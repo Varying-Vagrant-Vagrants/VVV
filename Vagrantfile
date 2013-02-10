@@ -7,7 +7,7 @@ Vagrant::Config.run do |config|
   config.vm.box = "10up-precise32-0.2"
   config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-precise32-0.2.box"
   config.vm.host_name = "precise32-dev"
-  config.vm.customize ["modifyvm", :id, "--memory", 360]
+  config.vm.customize ["modifyvm", :id, "--memory", 512]
   config.vm.network :hostonly, "192.168.50.4", :auto_config => true, :adapter => 2
 
   # Drive mapping
@@ -16,7 +16,7 @@ Vagrant::Config.run do |config|
   # virtual machine to directories on your local machine. Once these are mapped, any
   # changes made to the files in these directories will affect both the local and virtual
   # machine versions. Think of it as two different ways to access the same file.
-  
+
   # server-conf/
   #
   # If a server-conf directory exists in the same directory as your Vagrantfile,
