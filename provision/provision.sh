@@ -19,6 +19,12 @@ sudo service mysql restart
 mysql -u root -pblank < /srv/server-conf/create-dbs.sql
 /srv/server-conf/db-dumps/import-sql.sh
 
+printf "\nCopy bash aliases to home directory"
+cp /srv/server-conf/bash_aliases /home/vagrant/.bash_aliases
+
+printf "\nUse start_config_monitor to begin monitoring config files for changes"
+printf "Use stop_config_monitor to stop monitoring these config files\n\n"
+
 # grab the IP for configuring host entries on your local machine
 ifconfig
 
