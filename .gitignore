@@ -7,3 +7,4 @@ www/*
 
 !server-conf/sites/default.conf
 !www/default/
+!www/wordpress-default/
