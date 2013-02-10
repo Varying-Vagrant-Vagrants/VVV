@@ -7,3 +7,4 @@ pre_dot=${file%%.*}
 echo "mysql -u root -pblank $pre_dot < $pre_dot.sql"
 mysql -u root -pblank "$pre_dot" < $pre_dot.sql
 done
+echo "Databases imported"
