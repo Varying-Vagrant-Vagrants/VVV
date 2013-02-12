@@ -4,12 +4,12 @@ sudo apt-get install --force-yes -y dos2unix
 
 # NGINX
 # Configure nginx with some basic config files
-sudo cp /srv/server-conf/nginx.conf /etc/nginx/nginx.conf | echo "copied nginx.conf to /etc/nginx/"
-sudo cp /srv/server-conf/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "copied nginx-wp-common.conf to /etc/nginx/"
+sudo ln -sf /srv/server-conf/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
+sudo ln -sf /srv/server-conf/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
 
 # Copy custom configuration files over and restart php5-fpm
-sudo cp /srv/server-conf/www.conf /etc/php5/fpm/pool.d/www.conf | echo "copied www.conf to /etc/php5/fpm/pool.d/"
-sudo cp /srv/server-conf/php.ini /etc/php5/fpm/php.ini | echo "copied php.ini to /etc/php5/fpm/"
+sudo ln -sf /srv/server-conf/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"
+sudo ln -sf /srv/server-conf/php.ini /etc/php5/fpm/php.ini | echo "Linked php.ini to /etc/php5/fpm/"
 
 # Make sure the services we expect to be running are running
 sudo service nginx restart
@@ -24,7 +24,7 @@ mysql -u root -pblank < /srv/server-conf/default-dbs.sql | echo "Imported defaul
 mysql -u root -pblank < /srv/server-conf/create-dbs.sql | echo "Created additional databases..."
 /srv/server-conf/db-dumps/import-sql.sh
 
-cp /srv/server-conf/bash_aliases /home/vagrant/.bash_aliases | echo "Copied bash aliases to home directory..."
+sudo ln -sf /srv/server-conf/bash_aliases /home/vagrant/.bash_aliases | echo "Linked bash aliases to home directory..."
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
 # Enter domains space delimited
