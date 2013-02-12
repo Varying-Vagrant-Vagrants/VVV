@@ -1,3 +1,7 @@
+# Install dos2unix, which allows conversion of DOS style line endings to
+# something we'll have less trouble with in linux.
+sudo apt-get install --force-yes -y dos2unix
+
 # NGINX
 # Configure nginx with some basic config files
 sudo cp /srv/server-conf/nginx.conf /etc/nginx/nginx.conf | echo "copied nginx.conf to /etc/nginx/"
