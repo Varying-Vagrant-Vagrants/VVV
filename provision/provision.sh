@@ -26,6 +26,13 @@ cp /srv/server-conf/bash_aliases /home/vagrant/.bash_aliases
 printf "\nUse start_config_monitor to begin monitoring config files for changes"
 printf "Use stop_config_monitor to stop monitoring these config files\n\n"
 
+# Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
+# Enter domains space delimited
+DOMAINS='local.wordpress.dev'
+if ! grep -q "$DOMAINS" /etc/hosts
+then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
+fi
+
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway
 ifconfig | grep "inet addr"
 
