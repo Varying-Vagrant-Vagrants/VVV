@@ -2,7 +2,7 @@ Varying Vagrant Vagrants
 ========================
 
 A series of varying Vagrant setups from [@jeremyfelt](http://github.com/jeremyfelt)
-* with awesome assists from fellow 10upers [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann) and [@lkwdwrd](http://github.com/lkwdwrd)
+* with awesome assists from fellow 10upers [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd) and [@TheLastCicada](http://github.com/TheLastCicada)
 
 ### So this is Vagrant...
 I'm still learning this [Vagrant](http://vagrantup.com) stuff, so take anything I say or put into this repo right now with a huge grain of salt.
