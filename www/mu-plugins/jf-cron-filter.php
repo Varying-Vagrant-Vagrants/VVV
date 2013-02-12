@@ -7,6 +7,6 @@
  */
 add_filter( 'cron_request', 'jf_cron_request', 10, 1 );
 function jf_cron_request( $cron_request ) {
-	$cron_request['args']['timeout'] = (float) 0.3;
+	$cron_request['args']['timeout'] = (float) 0.5;
 	return $cron_request;
 }
