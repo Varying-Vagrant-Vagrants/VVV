@@ -1,3 +1,12 @@
+*.sublime*
+.DS_Store
 .vagrant
 server-conf/sites/*.conf
+www/*
 *.sql
+
+!server-conf/sites/local.wordpress.dev.conf
+!server-conf/sites/default.conf
+!server-conf/default-dbs.sql
+!www/default/
+!www/wordpress-default/

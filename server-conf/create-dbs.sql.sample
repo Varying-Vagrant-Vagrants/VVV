@@ -1,2 +1,2 @@
-CREATE DATABASE my_database_name;
-GRANT ALL PRIVILEGES ON my_database_name.* TO 'thisguy'@'localhost' IDENTIFIED BY 'thatpass';
+﻿CREATE DATABASE `my_database_name`;
+GRANT ALL PRIVILEGES ON `my_database_name`.* TO 'thisguy'@'localhost' IDENTIFIED BY 'thatpass';

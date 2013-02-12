@@ -1,0 +1,17 @@
+# Start monitoring config files for changes so that we can 
+# copy changes over or run any necessary import scripts
+start_config_monitor() {
+    local FOUND=""
+    FOUND=`gem list watchr | grep -i watchr`
+    if [ "$FOUND" == "" ]; then
+       sudo gem install watchr
+    fi
+    cd /srv/server-conf/
+    watchr watchr.script &
+}
+
+# Stop monitoring config files as it's possible that we may
+# not want to do something on every config change
+stop_config_monitor() {
+    pkill -f "watchr watchr.script"
+}

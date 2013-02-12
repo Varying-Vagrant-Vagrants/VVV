@@ -1,0 +1,6 @@
+Order Deny,Allow
+Deny from all
+
+<FilesMatch "^akismet\.(css|js)$">
+	Allow from all
+</FilesMatch>
