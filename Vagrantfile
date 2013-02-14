@@ -23,14 +23,14 @@ Vagrant::Config.run do |config|
   # a mapped directory inside the VM will be created that contains these files.
   # This directory is currently used to maintain various config files for php and 
   # nginx as well as any pre-existing database files.
-  config.vm.share_folder "server-conf", "/srv/server-conf", File.join( dir, "server-conf" )
+  config.vm.share_folder "server-conf", "/srv/config", File.join( dir, "config" )
   
   # server-conf/sites/
   #
   # If a sites directory exists inside the above server-conf directory, it will be
   # added as a mapped directory inside the VM as well. This is used to maintain specific
   # site configuration files for nginx
-  config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", File.join( dir, "server-conf", "nginx-config", "sites" )
+  config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", File.join( dir, "config", "nginx-config", "sites" )
   
   # www/
   #
