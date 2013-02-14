@@ -4,8 +4,8 @@ sudo apt-get install --force-yes -y dos2unix
 
 # NGINX
 # Configure nginx with some basic config files
-sudo ln -sf /srv/server-conf/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
-sudo ln -sf /srv/server-conf/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
+sudo ln -sf /srv/server-conf/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
+sudo ln -sf /srv/server-conf/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
 
 # Copy custom configuration files over and restart php5-fpm
 sudo ln -sf /srv/server-conf/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"

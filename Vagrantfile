@@ -30,7 +30,7 @@ Vagrant::Config.run do |config|
   # If a sites directory exists inside the above server-conf directory, it will be
   # added as a mapped directory inside the VM as well. This is used to maintain specific
   # site configuration files for nginx
-  config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", File.join( dir, "server-conf", "sites" )
+  config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", File.join( dir, "server-conf", "nginx-config", "sites" )
   
   # www/
   #
