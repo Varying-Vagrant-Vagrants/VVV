@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /srv/config/backups/
+cd /srv/database/backups/
 printf "\nStart DB Import"
 for file in $( ls *.sql )
 do
