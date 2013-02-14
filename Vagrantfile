@@ -17,7 +17,15 @@ Vagrant::Config.run do |config|
   # changes made to the files in these directories will affect both the local and virtual
   # machine versions. Think of it as two different ways to access the same file.
 
-  # server-conf/
+  # /srv/database/
+  #
+  # If a database directory exists in the same directory as your Vagrantfile,
+  # a mapped directory inside the VM will be created that contains these files.
+  # This directory is used to maintain default database scripts as well as backed
+  # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
+  config.vm.share_folder "database", "/srv/database", File.join( dir, "database" )
+
+  # /srv/config/
   #
   # If a server-conf directory exists in the same directory as your Vagrantfile,
   # a mapped directory inside the VM will be created that contains these files.
@@ -25,14 +33,14 @@ Vagrant::Config.run do |config|
   # nginx as well as any pre-existing database files.
   config.vm.share_folder "server-conf", "/srv/config", File.join( dir, "config" )
   
-  # server-conf/sites/
+  # /srv/config/nginx-config/sites/
   #
   # If a sites directory exists inside the above server-conf directory, it will be
   # added as a mapped directory inside the VM as well. This is used to maintain specific
   # site configuration files for nginx
   config.vm.share_folder "nginx-sites", "/etc/nginx/custom-sites", File.join( dir, "config", "nginx-config", "sites" )
   
-  # www/
+  # /srv/www/
   #
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
