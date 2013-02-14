@@ -14,7 +14,7 @@ start_config_monitor() {
     if [ "$FOUND" == "" ]; then
        sudo gem install watchr
     fi
-    cd /srv/server-conf/
+    cd /srv/config/
     watchr watchr.script &
 }
 
