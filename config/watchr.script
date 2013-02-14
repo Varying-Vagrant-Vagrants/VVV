@@ -4,5 +4,5 @@
 # to files that may occur outside of the machine. Various services can be
 # restarted and scripts run as configurations change.
 #
-watch( 'create-dbs.sql' ) {|md| system("mysql -u root -pblank < /srv/server-conf/create-dbs.sql; ./db-dumps/import-sql.sh") }
+watch( 'create-dbs.sql' ) {|md| system("mysql -u root -pblank < /srv/database/create-dbs.sql; ./database/import-sql.sh") }
 watch( 'nginx-config/sites/(.*)\.conf' ) {|md| system("sudo service nginx restart | echo nginx restarted with new configuration for #{md[1]}.conf. Press enter for prompt...") }

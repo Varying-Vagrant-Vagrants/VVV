@@ -20,9 +20,9 @@ sudo service mysql restart
 # Import any SQL files into databases based on their names
 # these databases must first be created in the create-dbs.sql
 # file so that they exist for the import script to do its job.
-mysql -u root -pblank < /srv/config/default-dbs.sql | echo "Imported default databases..."
-mysql -u root -pblank < /srv/config/create-dbs.sql | echo "Created additional databases..."
-/srv/config/db-dumps/import-sql.sh
+mysql -u root -pblank < /srv/database/default-dbs.sql | echo "Imported default databases..."
+mysql -u root -pblank < /srv/database/create-dbs.sql | echo "Created additional databases..."
+/srv/database/import-sql.sh
 
 sudo ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo "Linked bash aliases to home directory..."
 
