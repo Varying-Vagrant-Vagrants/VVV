@@ -39,6 +39,10 @@ apt-get install --force-yes -y memcached
 # around this requiremnt. Without this, the script stalls upon completion.
 printf "yes\n" | pecl install memcache
 
+# XDebug
+# Install XDebug for PHP
+printf "yes\n" | pecl install xdebug
+
 # Install dos2unix, which allows conversion of DOS style line endings to
 # something we'll have less trouble with in linux.
 sudo apt-get install --force-yes -y dos2unix
