@@ -4,8 +4,22 @@
 dir = Dir.pwd
 
 Vagrant::Config.run do |config|
-  config.vm.box = "10up-precise32-0.3"
-  config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-precise32-0.3.box"
+  
+  # Default Ubuntu Box
+  #
+  # This box is provided by Vagrant at vagrantup.com and is a nicely sized (290MB)
+  # box containing the Unbuntu 12.0.4 Precise 32 bit release.
+  config.vm.box = "std-precise32"
+  config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+
+  # Preconfigured box
+  #
+  # If you use the box configured on the next two lines, a large 700 MB file
+  # will be cached to your machine with preinstalled versions of the software
+  # normally included in the provisioning script.
+  #config.vm.box = "10up-precise32-0.3"
+  #config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-precise32-0.3.box"
+  
   config.vm.host_name = "precise32-dev"
   config.vm.customize ["modifyvm", :id, "--memory", 512]
   config.vm.network :hostonly, "192.168.50.4", :auto_config => true, :adapter => 2
