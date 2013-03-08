@@ -42,6 +42,10 @@ apt-get install --force-yes -y memcached
 # around this requiremnt. Without this, the script stalls upon completion.
 printf "yes\n" | pecl install memcache
 
+# XDebug
+# Install XDebug for PHP
+printf "yes\n" | pecl install xdebug
+
 # Install dos2unix, which allows conversion of DOS style line endings to
 # something we'll have less trouble with in linux.
 sudo apt-get install --force-yes -y dos2unix
@@ -54,6 +58,7 @@ sudo ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-co
 # Copy custom configuration files over and restart php5-fpm
 sudo ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"
 sudo ln -sf /srv/config/php5-fpm-config/php.ini /etc/php5/fpm/php.ini | echo "Linked php.ini to /etc/php5/fpm/"
+sudo ln -sf /srv/config/php5-fpm-config/php.xdebug.ini /etc/php5/fpm/php.xdebug.ini | echo "Linked php.xdebug.ini to /etc/php5/fpm/"
 
 # Make sure the services we expect to be running are running
 sudo service nginx restart
