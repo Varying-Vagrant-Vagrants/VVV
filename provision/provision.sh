@@ -4,6 +4,9 @@
 # update all of the package references before installing anything
 apt-get update --force-yes -y
 
+# Imagemagick
+apt-get install --force-yes -y imagemagick
+
 # PHP-FPM
 # kick of the install swarm with PHP5 and php-fpm
 apt-get install --force-yes -y  php5-fpm php-pear php5-common php5-imagick php5-mcrypt php5-mysql php5-curl php5-cli php5-gd php-apc php5-dev
