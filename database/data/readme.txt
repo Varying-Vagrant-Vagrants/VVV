@@ -1,0 +1,1 @@
+Actual SQL databases will live in this directory, allowing data to persist in Vagrant even after being `destroy`ed.

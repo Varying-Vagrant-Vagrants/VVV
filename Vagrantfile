@@ -38,6 +38,7 @@ Vagrant::Config.run do |config|
   # This directory is used to maintain default database scripts as well as backed
   # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.share_folder "database", "/srv/database", File.join( dir, "database" )
+  config.vm.share_folder "data", "/var/lib/mysql", File.join( dir, "database", "data" )
 
   # /srv/config/
   #
