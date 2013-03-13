@@ -1,12 +1,15 @@
 *.sublime*
 .DS_Store
 .vagrant
-server-conf/sites/*.conf
+config/nginx-config/sites/*.conf
 www/*
+www/wordpress-default/wp-content/plugins/
+www/wordpress-default/wp-content/uploads/
 *.sql
 
-!server-conf/sites/local.wordpress.dev.conf
-!server-conf/sites/default.conf
-!server-conf/default-dbs.sql
+!config/nginx-config/sites/local.wordpress.dev.conf
+!config/nginx-config/sites/default.conf
+!database/default-dbs.sql
+!www/mu-plugins/
 !www/default/
 !www/wordpress-default/

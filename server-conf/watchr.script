@@ -1,1 +1,0 @@
-watch( 'create-dbs.sql' ) {|md| system("mysql -u root -pblank < /srv/server-conf/create-dbs.sql; ./db-dumps/import-sql.sh") }

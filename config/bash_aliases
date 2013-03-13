@@ -1,0 +1,55 @@
+# bash_aliases
+#
+# This file is copied into the home directory of the vagrant user on the virtual
+# machine during provisioning and is included in the .bashrc automatically as
+# provisioning is finished. This allows for various scripts and configurations to
+# be available to us.
+#
+
+# Start monitoring config files for changes so that we can 
+# copy changes over or run any necessary import scripts
+start_config_monitor() {
+    local FOUND=""
+    FOUND=`gem list watchr | grep -i watchr`
+    if [ "$FOUND" == "" ]; then
+       sudo gem install watchr
+    fi
+    cd /srv/config/
+    watchr watchr.script &
+}
+
+# Stop monitoring config files as it's possible that we may
+# not want to do something on every config change
+stop_config_monitor() {
+    pkill -f "watchr watchr.script"
+}
+
+# If XDebug is enabled, disable it
+xdebug_off() {
+	if ls /etc/php5/fpm/php.nodebug.ini > /dev/null 2>&1
+	then
+		sudo mv /etc/php5/fpm/php.ini /etc/php5/fpm/php.xdebug.ini
+		sudo mv /etc/php5/fpm/php.nodebug.ini /etc/php5/fpm/php.ini
+	
+		sudo service php5-fpm restart
+		
+		echo "XDebug disabled!"
+	else 
+		echo "XDebug already disabled!"
+	fi	
+}
+
+# If XDebug is disabled, enable it
+xdebug_on() {
+	if ls /etc/php5/fpm/php.xdebug.ini > /dev/null 2>&1
+	then
+		sudo mv /etc/php5/fpm/php.ini /etc/php5/fpm/php.nodebug.ini
+		sudo mv /etc/php5/fpm/php.xdebug.ini /etc/php5/fpm/php.ini
+	
+		sudo service php5-fpm restart
+		
+		echo "XDebug enabled!"
+	else 
+		echo "XDebug already enabled!"
+	fi
+}
