@@ -3,8 +3,7 @@
 .vagrant
 config/nginx-config/sites/*.conf
 www/*
-www/wordpress-default/wp-content/plugins/
-www/wordpress-default/wp-content/uploads/
+www/wordpress-default/wp-content/
 *.sql
 
 !config/nginx-config/sites/local.wordpress.dev.conf
