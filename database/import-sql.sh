@@ -1,6 +1,12 @@
 #!/bin/bash
+
+# Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
 cd /srv/database/backups/
+
 printf "\nStart DB Import"
+
+# Parse through each file in the directory and use the file name to
+# import the SQL file into the database of the same name
 for file in $( ls *.sql )
 do
 pre_dot=${file%%.*}
