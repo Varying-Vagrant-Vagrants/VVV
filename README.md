@@ -12,7 +12,7 @@ But, I think this actually works. Actually, after a couple months, it works real
 ### How?
 Start with any operating system, then...
 
-1. First install [VirtualBox 4.2.8](https://www.virtualbox.org/wiki/Downloads). This is the magic that helps the magic behind Vagrant run. I will have you know that I had to uninstall my previous version of VirtualBox and install with the latest before I was able to get Vagrant to work. Results will vary.
+1. First install [VirtualBox 4.2.10](https://www.virtualbox.org/wiki/Downloads). This is the magic that helps the magic behind Vagrant run. I will have you know that I had to uninstall my previous version of VirtualBox and install with the latest before I was able to get Vagrant to work. Results will vary.
 1. Download and install [Vagrant 1.1.0](http://downloads.vagrantup.com/tags/v1.1.0), you will now have access to the `vagrant` command via whatever terminal you use.
 1. Clone this repo onto your machine in a directory where you want your environment to be stored:
     * `git clone git://github.com/jeremyfelt/varying-vagrant-vagrants.git vagrant-local-dev`
