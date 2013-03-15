@@ -10,12 +10,13 @@ printf "\nStart DB Import"
 for file in $( ls *.sql )
 do
 pre_dot=${file%%.*}
-if [ ! -d "/srv/database/data/$pre_dot" ]
+db_exist=`mysql -u root -pblank --skip-column-names -e "SHOW DATABASES LIKE '$pre_dot'" | grep $pre_dot`
+if [ "$pre_dot" == "$db_exist" ]
 then
+	echo "skipped $pre_dot"
+else
 	echo "mysql -u root -pblank $pre_dot < $pre_dot.sql"
     mysql -u root -pblank $pre_dot < $pre_dot.sql
-else
-	echo "skipped $pre_dot ..."
 fi
 done
 printf "\nDatabases imported - press return for prompt\n"
