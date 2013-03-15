@@ -21,7 +21,12 @@ Vagrant::Config.run do |config|
   #config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-precise32-0.3.box"
   
   config.vm.host_name = "precise32-dev"
+
+  # The customize command is specific to Virtualbox and was used in Vagrant 1.0.x
+  # A warning will appear when using it in Vagrant 1.1.x as other providers do not
+  # support this option. This warning is safe to ignore if you are running Virtualbox
   config.vm.customize ["modifyvm", :id, "--memory", 512]
+
   config.vm.network :hostonly, "192.168.50.4", :auto_config => true, :adapter => 2
 
   # Drive mapping
