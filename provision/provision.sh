@@ -27,6 +27,11 @@ apt-get install --force-yes -y mysql-server
 # MISC PACKAGES
 apt-get install --force-yes -y git-core curl make ngrep vim
 
+# PHPUnit
+# We need turn on auto-discovery first, otherwise the system won't know where to grab PHPUnit from
+sudo pear config-set auto_discover 1
+sudo pear install pear.phpunit.de/PHPUnit
+
 # MEMCACHED
 # Use memcached and the PECL memcache extension. At some point we can move
 # to the PECL memcached extension, but this better mirrors production
