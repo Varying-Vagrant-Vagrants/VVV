@@ -18,11 +18,11 @@ else
 	if [ "" == "$db_exist" ]
 	then
 		printf "mysql -u root -pblank $pre_dot < $pre_dot.sql\n"
-    	mysql -u root -pblank $pre_dot < $pre_dot.sql		
-    	printf "Import of $pre_dot successful\n\n"
-    else
-    	printf "Skipped import of $pre_dot - tables exist\n\n"
-    fi
+		mysql -u root -pblank $pre_dot < $pre_dot.sql
+		printf "Import of $pre_dot successful\n\n"
+	else
+		printf "Skipped import of $pre_dot - tables exist\n\n"
+	fi
 fi
 done
 printf "Databases imported - press return for prompt\n"
