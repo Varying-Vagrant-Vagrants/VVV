@@ -7,4 +7,4 @@
 watch( 'create-dbs.sql' ) {|md| system("mysql -u root -pblank < /srv/database/create-dbs.sql; ./database/import-sql.sh") }
 watch( 'nginx-config/sites/(.*)\.conf' ) {|md| system("sudo service nginx restart | echo nginx restarted with new configuration for #{md[1]}.conf. Press enter for prompt...") }
 watch( 'php5-fpm-config/(php.ini|www.conf)' ) {|md| system("sudo service php5-fpm restart | echo php5-fpm restart with new configuration for #{md[1]}. Press enter for prompt...") }
-watch( 'mysql/my.cnf' ) {|md| system("sudo cp /srv/config/mysql/my.cnf /etc/mysql/my.cnf | sudo service mysql restart | echo mysql restart with new configuration for #{md[1]}. Press enter for prompt...") }
+watch( 'mysql-config/my.cnf' ) {|md| system("sudo cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | sudo service mysql restart | echo mysql restart with new configuration for #{md[1]}. Press enter for prompt...") }
