@@ -3,20 +3,26 @@
 # Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
 cd /srv/database/backups/
 
-printf "\nStart DB Import"
+printf "\nStart DB Import\n\n"
 
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
 for file in $( ls *.sql )
 do
 pre_dot=${file%%.*}
-db_exist=`mysql -u root -pblank --skip-column-names -e "SHOW DATABASES LIKE '$pre_dot'" | grep $pre_dot`
-if [ "$pre_dot" == "$db_exist" ]
+db_exist=`mysql -u root -pblank --skip-column-names -e "SHOW TABLES FROM $pre_dot"`
+if [ "$?" != "0" ]
 then
-	echo "skipped $pre_dot"
+	printf "Error - Create $pre_dot database via init-custom.sql before attempting import\n\n"
 else
-	echo "mysql -u root -pblank $pre_dot < $pre_dot.sql"
-    mysql -u root -pblank $pre_dot < $pre_dot.sql
+	if [ "" == "$db_exist" ]
+	then
+		printf "mysql -u root -pblank $pre_dot < $pre_dot.sql\n"
+    	mysql -u root -pblank $pre_dot < $pre_dot.sql		
+    	printf "Import of $pre_dot successful\n\n"
+    else
+    	printf "Skipped import of $pre_dot - tables exist\n\n"
+    fi
 fi
 done
-printf "\nDatabases imported - press return for prompt\n"
+printf "Databases imported - press return for prompt\n"
