@@ -50,6 +50,9 @@ printf "yes\n" | pecl install xdebug
 # something we'll have less trouble with in linux.
 sudo apt-get install --force-yes -y dos2unix
 
+# Clean up apt caches
+sudo apt-get clean
+
 # NGINX
 # Configure nginx with some basic config files
 sudo ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
