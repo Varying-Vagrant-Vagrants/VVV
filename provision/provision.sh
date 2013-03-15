@@ -60,6 +60,9 @@ sudo ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf |
 sudo ln -sf /srv/config/php5-fpm-config/php.ini /etc/php5/fpm/php.ini | echo "Linked php.ini to /etc/php5/fpm/"
 sudo ln -sf /srv/config/php5-fpm-config/php.xdebug.ini /etc/php5/fpm/php.xdebug.ini | echo "Linked php.xdebug.ini to /etc/php5/fpm/"
 
+# Copy over the mysql configuration file
+sudo cp /srv/config/mysql/my.cnf /etc/mysql/my.cnf | echo "Linked my.cnf to /etc/mysql/"
+
 # Make sure the services we expect to be running are running
 sudo service nginx restart
 sudo service php5-fpm restart
