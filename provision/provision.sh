@@ -25,12 +25,7 @@ echo mysql-server mysql-server/root_password_again password blank | sudo debconf
 apt-get install --force-yes -y mysql-server php5-mysql
 
 # MISC PACKAGES
-apt-get install --force-yes -y git-core
-apt-get install --force-yes -y curl
-apt-get install --force-yes -y make
-apt-get install --force-yes -y ngrep
-# I like vi and I like vim better
-apt-get install --force-yes -y vim
+apt-get install --force-yes -y git-core curl make ngrep vim
 
 # MEMCACHED
 # Use memcached and the PECL memcache extension. At some point we can move
