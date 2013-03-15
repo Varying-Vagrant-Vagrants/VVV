@@ -10,7 +10,12 @@ printf "\nStart DB Import"
 for file in $( ls *.sql )
 do
 pre_dot=${file%%.*}
-echo "mysql -u root -pblank $pre_dot < $pre_dot.sql"
-mysql -u root -pblank $pre_dot < $pre_dot.sql
+if [ ! -d "/srv/database/data/$pre_dot" ]
+then
+	echo "mysql -u root -pblank $pre_dot < $pre_dot.sql"
+    mysql -u root -pblank $pre_dot < $pre_dot.sql
+else
+	echo "skipped $pre_dot ..."
+fi
 done
 printf "\nDatabases imported - press return for prompt\n"
