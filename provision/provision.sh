@@ -22,7 +22,7 @@ apt-get install --force-yes -y nginx
 echo mysql-server mysql-server/root_password password blank | sudo debconf-set-selections
 echo mysql-server mysql-server/root_password_again password blank | sudo debconf-set-selections
 
-apt-get install --force-yes -y mysql-server php5-mysql
+apt-get install --force-yes -y mysql-server
 
 # MISC PACKAGES
 apt-get install --force-yes -y git-core curl make ngrep vim
