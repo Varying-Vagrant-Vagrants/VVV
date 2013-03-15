@@ -57,6 +57,22 @@ A bunch of stuff!
 10. [ngrep](http://ngrep.sourceforge.net/usage.html)
 11. dos2unix
 
+### Startup Time
+
+Startup times for this Vagrant setup can vary widely, especially when booting from scratch, due to the downloads required to install all packages the first time. Here are some real world scenarios.
+
+#### Fast Cable Connection - ?? down / ?? up
+
+#### Fast DSL Connection - ?? down / ?? up
+
+#### Slow DSL Connection - 1.1 down / 0.3 up
+
+Doing a `vagrant up` after a `vagrant destroy` with only the initial ~280M box cached took about **25 minutes** due to the number of apt packages that needed to be download.
+
+Doing a `vagrant up` after a `vagrant halt` took about **1.5 minutes**, mostly because we still run the `apt-get upgrade` routine and try to install various packages.
+
+Doing a `vagrant resume` after a `vagrant suspend` took about **12 seconds**, because no network activity is required.
+
 ### Feedback?
 Let me have it! If you have tips that I need to know, send them my way at [@jeremyfelt](http://twitter.com/jeremyfelt) or find me in [other ways](http://jeremyfelt.com). I have some blog posts written that may provide more insight...
 * [Varying Vagrant Vagrants](http://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/)
