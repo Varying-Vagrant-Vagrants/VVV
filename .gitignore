@@ -9,7 +9,7 @@ www/wordpress-default/wp-content/
 
 !config/nginx-config/sites/local.wordpress.dev.conf
 !config/nginx-config/sites/default.conf
-!database/default-dbs.sql
+!database/init.sql
 !www/mu-plugins/
 !www/default/
 !www/wordpress-default/

@@ -69,11 +69,16 @@ sudo service php5-fpm restart
 sudo service memcached restart
 sudo service mysql restart
 
-# Import any SQL files into databases based on their names
-# these databases must first be created in the create-dbs.sql
-# file so that they exist for the import script to do its job.
-mysql -u root -pblank < /srv/database/default-dbs.sql | echo "Imported default databases..."
-mysql -u root -pblank < /srv/database/create-dbs.sql | echo "Created additional databases..."
+# Create the databases (unique to system) that will be imported with
+# the mysqldump files located in database/backups/
+mysql -u root -pblank < /srv/database/init-custom.sql | echo "Initial custom mysql scripting..."
+
+# Setup mysql by importing an init file that creates necessary
+# users and databases that our vagrant setup relies on.
+mysql -u root -pblank < /srv/database/init.sql | echo "Initial mysql prep...."
+
+# Process each mysqldump SQL file in database/backups to import 
+# an initial data set for mysql.
 /srv/database/import-sql.sh
 
 sudo ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo "Linked bash aliases to home directory..."
