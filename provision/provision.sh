@@ -61,6 +61,7 @@ apt_package_list=(
 	mysql-server
 
 	# MISC Packages
+	ack-grep
 	git-core
 	curl
 	make
