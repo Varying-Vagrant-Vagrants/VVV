@@ -10,7 +10,8 @@ printf "\nStart DB Import\n\n"
 for file in $( ls *.sql )
 do
 pre_dot=${file%%.*}
-db_exist=`mysql -u root -pblank --skip-column-names -e "SHOW TABLES FROM $pre_dot"`
+mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
+db_exist=`mysql -u root -pblank --skip-column-names -e "$mysql_cmd"`
 if [ "$?" != "0" ]
 then
 	printf "Error - Create $pre_dot database via init-custom.sql before attempting import\n\n"
