@@ -134,8 +134,19 @@ printf "\nservice php5-fpm restart\n"
 sudo service php5-fpm restart
 printf "\nservice memcached restart\n"
 sudo service memcached restart
-printf "\n service mysql restart\n"
-sudo service mysql restart
+
+# mysql gives us an error if we restart a non running service, which
+# happens after a `vagrant halt`. Check to see if it's running before
+# deciding whether to start or restart.
+exists_mysql=`service mysql status`
+if [ "mysql stop/waiting" == "$exists_mysql" ]
+then
+	printf "\nservice mysql start"
+	sudo service mysql start
+else
+	printf "\nservice mysql restart"
+	sudo service mysql restart
+fi
 
 # IMPORT SQL
 #
