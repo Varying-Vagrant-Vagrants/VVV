@@ -3,20 +3,12 @@
 
 dir = Dir.pwd
 
-Vagrant.configure("1") do |config|
-
-  # Configurations from the 1.0.x Vagrantfile spec can go here and are backward
-  # compatible with Vagrant 1.1.x. These should be transferred over time to the
-  # 1.1.x format for better future support.
-  
-  # The customize command is specific to Virtualbox and was used in Vagrant 1.0.x
-  # A warning will appear when using it in Vagrant 1.1.x as other providers do not
-  # support this option. This warning is safe to ignore if you are running Virtualbox
-  config.vm.customize ["modifyvm", :id, "--memory", 512]
-
-end
-
 Vagrant.configure("2") do |config|
+
+  # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
+  config.vm.provider :virtualbox do |v|
+	v.customize ["modifyvm", :id, "--memory", 512]
+  end
   
   # Default Ubuntu Box
   #
