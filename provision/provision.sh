@@ -1,5 +1,5 @@
-# This provisioning script runs during a 'vagrant up' command when building
-# from a base box.
+# This file is specified as the provisioning script to be used during `vagrant up`
+# via the `config.vm.provision` parameter in the Vagrantfile.
 
 # Check for our apt_update_run flag. If it exists, then we can skip apt-get update
 # and move on. If the flag has not yet been created, then we do want to update
@@ -10,18 +10,21 @@ then
 	printf "\nSkipping apt-get update, not initial boot...\n\n"
 else
 	# update all of the package references before installing anything
-	printf "apt-get update....\n\n"
+	printf "Running apt-get update....\n\n"
 	apt-get update --force-yes -y
 	touch /srv/config/apt_update_run
 fi
 
 # MYSQL
+#
 # We need to set the selections to automatically fill the password prompt
 # for mysql while it is being installed. The password in the following two
 # lines *is* actually set to the word 'blank' for the root user.
 echo mysql-server mysql-server/root_password password blank | sudo debconf-set-selections
 echo mysql-server mysql-server/root_password_again password blank | sudo debconf-set-selections
 
+# PACKAGE INSTALLATION
+#
 # Build a bash array to pass all of the packages we want to install to
 # a single apt-get command. This avoids having to do all the leg work
 # each time a package is set to install. It also allows us to easily comment
@@ -78,48 +81,64 @@ apt-get install --force-yes -y ${apt_package_list[@]}
 # Clean up apt caches
 apt-get clean
 
+# PEAR PACKAGES
+#
+# Installation for any required PHP PEAR packages
 printf "\nInstall pear packages...\n"
-# PHPUnit
-# We need turn on auto-discovery first, otherwise the system won't know where to grab PHPUnit from
+
+# Auto discover new channels from the command line or dependencies
 sudo pear config-set auto_discover 1
+
+# PHPUnit
 sudo pear install pear.phpunit.de/PHPUnit
 
-printf "\nInstall pecl packages...\n"
-# MEMCACHED
-# Use memcached and the PECL memcache extension. At some point we can move
-# to the PECL memcached extension, but this better mirrors production
-# environments
+# PECL PACKAGES
 #
-# We have to enter yes once. If this install changes, this will no longer work
-# Might consider installing yum package mamager and using yum to install to get
-# around this requiremnt. Without this, the script stalls upon completion.
-printf "yes\n" | pecl install memcache
+# Installation for any required PHP PECL packages
+printf "\nInstall pecl packages...\n"
 
-# XDebug
-# Install XDebug for PHP
-printf "yes\n" | pecl install xdebug
+# MEMCACHE extension
+#
+# Use the PECL memcache extension as it better mirros production environments
+# then PECL memcached
+printf "yes\n" | pecl install memcache # Install requires entering 'yes' once. May change.
 
+# XDebug extension
+printf "yes\n" | pecl install xdebug # Install requires entering 'yes' once. May change.
+
+# SYMLINK HOST FILES
 printf "\nLink Directories...\n"
-# NGINX
-# Configure nginx with some basic config files
+
+# Configuration for nginx
 sudo ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
 sudo ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
 
-# Copy custom configuration files over and restart php5-fpm
+# Configuration for php5-fpm
 sudo ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"
 sudo ln -sf /srv/config/php5-fpm-config/php.ini /etc/php5/fpm/php.ini | echo "Linked php.ini to /etc/php5/fpm/"
 sudo ln -sf /srv/config/php5-fpm-config/php.xdebug.ini /etc/php5/fpm/php.xdebug.ini | echo "Linked php.xdebug.ini to /etc/php5/fpm/"
 
-# Copy over the mysql configuration file
+# Configuration for mysql
 sudo cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo "Linked my.cnf to /etc/mysql/"
 
+# Custom bash aliases to include with .bashrc
+sudo ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo "Linked bash aliases to home directory..."
+
+# RESTART SERVICES
+#
+# Make sure the services we expect to be running are running.
 printf "\nRestart services...\n"
-# Make sure the services we expect to be running are running
+printf "\nservice nginx restart\n"
 sudo service nginx restart
+printf "\nservice php5-fpm restart\n"
 sudo service php5-fpm restart
+printf "\nservice memcached restart\n"
 sudo service memcached restart
+printf "\n service mysql restart\n"
 sudo service mysql restart
 
+# IMPORT SQL
+#
 # Create the databases (unique to system) that will be imported with
 # the mysqldump files located in database/backups/
 mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
@@ -131,8 +150,6 @@ mysql -u root -pblank < /srv/database/init.sql | echo "Initial mysql prep...."
 # Process each mysqldump SQL file in database/backups to import 
 # an initial data set for mysql.
 /srv/database/import-sql.sh
-
-sudo ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo "Linked bash aliases to home directory..."
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
 # Enter domains space delimited
