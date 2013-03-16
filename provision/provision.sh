@@ -152,7 +152,12 @@ fi
 #
 # Create the databases (unique to system) that will be imported with
 # the mysqldump files located in database/backups/
-mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
+if [ -f /srv/database/init-custom.sql ]
+then
+	mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
+else
+	printf "\nNo custom mysql scripting found in database/init-custom.sql, skipping...\n"
+fi
 
 # Setup mysql by importing an init file that creates necessary
 # users and databases that our vagrant setup relies on.
