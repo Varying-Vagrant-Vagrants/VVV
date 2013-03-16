@@ -1,8 +1,16 @@
 # This provisioning script runs during a 'vagrant up' command when building
 # from a base box.
 
-# update all of the package references before installing anything
-apt-get update --force-yes -y
+cat /srv/config/apt_update_run
+if [ "$?" == "0" ]
+then
+	printf "Skipping apt-get update, not initial boot...\n"
+else
+	# update all of the package references before installing anything
+	printf "apt-get update....\n"
+	apt-get update --force-yes -y
+	touch /srv/config/apt_update_run
+fi
 
 # Imagemagick
 apt-get install --force-yes -y imagemagick
