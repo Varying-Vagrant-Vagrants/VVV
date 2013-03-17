@@ -1,15 +1,39 @@
+# Stuff that pops up locally for me - @jeremyfelt
 *.sublime*
 .DS_Store
+
+# Because this really is a working directory, ignore vagrant's files
 .vagrant
+
+# No need to share individual site configs with each other
 config/nginx-config/sites/*.conf
+
+# On first boot, we create apt_update_run to avoid apt-get update in the future
+config/apt_update_run
+
+# No need to share our mysql data with each other
+database/data/*
+
+# No need to share our individual sites with each other
 www/*
-www/wordpress-default/wp-content/plugins/
-www/wordpress-default/wp-content/uploads/
+
+# No need to share various plugins and such with each other
+# @todo - We should keep the default plugins and themes available though
+www/wordpress-default/wp-content/*
+
+# And no need to share individual SQL files with each other
 *.sql
 
+# BUT....
+
+# We do have some default nginx configs that should be included
 !config/nginx-config/sites/local.wordpress.dev.conf
 !config/nginx-config/sites/default.conf
-!database/default-dbs.sql
+
+# And we do have a default SQL file that should be included
+!database/init.sql
+
+# And a few of our web directories are important to share.
 !www/mu-plugins/
 !www/default/
 !www/wordpress-default/
