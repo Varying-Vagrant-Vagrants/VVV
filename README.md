@@ -3,7 +3,7 @@ Varying Vagrant Vagrants
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration with a goal of providing a system to pass development projects between team members for easy ramp up on projects.
 
-* Version: 0.2 - See the development branch for latest, possibly unstable changes.
+* Version: 0.2.1
 * Contributors: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd) and [@TheLastCicada](http://github.com/TheLastCicada)
 
 ## What is Vagrant?

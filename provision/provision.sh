@@ -4,7 +4,6 @@
 # Check for our apt_update_run flag. If it exists, then we can skip apt-get update
 # and move on. If the flag has not yet been created, then we do want to update
 # first before touching the flag file and then installing packages.
-cat /srv/config/apt_update_run
 if [ -f /srv/config/apt_update_run ]
 then
 	printf "\nSkipping apt-get update, not initial boot...\n\n"
