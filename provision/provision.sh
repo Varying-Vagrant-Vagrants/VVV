@@ -1,3 +1,4 @@
+start_time=`date`
 # This file is specified as the provisioning script to be used during `vagrant up`
 # via the `config.vm.provision` parameter in the Vagrantfile.
 
@@ -101,10 +102,10 @@ printf "\nInstall pecl packages...\n"
 #
 # Use the PECL memcache extension as it better mirros production environments
 # then PECL memcached
-printf "yes\n" | pecl install memcache # Install requires entering 'yes' once. May change.
+yes yes | pecl install memcache # Install requires entering 'yes' once. May change.
 
 # XDebug extension
-printf "yes\n" | pecl install xdebug # Install requires entering 'yes' once. May change.
+yes yes | pecl install xdebug # Install requires entering 'yes' once. May change.
 
 # WP-CLI Install
 if [ ! -f /usr/bin/wp ]
@@ -199,5 +200,6 @@ fi
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway
 ifconfig | grep "inet addr"
-
+echo $start_time
+date
 echo All set!
