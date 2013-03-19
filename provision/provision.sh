@@ -107,14 +107,27 @@ printf "yes\n" | pecl install memcache # Install requires entering 'yes' once. M
 printf "yes\n" | pecl install xdebug # Install requires entering 'yes' once. May change.
 
 # WP-CLI Install
-curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
-chmod +x /usr/bin/wp
+if [ ! -f /usr/bin/wp ]
+then
+	printf "\nDownloading wp-cli.....http://wp-cli.org\n"
+	curl --silent http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
+	chmod +x /usr/bin/wp
+else
+	printf "\nSkip wp-cli installation, already available\n"
+fi
 
 # Setup initial WordPress installation
-mkdir /srv/www/wordpress-default/
-cd /srv/www/wordpress-default
-wp core download
-wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp
+if [ ! -d /srv/www/wordpress-default ]
+then
+	mkdir /srv/www/wordpress-default/
+	cd /srv/www/wordpress-default
+	printf "Downloading WordPress.....http://wordpress.org\n"
+	wp core --quiet download
+	printf "Configuring WordPress...\n"
+	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp
+else
+	printf "Skip WordPress installation, already available\n"
+fi
 
 # SYMLINK HOST FILES
 printf "\nLink Directories...\n"
