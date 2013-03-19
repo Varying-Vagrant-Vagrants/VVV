@@ -106,6 +106,16 @@ printf "yes\n" | pecl install memcache # Install requires entering 'yes' once. M
 # XDebug extension
 printf "yes\n" | pecl install xdebug # Install requires entering 'yes' once. May change.
 
+# WP-CLI Install
+curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
+chmod +x /usr/bin/wp
+
+# Setup initial WordPress installation
+mkdir /srv/www/wordpress-default/
+cd /srv/www/wordpress-default
+wp core download
+wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp
+
 # SYMLINK HOST FILES
 printf "\nLink Directories...\n"
 
