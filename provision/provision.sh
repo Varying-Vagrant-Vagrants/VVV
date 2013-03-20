@@ -107,29 +107,6 @@ yes yes | pecl install memcache # Install requires entering 'yes' once. May chan
 # XDebug extension
 yes yes | pecl install xdebug # Install requires entering 'yes' once. May change.
 
-# WP-CLI Install
-if [ ! -f /usr/bin/wp ]
-then
-	printf "\nDownloading wp-cli.....http://wp-cli.org\n"
-	curl --silent http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
-	chmod +x /usr/bin/wp
-else
-	printf "\nSkip wp-cli installation, already available\n"
-fi
-
-# Setup initial WordPress installation
-if [ ! -d /srv/www/wordpress-default ]
-then
-	mkdir /srv/www/wordpress-default/
-	cd /srv/www/wordpress-default
-	printf "Downloading WordPress.....http://wordpress.org\n"
-	wp core --quiet download
-	printf "Configuring WordPress...\n"
-	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp
-else
-	printf "Skip WordPress installation, already available\n"
-fi
-
 # SYMLINK HOST FILES
 printf "\nLink Directories...\n"
 
@@ -190,6 +167,29 @@ mysql -u root -pblank < /srv/database/init.sql | echo "Initial mysql prep...."
 # Process each mysqldump SQL file in database/backups to import 
 # an initial data set for mysql.
 /srv/database/import-sql.sh
+
+# WP-CLI Install
+if [ ! -f /usr/bin/wp ]
+then
+	printf "\nDownloading wp-cli.....http://wp-cli.org\n"
+	curl --silent http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
+	chmod +x /usr/bin/wp
+else
+	printf "\nSkip wp-cli installation, already available\n"
+fi
+
+# Setup initial WordPress installation
+if [ ! -d /srv/www/wordpress-default ]
+then
+	printf "Downloading WordPress.....http://wordpress.org\n"
+	wp core --quiet download --path=/srv/www/wordpress-default
+	cd /srv/www/wordpress-default
+	printf "Configuring WordPress...\n"
+	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
+	wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+else
+	printf "Skip WordPress installation, already available\n"
+fi
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
 # Enter domains space delimited
