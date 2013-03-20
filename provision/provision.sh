@@ -61,6 +61,7 @@ apt_package_list=(
 	mysql-server
 
 	# MISC Packages
+	subversion
 	ack-grep
 	git-core
 	curl
