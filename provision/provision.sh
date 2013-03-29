@@ -94,6 +94,11 @@ sudo pear config-set auto_discover 1
 # PHPUnit
 sudo pear install pear.phpunit.de/PHPUnit
 
+# Mockery
+sudo pear channel-discover pear.survivethedeepend.com
+sudo pear channel-discover hamcrest.googlecode.com/svn/pear
+sudo pear install --alldeps deepend/Mockery
+
 # PECL PACKAGES
 #
 # Installation for any required PHP PECL packages
