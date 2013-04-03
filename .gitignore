@@ -17,10 +17,6 @@ database/data/*
 # No need to share our individual sites with each other
 www/*
 
-# No need to share various plugins and such with each other
-# @todo - We should keep the default plugins and themes available though
-www/wordpress-default/wp-content/*
-
 # And no need to share individual SQL files with each other
 *.sql
 
@@ -36,4 +32,3 @@ www/wordpress-default/wp-content/*
 # And a few of our web directories are important to share.
 !www/mu-plugins/
 !www/default/
-!www/wordpress-default/

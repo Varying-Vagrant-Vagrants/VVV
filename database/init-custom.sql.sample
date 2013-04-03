@@ -10,4 +10,4 @@
 # but it can be any command.
 #
 CREATE DATABASE `my_database_name`;
-GRANT ALL PRIVILEGES ON `my_database_name`.* TO 'thisguy'@'localhost' IDENTIFIED BY 'thatpass';
+GRANT ALL PRIVILEGES ON `my_database_name`.* TO 'thisuser'@'localhost' IDENTIFIED BY 'thatpass';
