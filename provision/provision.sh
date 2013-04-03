@@ -5,15 +5,15 @@ start_time=`date`
 # Check for our apt_update_run flag. If it exists, then we can skip apt-get update
 # and move on. If the flag has not yet been created, then we do want to update
 # first before touching the flag file and then installing packages.
-if [ -f /srv/config/apt_update_run ]
-then
-	printf "\nSkipping apt-get update, not initial boot...\n\n"
-else
+#if [ -f /srv/config/apt_update_run ]
+#then
+#	printf "\nSkipping apt-get update, not initial boot...\n\n"
+#else
 	# update all of the package references before installing anything
 	printf "Running apt-get update....\n\n"
 	apt-get update --force-yes -y
-	touch /srv/config/apt_update_run
-fi
+#	touch /srv/config/apt_update_run
+#fi
 
 # MYSQL
 #
