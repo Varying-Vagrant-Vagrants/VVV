@@ -1,18 +1,19 @@
+start_time=`date`
 # This file is specified as the provisioning script to be used during `vagrant up`
 # via the `config.vm.provision` parameter in the Vagrantfile.
 
 # Check for our apt_update_run flag. If it exists, then we can skip apt-get update
 # and move on. If the flag has not yet been created, then we do want to update
 # first before touching the flag file and then installing packages.
-if [ -f /srv/config/apt_update_run ]
-then
-	printf "\nSkipping apt-get update, not initial boot...\n\n"
-else
+#if [ -f /srv/config/apt_update_run ]
+#then
+#	printf "\nSkipping apt-get update, not initial boot...\n\n"
+#else
 	# update all of the package references before installing anything
 	printf "Running apt-get update....\n\n"
 	apt-get update --force-yes -y
-	touch /srv/config/apt_update_run
-fi
+#	touch /srv/config/apt_update_run
+#fi
 
 # MYSQL
 #
@@ -60,6 +61,7 @@ apt_package_list=(
 	mysql-server
 
 	# MISC Packages
+	subversion
 	ack-grep
 	git-core
 	curl
@@ -92,6 +94,11 @@ sudo pear config-set auto_discover 1
 # PHPUnit
 sudo pear install pear.phpunit.de/PHPUnit
 
+# Mockery
+sudo pear channel-discover pear.survivethedeepend.com
+sudo pear channel-discover hamcrest.googlecode.com/svn/pear
+sudo pear install --alldeps deepend/Mockery
+
 # PECL PACKAGES
 #
 # Installation for any required PHP PECL packages
@@ -101,10 +108,10 @@ printf "\nInstall pecl packages...\n"
 #
 # Use the PECL memcache extension as it better mirros production environments
 # then PECL memcached
-printf "yes\n" | pecl install memcache # Install requires entering 'yes' once. May change.
+yes yes | pecl install memcache # Install requires entering 'yes' once. May change.
 
 # XDebug extension
-printf "yes\n" | pecl install xdebug # Install requires entering 'yes' once. May change.
+yes yes | pecl install xdebug # Install requires entering 'yes' once. May change.
 
 # SYMLINK HOST FILES
 printf "\nLink Directories...\n"
@@ -167,6 +174,29 @@ mysql -u root -pblank < /srv/database/init.sql | echo "Initial mysql prep...."
 # an initial data set for mysql.
 /srv/database/import-sql.sh
 
+# WP-CLI Install
+if [ ! -f /usr/bin/wp ]
+then
+	printf "\nDownloading wp-cli.....http://wp-cli.org\n"
+	curl --silent http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
+	chmod +x /usr/bin/wp
+else
+	printf "\nSkip wp-cli installation, already available\n"
+fi
+
+# Setup initial WordPress installation
+if [ ! -d /srv/www/wordpress-default ]
+then
+	printf "Downloading WordPress.....http://wordpress.org\n"
+	wp core --quiet download --path=/srv/www/wordpress-default
+	cd /srv/www/wordpress-default
+	printf "Configuring WordPress...\n"
+	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
+	wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+else
+	printf "Skip WordPress installation, already available\n"
+fi
+
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
 # Enter domains space delimited
 DOMAINS='local.wordpress.dev'
@@ -176,5 +206,6 @@ fi
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway
 ifconfig | grep "inet addr"
-
+echo $start_time
+date
 echo All set!
