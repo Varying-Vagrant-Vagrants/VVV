@@ -1,5 +1,5 @@
 {
-	"name": "vvv",
+	"name": "vvv-phpunit",
 	"description": "VVV Global Composer packages",
 	"require": {
 		"phpunit/phpunit": "3.7.*",
