@@ -83,6 +83,9 @@ apt-get install --force-yes -y ${apt_package_list[@]}
 # Clean up apt caches
 apt-get clean
 
+# Make ack respond to its real name
+sudo ln -fs /usr/bin/ack-grep /usr/bin/ack
+
 # PEAR PACKAGES
 #
 # Installation for any required PHP PEAR packages
