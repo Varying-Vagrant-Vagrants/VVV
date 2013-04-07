@@ -3,8 +3,8 @@
 #
 # To add a new local WordPress domain to your environment, copy
 # this file using a filename that matches the domain you wish to
-# setup. For example - mylocaldomain.com.conf would be your file
-# name for http://mylocaldomain.com
+# setup. For example - mylocaldomain.com.conf would be an ideal 
+# filename for http://mylocaldomain.com
 #
 # Once copied, you will need to modify two settings in the server
 # configuration provided:
