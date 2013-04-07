@@ -187,7 +187,7 @@ else
 	printf "\nSkip wp-cli installation, already available\n"
 fi
 
-# Setup initial WordPress installation
+# Install and configure the latest stable version of WordPress
 if [ ! -d /srv/www/wordpress-default ]
 then
 	printf "Downloading WordPress.....http://wordpress.org\n"
@@ -200,9 +200,24 @@ else
 	printf "Skip WordPress installation, already available\n"
 fi
 
+# Checkout, install and configure WordPress trunk
+if [ ! -d /srv/www/wordpress-trunk ]
+then
+	printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
+	svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
+	cd /srv/www/wordpress-trunk
+	printf "Configuring WordPress trunk...\n"
+	wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
+	wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+else
+	printf "Updating WordPress trunk...\n"
+	cd /srv/www/wordpress-trunk
+	svn up
+fi
+
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
 # Enter domains space delimited
-DOMAINS='local.wordpress.dev'
+DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'
 if ! grep -q "$DOMAINS" /etc/hosts
 then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
