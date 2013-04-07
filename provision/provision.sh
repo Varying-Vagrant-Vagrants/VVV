@@ -46,15 +46,15 @@ apt_package_list=(
 	php5-dev
 
 	# Extra modules that we find useful
+	php5-memcache
 	php5-imagick
+	php5-xdebug
 	php5-mcrypt
 	php5-mysql
 	php5-curl
 	php5-gd
 	php-apc
-	php5-xdebug
-	php5-memcache
-	
+
 	# nginx
 	nginx
 
