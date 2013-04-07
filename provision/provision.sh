@@ -50,9 +50,10 @@ apt_package_list=(
 	php5-mcrypt
 	php5-mysql
 	php5-curl
-	php-pear
 	php5-gd
 	php-apc
+	php5-xdebug
+	php5-memcache
 	
 	# nginx
 	nginx
@@ -86,35 +87,32 @@ apt-get clean
 # Make ack respond to its real name
 sudo ln -fs /usr/bin/ack-grep /usr/bin/ack
 
-# PEAR PACKAGES
+# COMPOSER
 #
-# Installation for any required PHP PEAR packages
-printf "\nInstall pear packages...\n"
+# Install Composer
+if [ ! -f /usr/bin/composer ]
+then
+	printf "Install Composer...\n"
+	curl -sS https://getcomposer.org/installer | php
+	chmod +x composer.phar
+	sudo mv composer.phar /usr/local/bin/composer
+else
+	printf "Update Composer...\n"
+	sudo composer self-update
+fi
 
-# Auto discover new channels from the command line or dependencies
-sudo pear config-set auto_discover 1
-
-# PHPUnit
-sudo pear install pear.phpunit.de/PHPUnit
-
-# Mockery
-sudo pear channel-discover pear.survivethedeepend.com
-sudo pear channel-discover hamcrest.googlecode.com/svn/pear
-sudo pear install --alldeps deepend/Mockery
-
-# PECL PACKAGES
-#
-# Installation for any required PHP PECL packages
-printf "\nInstall pecl packages...\n"
-
-# MEMCACHE extension
-#
-# Use the PECL memcache extension as it better mirros production environments
-# then PECL memcached
-yes yes | pecl install memcache # Install requires entering 'yes' once. May change.
-
-# XDebug extension
-yes yes | pecl install xdebug # Install requires entering 'yes' once. May change.
+# If our global composer sources don't exist, set them up
+if [ ! -d /usr/local/src/vvv-phpunit ]
+then
+	printf "Install PHPUnit and Mockery...\n"
+	sudo mkdir -p /usr/local/src/vvv-phpunit
+	sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+	sudo sh -c "cd /usr/local/src/vvv-phpunit && composer install"
+else
+	printf "Update PHPUnit and Mockery...\n"
+	sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+	sudo sh -c "cd /usr/local/src/vvv-phpunit && composer update"
+fi
 
 # SYMLINK HOST FILES
 printf "\nLink Directories...\n"
