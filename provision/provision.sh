@@ -68,6 +68,7 @@ apt_package_list=(
 	make
 	ngrep
 	vim
+    runuser
 
 	# memcached
 	memcached
@@ -112,6 +113,9 @@ yes yes | pecl install memcache # Install requires entering 'yes' once. May chan
 
 # XDebug extension
 yes yes | pecl install xdebug # Install requires entering 'yes' once. May change.
+
+# Install the spf13 config for vim https://github.com/spf13/spf13-vim and make vim awesome
+curl http://j.mp/spf13-vim3 -L > spf13-vim.sh && sudo -u vagrant -i bash -c 'sh spf13-vim.sh 2>&1 /dev/null'
 
 # SYMLINK HOST FILES
 printf "\nLink Directories...\n"
