@@ -129,6 +129,9 @@ sudo cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo "Linked my.cnf 
 # Custom bash aliases to include with .bashrc
 sudo ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo "Linked bash aliases to home directory..."
 
+# Custom vim configuration via .vimrc
+sudo ln -sf /srv/config/vimrc /home/vagrant/.vimrc | echo "Linked vim configuration to home directory..."
+
 # RESTART SERVICES
 #
 # Make sure the services we expect to be running are running.

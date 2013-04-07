@@ -3,7 +3,7 @@ Varying Vagrant Vagrants
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration with a goal of providing a system to pass development projects between team members for easy ramp up on projects.
 
-* Version: 0.3
+* Version: 0.4-working
 * Contributors: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](https://github.com/tddewey) and [@kadamwhite](https://github.com/kadamwhite)
 * Contributing: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/jeremyfelt/varying-vagrant-vagrants/tree/develop)
 
