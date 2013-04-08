@@ -3,9 +3,9 @@ Varying Vagrant Vagrants
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration with a goal of providing a system to pass development projects between team members for easy ramp up on projects.
 
-* Version: 0.3
-* Contributors: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](https://github.com/tddewey) and [@kadamwhite](https://github.com/kadamwhite)
-* Contributing: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/jeremyfelt/varying-vagrant-vagrants/tree/develop)
+* **Version**: 0.4
+* **Contributors**: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](http://github.com/tddewey), [@johnpbloch](http://github.com/johnpbloch) and [@kadamwhite](http://github.com/kadamwhite)
+* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/jeremyfelt/varying-vagrant-vagrants/tree/develop). Pull requests against master will be met with a friendly comment asking you to redo. Thanks!
 
 ## What is Vagrant?
 
@@ -26,8 +26,8 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
     * `vagrant up` - *omg magic happens*
     * Be patient, this could take a while, especially on the first run.
 1. Add a record to your local machine's hosts file
-    * `192.168.50.4  local.wordpress.dev`
-1. Visit `http://local.wordpress.dev/` in your browser and follow the WordPress installation.
+    * `192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev`
+1. Visit `http://local.wordpress.dev/` in your browser for WordPress 3.5.1 or `http://local.wordpress-trunk.dev` for WordPress trunk.
 
 Fancy, yeah?
 
@@ -53,7 +53,7 @@ Now that you're up and running with a default configuration, start poking around
     * The network configuration picks an IP of 192.168.50.4. This works if you are *not* on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you *are* on a 192.168.50.x sub domain already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
     * If you require any custom SQL commands to run when the virtual machine boots, move `database/init-custom.sql.sample` to `database/init-custom.sql` and edit it to add whichever `CREATE DATABASE` and `GRANT ALL PRIVILEGES` statements you want to run on startup to prepare mysql for SQL imports (see next bullet).
     * Have any SQL files that should be imported in the `database/backups/` directory and named as `db_name.sql`. The `import-sql.sh` script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step's SQL.
-    * Check out the example nginx configurations in `config/nginx-config/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for a basic WordPress setup.
+    * Check out the example nginx configurations in `config/nginx-config/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for basic WordPress 3.5.1 and trunk setups.
     * Once a database is imported on the initial `vagrant up`, it will persist on the local machine a mapped mysql data directory.
     * Other stuff. Familiarize and all that.
 
@@ -76,12 +76,18 @@ A bunch of stuff!
 1. make
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. dos2unix
+1. [WordPress 3.5.1](http://wordpress.org)
+1. [WordPress trunk](http://core.svn.wordpress.org/trunk)
 
 ### Startup Time
 
 Startup times for this Vagrant setup can vary widely, especially when booting from scratch, due to the downloads required to install all packages the first time. Here are some real world scenarios.
 
-#### Fast Cable Connection - ?? down / ?? up
+#### Fast Cable Connection - 58 down / 12 up
+
+* `vagrant up` after `vagrant destroy` (or from scratch) with only the initial ~280M box cached took about **3 minutes**
+* `vagrant provision` on running box took about **30 seconds**
+* `vagrant up` on powered off box (`vagrant halt`) took about **30 seconds**
 
 *stats needed* - though I was diong `vagrant up` from scratch in only a couple minutes at some point.
 

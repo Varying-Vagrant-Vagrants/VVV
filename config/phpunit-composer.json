@@ -1,0 +1,11 @@
+{
+	"name": "vvv-phpunit",
+	"description": "VVV Global Composer packages",
+	"require": {
+		"phpunit/phpunit": "3.7.*",
+		"mockery/mockery": "dev-master@dev"
+	},
+	"config": {
+		"bin-dir": "/usr/local/bin/"
+	}
+}
