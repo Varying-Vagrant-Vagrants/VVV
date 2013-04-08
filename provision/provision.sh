@@ -2,117 +2,123 @@ start_time=`date`
 # This file is specified as the provisioning script to be used during `vagrant up`
 # via the `config.vm.provision` parameter in the Vagrantfile.
 
-# Check for our apt_update_run flag. If it exists, then we can skip apt-get update
-# and move on. If the flag has not yet been created, then we do want to update
-# first before touching the flag file and then installing packages.
-if [ -f /tmp/apt_update_run ]
+if [ -f /home/vagrant/initial_provision_run ]
 then
-	printf "\nSkipping apt-get update, not initial boot...\n\n"
+	printf "\nSkipping package installation, not initial boot...\n\n"
 else
-	# update all of the package references before installing anything
-	printf "Running apt-get update....\n\n"
-	apt-get update --force-yes -y
-	touch /tmp/apt_update_run
-fi
+	# Check for our apt_update_run flag. If it exists, then we can skip apt-get update
+	# and move on. If the flag has not yet been created, then we do want to update
+	# first before touching the flag file and then installing packages.
+	if [ -f /home/vagrant/apt_update_run ]
+	then
+		printf "\nSkipping apt-get update, not initial boot...\n\n"
+	else
+		# update all of the package references before installing anything
+		printf "Running apt-get update....\n\n"
+		apt-get update --force-yes -y
+		touch /home/vagrant/apt_update_run
+	fi
 
-# MYSQL
-#
-# We need to set the selections to automatically fill the password prompt
-# for mysql while it is being installed. The password in the following two
-# lines *is* actually set to the word 'blank' for the root user.
-echo mysql-server mysql-server/root_password password blank | sudo debconf-set-selections
-echo mysql-server mysql-server/root_password_again password blank | sudo debconf-set-selections
-
-# PACKAGE INSTALLATION
-#
-# Build a bash array to pass all of the packages we want to install to
-# a single apt-get command. This avoids having to do all the leg work
-# each time a package is set to install. It also allows us to easily comment
-# out or add single packages.
-apt_package_list=(
-	# Imagemagick
-	imagemagick
-
-	# PHP5
+	# MYSQL
 	#
-	# Our base packages for php5. As long as php5-fpm and php5-cli are
-	# installed, there is no need to install the general php5 package, which
-	# can sometimes install apache as a requirement.
-	php5-fpm
-	php5-cli
-	
-	# Common and dev packages for php
-	php5-common
-	php5-dev
+	# We need to set the selections to automatically fill the password prompt
+	# for mysql while it is being installed. The password in the following two
+	# lines *is* actually set to the word 'blank' for the root user.
+	echo mysql-server mysql-server/root_password password blank | sudo debconf-set-selections
+	echo mysql-server mysql-server/root_password_again password blank | sudo debconf-set-selections
 
-	# Extra modules that we find useful
-	php5-memcache
-	php5-imagick
-	php5-xdebug
-	php5-mcrypt
-	php5-mysql
-	php5-curl
-	php-pear
-	php5-gd
-	php-apc
+	# PACKAGE INSTALLATION
+	#
+	# Build a bash array to pass all of the packages we want to install to
+	# a single apt-get command. This avoids having to do all the leg work
+	# each time a package is set to install. It also allows us to easily comment
+	# out or add single packages.
+	apt_package_list=(
+		# Imagemagick
+		imagemagick
 
-	# nginx
-	nginx
+		# PHP5
+		#
+		# Our base packages for php5. As long as php5-fpm and php5-cli are
+		# installed, there is no need to install the general php5 package, which
+		# can sometimes install apache as a requirement.
+		php5-fpm
+		php5-cli
+		
+		# Common and dev packages for php
+		php5-common
+		php5-dev
 
-	# mysql
-	mysql-server
+		# Extra modules that we find useful
+		php5-memcache
+		php5-imagick
+		php5-xdebug
+		php5-mcrypt
+		php5-mysql
+		php5-curl
+		php-pear
+		php5-gd
+		php-apc
 
-	# MISC Packages
-	subversion
-	ack-grep
-	git-core
-	curl
-	make
-	ngrep
-	vim
+		# nginx
+		nginx
 
-	# memcached
-	memcached
+		# mysql
+		mysql-server
 
-	# Install dos2unix, which allows conversion of DOS style line endings to
-	# something we'll have less trouble with in linux.
-	dos2unix
-)
+		# MISC Packages
+		subversion
+		ack-grep
+		git-core
+		curl
+		make
+		ngrep
+		vim
 
-printf "Install all apt-get packages...\n"
-apt-get install --force-yes -y ${apt_package_list[@]}
+		# memcached
+		memcached
 
-# Clean up apt caches
-apt-get clean
+		# Install dos2unix, which allows conversion of DOS style line endings to
+		# something we'll have less trouble with in linux.
+		dos2unix
+	)
 
-# Make ack respond to its real name
-sudo ln -fs /usr/bin/ack-grep /usr/bin/ack
+	printf "Install all apt-get packages...\n"
+	apt-get install --force-yes -y ${apt_package_list[@]}
 
-# COMPOSER
-#
-# Install Composer
-if [ ! -f /usr/bin/composer ]
-then
-	printf "Install Composer...\n"
-	curl -sS https://getcomposer.org/installer | php
-	chmod +x composer.phar
-	sudo mv composer.phar /usr/local/bin/composer
-else
-	printf "Update Composer...\n"
-	sudo composer self-update
-fi
+	# Clean up apt caches
+	apt-get clean
 
-# If our global composer sources don't exist, set them up
-if [ ! -d /usr/local/src/vvv-phpunit ]
-then
-	printf "Install PHPUnit and Mockery...\n"
-	sudo mkdir -p /usr/local/src/vvv-phpunit
-	sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-	sudo sh -c "cd /usr/local/src/vvv-phpunit && composer install"
-else
-	printf "Update PHPUnit and Mockery...\n"
-	sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-	sudo sh -c "cd /usr/local/src/vvv-phpunit && composer update"
+	# Make ack respond to its real name
+	sudo ln -fs /usr/bin/ack-grep /usr/bin/ack
+
+	# COMPOSER
+	#
+	# Install Composer
+	if [ ! -f /usr/bin/composer ]
+	then
+		printf "Install Composer...\n"
+		curl -sS https://getcomposer.org/installer | php
+		chmod +x composer.phar
+		sudo mv composer.phar /usr/local/bin/composer
+	else
+		printf "Update Composer...\n"
+		sudo composer self-update
+	fi
+
+	# If our global composer sources don't exist, set them up
+	if [ ! -d /usr/local/src/vvv-phpunit ]
+	then
+		printf "Install PHPUnit and Mockery...\n"
+		sudo mkdir -p /usr/local/src/vvv-phpunit
+		sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+		sudo sh -c "cd /usr/local/src/vvv-phpunit && composer install"
+	else
+		printf "Update PHPUnit and Mockery...\n"
+		sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+		sudo sh -c "cd /usr/local/src/vvv-phpunit && composer update"
+	fi
+	touch /home/vagrant/initial_provision_run
 fi
 
 # SYMLINK HOST FILES
