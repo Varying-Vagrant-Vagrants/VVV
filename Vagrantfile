@@ -16,14 +16,6 @@ Vagrant.configure("2") do |config|
   # box containing the Unbuntu 12.0.4 Precise 32 bit release.
   config.vm.box = "std-precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
-
-  # Preconfigured box
-  #
-  # If you use the box configured on the next two lines, a large 700 MB file
-  # will be cached to your machine with preinstalled versions of the software
-  # normally included in the provisioning script.
-  #config.vm.box = "10up-precise32-0.3"
-  #config.vm.box_url = "http://vagrantbox.jeremyfelt.com/10up-precise32-0.3.box"
   
   config.vm.hostname = "precise32-dev"
   config.vm.network :private_network, ip: "192.168.50.4"

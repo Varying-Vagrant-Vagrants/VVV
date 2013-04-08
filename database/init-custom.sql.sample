@@ -9,5 +9,5 @@
 # these will be similar to the following - with CREATE DATABASE and GRANT ALL,
 # but it can be any command.
 #
-CREATE DATABASE `my_database_name`;
+CREATE DATABASE IF NOT EXISTS `my_database_name`;
 GRANT ALL PRIVILEGES ON `my_database_name`.* TO 'thisuser'@'localhost' IDENTIFIED BY 'thatpass';
