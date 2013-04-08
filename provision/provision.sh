@@ -6,18 +6,9 @@ if [ -f /home/vagrant/initial_provision_run ]
 then
 	printf "\nSkipping package installation, not initial boot...\n\n"
 else
-	# Check for our apt_update_run flag. If it exists, then we can skip apt-get update
-	# and move on. If the flag has not yet been created, then we do want to update
-	# first before touching the flag file and then installing packages.
-	if [ -f /home/vagrant/apt_update_run ]
-	then
-		printf "\nSkipping apt-get update, not initial boot...\n\n"
-	else
-		# update all of the package references before installing anything
-		printf "Running apt-get update....\n\n"
-		apt-get update --force-yes -y
-		touch /home/vagrant/apt_update_run
-	fi
+	# update all of the package references before installing anything
+	printf "Running apt-get update....\n\n"
+	apt-get update --force-yes -y
 
 	# MYSQL
 	#
