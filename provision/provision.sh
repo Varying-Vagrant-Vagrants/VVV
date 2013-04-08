@@ -51,6 +51,7 @@ apt_package_list=(
 	php5-xdebug
 	php5-mcrypt
 	php5-mysql
+	php5-pear
 	php5-curl
 	php5-gd
 	php-apc
