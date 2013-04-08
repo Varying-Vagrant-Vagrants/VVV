@@ -214,7 +214,7 @@ then
 else
 	printf "Updating WordPress trunk...\n"
 	cd /srv/www/wordpress-trunk
-	svn up
+	svn up --ignore-externals
 fi
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
