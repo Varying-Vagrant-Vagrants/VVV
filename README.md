@@ -3,9 +3,9 @@ Varying Vagrant Vagrants
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration with a goal of providing a system to pass development projects between team members for easy ramp up on projects.
 
-* Version: 0.4-working
-* Contributors: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](http://github.com/tddewey), [@johnpbloch](http://github.com/johnpbloch) and [@kadamwhite](http://github.com/kadamwhite)
-* Contributing: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/jeremyfelt/varying-vagrant-vagrants/tree/develop)
+* **Version**: 0.4
+* **Contributors**: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](http://github.com/tddewey), [@johnpbloch](http://github.com/johnpbloch) and [@kadamwhite](http://github.com/kadamwhite)
+* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/jeremyfelt/varying-vagrant-vagrants/tree/develop). Pull requests against master will be met with a friendly comment asking you to redo. Thanks!
 
 ## What is Vagrant?
 
@@ -83,7 +83,11 @@ A bunch of stuff!
 
 Startup times for this Vagrant setup can vary widely, especially when booting from scratch, due to the downloads required to install all packages the first time. Here are some real world scenarios.
 
-#### Fast Cable Connection - ?? down / ?? up
+#### Fast Cable Connection - 58 down / 12 up
+
+* `vagrant up` after `vagrant destroy` (or from scratch) with only the initial ~280M box cached took about **3 minutes**
+* `vagrant provision` on running box took about **30 seconds**
+* `vagrant up` on powered off box (`vagrant halt`) took about **30 seconds**
 
 *stats needed* - though I was diong `vagrant up` from scratch in only a couple minutes at some point.
 
