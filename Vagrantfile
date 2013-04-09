@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
   # box containing the Unbuntu 12.0.4 Precise 32 bit release.
   config.vm.box = "std-precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
-  
+
   config.vm.hostname = "precise32-dev"
   config.vm.network :private_network, ip: "192.168.50.4"
  
@@ -57,6 +57,15 @@ Vagrant.configure("2") do |config|
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
   config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data"
+
+  # Customfile - POSSIBLY UNSTABLE
+  #
+  # Use this to insert your own (and possibly rewrite) Vagrant config lines. Helpful
+  # for mapping additional drives. If a file 'Customfile' exists in the same directory
+  # as this Vagrantfile, it will be evaluated as ruby inline as it loads.
+  if File.exists?('Customfile') then
+    eval(IO.read('Customfile'), binding)
+  end
 
   config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
 end
