@@ -1,7 +1,9 @@
 # Varying Vagrant Vagrants Changelog
 
 ## 0.5
+* Repository moved under [10up organization](http://github.com/10up/varying-vagrant-vagrants)
 * Wrap provisioning in an initial run flag, speed up subsequent boots
+* Add support for a Customfile to pull in desired local modifications
 
 ## 0.4
 * Add default .vimrc file with some helpful tricks
