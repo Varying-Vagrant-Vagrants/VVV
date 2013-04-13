@@ -220,6 +220,16 @@ else
 	svn up --ignore-externals
 fi
 
+if [ ! -d /src/unit-tests ]
+then
+	printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
+	mkdir /src
+	cd /srv/www/wordpress-tests
+	wp core init-tests /src --dbname=wordpress_tests_test_db --dbuser=wp --dbpass=wp
+else
+	printf "Skip Unit Test installation, already available\n"	
+fi
+
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
 # Enter domains space delimited
 DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'

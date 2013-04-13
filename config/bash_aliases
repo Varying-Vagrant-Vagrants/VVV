@@ -53,3 +53,5 @@ xdebug_on() {
 		echo "XDebug already enabled!"
 	fi
 }
+
+export WP_TESTS_DIR=/src/unit-tests
