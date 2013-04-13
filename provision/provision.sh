@@ -2,6 +2,12 @@ start_time=`date`
 # This file is specified as the provisioning script to be used during `vagrant up`
 # via the `config.vm.provision` parameter in the Vagrantfile.
 
+# When `vagrant up` is first run, a large number of packages are installed through
+# apt-get. We then create a file in the Vagrant contained file system that acts as
+# a flag to indicate that these do not need to be processed again. This will persist
+# through `vagrant suspend`, `vagrant halt`, `vagrant reload`, or `vagrant provision`.
+# When `vagrant destroy` is run, the virtual machine's drives disappear, our flag file
+# with them. This speeds the boot time up on subsequent `vagrant up` commands significantly.
 if [ -f /home/vagrant/initial_provision_run ]
 then
 	printf "\nSkipping package installation, not initial boot...\n\n"
