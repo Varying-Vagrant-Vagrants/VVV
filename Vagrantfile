@@ -62,10 +62,14 @@ Vagrant.configure("2") do |config|
   #
   # Use this to insert your own (and possibly rewrite) Vagrant config lines. Helpful
   # for mapping additional drives. If a file 'Customfile' exists in the same directory
-  # as this Vagrantfile, it will be evaluated as ruby inline as it loads.
+  # as this Vagrantfile, it will be evaluated as ruby inline as it loads. 
+  # 
+  # Note that if you find yourself using a Customfile for anything crazy or specifying 
+  # different provisioning, then you may want to consider a new Vagrantfile entirely.
   if File.exists?('Customfile') then
     eval(IO.read('Customfile'), binding)
   end
 
+  # Load the bash script that we have created to handle all provisioning.
   config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
 end
