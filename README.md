@@ -5,7 +5,7 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
 
 * **Version**: 0.5-working
 * **Contributors**: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](http://github.com/tddewey), [@johnpbloch](http://github.com/johnpbloch) and [@kadamwhite](http://github.com/kadamwhite)
-* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/jeremyfelt/varying-vagrant-vagrants/tree/develop). Pull requests against master will be met with a friendly comment asking you to redo. Thanks!
+* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/10up/varying-vagrant-vagrants/tree/develop). Pull requests against master will be met with a friendly comment asking you to redo. Thanks!
 
 ## What is Vagrant?
 
@@ -18,8 +18,8 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
 1. Install [Vagrant 1.1.5](http://downloads.vagrantup.com/tags/v1.1.5)
     * `vagrant` will now be available as a command in the terminal
 1. Clone the Varying Vagrant Vagrants repository into a local directory
-    * `git clone git://github.com/jeremyfelt/varying-vagrant-vagrants.git vagrant-local`
-    * OR download and extract the repository master [zip file](https://github.com/jeremyfelt/varying-vagrant-vagrants/archive/master.zip)
+    * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
+    * OR download and extract the repository master [zip file](https://github.com/10up/varying-vagrant-vagrants/archive/master.zip)
 1. Change into the new directory
     * `cd vagrant-local`
 1. Start the Vagrant environment
@@ -97,7 +97,7 @@ Startup times for this Vagrant setup can vary widely, especially when booting fr
 
 ## Feedback?
 
-Let us have it! If you have tips that we need to know, send them our way at [@jeremyfelt](http://twitter.com/jeremyfelt) or find us in [other ways](http://10up.com). Some blog posts have been written documenting the process that may provide insight....
+Let us have it! If you have tips that we need to know, open a new issue, send them our way at [@jeremyfelt](http://twitter.com/jeremyfelt), or find us in [other ways](http://10up.com). Some blog posts have been written documenting the process that may provide insight....
 
 * [Hi WordPress, Meet Vagrant](http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/)
 * [Evolving WordPress Development With Vagrant](http://jeremyfelt.com/code/2013/03/17/evolving-wordpress-development-with-vagrant/)
