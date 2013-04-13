@@ -5,6 +5,9 @@
 # Because this really is a working directory, ignore vagrant's files
 .vagrant
 
+# This is a file intended for hooking in a custom Vagrant configuration on up
+Customfile
+
 # No need to share individual site configs with each other
 config/nginx-config/sites/*.conf
 
