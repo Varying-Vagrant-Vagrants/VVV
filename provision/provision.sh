@@ -61,9 +61,9 @@ else
 		subversion
 		ack-grep
 		git-core
+		ngrep
 		curl
 		make
-		ngrep
 		vim
 
 		# memcached
