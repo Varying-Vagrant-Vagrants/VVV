@@ -3,9 +3,9 @@ Varying Vagrant Vagrants
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration with a goal of providing a system to pass development projects between team members for easy ramp up on projects.
 
-* **Version**: 0.4
+* **Version**: 0.5
 * **Contributors**: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](http://github.com/tddewey), [@johnpbloch](http://github.com/johnpbloch) and [@kadamwhite](http://github.com/kadamwhite)
-* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/jeremyfelt/varying-vagrant-vagrants/tree/develop). Pull requests against master will be met with a friendly comment asking you to redo. Thanks!
+* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/10up/varying-vagrant-vagrants/tree/develop). Pull requests against master will be met with a friendly comment asking you to redo. Thanks!
 
 ## What is Vagrant?
 
@@ -18,8 +18,8 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
 1. Install [Vagrant 1.1.5](http://downloads.vagrantup.com/tags/v1.1.5)
     * `vagrant` will now be available as a command in the terminal
 1. Clone the Varying Vagrant Vagrants repository into a local directory
-    * `git clone git://github.com/jeremyfelt/varying-vagrant-vagrants.git vagrant-local`
-    * OR download and extract the repository master [zip file](https://github.com/jeremyfelt/varying-vagrant-vagrants/archive/master.zip)
+    * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
+    * OR download and extract the repository master [zip file](https://github.com/10up/varying-vagrant-vagrants/archive/master.zip)
 1. Change into the new directory
     * `cd vagrant-local`
 1. Start the Vagrant environment
@@ -89,20 +89,17 @@ Startup times for this Vagrant setup can vary widely, especially when booting fr
 * `vagrant provision` on running box took about **30 seconds**
 * `vagrant up` on powered off box (`vagrant halt`) took about **30 seconds**
 
-*stats needed* - though I was diong `vagrant up` from scratch in only a couple minutes at some point.
-
 #### Slow DSL Connection - 1.1 down / 0.3 up
 
-Doing a `vagrant up` after a `vagrant destroy` with only the initial ~280M box cached took about **15 minutes** due to the number of apt packages that needed to be download.
-
-Doing a `vagrant up` after a `vagrant halt` took about **1 minute**.
-
-Doing a `vagrant resume` after a `vagrant suspend` took about **12 seconds**, because no network activity is required.
+* `vagrant up` after a `vagrant destroy` (or from scratch) with only the initial ~280M box cached took about **15 minutes**
+* `vagrant up` after a `vagrant halt` took about **1 minute**.
+* `vagrant resume` after a `vagrant suspend` took about **12 seconds**
 
 ## Feedback?
 
-Let me have it! If you have tips that I need to know, send them my way at [@jeremyfelt](http://twitter.com/jeremyfelt) or find me in [other ways](http://jeremyfelt.com). I have some blog posts written that may provide more insight...
+Let us have it! If you have tips that we need to know, open a new issue, send them our way at [@jeremyfelt](http://twitter.com/jeremyfelt), or find us in [other ways](http://10up.com). Some blog posts have been written documenting the process that may provide insight....
 
+* [Hi WordPress, Meet Vagrant](http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/)
 * [Evolving WordPress Development With Vagrant](http://jeremyfelt.com/code/2013/03/17/evolving-wordpress-development-with-vagrant/)
 * [Varying Vagrant Vagrants](http://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/)
 * [A WordPress Meetup Introduction to Vagrant](http://jeremyfelt.com/code/2013/02/04/an-wordpress-meetup-introduction-to-vagrant-what-youll-need/)
