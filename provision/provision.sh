@@ -220,9 +220,11 @@ else
 	svn up --ignore-externals
 fi
 
+# Checkout and configure the WordPress unit tests
 if [ ! -d /src/unit-tests ]
 then
 	printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
+	# Must be in a WP directory to run wp
 	cd /srv/www/wordpress-default
 	wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
 else
