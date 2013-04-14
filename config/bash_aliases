@@ -54,4 +54,4 @@ xdebug_on() {
 	fi
 }
 
-export WP_TESTS_DIR=/src/unit-tests
+export WP_TESTS_DIR=/srv/www/wordpress-unit-tests

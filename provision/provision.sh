@@ -223,9 +223,8 @@ fi
 if [ ! -d /src/unit-tests ]
 then
 	printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
-	mkdir /src
-	cd /srv/www/wordpress-tests
-	wp core init-tests /src --dbname=wordpress_tests_test_db --dbuser=wp --dbpass=wp
+	cd /srv/www/wordpress-default
+	wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
 else
 	printf "Skip Unit Test installation, already available\n"	
 fi
