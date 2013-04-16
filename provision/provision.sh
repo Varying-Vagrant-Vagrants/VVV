@@ -118,6 +118,9 @@ else
 	touch /home/vagrant/initial_provision_run
 fi
 
+# Install the spf13 config for vim https://github.com/spf13/spf13-vim and make vim awesome
+curl -s http://j.mp/spf13-vim3 -L > spf13-vim.sh && sudo -u vagrant -i bash -c 'sh spf13-vim.sh 2>&1 /dev/null'
+
 # SYMLINK HOST FILES
 printf "\nLink Directories...\n"
 
