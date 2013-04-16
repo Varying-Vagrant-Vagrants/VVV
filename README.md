@@ -3,9 +3,10 @@ Varying Vagrant Vagrants
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration with a goal of providing a system to pass development projects between team members for easy ramp up on projects.
 
-* **Version**: 0.5
+* **Version**: 0.6-working
+* **Latest Stable**: [v0.5](https://github.com/10up/varying-vagrant-vagrants/tree/v0.5)
 * **Contributors**: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](http://github.com/tddewey), [@johnpbloch](http://github.com/johnpbloch), [@kadamwhite](http://github.com/kadamwhite), [@scribu](http://github.com/scribu)
-* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [develop branch](https://github.com/10up/varying-vagrant-vagrants/tree/develop). Pull requests against master will be met with a friendly comment asking you to redo. Thanks!
+* **Contributing**: Contributions are more than welcome. Please submit pull requests against the [master branch](https://github.com/10up/varying-vagrant-vagrants/). Thanks!
 
 ## What is Vagrant?
 
@@ -14,8 +15,8 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
 ## Getting Started
 
 1. Start with any operating system. Vagrant and VirtualBox have installation packages for Windows, OSX and Linux.
-1. Install [VirtualBox 4.2.10](https://www.virtualbox.org/wiki/Downloads).
-1. Install [Vagrant 1.1.5](http://downloads.vagrantup.com/tags/v1.1.5)
+1. Install [VirtualBox 4.2.12](https://www.virtualbox.org/wiki/Downloads).
+1. Install [Vagrant 1.2.0](http://downloads.vagrantup.com/tags/v1.2.0)
     * `vagrant` will now be available as a command in the terminal
 1. Clone the Varying Vagrant Vagrants repository into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
@@ -61,21 +62,18 @@ Now that you're up and running with a default configuration, start poking around
 
 A bunch of stuff!
 
-1. Ubuntu 12.04 (Precise Pangolin)
-1. nginx 1.1.19
-1. mysql 5.5.29
-1. php-fpm 5.3.10
-1. memcached 1.4.13
+1. [Ubuntu](http://ubuntu.com) 12.04 (Precise Pangolin)
+1. [nginx](http://nginx.org) 1.1.19
+1. [mysql](http://mysql.com) 5.5.29
+1. [php-fpm](http://php-fpm.org) 5.3.10
+1. [memcached](http://memcached.org/) 1.4.13
 1. PECL [memcache extension](http://pecl.php.net/package/memcache) 2.2.7
 1. PECL [xdebug extension](http://pecl.php.net/package/xdebug) 2.2.1
 1. PEAR [PHPUnit](http://pear.phpunit.de/) 3.7.18
 1. [ack-grep](http://betterthangrep.com/) 1.92
-1. curl
-1. vim
-1. git
-1. make
+1. [git](http://git-scm.com) 1.7.9.5
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
-1. dos2unix
+1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [WordPress 3.5.1](http://wordpress.org)
 1. [WordPress trunk](http://core.svn.wordpress.org/trunk)
 1. [WP-CLI](http://wp-cli.org)
