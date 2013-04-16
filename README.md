@@ -78,6 +78,7 @@ A bunch of stuff!
 1. dos2unix
 1. [WordPress 3.5.1](http://wordpress.org)
 1. [WordPress trunk](http://core.svn.wordpress.org/trunk)
+1. [WP-CLI](http://wp-cli.org)
 
 ### Startup Time
 
