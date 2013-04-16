@@ -220,6 +220,21 @@ else
 	svn up --ignore-externals
 fi
 
+# Checkout wp-tests so we can run unit tests
+if [ ! -d /srv/www/wp-tests ]
+then
+	printf "Checking out WordPress Unit Tests....http://unit-tests.svn.wordpress.org/trunk\n"
+	svn checkout http://unit-tests.svn.wordpress.org/trunk/ /srv/www/wp-tests
+	# @todo Create the tests database
+	# @todo Create a wp-config file for the tests directory
+	# @todo Add the WP_TESTS_DIR constant to the .profile
+else
+	printf "Updating WordPress Unit Tests...\n"
+	cd /srv/www/wp-tests
+	svn up --ignore-externals
+fi
+
+
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
 # Enter domains space delimited
 DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'
