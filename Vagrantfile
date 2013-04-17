@@ -70,6 +70,14 @@ Vagrant.configure("2") do |config|
     eval(IO.read('Customfile'), binding)
   end
 
-  # Load the bash script that we have created to handle all provisioning.
-  config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
+  # Provisioning
+  #
+  # By default, Vagrantfile is set to use the provision.sh bash script located in the
+  # provision directory. If it is detected that a provision-custom.sh script has been
+  # created, that is run as a replacement.
+  if File.exists?('provision/provision-custom.sh') then
+    config.vm.provision :shell, :path => File.join( "provision", "provision-custom.sh" )
+  else
+    config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
+  end
 end

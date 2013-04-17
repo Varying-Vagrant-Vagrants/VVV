@@ -8,6 +8,9 @@
 # This is a file intended for hooking in a custom Vagrant configuration on up
 Customfile
 
+# Allow for a replacement provisioning script that is not part of the repo
+provision/provision-custom.sh
+
 # No need to share individual site configs with each other
 config/nginx-config/sites/*.conf
 
