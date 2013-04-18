@@ -92,28 +92,34 @@ else
 	# COMPOSER
 	#
 	# Install Composer
-	if [ ! -f /usr/bin/composer ]
+	if [ ! -f /home/vagrant/flags/disable_composer ]
 	then
-		printf "Install Composer...\n"
-		curl -sS https://getcomposer.org/installer | php
-		chmod +x composer.phar
-		sudo mv composer.phar /usr/local/bin/composer
-	else
-		printf "Update Composer...\n"
-		sudo composer self-update
+		if [ ! -f /usr/bin/composer ]
+		then
+			printf "Install Composer...\n"
+			curl -sS https://getcomposer.org/installer | php
+			chmod +x composer.phar
+			sudo mv composer.phar /usr/local/bin/composer
+		else
+			printf "Update Composer...\n"
+			sudo composer self-update
+		fi
 	fi
 
 	# If our global composer sources don't exist, set them up
-	if [ ! -d /usr/local/src/vvv-phpunit ]
+	if [ ! -f /home/vagrant/flags/disable_phpunit ]
 	then
-		printf "Install PHPUnit and Mockery...\n"
-		sudo mkdir -p /usr/local/src/vvv-phpunit
-		sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sudo sh -c "cd /usr/local/src/vvv-phpunit && composer install"
-	else
-		printf "Update PHPUnit and Mockery...\n"
-		sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sudo sh -c "cd /usr/local/src/vvv-phpunit && composer update"
+		if [ ! -d /usr/local/src/vvv-phpunit ]
+		then
+			printf "Install PHPUnit and Mockery...\n"
+			sudo mkdir -p /usr/local/src/vvv-phpunit
+			sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+			sudo sh -c "cd /usr/local/src/vvv-phpunit && composer install"
+		else
+			printf "Update PHPUnit and Mockery...\n"
+			sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+			sudo sh -c "cd /usr/local/src/vvv-phpunit && composer update"
+		fi
 	fi
 	touch /home/vagrant/initial_provision_run
 fi
@@ -167,11 +173,14 @@ fi
 #
 # Create the databases (unique to system) that will be imported with
 # the mysqldump files located in database/backups/
-if [ -f /srv/database/init-custom.sql ]
+if [ ! -f /home/vagrant/flags/disable_sql_commands ]
 then
-	mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
-else
-	printf "\nNo custom mysql scripting found in database/init-custom.sql, skipping...\n"
+	if [ -f /srv/database/init-custom.sql ]
+	then
+		mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
+	else
+		printf "\nNo custom mysql scripting found in database/init-custom.sql, skipping...\n"
+	fi
 fi
 
 # Setup mysql by importing an init file that creates necessary
@@ -180,44 +189,56 @@ mysql -u root -pblank < /srv/database/init.sql | echo "Initial mysql prep...."
 
 # Process each mysqldump SQL file in database/backups to import 
 # an initial data set for mysql.
-/srv/database/import-sql.sh
+if [ ! -f /home/vagrant/flags/disable_sql_import ]
+then
+	/srv/database/import-sql.sh
+fi
 
 # WP-CLI Install
-if [ ! -f /usr/bin/wp ]
+if [ ! -f /home/vagrant/flags/disable_wp_cli ]
 then
-	printf "\nDownloading wp-cli.....http://wp-cli.org\n"
-	curl --silent http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
-	chmod +x /usr/bin/wp
-else
-	printf "\nSkip wp-cli installation, already available\n"
+	if [ ! -f /usr/bin/wp ]
+	then
+		printf "\nDownloading wp-cli.....http://wp-cli.org\n"
+		curl --silent http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
+		chmod +x /usr/bin/wp
+	else
+		printf "\nSkip wp-cli installation, already available\n"
+	fi
 fi
 
 # Install and configure the latest stable version of WordPress
-if [ ! -d /srv/www/wordpress-default ]
+if [ ! -f /home/vagrant/flags/disable_wp_stable ]
 then
-	printf "Downloading WordPress.....http://wordpress.org\n"
-	wp core --quiet download --path=/srv/www/wordpress-default
-	cd /srv/www/wordpress-default
-	printf "Configuring WordPress...\n"
-	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
-	wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-else
-	printf "Skip WordPress installation, already available\n"
+	if [ ! -d /srv/www/wordpress-default ]
+	then
+		printf "Downloading WordPress.....http://wordpress.org\n"
+		wp core --quiet download --path=/srv/www/wordpress-default
+		cd /srv/www/wordpress-default
+		printf "Configuring WordPress...\n"
+		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
+		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	else
+		printf "Skip WordPress installation, already available\n"
+	fi
 fi
 
 # Checkout, install and configure WordPress trunk
-if [ ! -d /srv/www/wordpress-trunk ]
+if [ ! -f /home/vagrant/flags/disable_wp_trunk ]
 then
-	printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
-	svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
-	cd /srv/www/wordpress-trunk
-	printf "Configuring WordPress trunk...\n"
-	wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
-	wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-else
-	printf "Updating WordPress trunk...\n"
-	cd /srv/www/wordpress-trunk
-	svn up --ignore-externals
+	if [ ! -d /srv/www/wordpress-trunk ]
+	then
+		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
+		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
+		cd /srv/www/wordpress-trunk
+		printf "Configuring WordPress trunk...\n"
+		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
+		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	else
+		printf "Updating WordPress trunk...\n"
+		cd /srv/www/wordpress-trunk
+		svn up --ignore-externals
+	fi
 fi
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
