@@ -16,7 +16,7 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
 
 1. Start with any operating system. Vagrant and VirtualBox have installation packages for Windows, OSX and Linux.
 1. Install [VirtualBox 4.2.12](https://www.virtualbox.org/wiki/Downloads).
-1. Install [Vagrant 1.2.1](http://downloads.vagrantup.com/tags/v1.2.1)
+1. Install [Vagrant 1.2.2](http://downloads.vagrantup.com/tags/v1.2.2)
     * `vagrant` will now be available as a command in the terminal
 1. Clone the Varying Vagrant Vagrants repository into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
