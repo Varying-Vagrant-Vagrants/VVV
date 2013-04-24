@@ -213,7 +213,11 @@ then
 	if [ ! -d /srv/www/wordpress-default ]
 	then
 		printf "Downloading WordPress.....http://wordpress.org\n"
-		wp core --quiet download --path=/srv/www/wordpress-default
+		cd /srv/www/
+		curl -O http://wordpress.org/latest.tar.gz
+		tar -xvf latest.tar.gz
+		mv wordpress wordpress-default
+		rm latest.tar.gz
 		cd /srv/www/wordpress-default
 		printf "Configuring WordPress...\n"
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
