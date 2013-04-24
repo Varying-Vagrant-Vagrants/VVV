@@ -257,7 +257,7 @@ then
 	else
 		printf "Updating WordPress unit tests...\n"	
 		cd /srv/www/wordpress-unit-tests
-		svn up
+		svn up --ignore-externals
 	fi
 fi
 
