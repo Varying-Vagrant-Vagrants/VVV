@@ -232,8 +232,14 @@ if [ ! -f /home/vagrant/flags/disable_wp_trunk ]
 then
 	if [ ! -d /srv/www/wordpress-trunk ]
 	then
-		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
-		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
+		if [ ! -f /home/vagrant/flags/use_git_instead ]
+		then
+			printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
+			svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
+		else
+			printf "Cloning WordPress trunk....https://github.com/WordPress/WordPress.git\n"
+			git clone -v https://github.com/WordPress/WordPress.git /srv/www/wordpress-trunk
+		fi
 		cd /srv/www/wordpress-trunk
 		printf "Configuring WordPress trunk...\n"
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
@@ -241,7 +247,12 @@ then
 	else
 		printf "Updating WordPress trunk...\n"
 		cd /srv/www/wordpress-trunk
-		svn up --ignore-externals
+		if [ ! -f /home/vagrant/flags/use_git_instead ]
+		then
+			svn up --ignore-externals
+		else
+			git pull -v origin
+		fi
 	fi
 fi
 
@@ -250,14 +261,25 @@ if [ ! -f /home/vagrant/flags/disable_wp_tests ]
 then
 	if [ ! -d /srv/www/wordpress-unit-tests ]
 	then
-		printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
 		# Must be in a WP directory to run wp
 		cd /srv/www/wordpress-trunk
-		wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
+		if [ ! -f /home/vagrant/flags/use_git_instead ]
+		then
+			printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
+			wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
+		else
+			printf "Downloading WordPress Unit Tests.....https://github.com/kurtpayne/wordpress-unit-tests.git\n"
+			wp --require=/srv/config/wp-cli-custom.php vvv init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
+		fi
 	else
 		printf "Updating WordPress unit tests...\n"	
 		cd /srv/www/wordpress-unit-tests
-		svn up --ignore-externals
+		if [ ! -f /home/vagrant/flags/use_git_instead ]
+		then
+			svn up --ignore-externals
+		else
+			git pull -v origin
+		fi
 	fi
 fi
 
