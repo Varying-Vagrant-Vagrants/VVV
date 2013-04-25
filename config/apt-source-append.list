@@ -1,0 +1,6 @@
+# Additional sources will be added here to help control the
+# versions of various packages that are installed
+
+# Provides SVN 1.7.9
+deb http://ppa.launchpad.net/svn/ppa/ubuntu precise main 
+deb-src http://ppa.launchpad.net/svn/ppa/ubuntu precise main

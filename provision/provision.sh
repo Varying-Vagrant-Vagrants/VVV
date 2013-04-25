@@ -12,6 +12,9 @@ if [ -f /home/vagrant/initial_provision_run ]
 then
 	printf "\nSkipping package installation, not initial boot...\n\n"
 else
+	# Add any custom package sources to help install more current software
+	cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
+
 	# update all of the package references before installing anything
 	printf "Running apt-get update....\n\n"
 	apt-get update --force-yes -y
