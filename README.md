@@ -58,6 +58,33 @@ Now that you're up and running with a default configuration, start poking around
     * Once a database is imported on the initial `vagrant up`, it will persist on the local machine a mapped mysql data directory.
     * Other stuff. Familiarize and all that.
 
+## Credentials and Such
+
+### WordPress Default - Stable Release
+* URL: `http://local.wordpress.dev`
+* DB Name: `wordpress_default`
+* DB User: `wp`
+* DB Pass: `wp`
+* Admin User: `admin`
+* Admin Pass: `password`
+
+### WordPress Trunk
+* URL: `http://local.wordpress-trunk.dev`
+* DB Name: `wordpress_trunk`
+* DB User: `wp`
+* DB Pass: `wp`
+* Admin User: `admin`
+* Admin Pass: `password`
+
+### MySQL Root
+* User: `root`
+* Pass: `blank`
+
+### WordPress Unit Tests
+* DB Name: `wordpress_unit_tests`
+* DB User: `wp`
+* DB Pass: `wp`
+
 ## What do you get?
 
 A bunch of stuff!
