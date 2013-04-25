@@ -77,6 +77,7 @@ Now that you're up and running with a default configuration, start poking around
 * Admin Pass: `password`
 
 ### MySQL Root
+* [Connecting to MySQL](https://github.com/10up/varying-vagrant-vagrants/wiki/Connecting-to-MySQL) from local
 * User: `root`
 * Pass: `blank`
 
