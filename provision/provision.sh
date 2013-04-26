@@ -70,6 +70,7 @@ else
 		subversion
 		ack-grep
 		git-core
+		unzip
 		ngrep
 		curl
 		make
