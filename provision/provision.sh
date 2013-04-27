@@ -258,10 +258,12 @@ then
 		# Must be in a WP directory to run wp
 		cd /srv/www/wordpress-trunk
 		wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
+		chmod -R g+w /srv/www/wordpress-unit-tests
 	else
 		printf "Updating WordPress unit tests...\n"	
 		cd /srv/www/wordpress-unit-tests
 		svn up --ignore-externals
+		chmod -R g+w /srv/www/wordpress-unit-tests
 	fi
 fi
 
