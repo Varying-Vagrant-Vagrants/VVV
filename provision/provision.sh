@@ -223,6 +223,7 @@ then
 		mv wordpress wordpress-default
 		rm latest.tar.gz
 		cd /srv/www/wordpress-default
+		chmod -R g+w /srv/www/wordpress-default
 		printf "Configuring WordPress...\n"
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
 		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
@@ -239,12 +240,14 @@ then
 		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
+		chmod -R g+w /srv/www/wordpress-trunk
 		printf "Configuring WordPress trunk...\n"
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
 		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		printf "Updating WordPress trunk...\n"
 		cd /srv/www/wordpress-trunk
+		chmod -R g+w /srv/www/wordpress-trunk
 		svn up --ignore-externals
 	fi
 fi
