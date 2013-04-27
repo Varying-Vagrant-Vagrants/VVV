@@ -18,9 +18,6 @@ provision/provision-post.sh
 # No need to share individual site configs with each other
 config/nginx-config/sites/*.conf
 
-# On first boot, we create apt_update_run to avoid apt-get update in the future
-config/apt_update_run
-
 # No need to share our mysql data with each other
 database/data/*
 
