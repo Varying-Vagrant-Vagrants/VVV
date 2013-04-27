@@ -1,5 +1,14 @@
 # Varying Vagrant Vagrants Changelog
 
+## 0.6
+* Add [WordPress Unit Tests](http://unit-tests.svn.wordpress.org/trunk/)
+* Option for custom shell provisioning file
+* Pre/Post provisioning hooks via additional shell scripts
+* Flags system to disable portions of default provisioning
+* Grab stable WordPress from latest.tar.gz vs SVN
+* Append custom apt sources list to default
+* Update to SVN 1.7.9, addresses specific Windows permissions issue
+
 ## 0.5
 * Repository moved under [10up organization](http://github.com/10up/varying-vagrant-vagrants)
 * Wrap provisioning in an initial run flag, speed up subsequent boots
