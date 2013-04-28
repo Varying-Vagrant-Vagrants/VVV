@@ -206,8 +206,7 @@ then
 		printf "\nDownloading wp-cli.....http://wp-cli.org\n"
 		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
-		curl -sS https://getcomposer.org/installer | php
-		php composer.phar install
+		composer install
 	else
 		printf "\nSkip wp-cli installation, already available\n"
 	fi
