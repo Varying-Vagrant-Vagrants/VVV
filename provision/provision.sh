@@ -216,7 +216,7 @@ then
 	# Link wp to the /usr/local/bin directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 fi
-wp help
+
 # Install and configure the latest stable version of WordPress
 if [ ! -f /home/vagrant/flags/disable_wp_stable ]
 then
