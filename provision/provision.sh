@@ -228,6 +228,7 @@ then
 		tar -xvf latest.tar.gz
 		mv wordpress wordpress-default
 		rm latest.tar.gz
+		cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-default
 		cd /srv/www/wordpress-default
 		printf "Configuring WordPress...\n"
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
@@ -244,6 +245,7 @@ then
 	then
 		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
+		cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
 		printf "Configuring WordPress trunk...\n"
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
