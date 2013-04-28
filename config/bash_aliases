@@ -54,5 +54,9 @@ xdebug_on() {
 	fi
 }
 
+# Set the WP_TESTS_DIR path directory so that we can use phpunit inside
+# plugins almost immediately.
+export WP_TESTS_DIR=/srv/www/wordpress-unit-tests/
+
 # Bind `wp` to wp-cli
 alias wp='/srv/www/wp-cli/bin/wp'
