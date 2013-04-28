@@ -8,6 +8,7 @@
 * Grab stable WordPress from latest.tar.gz vs SVN
 * Append custom apt sources list to default
 * Update to SVN 1.7.9, addresses specific Windows permissions issue
+* Move [wp-cli](https://github.com/wp-cli/wp-cli) to /srv/www/ for easier contributions
 
 ## 0.5
 * Repository moved under [10up organization](http://github.com/10up/varying-vagrant-vagrants)
