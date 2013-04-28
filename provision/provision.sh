@@ -201,11 +201,13 @@ fi
 # WP-CLI Install
 if [ ! -f /home/vagrant/flags/disable_wp_cli ]
 then
-	if [ ! -f /usr/bin/wp ]
+	if [ ! -d /srv/www/wp-cli ]
 	then
 		printf "\nDownloading wp-cli.....http://wp-cli.org\n"
-		curl --silent http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
-		chmod +x /usr/bin/wp
+		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
+		cd /srv/www/wp-cli
+		curl -sS https://getcomposer.org/installer | php
+		php composer.phar install
 	else
 		printf "\nSkip wp-cli installation, already available\n"
 	fi
