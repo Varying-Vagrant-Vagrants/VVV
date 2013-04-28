@@ -53,6 +53,3 @@ xdebug_on() {
 		echo "XDebug already enabled!"
 	fi
 }
-
-# Bind `wp` to wp-cli
-alias wp='/srv/www/wp-cli/bin/wp'

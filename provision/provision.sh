@@ -213,8 +213,10 @@ then
 	else
 		printf "\nSkip wp-cli installation, already available\n"
 	fi
+	# Link wp to the /usr/local/bin directory
+	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 fi
-
+wp help
 # Install and configure the latest stable version of WordPress
 if [ ! -f /home/vagrant/flags/disable_wp_stable ]
 then
@@ -228,8 +230,8 @@ then
 		rm latest.tar.gz
 		cd /srv/www/wordpress-default
 		printf "Configuring WordPress...\n"
-		/srv/www/wp-cli/bin/wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
-		/srv/www/wp-cli/bin/wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
+		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		printf "Skip WordPress installation, already available\n"
 	fi
@@ -244,8 +246,8 @@ then
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
 		printf "Configuring WordPress trunk...\n"
-		/srv/www/wp-cli/bin/wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
-		/srv/www/wp-cli/bin/wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
+		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		printf "Updating WordPress trunk...\n"
 		cd /srv/www/wordpress-trunk
@@ -261,7 +263,7 @@ then
 		printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
 		# Must be in a WP directory to run wp
 		cd /srv/www/wordpress-trunk
-		/srv/www/wp-cli/bin/wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
+		wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
 	else
 		printf "Updating WordPress unit tests...\n"	
 		cd /srv/www/wordpress-unit-tests
