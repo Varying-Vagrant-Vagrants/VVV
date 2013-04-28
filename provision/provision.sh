@@ -24,8 +24,8 @@ else
 	# We need to set the selections to automatically fill the password prompt
 	# for mysql while it is being installed. The password in the following two
 	# lines *is* actually set to the word 'blank' for the root user.
-	echo mysql-server mysql-server/root_password password blank | sudo debconf-set-selections
-	echo mysql-server mysql-server/root_password_again password blank | sudo debconf-set-selections
+	echo mysql-server mysql-server/root_password password blank | debconf-set-selections
+	echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
 
 	# PACKAGE INSTALLATION
 	#
@@ -91,7 +91,7 @@ else
 	apt-get clean
 
 	# Make ack respond to its real name
-	sudo ln -fs /usr/bin/ack-grep /usr/bin/ack
+	ln -fs /usr/bin/ack-grep /usr/bin/ack
 
 	# COMPOSER
 	#
@@ -103,10 +103,10 @@ else
 			printf "Install Composer...\n"
 			curl -sS https://getcomposer.org/installer | php
 			chmod +x composer.phar
-			sudo mv composer.phar /usr/local/bin/composer
+			mv composer.phar /usr/local/bin/composer
 		else
 			printf "Update Composer...\n"
-			sudo composer self-update
+			composer self-update
 		fi
 	fi
 
@@ -116,13 +116,13 @@ else
 		if [ ! -d /usr/local/src/vvv-phpunit ]
 		then
 			printf "Install PHPUnit and Mockery...\n"
-			sudo mkdir -p /usr/local/src/vvv-phpunit
-			sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-			sudo sh -c "cd /usr/local/src/vvv-phpunit && composer install"
+			mkdir -p /usr/local/src/vvv-phpunit
+			cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+			sh -c "cd /usr/local/src/vvv-phpunit && composer install"
 		else
 			printf "Update PHPUnit and Mockery...\n"
-			sudo cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-			sudo sh -c "cd /usr/local/src/vvv-phpunit && composer update"
+			cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+			sh -c "cd /usr/local/src/vvv-phpunit && composer update"
 		fi
 	fi
 	touch /home/vagrant/initial_provision_run
@@ -132,36 +132,36 @@ fi
 printf "\nLink Directories...\n"
 
 # Configuration for nginx
-sudo ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
-sudo ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
+ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
+ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
 
 # Configuration for php5-fpm
-sudo ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"
-sudo ln -sf /srv/config/php5-fpm-config/php.ini /etc/php5/fpm/php.ini | echo "Linked php.ini to /etc/php5/fpm/"
-sudo ln -sf /srv/config/php5-fpm-config/php.xdebug.ini /etc/php5/fpm/php.xdebug.ini | echo "Linked php.xdebug.ini to /etc/php5/fpm/"
+ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"
+ln -sf /srv/config/php5-fpm-config/php.ini /etc/php5/fpm/php.ini | echo "Linked php.ini to /etc/php5/fpm/"
+ln -sf /srv/config/php5-fpm-config/php.xdebug.ini /etc/php5/fpm/php.xdebug.ini | echo "Linked php.xdebug.ini to /etc/php5/fpm/"
 
 # Configuration for mysql
-sudo cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo "Linked my.cnf to /etc/mysql/"
+cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo "Linked my.cnf to /etc/mysql/"
 
 # Custom bash_profile for our vagrant user
-sudo ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile | echo "Linked .bash_profile to vagrant user's home directory..."
+ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile | echo "Linked .bash_profile to vagrant user's home directory..."
 
 # Custom bash_aliases included by vagrant user's .bashrc
-sudo ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo "Linked .bash_aliases to vagrant user's home directory..."
+ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo "Linked .bash_aliases to vagrant user's home directory..."
 
 # Custom vim configuration via .vimrc
-sudo ln -sf /srv/config/vimrc /home/vagrant/.vimrc | echo "Linked vim configuration to home directory..."
+ln -sf /srv/config/vimrc /home/vagrant/.vimrc | echo "Linked vim configuration to home directory..."
 
 # RESTART SERVICES
 #
 # Make sure the services we expect to be running are running.
 printf "\nRestart services...\n"
 printf "\nservice nginx restart\n"
-sudo service nginx restart
+service nginx restart
 printf "\nservice php5-fpm restart\n"
-sudo service php5-fpm restart
+service php5-fpm restart
 printf "\nservice memcached restart\n"
-sudo service memcached restart
+service memcached restart
 
 # mysql gives us an error if we restart a non running service, which
 # happens after a `vagrant halt`. Check to see if it's running before
@@ -170,10 +170,10 @@ exists_mysql=`service mysql status`
 if [ "mysql stop/waiting" == "$exists_mysql" ]
 then
 	printf "\nservice mysql start"
-	sudo service mysql start
+	service mysql start
 else
 	printf "\nservice mysql restart"
-	sudo service mysql restart
+	service mysql restart
 fi
 
 # IMPORT SQL
