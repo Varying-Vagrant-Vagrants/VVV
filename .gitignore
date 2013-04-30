@@ -3,38 +3,39 @@
 .DS_Store
 
 # Because this really is a working directory, ignore vagrant's files
-.vagrant
+/.vagrant
 
 # This is a file intended for hooking in a custom Vagrant configuration on up
-Customfile
+/Customfile
 
 # Allow for custom provisioning scripts that are not included with the repo
-provision/flags/*
-!provision/flags/readme.txt
-provision/provision-custom.sh
-provision/provision-pre.sh
-provision/provision-post.sh
+/provision/flags/*
+!/provision/flags/readme.txt
+/provision/provision-custom.sh
+/provision/provision-pre.sh
+/provision/provision-post.sh
 
 # No need to share individual site configs with each other
-config/nginx-config/sites/*.conf
+/config/nginx-config/sites/*.conf
 
 # No need to share our mysql data with each other
-database/data/*
+/database/data/*
 
 # No need to share our individual sites with each other
-www/*
+/www/*
 
 # And no need to share individual SQL files with each other
 *.sql
+*.sql.gz
 
 # BUT....
 
 # We do have some default nginx configs that should be included
-!config/nginx-config/sites/default.conf
+!/config/nginx-config/sites/default.conf
 
 # And we do have a default SQL file that should be included
-!database/init.sql
+!/database/init.sql
 
 # And a few of our web directories are important to share.
-!www/mu-plugins/
-!www/default/
+!/www/mu-plugins/
+!/www/default/
