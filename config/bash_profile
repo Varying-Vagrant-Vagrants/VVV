@@ -1,4 +1,6 @@
-# bash_profile for the vagrant user's home directory. This loads
+# bash_profile 
+#
+# Symlinked to the vagrant user's home directory. This loads
 # the default .bashrc provided by the virtual machine, which in
 # turn loads the .bash_aliases file that we provide. Use this
 # bash_profile to set environment variables and such.
