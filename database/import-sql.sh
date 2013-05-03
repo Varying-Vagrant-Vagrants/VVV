@@ -19,7 +19,8 @@
 # Let's begin...
 
 # Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
-cd /srv/database/backups/ | printf "\nStart MySQL Database Import\n\n"
+printf "\nStart MySQL Database Import\n\n"
+cd /srv/database/backups/
 
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
