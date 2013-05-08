@@ -139,8 +139,9 @@ ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.
 ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"
 ln -sf /srv/config/php5-fpm-config/php.ini /etc/php5/fpm/php.ini | echo "Linked php.ini to /etc/php5/fpm/"
 
-# Configuration for Xdebug - disabled by default
-ln -sf /srv/config/php5-fpm-config/xdebug-disable.ini /etc/php5/fpm/conf.d/xdebug.ini | echo "Linked xdebug-disable.ini to /etc/php5/fpm/conf.d/xdebug.ini"
+# Configuration for Xdebug - Mod disabled by default
+php5dismod xdebug
+ln -sf /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini | echo "Linked xdebug.ini to /etc/php5/fpm/conf.d/xdebug.ini"
 
 # Configuration for APC
 ln -sf /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini | echo "Linked apc.ini to /etc/php5/fpm/conf.d/"

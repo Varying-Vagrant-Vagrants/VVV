@@ -26,12 +26,12 @@ stop_config_monitor() {
 
 # If XDebug is enabled, disable it
 xdebug_off() {
-	sudo ln -sf /srv/config/php5-fpm-config/xdebug-disable.ini /etc/php5/fpm/conf.d/xdebug.ini
+	sudo php5dismod xdebug
 	sudo service php5-fpm restart
 }
 
 # If XDebug is disabled, enable it
 xdebug_on() {
-	sudo ln -sf /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
+	sudo php5enmod xdebug
 	sudo service php5-fpm restart
 }
