@@ -120,7 +120,7 @@ A bunch of stuff!
 1. [Ubuntu](http://ubuntu.com) 12.04 LTS (Precise Pangolin)
 1. [nginx](http://nginx.org) 1.1.19
 1. [mysql](http://mysql.com) 5.5.31
-1. [php-fpm](http://php-fpm.org) 5.3.10
+1. [php-fpm](http://php-fpm.org) 5.4.14
 1. [memcached](http://memcached.org/) 1.4.13
 1. PECL [memcache extension](http://pecl.php.net/package/memcache) 2.2.7
 1. PECL [xdebug extension](http://pecl.php.net/package/xdebug) 2.2.1
