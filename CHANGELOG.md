@@ -1,5 +1,21 @@
 # Varying Vagrant Vagrants Changelog
 
+## 0.7-working (*Unreleased and Unstable*)
+
+**BREAKING CHANGES**: Breaking changes are made in this release due to the reorganization of config files for PHP that will require a full `vagrant destroy` and `vagrant up` to resolve.
+
+* Add php5-imap
+* Update to Nginx 1.4 sources
+* Update to PHP 5.4 sources
+* Update to Git 1.8.2.2 sources
+* Slightly smarter nginx configurations
+* Refactor handling of PHP custom configuration
+* Refactor handling of xdebug configuration in PHP
+* Bump default memcached memory allocation to 128M
+* Introduce custom `apc.ini` file, bump `apc.shm_size` to 128M
+* Provide a phpinfo URL at `http://192.168.50.4/phpinfo/`
+* Set WP_DEBUG to true by default for included installations of WordPress
+
 ## 0.6
 * Add [WordPress Unit Tests](http://unit-tests.svn.wordpress.org/trunk/)
 * Option for custom shell provisioning file
