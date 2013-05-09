@@ -50,6 +50,7 @@ else
 		php5-dev
 
 		# Extra modules that we find useful
+		php5-imap
 		php5-memcache
 		php5-imagick
 		php5-xdebug
