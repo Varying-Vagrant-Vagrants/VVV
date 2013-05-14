@@ -19,5 +19,15 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "precise32-dev"
   config.vm.network :private_network, ip: "192.168.50.4"
+
+  # Provision everything we need with Puppet
+
+  config.vm.provision :puppet do |puppet|
+	puppet.manifest_file  = "setup.pp"
+  end
+
+  config.vm.provision :puppet do |puppet|
+	puppet.manifest_file  = "tools.pp"
+  end
  
 end
