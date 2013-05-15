@@ -4,3 +4,6 @@
 [submodule "modules/puppi"]
 	path = modules/puppi
 	url = git@github.com:example42/puppi.git
+[submodule "modules/nginx"]
+	path = modules/nginx
+	url = git://github.com/puppetlabs/puppetlabs-nginx.git
