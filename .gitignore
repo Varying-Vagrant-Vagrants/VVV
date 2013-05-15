@@ -5,3 +5,5 @@
 # Because this really is a working directory, ignore vagrant's files
 /.vagrant
 
+# Project directory
+/projects
