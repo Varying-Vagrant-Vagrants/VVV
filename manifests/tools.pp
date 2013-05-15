@@ -22,6 +22,14 @@ package { 'vim':
 
 # Misc CLI tools
 
+package { 'curl':
+	ensure		=> present,
+}
+
+package { 'unzip':
+	ensure		=> present,
+}
+
 package { 'ack-grep':
 	ensure		=> present,
 	name 		=> 'ack-grep',
