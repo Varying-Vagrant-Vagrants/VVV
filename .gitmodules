@@ -13,3 +13,9 @@
 [submodule "modules/git"]
 	path = modules/git
 	url = git://github.com/nesi/puppet-git.git
+[submodule "modules/wp"]
+	path = modules/wp
+	url = git@github.com:rmccue/puppet-wp.git
+[submodule "modules/php"]
+	path = modules/php
+	url = git@github.com:nodesagency/puppet-php.git

@@ -20,6 +20,12 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "precise32-dev"
   config.vm.network :private_network, ip: "192.168.50.4"
 
+  # Address a bug in an older version of Puppet
+  #
+  # Once precise32 ships with Puppet 2.7.20+, we can safely remove
+  # See http://stackoverflow.com/questions/10894661/augeas-support-on-my-vagrant-machine
+  config.vm.provision :shell, :inline => "sudo apt-get update && sudo apt-get install puppet -y"
+
   # Provision everything we need with Puppet
 
   config.vm.provision :puppet do |puppet|
@@ -42,4 +48,10 @@ Vagrant.configure("2") do |config|
     puppet.manifest_file = "webserver.pp"
   end
   
+  # Install and configure our default projects
+  config.vm.provision :puppet do |puppet|
+    puppet.module_path = "modules"
+    puppet.manifest_file = "default-projects.pp"
+  end
+
 end
