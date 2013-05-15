@@ -10,3 +10,6 @@
 [submodule "modules/stdlib"]
 	path = modules/stdlib
 	url = https://github.com/puppetlabs/puppetlabs-stdlib
+[submodule "modules/git"]
+	path = modules/git
+	url = git://github.com/nesi/puppet-git.git
