@@ -7,3 +7,6 @@
 [submodule "modules/nginx"]
 	path = modules/nginx
 	url = git://github.com/puppetlabs/puppetlabs-nginx.git
+[submodule "modules/stdlib"]
+	path = modules/stdlib
+	url = https://github.com/puppetlabs/puppetlabs-stdlib
