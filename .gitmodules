@@ -1,0 +1,6 @@
+[submodule "modules/mysql"]
+	path = modules/mysql
+	url = git@github.com:example42/puppet-mysql.git
+[submodule "modules/puppi"]
+	path = modules/puppi
+	url = git@github.com:example42/puppi.git

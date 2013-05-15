@@ -29,5 +29,11 @@ Vagrant.configure("2") do |config|
   config.vm.provision :puppet do |puppet|
 	puppet.manifest_file  = "tools.pp"
   end
+
+  # Install and configure a basic database
+  config.vm.provision :puppet do |puppet|
+  	puppet.module_path = "modules"
+	puppet.manifest_file  = "database.pp"
+  end
  
 end
