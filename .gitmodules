@@ -6,7 +6,7 @@
 	url = git@github.com:example42/puppi.git
 [submodule "modules/nginx"]
 	path = modules/nginx
-	url = git://github.com/puppetlabs/puppetlabs-nginx.git
+	url = git://github.com/jfryman/puppet-nginx.git
 [submodule "modules/stdlib"]
 	path = modules/stdlib
 	url = https://github.com/puppetlabs/puppetlabs-stdlib
