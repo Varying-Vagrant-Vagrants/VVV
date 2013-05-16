@@ -27,31 +27,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision :shell, :inline => "sudo apt-get update && sudo apt-get install puppet -y"
 
   # Provision everything we need with Puppet
-
-  config.vm.provision :puppet do |puppet|
-    puppet.manifest_file  = "setup.pp"
-  end
-
-  config.vm.provision :puppet do |puppet|
-    puppet.manifest_file  = "tools.pp"
-  end
-
-  # Install and configure a basic database
   config.vm.provision :puppet do |puppet|
     puppet.module_path = "modules"
-    puppet.manifest_file  = "database.pp"
-  end
- 
-  # Install and configure a web server
-  config.vm.provision :puppet do |puppet|
-    puppet.module_path = "modules"
-    puppet.manifest_file = "webserver.pp"
-  end
-  
-  # Install and configure our default projects
-  config.vm.provision :puppet do |puppet|
-    puppet.module_path = "modules"
-    puppet.manifest_file = "default-projects.pp"
+    puppet.manifest_file  = "vvv.pp"
   end
 
   # Run provisioning for any user-installed projects

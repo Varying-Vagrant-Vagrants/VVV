@@ -1,15 +1,9 @@
 # Version control systems
 
-package { 'git':
-	ensure		=> present,
-	name 		=> 'git',
-}
-
 package { 'subversion':
 	ensure		=> present,
 	name 		=> 'subversion',
 }
-
 
 
 # Editors

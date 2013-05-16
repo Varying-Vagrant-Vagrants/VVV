@@ -3,8 +3,6 @@ class { 'nginx': }
 include php
 
 class {
-  'php::cli':
-    provider => 'apt';
   'php::composer':;
   'php::fpm':
     provider => 'apt';
