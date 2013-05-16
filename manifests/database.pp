@@ -1,1 +1,3 @@
-class { "mysql": }
+class { "mysql":
+  root_password => 'blank',
+}
