@@ -1,0 +1,21 @@
+[submodule "modules/mysql"]
+	path = modules/mysql
+	url = git@github.com:example42/puppet-mysql.git
+[submodule "modules/puppi"]
+	path = modules/puppi
+	url = git@github.com:example42/puppi.git
+[submodule "modules/nginx"]
+	path = modules/nginx
+	url = git://github.com/jfryman/puppet-nginx.git
+[submodule "modules/stdlib"]
+	path = modules/stdlib
+	url = https://github.com/puppetlabs/puppetlabs-stdlib
+[submodule "modules/git"]
+	path = modules/git
+	url = git://github.com/nesi/puppet-git.git
+[submodule "modules/wp"]
+	path = modules/wp
+	url = git@github.com:rmccue/puppet-wp.git
+[submodule "modules/php"]
+	path = modules/php
+	url = git@github.com:nodesagency/puppet-php.git

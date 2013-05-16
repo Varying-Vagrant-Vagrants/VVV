@@ -19,89 +19,31 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "precise32-dev"
   config.vm.network :private_network, ip: "192.168.50.4"
- 
-  # Drive mapping
-  #
-  # The following config.vm.share_folder settings will map directories in your Vagrant
-  # virtual machine to directories on your local machine. Once these are mapped, any
-  # changes made to the files in these directories will affect both the local and virtual
-  # machine versions. Think of it as two different ways to access the same file.
 
-  # /srv/database/
+  # Address a bug in an older version of Puppet
   #
-  # If a database directory exists in the same directory as your Vagrantfile,
-  # a mapped directory inside the VM will be created that contains these files.
-  # This directory is used to maintain default database scripts as well as backed
-  # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
-  config.vm.synced_folder "database/", "/srv/database"
-  config.vm.synced_folder "database/data/", "/var/lib/mysql", :extra => 'dmode=777,fmode=777'
+  # Once precise32 ships with Puppet 2.7.20+, we can safely remove
+  # See http://stackoverflow.com/questions/10894661/augeas-support-on-my-vagrant-machine
+  config.vm.provision :shell, :inline => "if dpkg --compare-versions `puppet --version` 'lt' '2.7.20'; then sudo apt-get update && sudo apt-get install puppet -y; fi"
 
-  # /srv/config/
-  #
-  # If a server-conf directory exists in the same directory as your Vagrantfile,
-  # a mapped directory inside the VM will be created that contains these files.
-  # This directory is currently used to maintain various config files for php and 
-  # nginx as well as any pre-existing database files.
-  config.vm.synced_folder "config/", "/srv/config"
-  
-  # /srv/config/nginx-config/sites/
-  #
-  # If a sites directory exists inside the above server-conf directory, it will be
-  # added as a mapped directory inside the VM as well. This is used to maintain specific
-  # site configuration files for nginx
-  config.vm.synced_folder "config/nginx-config/sites/", "/etc/nginx/custom-sites"
-  
-  # /srv/www/
-  #
-  # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
-  # inside the VM will be created that acts as the default location for nginx sites. Put all
-  # of your project files here that you want to access through the web server
-  config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
-
-  # Customfile - POSSIBLY UNSTABLE
-  #
-  # Use this to insert your own (and possibly rewrite) Vagrant config lines. Helpful
-  # for mapping additional drives. If a file 'Customfile' exists in the same directory
-  # as this Vagrantfile, it will be evaluated as ruby inline as it loads. 
-  # 
-  # Note that if you find yourself using a Customfile for anything crazy or specifying 
-  # different provisioning, then you may want to consider a new Vagrantfile entirely.
-  if File.exists?('Customfile') then
-    eval(IO.read('Customfile'), binding)
+  # Provision everything we need with Puppet
+  config.vm.provision :puppet do |puppet|
+    puppet.module_path = "modules"
+    puppet.manifest_file  = "vvv.pp"
   end
 
-  # Provisioning
-  #
-  # Various flags are available to disable portions of the default provisioning script to
-  # run. These flags are mapped in the provision/flags directory
-  config.vm.synced_folder "provision/flags/", "/home/vagrant/flags/"
-  # 
-  # Process one or more provisioning scripts depending on the existence of custom files.
-  #
-  # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
-  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh 
-  # file) should go in this script. If it does not exist, no extra provisioning will run.
-  if File.exists?('provision/provision-pre.sh') then
-    config.vm.provision :shell, :path => File.join( "provision", "provision-pre.sh" )
+  # Run provisioning for any user-installed projects
+  Dir.glob( "projects/*/vvv.pp" ).each do |vagrant_project|
+
+    # Remove the file from the path name
+    vagrant_project.slice! "/vvv.pp"
+
+    config.vm.provision :puppet do |puppet|
+      puppet.module_path = "modules"
+      # vagrant_project is now the relative path to a single vvv.pp
+      puppet.manifests_path = vagrant_project
+      puppet.manifest_file = 'vvv.pp'
+    end
   end
 
-  # provision.sh or provision-custom.sh
-  #
-  # By default, Vagrantfile is set to use the provision.sh bash script located in the
-  # provision directory. If it is detected that a provision-custom.sh script has been
-  # created, that is run as a replacement. This is an opportunity to replace the entirety
-  # of the provisioning provided by default.
-  if File.exists?('provision/provision-custom.sh') then
-    config.vm.provision :shell, :path => File.join( "provision", "provision-custom.sh" )
-  else
-    config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
-  end
-
-  # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
-  # run after the shell commands laid out in provision.sh or provision-custom.sh should be
-  # put into this file. This provides a good opportunity to install additional packages
-  # without having to replace the entire default provisioning script.
-  if File.exists?('provision/provision-post.sh') then
-    config.vm.provision :shell, :path => File.join( "provision", "provision-post.sh" )
-  end
 end
