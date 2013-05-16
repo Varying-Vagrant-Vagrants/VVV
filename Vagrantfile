@@ -29,17 +29,17 @@ Vagrant.configure("2") do |config|
   # Provision everything we need with Puppet
 
   config.vm.provision :puppet do |puppet|
-	puppet.manifest_file  = "setup.pp"
+    puppet.manifest_file  = "setup.pp"
   end
 
   config.vm.provision :puppet do |puppet|
-	puppet.manifest_file  = "tools.pp"
+    puppet.manifest_file  = "tools.pp"
   end
 
   # Install and configure a basic database
   config.vm.provision :puppet do |puppet|
-  	puppet.module_path = "modules"
-	puppet.manifest_file  = "database.pp"
+    puppet.module_path = "modules"
+    puppet.manifest_file  = "database.pp"
   end
  
   # Install and configure a web server
@@ -52,6 +52,16 @@ Vagrant.configure("2") do |config|
   config.vm.provision :puppet do |puppet|
     puppet.module_path = "modules"
     puppet.manifest_file = "default-projects.pp"
+  end
+
+  # Run provisioning for any user-installed projects
+  Dir.glob( "projects/*/vvv.pp" ).each do |vagrant_project|
+
+    config.vm.provision :puppet do |puppet|
+      puppet.module_path = "modules"
+      puppet.manifests_path = File.dirname( vagrant_project )
+      puppet.manifest_file = 'vvv.pp'
+    end
   end
 
 end
