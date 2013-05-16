@@ -3,7 +3,7 @@
 file { 'projects-directory':
 	ensure		=> directory,
 	path		=> '/vagrant/projects',
-	owner		=> 'www-data',
+	owner		=> 'vagrant',
 	mode		=> 0755,
 	before		=> File['www-directory-sym-link'],
 }

@@ -24,34 +24,12 @@ Vagrant.configure("2") do |config|
   #
   # Once precise32 ships with Puppet 2.7.20+, we can safely remove
   # See http://stackoverflow.com/questions/10894661/augeas-support-on-my-vagrant-machine
-  config.vm.provision :shell, :inline => "sudo apt-get update && sudo apt-get install puppet -y"
+  config.vm.provision :shell, :inline => "if dpkg --compare-versions `puppet --version` 'lt' '2.7.11'; then sudo apt-get update && sudo apt-get install puppet -y; fi"
 
   # Provision everything we need with Puppet
-
-  config.vm.provision :puppet do |puppet|
-    puppet.manifest_file  = "setup.pp"
-  end
-
-  config.vm.provision :puppet do |puppet|
-    puppet.manifest_file  = "tools.pp"
-  end
-
-  # Install and configure a basic database
   config.vm.provision :puppet do |puppet|
     puppet.module_path = "modules"
-    puppet.manifest_file  = "database.pp"
-  end
- 
-  # Install and configure a web server
-  config.vm.provision :puppet do |puppet|
-    puppet.module_path = "modules"
-    puppet.manifest_file = "webserver.pp"
-  end
-  
-  # Install and configure our default projects
-  config.vm.provision :puppet do |puppet|
-    puppet.module_path = "modules"
-    puppet.manifest_file = "default-projects.pp"
+    puppet.manifest_file  = "vvv.pp"
   end
 
   # Run provisioning for any user-installed projects
