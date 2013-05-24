@@ -203,8 +203,7 @@ then
 		chmod +x composer.phar
 		mv composer.phar /usr/local/bin/composer
 	else
-		printf "Update Composer...\n"
-		composer self-update
+		printf "composer already installed\n"
 	fi
 fi
 
