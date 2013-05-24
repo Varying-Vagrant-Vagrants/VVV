@@ -193,18 +193,19 @@ ln -fs /usr/bin/ack-grep /usr/bin/ack
 
 # COMPOSER
 #
-# Install Composer
-if [ ! -f /home/vagrant/flags/disable_composer ]
+# Install or Update Composer based on expected hash from repository
+if composer --version | grep -q 'Composer version e4b48d39d';
 then
-	if [ ! -f /usr/local/bin/composer ]
-	then
-		printf "Install Composer...\n"
-		curl -sS https://getcomposer.org/installer | php
-		chmod +x composer.phar
-		mv composer.phar /usr/local/bin/composer
-	else
-		printf "composer already installed\n"
-	fi
+	printf "Composer already installed\n"
+elif composer --version | grep -q 'Composer version';
+then
+	printf "Updating Composer version\n"
+	composer self-update
+else
+	printf "Install Composer...\n"
+	curl -sS https://getcomposer.org/installer | php
+	chmod +x composer.phar
+	mv composer.phar /usr/local/bin/composer
 fi
 
 # If our global composer sources don't exist, set them up
