@@ -3,7 +3,7 @@
 	"description": "VVV Global Composer packages",
 	"require": {
 		"phpunit/phpunit": "3.7.*",
-		"mockery/mockery": "dev-master@dev",
+		"mockery/mockery": "0.8.0",
 		"hamcrest/hamcrest": "1.1.0"
 	},
 	"config": {
