@@ -17,11 +17,7 @@ else
 
 	# MYSQL
 	#
-	# We need to set the selections to automatically fill the password prompt
-	# for mysql while it is being installed. The password in the following two
-	# lines *is* actually set to the word 'blank' for the root user.
-	echo mysql-server mysql-server/root_password password blank | debconf-set-selections
-	echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
+
 
 	# PACKAGE INSTALLATION
 	#
@@ -90,8 +86,15 @@ else
 	fi
 
 	if dpkg -s php5-mysql | grep -q 'Status: install ok installed';
-		then echo "php5-mysql already installed"
-		else apt_package_list+=('php5-mysql')
+	then
+		echo "php5-mysql already installed"
+	else
+		# We need to set the selections to automatically fill the password prompt
+		# for mysql while it is being installed. The password in the following two
+		# lines *is* actually set to the word 'blank' for the root user.
+		echo mysql-server mysql-server/root_password password blank | debconf-set-selections
+		echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
+		apt_package_list+=('php5-mysql')
 	fi
 
 	if dpkg -s php5-curl | grep -q 'Status: install ok installed';
