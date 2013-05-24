@@ -3,6 +3,8 @@ start_time=`date`
 # `vagrant reload`, and `vagrant provision` via the `config.vm.provision` parameter
 # in the Vagrantfile.
 
+# Setup the default sources.list provided by Ubuntu
+cat /srv/config/apt-source-default.list > /etc/apt/sources.list
 # Add any custom package sources to help install more current software
 cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
 
