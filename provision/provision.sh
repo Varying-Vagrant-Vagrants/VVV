@@ -15,10 +15,6 @@ else
 	# Add any custom package sources to help install more current software
 	cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
 
-	# update all of the package references before installing anything
-	printf "Running apt-get update....\n\n"
-	apt-get update --force-yes -y
-
 	# MYSQL
 	#
 	# We need to set the selections to automatically fill the password prompt
@@ -33,63 +29,169 @@ else
 	# a single apt-get command. This avoids having to do all the leg work
 	# each time a package is set to install. It also allows us to easily comment
 	# out or add single packages.
-	apt_package_list=(
-		# Imagemagick
-		imagemagick
+	apt_package_list=()
 
-		# PHP5
-		#
-		# Our base packages for php5. As long as php5-fpm and php5-cli are
-		# installed, there is no need to install the general php5 package, which
-		# can sometimes install apache as a requirement.
-		php5-fpm
-		php5-cli
-		
-		# Common and dev packages for php
-		php5-common
-		php5-dev
+	# Imagemagick
+	if dpkg -s imagemagick | grep -q 'Status: install ok installed';
+		then echo "imagemagic already installed" 
+		else apt_package_list+=('imagemagick')
+	fi
 
-		# Extra modules that we find useful
-		php5-imap
-		php5-memcache
-		php5-imagick
-		php5-xdebug
-		php5-mcrypt
-		php5-mysql
-		php5-curl
-		php-pear
-		php5-gd
-		php-apc
+	# PHP5
+	#
+	# Our base packages for php5. As long as php5-fpm and php5-cli are
+	# installed, there is no need to install the general php5 package, which
+	# can sometimes install apache as a requirement.
+	if dpkg -s php5-fpm | grep -q 'Status: install ok installed';
+		then echo "php5-fpm already installed"
+		else apt_package_list+=('php5-fpm')
+	fi
 
-		# nginx
-		nginx
+	if dpkg -s php5-cli | grep -q 'Status: install ok installed';
+		then echo "php5-cli already installed"
+		else apt_package_list+=('php5-cli')
+	fi
 
-		# mysql
-		mysql-server
+	# Common and dev packages for php
+	if dpkg -s php5-common | grep -q 'Status: install ok installed';
+		then echo "php5-common already installed"
+		else apt_package_list+=('php5-common')
+	fi
 
-		# MISC Packages
-		subversion
-		ack-grep
-		git-core
-		unzip
-		ngrep
-		curl
-		make
-		vim
+	if dpkg -s php5-dev | grep -q 'Status: install ok installed';
+		then echo "php5-dev already installed"
+		else apt_package_list+=('php5-dev')
+	fi
 
-		# memcached
-		memcached
+	# Extra PHP modules that we find useful
+	if dpkg -s php5-imap | grep -q 'Status: install ok installed';
+		then echo "php5-imap already installed"
+		else apt_package_list+=('php5-imap')
+	fi
 
-		# Install dos2unix, which allows conversion of DOS style line endings to
-		# something we'll have less trouble with in linux.
-		dos2unix
-	)
+	if dpkg -s php5-memcache | grep -q 'Status: install ok installed';
+		then echo "php5-memcache already installed"
+		else apt_package_list+=('php5-memcache')
+	fi
 
-	printf "Install all apt-get packages...\n"
-	apt-get install --force-yes -y ${apt_package_list[@]}
+	if dpkg -s php5-imagick | grep -q 'Status: install ok installed';
+		then echo "php5-imagick already installed"
+		else apt_package_list+=('php5-imagick')
+	fi
 
-	# Clean up apt caches
-	apt-get clean
+	if dpkg -s php5-xdebug | grep -q 'Status: install ok installed';
+		then echo "php5-xdebug already installed"
+		else apt_package_list+=('php5-xdebug')
+	fi
+
+	if dpkg -s php5-mcrypt | grep -q 'Status: install ok installed';
+		then echo "php5-mcrypt already installed"
+		else apt_package_list+=('php5-mcrypt')
+	fi
+
+	if dpkg -s php5-mysql | grep -q 'Status: install ok installed';
+		then echo "php5-mysql already installed"
+		else apt_package_list+=('php5-mysql')
+	fi
+
+	if dpkg -s php5-curl | grep -q 'Status: install ok installed';
+		then echo "php5-curl already installed"
+		else apt_package_list+=('php5-curl')
+	fi
+
+	if dpkg -s php-pear | grep -q 'Status: install ok installed';
+		then echo "php-pear already installed"
+		else apt_package_list+=('php-pear')
+	fi
+
+	if dpkg -s php5-gd | grep -q 'Status: install ok installed';
+		then echo "php5-gd already installed"
+		else apt_package_list+=('php5-gd')
+	fi
+
+	if dpkg -s php-apc | grep -q 'Status: install ok installed';
+		then echo "php-apc already installed"
+		else apt_package_list+=('php-apc')
+	fi
+
+	# nginx
+	if dpkg -s nginx | grep -q 'Status: install ok installed';
+		then echo "nginx already installed"
+		else apt_package_list+=('nginx')
+	fi
+
+	# mysql
+	if dpkg -s mysql-server | grep -q 'Status: install ok installed';
+		then echo "mysql-server already installed"
+		else apt_package_list+=('mysql-server')
+	fi
+
+	# memcached
+	if dpkg -s memcached | grep -q 'Status: install ok installed';
+		then echo "memcached already installed"
+		else apt_package_list+=('memcached')
+	fi
+
+	if dpkg -s subversion | grep -q 'Status: install ok installed';
+		then echo "subversion already installed"
+		else apt_package_list+=('subversion')
+	fi
+
+	if dpkg -s ack-grep | grep -q 'Status: install ok installed';
+		then echo "ack-grep already installed"
+		else apt_package_list+=('ack-grep')
+	fi
+
+	if dpkg -s git-core | grep -q 'Status: install ok installed';
+		then echo "git-core already installed"
+		else apt_package_list+=('git-core')
+	fi
+
+	if dpkg -s unzip | grep -q 'Status: install ok installed';
+		then echo "unzip already installed"
+		else apt_package_list+=('unzip')
+	fi
+
+	if dpkg -s ngrep | grep -q 'Status: install ok installed';
+		then echo "ngrep already installed"
+		else apt_package_list+=('ngrep')
+	fi
+
+	if dpkg -s curl | grep -q 'Status: install ok installed';
+		then echo "curl already installed"
+		else apt_package_list+=('curl')
+	fi
+
+	if dpkg -s make | grep -q 'Status: install ok installed';
+		then echo "make already installed"
+		else apt_package_list+=('make')
+	fi
+
+	if dpkg -s vim | grep -q 'Status: install ok installed';
+		then echo "vim already installed"
+		else apt_package_list+=('vim')
+	fi
+
+	# Install dos2unix, which allows conversion of DOS style line endings to
+	# something we'll have less trouble with in linux.
+	if dpkg -s dos2unix | grep -q 'Status: install ok installed';
+		then echo "dos2unix already installed"
+		else apt_package_list+=('dos2unix')
+	fi
+
+	if [ ${#apt_package_list[@]} = 0 ];
+	then 
+		echo "No packages to install."
+	else
+		# update all of the package references before installing anything
+		printf "Running apt-get update....\n\n"
+		apt-get update --force-yes -y
+		printf "Install all apt-get packages...\n"
+		apt-get install --force-yes -y ${apt_package_list[@]}
+
+		# Clean up apt caches
+		apt-get clean			
+	fi
 
 	# Make ack respond to its real name
 	ln -fs /usr/bin/ack-grep /usr/bin/ack
