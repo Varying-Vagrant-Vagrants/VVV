@@ -192,7 +192,7 @@ ln -fs /usr/bin/ack-grep /usr/bin/ack
 # Install Composer
 if [ ! -f /home/vagrant/flags/disable_composer ]
 then
-	if [ ! -f /usr/bin/composer ]
+	if [ ! -f /usr/local/bin/composer ]
 	then
 		printf "Install Composer...\n"
 		curl -sS https://getcomposer.org/installer | php
