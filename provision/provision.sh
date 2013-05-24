@@ -1,234 +1,223 @@
 start_time=`date`
 # This file is specified as the provisioning script to be used during `vagrant up`
-# via the `config.vm.provision` parameter in the Vagrantfile.
+# `vagrant reload`, and `vagrant provision` via the `config.vm.provision` parameter
+# in the Vagrantfile.
 
-# When `vagrant up` is first run, a large number of packages are installed through
-# apt-get. We then create a file in the Vagrant contained file system that acts as
-# a flag to indicate that these do not need to be processed again. This will persist
-# through `vagrant suspend`, `vagrant halt`, `vagrant reload`, or `vagrant provision`.
-# When `vagrant destroy` is run, the virtual machine's drives disappear, our flag file
-# with them. This speeds the boot time up on subsequent `vagrant up` commands significantly.
-if [ -f /home/vagrant/initial_provision_run ]
+# Add any custom package sources to help install more current software
+cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
+
+# PACKAGE INSTALLATION
+#
+# Build a bash array to pass all of the packages we want to install to
+# a single apt-get command. This avoids having to do all the leg work
+# each time a package is set to install. It also allows us to easily comment
+# out or add single packages. We set the array as empty to begin with so
+# that we can append individual packages to it as required.
+apt_package_list=()
+
+# Imagemagick
+if dpkg -s imagemagick | grep -q 'Status: install ok installed';
+	then echo "imagemagic already installed" 
+	else apt_package_list+=('imagemagick')
+fi
+
+# PHP5
+#
+# Our base packages for php5. As long as php5-fpm and php5-cli are
+# installed, there is no need to install the general php5 package, which
+# can sometimes install apache as a requirement.
+if dpkg -s php5-fpm | grep -q 'Status: install ok installed';
+	then echo "php5-fpm already installed"
+	else apt_package_list+=('php5-fpm')
+fi
+
+if dpkg -s php5-cli | grep -q 'Status: install ok installed';
+	then echo "php5-cli already installed"
+	else apt_package_list+=('php5-cli')
+fi
+
+# Common and dev packages for php
+if dpkg -s php5-common | grep -q 'Status: install ok installed';
+	then echo "php5-common already installed"
+	else apt_package_list+=('php5-common')
+fi
+
+if dpkg -s php5-dev | grep -q 'Status: install ok installed';
+	then echo "php5-dev already installed"
+	else apt_package_list+=('php5-dev')
+fi
+
+# Extra PHP modules that we find useful
+if dpkg -s php5-imap | grep -q 'Status: install ok installed';
+	then echo "php5-imap already installed"
+	else apt_package_list+=('php5-imap')
+fi
+
+if dpkg -s php5-memcache | grep -q 'Status: install ok installed';
+	then echo "php5-memcache already installed"
+	else apt_package_list+=('php5-memcache')
+fi
+
+if dpkg -s php5-imagick | grep -q 'Status: install ok installed';
+	then echo "php5-imagick already installed"
+	else apt_package_list+=('php5-imagick')
+fi
+
+if dpkg -s php5-xdebug | grep -q 'Status: install ok installed';
+	then echo "php5-xdebug already installed"
+	else apt_package_list+=('php5-xdebug')
+fi
+
+if dpkg -s php5-mcrypt | grep -q 'Status: install ok installed';
+	then echo "php5-mcrypt already installed"
+	else apt_package_list+=('php5-mcrypt')
+fi
+
+if dpkg -s php5-mysql | grep -q 'Status: install ok installed';
 then
-	printf "\nSkipping package installation, not initial boot...\n\n"
+	echo "php5-mysql already installed"
 else
-	# Add any custom package sources to help install more current software
-	cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
+	# We need to set the selections to automatically fill the password prompt
+	# for mysql while it is being installed. The password in the following two
+	# lines *is* actually set to the word 'blank' for the root user.
+	echo mysql-server mysql-server/root_password password blank | debconf-set-selections
+	echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
+	apt_package_list+=('php5-mysql')
+fi
 
-	# PACKAGE INSTALLATION
-	#
-	# Build a bash array to pass all of the packages we want to install to
-	# a single apt-get command. This avoids having to do all the leg work
-	# each time a package is set to install. It also allows us to easily comment
-	# out or add single packages. We set the array as empty to begin with so
-	# that we can append individual packages to it as required.
-	apt_package_list=()
+if dpkg -s php5-curl | grep -q 'Status: install ok installed';
+	then echo "php5-curl already installed"
+	else apt_package_list+=('php5-curl')
+fi
 
-	# Imagemagick
-	if dpkg -s imagemagick | grep -q 'Status: install ok installed';
-		then echo "imagemagic already installed" 
-		else apt_package_list+=('imagemagick')
-	fi
+if dpkg -s php-pear | grep -q 'Status: install ok installed';
+	then echo "php-pear already installed"
+	else apt_package_list+=('php-pear')
+fi
 
-	# PHP5
-	#
-	# Our base packages for php5. As long as php5-fpm and php5-cli are
-	# installed, there is no need to install the general php5 package, which
-	# can sometimes install apache as a requirement.
-	if dpkg -s php5-fpm | grep -q 'Status: install ok installed';
-		then echo "php5-fpm already installed"
-		else apt_package_list+=('php5-fpm')
-	fi
+if dpkg -s php5-gd | grep -q 'Status: install ok installed';
+	then echo "php5-gd already installed"
+	else apt_package_list+=('php5-gd')
+fi
 
-	if dpkg -s php5-cli | grep -q 'Status: install ok installed';
-		then echo "php5-cli already installed"
-		else apt_package_list+=('php5-cli')
-	fi
+if dpkg -s php-apc | grep -q 'Status: install ok installed';
+	then echo "php-apc already installed"
+	else apt_package_list+=('php-apc')
+fi
 
-	# Common and dev packages for php
-	if dpkg -s php5-common | grep -q 'Status: install ok installed';
-		then echo "php5-common already installed"
-		else apt_package_list+=('php5-common')
-	fi
+# nginx
+if dpkg -s nginx | grep -q 'Status: install ok installed';
+	then echo "nginx already installed"
+	else apt_package_list+=('nginx')
+fi
 
-	if dpkg -s php5-dev | grep -q 'Status: install ok installed';
-		then echo "php5-dev already installed"
-		else apt_package_list+=('php5-dev')
-	fi
+# mysql
+if dpkg -s mysql-server | grep -q 'Status: install ok installed';
+	then echo "mysql-server already installed"
+	else apt_package_list+=('mysql-server')
+fi
 
-	# Extra PHP modules that we find useful
-	if dpkg -s php5-imap | grep -q 'Status: install ok installed';
-		then echo "php5-imap already installed"
-		else apt_package_list+=('php5-imap')
-	fi
+# memcached
+if dpkg -s memcached | grep -q 'Status: install ok installed';
+	then echo "memcached already installed"
+	else apt_package_list+=('memcached')
+fi
 
-	if dpkg -s php5-memcache | grep -q 'Status: install ok installed';
-		then echo "php5-memcache already installed"
-		else apt_package_list+=('php5-memcache')
-	fi
+if dpkg -s subversion | grep -q 'Status: install ok installed';
+	then echo "subversion already installed"
+	else apt_package_list+=('subversion')
+fi
 
-	if dpkg -s php5-imagick | grep -q 'Status: install ok installed';
-		then echo "php5-imagick already installed"
-		else apt_package_list+=('php5-imagick')
-	fi
+if dpkg -s ack-grep | grep -q 'Status: install ok installed';
+	then echo "ack-grep already installed"
+	else apt_package_list+=('ack-grep')
+fi
 
-	if dpkg -s php5-xdebug | grep -q 'Status: install ok installed';
-		then echo "php5-xdebug already installed"
-		else apt_package_list+=('php5-xdebug')
-	fi
+if dpkg -s git-core | grep -q 'Status: install ok installed';
+	then echo "git-core already installed"
+	else apt_package_list+=('git-core')
+fi
 
-	if dpkg -s php5-mcrypt | grep -q 'Status: install ok installed';
-		then echo "php5-mcrypt already installed"
-		else apt_package_list+=('php5-mcrypt')
-	fi
+if dpkg -s unzip | grep -q 'Status: install ok installed';
+	then echo "unzip already installed"
+	else apt_package_list+=('unzip')
+fi
 
-	if dpkg -s php5-mysql | grep -q 'Status: install ok installed';
+if dpkg -s ngrep | grep -q 'Status: install ok installed';
+	then echo "ngrep already installed"
+	else apt_package_list+=('ngrep')
+fi
+
+if dpkg -s curl | grep -q 'Status: install ok installed';
+	then echo "curl already installed"
+	else apt_package_list+=('curl')
+fi
+
+if dpkg -s make | grep -q 'Status: install ok installed';
+	then echo "make already installed"
+	else apt_package_list+=('make')
+fi
+
+if dpkg -s vim | grep -q 'Status: install ok installed';
+	then echo "vim already installed"
+	else apt_package_list+=('vim')
+fi
+
+# Install dos2unix, which allows conversion of DOS style line endings to
+# something we'll have less trouble with in linux.
+if dpkg -s dos2unix | grep -q 'Status: install ok installed';
+	then echo "dos2unix already installed"
+	else apt_package_list+=('dos2unix')
+fi
+
+if [ ${#apt_package_list[@]} = 0 ];
+then 
+	echo "No packages to install."
+else
+	# update all of the package references before installing anything
+	printf "Running apt-get update....\n\n"
+	apt-get update --force-yes -y
+	printf "Install all apt-get packages...\n"
+	apt-get install --force-yes -y ${apt_package_list[@]}
+
+	# Clean up apt caches
+	apt-get clean			
+fi
+
+# Make ack respond to its real name
+ln -fs /usr/bin/ack-grep /usr/bin/ack
+
+# COMPOSER
+#
+# Install Composer
+if [ ! -f /home/vagrant/flags/disable_composer ]
+then
+	if [ ! -f /usr/bin/composer ]
 	then
-		echo "php5-mysql already installed"
+		printf "Install Composer...\n"
+		curl -sS https://getcomposer.org/installer | php
+		chmod +x composer.phar
+		mv composer.phar /usr/local/bin/composer
 	else
-		# We need to set the selections to automatically fill the password prompt
-		# for mysql while it is being installed. The password in the following two
-		# lines *is* actually set to the word 'blank' for the root user.
-		echo mysql-server mysql-server/root_password password blank | debconf-set-selections
-		echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
-		apt_package_list+=('php5-mysql')
+		printf "Update Composer...\n"
+		composer self-update
 	fi
+fi
 
-	if dpkg -s php5-curl | grep -q 'Status: install ok installed';
-		then echo "php5-curl already installed"
-		else apt_package_list+=('php5-curl')
-	fi
-
-	if dpkg -s php-pear | grep -q 'Status: install ok installed';
-		then echo "php-pear already installed"
-		else apt_package_list+=('php-pear')
-	fi
-
-	if dpkg -s php5-gd | grep -q 'Status: install ok installed';
-		then echo "php5-gd already installed"
-		else apt_package_list+=('php5-gd')
-	fi
-
-	if dpkg -s php-apc | grep -q 'Status: install ok installed';
-		then echo "php-apc already installed"
-		else apt_package_list+=('php-apc')
-	fi
-
-	# nginx
-	if dpkg -s nginx | grep -q 'Status: install ok installed';
-		then echo "nginx already installed"
-		else apt_package_list+=('nginx')
-	fi
-
-	# mysql
-	if dpkg -s mysql-server | grep -q 'Status: install ok installed';
-		then echo "mysql-server already installed"
-		else apt_package_list+=('mysql-server')
-	fi
-
-	# memcached
-	if dpkg -s memcached | grep -q 'Status: install ok installed';
-		then echo "memcached already installed"
-		else apt_package_list+=('memcached')
-	fi
-
-	if dpkg -s subversion | grep -q 'Status: install ok installed';
-		then echo "subversion already installed"
-		else apt_package_list+=('subversion')
-	fi
-
-	if dpkg -s ack-grep | grep -q 'Status: install ok installed';
-		then echo "ack-grep already installed"
-		else apt_package_list+=('ack-grep')
-	fi
-
-	if dpkg -s git-core | grep -q 'Status: install ok installed';
-		then echo "git-core already installed"
-		else apt_package_list+=('git-core')
-	fi
-
-	if dpkg -s unzip | grep -q 'Status: install ok installed';
-		then echo "unzip already installed"
-		else apt_package_list+=('unzip')
-	fi
-
-	if dpkg -s ngrep | grep -q 'Status: install ok installed';
-		then echo "ngrep already installed"
-		else apt_package_list+=('ngrep')
-	fi
-
-	if dpkg -s curl | grep -q 'Status: install ok installed';
-		then echo "curl already installed"
-		else apt_package_list+=('curl')
-	fi
-
-	if dpkg -s make | grep -q 'Status: install ok installed';
-		then echo "make already installed"
-		else apt_package_list+=('make')
-	fi
-
-	if dpkg -s vim | grep -q 'Status: install ok installed';
-		then echo "vim already installed"
-		else apt_package_list+=('vim')
-	fi
-
-	# Install dos2unix, which allows conversion of DOS style line endings to
-	# something we'll have less trouble with in linux.
-	if dpkg -s dos2unix | grep -q 'Status: install ok installed';
-		then echo "dos2unix already installed"
-		else apt_package_list+=('dos2unix')
-	fi
-
-	if [ ${#apt_package_list[@]} = 0 ];
-	then 
-		echo "No packages to install."
+# If our global composer sources don't exist, set them up
+if [ ! -f /home/vagrant/flags/disable_phpunit ]
+then
+	if [ ! -d /usr/local/src/vvv-phpunit ]
+	then
+		printf "Install PHPUnit and Mockery...\n"
+		mkdir -p /usr/local/src/vvv-phpunit
+		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
 	else
-		# update all of the package references before installing anything
-		printf "Running apt-get update....\n\n"
-		apt-get update --force-yes -y
-		printf "Install all apt-get packages...\n"
-		apt-get install --force-yes -y ${apt_package_list[@]}
-
-		# Clean up apt caches
-		apt-get clean			
+		printf "Update PHPUnit and Mockery...\n"
+		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
 	fi
-
-	# Make ack respond to its real name
-	ln -fs /usr/bin/ack-grep /usr/bin/ack
-
-	# COMPOSER
-	#
-	# Install Composer
-	if [ ! -f /home/vagrant/flags/disable_composer ]
-	then
-		if [ ! -f /usr/bin/composer ]
-		then
-			printf "Install Composer...\n"
-			curl -sS https://getcomposer.org/installer | php
-			chmod +x composer.phar
-			mv composer.phar /usr/local/bin/composer
-		else
-			printf "Update Composer...\n"
-			composer self-update
-		fi
-	fi
-
-	# If our global composer sources don't exist, set them up
-	if [ ! -f /home/vagrant/flags/disable_phpunit ]
-	then
-		if [ ! -d /usr/local/src/vvv-phpunit ]
-		then
-			printf "Install PHPUnit and Mockery...\n"
-			mkdir -p /usr/local/src/vvv-phpunit
-			cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-			sh -c "cd /usr/local/src/vvv-phpunit && composer install"
-		else
-			printf "Update PHPUnit and Mockery...\n"
-			cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-			sh -c "cd /usr/local/src/vvv-phpunit && composer update"
-		fi
-	fi
-	touch /home/vagrant/initial_provision_run
 fi
 
 # SYMLINK HOST FILES
