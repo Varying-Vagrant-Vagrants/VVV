@@ -15,16 +15,13 @@ else
 	# Add any custom package sources to help install more current software
 	cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
 
-	# MYSQL
-	#
-
-
 	# PACKAGE INSTALLATION
 	#
 	# Build a bash array to pass all of the packages we want to install to
 	# a single apt-get command. This avoids having to do all the leg work
 	# each time a package is set to install. It also allows us to easily comment
-	# out or add single packages.
+	# out or add single packages. We set the array as empty to begin with so
+	# that we can append individual packages to it as required.
 	apt_package_list=()
 
 	# Imagemagick
