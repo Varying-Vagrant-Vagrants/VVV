@@ -1,7 +1,9 @@
-start_time=`date`
 # This file is specified as the provisioning script to be used during `vagrant up`
 # `vagrant reload`, and `vagrant provision` via the `config.vm.provision` parameter
 # in the Vagrantfile.
+
+# We calculate provisioning time at the end of this script, hence start_time
+start_seconds=`date +%s`
 
 # Setup the default sources.list provided by Ubuntu
 cat /srv/config/apt-source-default.list > /etc/apt/sources.list
@@ -387,6 +389,7 @@ fi
 
 # Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway
 ifconfig | grep "inet addr"
-echo $start_time
-date
+
+end_seconds=`date +%s`
+echo Provisioning complete in `expr $end_seconds - $start_seconds` seconds
 echo All set!
