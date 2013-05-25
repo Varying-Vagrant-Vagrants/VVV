@@ -208,20 +208,25 @@ else
 	mv composer.phar /usr/local/bin/composer
 fi
 
-# If our global composer sources don't exist, set them up
-if [ ! -f /home/vagrant/flags/disable_phpunit ]
+if [ ! -d /usr/local/src/vvv-phpunit ]
 then
-	if [ ! -d /usr/local/src/vvv-phpunit ]
-	then
-		printf "Install PHPUnit and Mockery...\n"
-		mkdir -p /usr/local/src/vvv-phpunit
-		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
-	else
-		printf "Update PHPUnit and Mockery...\n"
-		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
-	fi
+	printf "Install PHPUnit and Mockery...\n"
+	mkdir -p /usr/local/src/vvv-phpunit
+	cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+	sh -c "cd /usr/local/src/vvv-phpunit && composer install"
+else
+	cd /usr/local/src/vvv-phpunit
+	if composer show -i | grep -q 'mockery'; then echo 'Mockery installed';else vvvphpunit_update=1;fi
+	if composer show -i | grep -q 'phpunit'; then echo 'PHPUnit installed'; else vvvphpunit_update=1;fi
+	if composer show -i | grep -q 'hamcrest'; then echo 'Hamcrest installed'; else vvvphpunit_update=1;fi
+	cd ~/
+fi
+
+if [ "$vvvphpunit_update" = 1 ]
+then
+	printf "Update PHPUnit, Hamcrest and Mockery...\n"
+	cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
+	sh -c "cd /usr/local/src/vvv-phpunit && composer update"
 fi
 
 # SYMLINK HOST FILES
