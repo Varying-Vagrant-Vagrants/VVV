@@ -22,6 +22,8 @@ cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
 # that we can append individual packages to it as required.
 apt_package_list=()
 
+echo "Check for packages to install..."
+
 # PHP5
 #
 # Our base packages for php5. As long as php5-fpm and php5-cli are
@@ -192,10 +194,10 @@ fi
 # then we'll run `apt-get update` and then `apt-get install` to proceed.
 if [ ${#apt_package_list[@]} = 0 ];
 then 
-	echo "No packages to install."
+	printf "No packages to install.\n\n"
 else
 	# update all of the package references before installing anything
-	printf "Running apt-get update....\n\n"
+	printf "Running apt-get update....\n"
 	apt-get update --force-yes -y
 
 	# install required packages
@@ -217,10 +219,10 @@ then
 	printf "Composer already installed\n"
 elif composer --version | grep -q 'Composer version';
 then
-	printf "Updating Composer version\n"
+	printf "Updating Composer...\n"
 	composer self-update
 else
-	printf "Install Composer...\n"
+	printf "Installing Composer...\n"
 	curl -sS https://getcomposer.org/installer | php
 	chmod +x composer.phar
 	mv composer.phar /usr/local/bin/composer
@@ -228,7 +230,7 @@ fi
 
 if [ ! -d /usr/local/src/vvv-phpunit ]
 then
-	printf "Install PHPUnit and Mockery...\n"
+	printf "Installing PHPUnit, Hamcrest and Mockery...\n"
 	mkdir -p /usr/local/src/vvv-phpunit
 	cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 	sh -c "cd /usr/local/src/vvv-phpunit && composer install"
@@ -286,11 +288,11 @@ ln -sf /srv/config/vimrc /home/vagrant/.vimrc | echo "Linked vim configuration t
 #
 # Make sure the services we expect to be running are running.
 printf "\nRestart services...\n"
-printf "\nservice nginx restart\n"
+printf "service nginx restart\n"
 service nginx restart
-printf "\nservice php5-fpm restart\n"
+printf "service php5-fpm restart\n"
 service php5-fpm restart
-printf "\nservice memcached restart\n"
+printf "service memcached restart\n"
 service memcached restart
 
 # mysql gives us an error if we restart a non running service, which
@@ -299,10 +301,10 @@ service memcached restart
 exists_mysql=`service mysql status`
 if [ "mysql stop/waiting" == "$exists_mysql" ]
 then
-	printf "\nservice mysql start"
+	printf "service mysql start"
 	service mysql start
 else
-	printf "\nservice mysql restart"
+	printf "service mysql restart"
 	service mysql restart
 fi
 
@@ -403,13 +405,14 @@ then
 	fi
 fi
 
-# Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway.
-# Enter domains space delimited
+# Add any custom domains to the virtual machine's hosts file so that it
+# is self aware. Enter domains space delimited as shown with the default.
 DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'
 if ! grep -q "$DOMAINS" /etc/hosts
 then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
 
 end_seconds=`date +%s`
+echo -----------------------------
 echo Provisioning complete in `expr $end_seconds - $start_seconds` seconds
-echo All set!
+echo For further setup instructions, visit http://192.168.50.4

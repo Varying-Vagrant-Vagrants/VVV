@@ -19,7 +19,7 @@
 # Let's begin...
 
 # Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
-printf "\nStart MySQL Database Import\n\n"
+printf "\nStart MySQL Database Import\n"
 cd /srv/database/backups/
 
 # Parse through each file in the directory and use the file name to
@@ -40,9 +40,9 @@ then
 		then
 			printf "mysql -u root -pblank $pre_dot < $pre_dot.sql\n"
 			mysql -u root -pblank $pre_dot < $pre_dot.sql
-			printf "Import of $pre_dot successful\n\n"
+			printf "Import of $pre_dot successful\n"
 		else
-			printf "Skipped import of $pre_dot - tables exist\n\n"
+			printf "Skipped import of $pre_dot - tables exist\n"
 		fi
 	fi
 	done
