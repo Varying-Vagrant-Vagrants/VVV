@@ -1,8 +1,11 @@
-# This file is specified as the provisioning script to be used during `vagrant up`
-# `vagrant reload`, and `vagrant provision` via the `config.vm.provision` parameter
-# in the Vagrantfile.
+# provision.sh
+#
+# This file is loaded by Vagrant as the primary provisioning script whenever the
+# commands `vagrant up`, `vagrant provision`, or `vagrant reload` are used. It
+# provides all of the default packages and configurations included with
+# Varying Vagrant Vagrants.
 
-# We calculate provisioning time at the end of this script, hence start_time
+# We calculate the duration of provisioning at the end of this script, hence start_time
 start_seconds=`date +%s`
 
 # Setup the default sources.list provided by Ubuntu
@@ -18,12 +21,6 @@ cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
 # out or add single packages. We set the array as empty to begin with so
 # that we can append individual packages to it as required.
 apt_package_list=()
-
-# Imagemagick
-if dpkg -s imagemagick | grep -q 'Status: install ok installed';
-	then echo "imagemagic already installed" 
-	else apt_package_list+=('imagemagick')
-fi
 
 # PHP5
 #
@@ -81,11 +78,6 @@ if dpkg -s php5-mysql | grep -q 'Status: install ok installed';
 then
 	echo "php5-mysql already installed"
 else
-	# We need to set the selections to automatically fill the password prompt
-	# for mysql while it is being installed. The password in the following two
-	# lines *is* actually set to the word 'blank' for the root user.
-	echo mysql-server mysql-server/root_password password blank | debconf-set-selections
-	echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
 	apt_package_list+=('php5-mysql')
 fi
 
@@ -117,8 +109,15 @@ fi
 
 # mysql
 if dpkg -s mysql-server | grep -q 'Status: install ok installed';
-	then echo "mysql-server already installed"
-	else apt_package_list+=('mysql-server')
+then
+	echo "mysql-server already installed"
+else 
+	# We need to set the selections to automatically fill the password prompt
+	# for mysql while it is being installed. The password in the following two
+	# lines *is* actually set to the word 'blank' for the root user.
+	echo mysql-server mysql-server/root_password password blank | debconf-set-selections
+	echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
+	apt_package_list+=('mysql-server')
 fi
 
 # memcached
@@ -127,53 +126,70 @@ if dpkg -s memcached | grep -q 'Status: install ok installed';
 	else apt_package_list+=('memcached')
 fi
 
+# imagemagick
+if dpkg -s imagemagick | grep -q 'Status: install ok installed';
+	then echo "imagemagic already installed" 
+	else apt_package_list+=('imagemagick')
+fi
+
+# subversion
 if dpkg -s subversion | grep -q 'Status: install ok installed';
 	then echo "subversion already installed"
 	else apt_package_list+=('subversion')
 fi
 
+# ack-grep / ack
 if dpkg -s ack-grep | grep -q 'Status: install ok installed';
 	then echo "ack-grep already installed"
 	else apt_package_list+=('ack-grep')
 fi
 
+# git
 if dpkg -s git-core | grep -q 'Status: install ok installed';
 	then echo "git-core already installed"
 	else apt_package_list+=('git-core')
 fi
 
+# unzip
 if dpkg -s unzip | grep -q 'Status: install ok installed';
 	then echo "unzip already installed"
 	else apt_package_list+=('unzip')
 fi
 
+# ngrep
 if dpkg -s ngrep | grep -q 'Status: install ok installed';
 	then echo "ngrep already installed"
 	else apt_package_list+=('ngrep')
 fi
 
+# curl
 if dpkg -s curl | grep -q 'Status: install ok installed';
 	then echo "curl already installed"
 	else apt_package_list+=('curl')
 fi
 
+# make
 if dpkg -s make | grep -q 'Status: install ok installed';
 	then echo "make already installed"
 	else apt_package_list+=('make')
 fi
 
+# vim
 if dpkg -s vim | grep -q 'Status: install ok installed';
 	then echo "vim already installed"
 	else apt_package_list+=('vim')
 fi
 
-# Install dos2unix, which allows conversion of DOS style line endings to
-# something we'll have less trouble with in linux.
+# dos2unix
+# allows conversion of DOS style line endings to something we'll have
+# less trouble with in linux.
 if dpkg -s dos2unix | grep -q 'Status: install ok installed';
 	then echo "dos2unix already installed"
 	else apt_package_list+=('dos2unix')
 fi
 
+# If there are any packages to be installed in the apt_package_list array,
+# then we'll run `apt-get update` and then `apt-get install` to proceed.
 if [ ${#apt_package_list[@]} = 0 ];
 then 
 	echo "No packages to install."
@@ -181,7 +197,9 @@ else
 	# update all of the package references before installing anything
 	printf "Running apt-get update....\n\n"
 	apt-get update --force-yes -y
-	printf "Install all apt-get packages...\n"
+
+	# install required packages
+	printf "Installing apt-get packages...\n"
 	apt-get install --force-yes -y ${apt_package_list[@]}
 
 	# Clean up apt caches
