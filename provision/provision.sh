@@ -410,9 +410,6 @@ if ! grep -q "$DOMAINS" /etc/hosts
 then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
 
-# Your host IP is set in Vagrantfile, but it's nice to see the interfaces anyway
-ifconfig | grep "inet addr"
-
 end_seconds=`date +%s`
 echo Provisioning complete in `expr $end_seconds - $start_seconds` seconds
 echo All set!
