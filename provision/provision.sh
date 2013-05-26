@@ -140,12 +140,6 @@ if dpkg -s subversion | grep -q 'Status: install ok installed';
 	else apt_package_list+=('subversion')
 fi
 
-# ack-grep / ack
-if dpkg -s ack-grep | grep -q 'Status: install ok installed';
-	then echo "ack-grep already installed"
-	else apt_package_list+=('ack-grep')
-fi
-
 # git
 if dpkg -s git-core | grep -q 'Status: install ok installed';
 	then echo "git-core already installed"
@@ -228,8 +222,17 @@ else
 	apt-get clean			
 fi
 
-# Make ack respond to its real name
-ln -fs /usr/bin/ack-grep /usr/bin/ack
+# ack-grep
+#
+# Install ack-rep directory from the version hosted at beyondgrep.com as
+# the ppas for precise are not available yet.
+if [ -f /usr/bin/ack ]
+then
+	echo "ack-grep already installed"
+else
+	echo "Installing ack-grep as ack"
+	curl -s http://beyondgrep.com/ack-2.04-single-file > /usr/bin/ack && chmod +x /usr/bin/ack
+fi
 
 # COMPOSER
 #

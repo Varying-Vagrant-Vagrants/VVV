@@ -125,7 +125,7 @@ A bunch of stuff!
 1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.6) 3.0.6
 1. [xdebug](http://xdebug.org/) 2.2.1
 1. [PHPUnit](http://pear.phpunit.de/) 3.7.21
-1. [ack-grep](http://betterthangrep.com/) 1.92
+1. [ack-grep](http://beyondgrep.com/) 2.04
 1. [git](http://git-scm.com) 1.8.2.2
 1. [subversion](http://subversion.apache.org/) 1.7.9
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
