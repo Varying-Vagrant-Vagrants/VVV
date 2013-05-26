@@ -1,16 +1,23 @@
 # Varying Vagrant Vagrants Changelog
 
-## 0.7-working (*Unreleased and Unstable*)
+## 0.7
 
 **BREAKING CHANGES**: Breaking changes are made in this release due to the reorganization of config files for PHP that will require a full `vagrant destroy` and `vagrant up` to resolve.
 
-* Add php5-imap
+* Refactor of package provisioning allows for better (and incremental) `vagrant provision` uses by checking individual package installs before attempting to install them again.
+* Remove several flags used to disable portions of provisioning. This favors the scaffold approach provided by VVV.
+* Improved nginx configuration and documentation
+* Use --asume-yes vs --force-yes with apt
+* Update Composer based on a specific revision rather than always checking for an update.
+* Update Mockery based on a specific version rather than using the dev channel.
+* Update [ack-grep](http://beyondgrep.com) to 2.04
+* Add php5-imap package
 * Update to Nginx 1.4 sources
 * Update to PHP 5.4 sources
-* Update to Git 1.8.2.2 sources
-* Slightly smarter nginx configurations
-* Refactor handling of PHP custom configuration
-* Refactor handling of xdebug configuration in PHP
+* Update to Git 1.8 sources
+* Updated xdebug configuration parameters, fixes 60s timeout issue
+* Better method to enable/disable xdebug configuration
+* Refactor handling of custom PHP, APC, and xdebug configurations
 * Bump default memcached memory allocation to 128M
 * Introduce custom `apc.ini` file, bump `apc.shm_size` to 128M
 * Provide a phpinfo URL at `http://192.168.50.4/phpinfo/`
