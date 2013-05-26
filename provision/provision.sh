@@ -196,6 +196,26 @@ if [ ${#apt_package_list[@]} = 0 ];
 then 
 	printf "No packages to install.\n\n"
 else
+	# Before running `apt-get update`, we should add the public keys for
+	# the packages that we are installing from non standard sources via
+	# our appended apt source.list
+
+	# Nginx.org nginx key
+	gpg --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
+	gpg -a --export ABF5BD827BD9BF62 | apt-key add -
+
+	# Launchpad Subversion key
+	gpg --keyserver keyserver.ubuntu.com --recv-key EAA903E3A2F4C039
+	gpg -a --export EAA903E3A2F4C039 | apt-key add -
+
+	# Launchpad PHP key
+	gpg --keyserver keyserver.ubuntu.com --recv-key 4F4EA0AAE5267A6C
+	gpg -a --export 4F4EA0AAE5267A6C | apt-key add -
+
+	# Launchpad git key
+	gpg --keyserver keyserver.ubuntu.com --recv-key A1715D88E1DF1F24
+	gpg -a --export A1715D88E1DF1F24 | apt-key add -
+
 	# update all of the package references before installing anything
 	printf "Running apt-get update....\n"
 	apt-get update --force-yes -y
