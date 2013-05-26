@@ -17,14 +17,20 @@
 #
 # You do not need to worry about modifying the listen or include
 # parameters as those are the same across all test sites for most
-# basic WordPress configurations
+# basic WordPress configurations.
+#
+# Once your new domain has been added, make sure to restart the
+# nginx process by running `vagrant provision` in your local
+# environment or `sudo service nginx restart` after `vagrant ssh`
 ################################################################
 server {
 	# Determines the port number that nginx will listen to for this
 	# server configuration. 80 is the default http port.
     listen       80;
 
-    # Tells nginx what domain name should trigger this configuration
+    # Tells nginx what domain name should trigger this configuration. If
+    # you would like multiple domains or subdomains, they can be space
+    # delimited here. See http://nginx.org/en/docs/http/server_names.html
     server_name  testserver.com;
 
     # Tells nginx which directory the files for this domain are located
