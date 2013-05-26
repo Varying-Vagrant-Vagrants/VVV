@@ -218,11 +218,11 @@ else
 
 	# update all of the package references before installing anything
 	printf "Running apt-get update....\n"
-	apt-get update --force-yes -y
+	apt-get update --assume-yes
 
 	# install required packages
 	printf "Installing apt-get packages...\n"
-	apt-get install --force-yes -y ${apt_package_list[@]}
+	apt-get install --assume-yes ${apt_package_list[@]}
 
 	# Clean up apt caches
 	apt-get clean			
