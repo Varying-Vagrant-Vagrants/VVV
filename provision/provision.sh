@@ -312,14 +312,11 @@ fi
 #
 # Create the databases (unique to system) that will be imported with
 # the mysqldump files located in database/backups/
-if [ ! -f /home/vagrant/flags/disable_sql_commands ]
+if [ -f /srv/database/init-custom.sql ]
 then
-	if [ -f /srv/database/init-custom.sql ]
-	then
-		mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
-	else
-		printf "\nNo custom mysql scripting found in database/init-custom.sql, skipping...\n"
-	fi
+	mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
+else
+	printf "\nNo custom mysql scripting found in database/init-custom.sql, skipping...\n"
 fi
 
 # Setup mysql by importing an init file that creates necessary
@@ -328,65 +325,53 @@ mysql -u root -pblank < /srv/database/init.sql | echo "Initial mysql prep...."
 
 # Process each mysqldump SQL file in database/backups to import 
 # an initial data set for mysql.
-if [ ! -f /home/vagrant/flags/disable_sql_import ]
-then
-	/srv/database/import-sql.sh
-fi
+/srv/database/import-sql.sh
 
 # WP-CLI Install
-if [ ! -f /home/vagrant/flags/disable_wp_cli ]
+if [ ! -d /srv/www/wp-cli ]
 then
-	if [ ! -d /srv/www/wp-cli ]
-	then
-		printf "\nDownloading wp-cli.....http://wp-cli.org\n"
-		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
-		cd /srv/www/wp-cli
-		composer install
-	else
-		printf "\nSkip wp-cli installation, already available\n"
-	fi
-	# Link wp to the /usr/local/bin directory
-	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
+	printf "\nDownloading wp-cli.....http://wp-cli.org\n"
+	git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
+	cd /srv/www/wp-cli
+	composer install
+else
+	printf "\nSkip wp-cli installation, already available\n"
 fi
+# Link wp to the /usr/local/bin directory
+ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
 # Install and configure the latest stable version of WordPress
-if [ ! -f /home/vagrant/flags/disable_wp_stable ]
+if [ ! -d /srv/www/wordpress-default ]
 then
-	if [ ! -d /srv/www/wordpress-default ]
-	then
-		printf "Downloading WordPress.....http://wordpress.org\n"
-		cd /srv/www/
-		curl -O http://wordpress.org/latest.tar.gz
-		tar -xvf latest.tar.gz
-		mv wordpress wordpress-default
-		rm latest.tar.gz
-		cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-default
-		cd /srv/www/wordpress-default
-		printf "Configuring WordPress...\n"
-		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
-		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
-		printf "Skip WordPress installation, already available\n"
-	fi
+	printf "Downloading WordPress.....http://wordpress.org\n"
+	cd /srv/www/
+	curl -O http://wordpress.org/latest.tar.gz
+	tar -xvf latest.tar.gz
+	mv wordpress wordpress-default
+	rm latest.tar.gz
+	cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-default
+	cd /srv/www/wordpress-default
+	printf "Configuring WordPress...\n"
+	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
+	wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+else
+	printf "Skip WordPress installation, already available\n"
 fi
 
 # Checkout, install and configure WordPress trunk
-if [ ! -f /home/vagrant/flags/disable_wp_trunk ]
+if [ ! -d /srv/www/wordpress-trunk ]
 then
-	if [ ! -d /srv/www/wordpress-trunk ]
-	then
-		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
-		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
-		cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-trunk
-		cd /srv/www/wordpress-trunk
-		printf "Configuring WordPress trunk...\n"
-		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
-		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
-		printf "Updating WordPress trunk...\n"
-		cd /srv/www/wordpress-trunk
-		svn up --ignore-externals
-	fi
+	printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
+	svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
+	cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-trunk
+	cd /srv/www/wordpress-trunk
+	printf "Configuring WordPress trunk...\n"
+	wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
+	wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+else
+	printf "Updating WordPress trunk...\n"
+	cd /srv/www/wordpress-trunk
+	svn up --ignore-externals
 fi
 
 # Checkout and configure the WordPress unit tests
