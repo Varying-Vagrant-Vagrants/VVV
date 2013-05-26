@@ -126,7 +126,7 @@ A bunch of stuff!
 1. [xdebug](http://xdebug.org/) 2.2.1
 1. [PHPUnit](http://pear.phpunit.de/) 3.7.21
 1. [ack-grep](http://beyondgrep.com/) 2.04
-1. [git](http://git-scm.com) 1.8.2.2
+1. [git](http://git-scm.com) 1.8.3
 1. [subversion](http://subversion.apache.org/) 1.7.9
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
