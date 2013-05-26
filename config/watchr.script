@@ -10,7 +10,7 @@ watch( 'nginx-config/sites/(.*)\.conf' ) {|md| system("sudo service nginx restar
 
 # php5-fpm config
 # If either the php.ini or www.conf files are changed, restart php5-fpm.
-watch( 'php5-fpm-config/(php.ini|www.conf)' ) {|md| system("sudo service php5-fpm restart | echo php5-fpm restart with new configuration for #{md[1]}. Press enter for prompt...") }
+watch( 'php5-fpm-config/(apc.ini|xdebug.ini|php-custom.ini|www.conf)' ) {|md| system("sudo service php5-fpm restart | echo php5-fpm restart with new configuration for #{md[1]}. Press enter for prompt...") }
 
 # mysql config
 # If the my.conf file is modified, restart mysql
