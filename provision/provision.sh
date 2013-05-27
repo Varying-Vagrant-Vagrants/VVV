@@ -15,96 +15,75 @@ start_seconds=`date +%s`
 # each time a package is set to install. It also allows us to easily comment
 # out or add single packages. We set the array as empty to begin with so
 # that we can append individual packages to it as required.
-apt_package_list=()
+apt_package_install_list=()
+
+# Start with a bash array containing all of the packages that we want to 
+# install on the system. We'll then loop through each of these and check
+# individual status before passing to the apt_package_install_list array.
+apt_package_check_list=(
+
+	# PHP5
+	#
+	# Our base packages for php5. As long as php5-fpm and php5-cli are
+	# installed, there is no need to install the general php5 package, which
+	# can sometimes install apache as a requirement.
+	php5-fpm
+	php5-cli
+
+	# Common and dev packages for php
+	php5-common
+	php5-dev
+
+	# Extra PHP modules that we find useful
+	php5-memcache
+	php5-imagick
+	php5-xdebug
+	php5-mcrypt
+	php5-mysql
+	php5-imap
+	php5-curl
+	php-pear
+	php5-gd
+	php-apc
+
+	nginx
+	memcached
+
+	# other packages that come in handy
+	imagemagick
+	subversion
+	git-core
+	unzip
+	ngrep
+	curl
+	make
+	vim
+
+	# dos2unix
+	# allows conversion of DOS style line endings to something we'll have
+	# less trouble with in linux.
+	dos2unix
+)
 
 echo "Check for packages to install..."
 
-# PHP5
-#
-# Our base packages for php5. As long as php5-fpm and php5-cli are
-# installed, there is no need to install the general php5 package, which
-# can sometimes install apache as a requirement.
-if dpkg -s php5-fpm | grep -q 'Status: install ok installed';
-	then echo "php5-fpm already installed"
-	else apt_package_list+=('php5-fpm')
-fi
-
-if dpkg -s php5-cli | grep -q 'Status: install ok installed';
-	then echo "php5-cli already installed"
-	else apt_package_list+=('php5-cli')
-fi
-
-# Common and dev packages for php
-if dpkg -s php5-common | grep -q 'Status: install ok installed';
-	then echo "php5-common already installed"
-	else apt_package_list+=('php5-common')
-fi
-
-if dpkg -s php5-dev | grep -q 'Status: install ok installed';
-	then echo "php5-dev already installed"
-	else apt_package_list+=('php5-dev')
-fi
-
-# Extra PHP modules that we find useful
-if dpkg -s php5-imap | grep -q 'Status: install ok installed';
-	then echo "php5-imap already installed"
-	else apt_package_list+=('php5-imap')
-fi
-
-if dpkg -s php5-memcache | grep -q 'Status: install ok installed';
-	then echo "php5-memcache already installed"
-	else apt_package_list+=('php5-memcache')
-fi
-
-if dpkg -s php5-imagick | grep -q 'Status: install ok installed';
-	then echo "php5-imagick already installed"
-	else apt_package_list+=('php5-imagick')
-fi
-
-if dpkg -s php5-xdebug | grep -q 'Status: install ok installed';
-	then echo "php5-xdebug already installed"
-	else apt_package_list+=('php5-xdebug')
-fi
-
-if dpkg -s php5-mcrypt | grep -q 'Status: install ok installed';
-	then echo "php5-mcrypt already installed"
-	else apt_package_list+=('php5-mcrypt')
-fi
-
-if dpkg -s php5-mysql | grep -q 'Status: install ok installed';
-then
-	echo "php5-mysql already installed"
-else
-	apt_package_list+=('php5-mysql')
-fi
-
-if dpkg -s php5-curl | grep -q 'Status: install ok installed';
-	then echo "php5-curl already installed"
-	else apt_package_list+=('php5-curl')
-fi
-
-if dpkg -s php-pear | grep -q 'Status: install ok installed';
-	then echo "php-pear already installed"
-	else apt_package_list+=('php-pear')
-fi
-
-if dpkg -s php5-gd | grep -q 'Status: install ok installed';
-	then echo "php5-gd already installed"
-	else apt_package_list+=('php5-gd')
-fi
-
-if dpkg -s php-apc | grep -q 'Status: install ok installed';
-	then echo "php-apc already installed"
-	else apt_package_list+=('php-apc')
-fi
-
-# nginx
-if dpkg -s nginx | grep -q 'Status: install ok installed';
-	then echo "nginx already installed"
-	else apt_package_list+=('nginx')
-fi
+# Loop through each of our packages that should be installed on the system.
+# If not yet installed, it should be added to array of packages to install.
+for pkg in "${apt_package_check_list[@]}"
+do
+	if dpkg -s $pkg | grep -q 'Status: install ok installed';
+	then 
+		echo $pkg already installed
+	else
+		echo $pkg not yet installed
+		apt_package_install_list+=($pkg)
+	fi
+done
 
 # mysql
+#
+# The current state of mysql should be done outside of the looping done above. This allows us
+# to set the mysql specific settings for the root password when it is not yet on the system.
 if dpkg -s mysql-server | grep -q 'Status: install ok installed';
 then
 	echo "mysql-server already installed"
@@ -114,69 +93,7 @@ else
 	# lines *is* actually set to the word 'blank' for the root user.
 	echo mysql-server mysql-server/root_password password blank | debconf-set-selections
 	echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
-	apt_package_list+=('mysql-server')
-fi
-
-# memcached
-if dpkg -s memcached | grep -q 'Status: install ok installed';
-	then echo "memcached already installed"
-	else apt_package_list+=('memcached')
-fi
-
-# imagemagick
-if dpkg -s imagemagick | grep -q 'Status: install ok installed';
-	then echo "imagemagic already installed" 
-	else apt_package_list+=('imagemagick')
-fi
-
-# subversion
-if dpkg -s subversion | grep -q 'Status: install ok installed';
-	then echo "subversion already installed"
-	else apt_package_list+=('subversion')
-fi
-
-# git
-if dpkg -s git-core | grep -q 'Status: install ok installed';
-	then echo "git-core already installed"
-	else apt_package_list+=('git-core')
-fi
-
-# unzip
-if dpkg -s unzip | grep -q 'Status: install ok installed';
-	then echo "unzip already installed"
-	else apt_package_list+=('unzip')
-fi
-
-# ngrep
-if dpkg -s ngrep | grep -q 'Status: install ok installed';
-	then echo "ngrep already installed"
-	else apt_package_list+=('ngrep')
-fi
-
-# curl
-if dpkg -s curl | grep -q 'Status: install ok installed';
-	then echo "curl already installed"
-	else apt_package_list+=('curl')
-fi
-
-# make
-if dpkg -s make | grep -q 'Status: install ok installed';
-	then echo "make already installed"
-	else apt_package_list+=('make')
-fi
-
-# vim
-if dpkg -s vim | grep -q 'Status: install ok installed';
-	then echo "vim already installed"
-	else apt_package_list+=('vim')
-fi
-
-# dos2unix
-# allows conversion of DOS style line endings to something we'll have
-# less trouble with in linux.
-if dpkg -s dos2unix | grep -q 'Status: install ok installed';
-	then echo "dos2unix already installed"
-	else apt_package_list+=('dos2unix')
+	apt_package_install_list+=('mysql-server')
 fi
 
 # Provide our custom apt sources before running `apt-get update`
@@ -184,7 +101,7 @@ ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.li
 
 # If there are any packages to be installed in the apt_package_list array,
 # then we'll run `apt-get update` and then `apt-get install` to proceed.
-if [ ${#apt_package_list[@]} = 0 ];
+if [ ${#apt_package_install_list[@]} = 0 ];
 then 
 	printf "No packages to install.\n\n"
 else
@@ -214,7 +131,7 @@ else
 
 	# install required packages
 	printf "Installing apt-get packages...\n"
-	apt-get install --assume-yes ${apt_package_list[@]}
+	apt-get install --assume-yes ${apt_package_install_list[@]}
 
 	# Clean up apt caches
 	apt-get clean			
