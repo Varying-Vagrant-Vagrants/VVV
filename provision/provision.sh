@@ -8,11 +8,6 @@
 # We calculate the duration of provisioning at the end of this script, hence start_time
 start_seconds=`date +%s`
 
-# Setup the default sources.list provided by Ubuntu
-cat /srv/config/apt-source-default.list > /etc/apt/sources.list
-# Add any custom package sources to help install more current software
-cat /srv/config/apt-source-append.list >> /etc/apt/sources.list
-
 # PACKAGE INSTALLATION
 #
 # Build a bash array to pass all of the packages we want to install to
@@ -183,6 +178,9 @@ if dpkg -s dos2unix | grep -q 'Status: install ok installed';
 	then echo "dos2unix already installed"
 	else apt_package_list+=('dos2unix')
 fi
+
+# Provide our custom apt sources before running `apt-get update`
+ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list | echo "Linked custom apt sources"
 
 # If there are any packages to be installed in the apt_package_list array,
 # then we'll run `apt-get update` and then `apt-get install` to proceed.
