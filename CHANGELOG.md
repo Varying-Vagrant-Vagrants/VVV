@@ -2,6 +2,8 @@
 
 ## 0.8-working
 
+* Add PHPMemcachedAdmin 1.2.2 to repository for memcached stats viewing.
+
 ## 0.7
 
 **BREAKING CHANGES**: Breaking changes are made in this release due to the reorganization of config files for PHP that will require a full `vagrant destroy` and `vagrant up` to resolve.

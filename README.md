@@ -139,6 +139,7 @@ A bunch of stuff!
 1. [WP-CLI](http://wp-cli.org)
 1. [WordPress Unit Tests](http://make.wordpress.org/core/handbook/automated-testing/)
 1. [Composer](https://github.com/composer/composer)
+1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
 
 ### Feedback?
 
