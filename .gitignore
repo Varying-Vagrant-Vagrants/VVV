@@ -38,3 +38,7 @@
 
 # And a few of our web directories are important to share.
 !/www/default/
+
+/www/default/memcached-admin/Temp/.version
+/www/default/memcached-admin/Temp/latest
+/www/default/memcached-admin/Temp/live_stats.*
