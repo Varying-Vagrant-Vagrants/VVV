@@ -3,6 +3,7 @@
 ## 0.8-working
 
 * Add PHPMemcachedAdmin 1.2.2 to repository for memcached stats viewing.
+* Add phpMyAdmin 4.0.3 to repository for database management
 
 ## 0.7
 
