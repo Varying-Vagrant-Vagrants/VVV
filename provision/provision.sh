@@ -328,6 +328,19 @@ then
 	fi
 fi
 
+# Download phpMyAdmin 4.0.3
+if [ ! -d /srv/www/default/database-admin ]
+then
+	printf "Downloading phpMyAdmin 4.0.3....\n"
+	cd /srv/www/default
+	wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.3/phpMyAdmin-4.0.3-english.tar.gz/download#!md5!07dc6ed4d65488661d2581de8d325493'
+	tar -xf phpmyadmin.tar.gz
+	mv phpMyAdmin-4.0.3-english database-admin
+	rm phpmyadmin.tar.gz
+else
+	printf "PHPMyAdmin 4.0.3 already installed.\n"
+fi
+
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
 DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'
