@@ -1,20 +1,20 @@
 # provision.sh
 #
-# This file is loaded by Vagrant as the primary provisioning script whenever the
-# commands `vagrant up`, `vagrant provision`, or `vagrant reload` are used. It
-# provides all of the default packages and configurations included with
-# Varying Vagrant Vagrants.
+# This file is specified in Vagrantfile and is loaded by Vagrant as the primary
+# provisioning script whenever the commands `vagrant up`, `vagrant provision`,
+# or `vagrant reload` are used. It provides all of the default packages and
+# configurations included with Varying Vagrant Vagrants.
 
-# We calculate the duration of provisioning at the end of this script, hence start_time
+# We calculate the duration of provisioning at the end of this script.
 start_seconds=`date +%s`
 
 # PACKAGE INSTALLATION
 #
-# Build a bash array to pass all of the packages we want to install to
-# a single apt-get command. This avoids having to do all the leg work
-# each time a package is set to install. It also allows us to easily comment
-# out or add single packages. We set the array as empty to begin with so
-# that we can append individual packages to it as required.
+# Build a bash array to pass all of the packages we want to install to a single
+# apt-get command. This avoids having to do all the leg work each time a
+# package is set to install. It also allows us to easily comment out or add
+# single packages. We set the array as empty to begin with so that we can
+# append individual packages to it as required.
 apt_package_install_list=()
 
 # Start with a bash array containing all of the packages that we want to 
@@ -46,7 +46,10 @@ apt_package_check_list=(
 	php5-gd
 	php-apc
 
+	# nginx is installed as the default web server
 	nginx
+
+	# memcached is made available for object caching
 	memcached
 
 	# other packages that come in handy
@@ -60,15 +63,15 @@ apt_package_check_list=(
 	vim
 
 	# dos2unix
-	# allows conversion of DOS style line endings to something we'll have
-	# less trouble with in linux.
+	# Allows conversion of DOS style line endings to something we'll have less
+	# trouble with in Linux.
 	dos2unix
 )
 
 echo "Check for packages to install..."
 
-# Loop through each of our packages that should be installed on the system.
-# If not yet installed, it should be added to array of packages to install.
+# Loop through each of our packages that should be installed on the system. If
+# not yet installed, it should be added to the array of packages to install.
 for pkg in "${apt_package_check_list[@]}"
 do
 	if dpkg -s $pkg | grep -q 'Status: install ok installed';
@@ -80,10 +83,11 @@ do
 	fi
 done
 
-# mysql
+# MySQL
 #
-# The current state of mysql should be done outside of the looping done above. This allows us
-# to set the mysql specific settings for the root password when it is not yet on the system.
+# The current state of MySQL should be done outside of the looping done above.
+# This allows us to set the MySQL specific settings for the root password
+# so that provisioning does not require any user input.
 if dpkg -s mysql-server | grep -q 'Status: install ok installed';
 then
 	echo "mysql-server already installed"
@@ -139,8 +143,8 @@ fi
 
 # ack-grep
 #
-# Install ack-rep directory from the version hosted at beyondgrep.com as
-# the ppas for precise are not available yet.
+# Install ack-rep directory from the version hosted at beyondgrep.com as the
+# PPAs for Ubuntu Precise are not available yet.
 if [ -f /usr/bin/ack ]
 then
 	echo "ack-grep already installed"
@@ -166,6 +170,11 @@ else
 	mv composer.phar /usr/local/bin/composer
 fi
 
+# PHPUnit
+#
+# Check that PHPUnit, Mockery, and Hamcrest are all successfully installed. If
+# not, then Composer should be given another shot at it. Versions for these
+# packages are controlled in the `/srv/config/phpunit-composer.json` file.
 if [ ! -d /usr/local/src/vvv-phpunit ]
 then
 	printf "Installing PHPUnit, Hamcrest and Mockery...\n"
@@ -233,7 +242,7 @@ service php5-fpm restart
 printf "service memcached restart\n"
 service memcached restart
 
-# mysql gives us an error if we restart a non running service, which
+# MySQL gives us an error if we restart a non running service, which
 # happens after a `vagrant halt`. Check to see if it's running before
 # deciding whether to start or restart.
 exists_mysql=`service mysql status`
@@ -252,17 +261,17 @@ fi
 # the mysqldump files located in database/backups/
 if [ -f /srv/database/init-custom.sql ]
 then
-	mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom mysql scripting...\n"
+	mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom MySQL scripting...\n"
 else
-	printf "\nNo custom mysql scripting found in database/init-custom.sql, skipping...\n"
+	printf "\nNo custom MySQL scripting found in database/init-custom.sql, skipping...\n"
 fi
 
-# Setup mysql by importing an init file that creates necessary
+# Setup MySQL by importing an init file that creates necessary
 # users and databases that our vagrant setup relies on.
-mysql -u root -pblank < /srv/database/init.sql | echo "Initial mysql prep...."
+mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep...."
 
 # Process each mysqldump SQL file in database/backups to import 
-# an initial data set for mysql.
+# an initial data set for MySQL.
 /srv/database/import-sql.sh
 
 # WP-CLI Install
@@ -277,7 +286,7 @@ else
 	cd /srv/www/wp-cli
 	git pull --rebase origin master
 fi
-# Link wp to the /usr/local/bin directory
+# Link `wp` to the `/usr/local/bin` directory
 ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
 # Install and configure the latest stable version of WordPress
