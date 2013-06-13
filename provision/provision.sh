@@ -289,10 +289,11 @@ then
 	tar -xvf latest.tar.gz
 	mv wordpress wordpress-default
 	rm latest.tar.gz
-	cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-default
 	cd /srv/www/wordpress-default
 	printf "Configuring WordPress...\n"
-	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet
+	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+define( "WP_DEBUG", true );
+PHP
 	wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 else
 	printf "Skip WordPress installation, already available\n"
@@ -303,10 +304,11 @@ if [ ! -d /srv/www/wordpress-trunk ]
 then
 	printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
 	svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
-	cp /srv/config/wordpress-config/wp-config-sample.php /srv/www/wordpress-trunk
 	cd /srv/www/wordpress-trunk
 	printf "Configuring WordPress trunk...\n"
-	wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet
+	wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+define( "WP_DEBUG", true );
+PHP
 	wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 else
 	printf "Updating WordPress trunk...\n"
