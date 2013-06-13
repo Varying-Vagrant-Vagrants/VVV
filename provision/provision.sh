@@ -155,11 +155,9 @@ fi
 
 # COMPOSER
 #
-# Install or Update Composer based on expected hash from repository
-if composer --version | grep -q 'Composer version e4b48d39d';
-then
-	printf "Composer already installed\n"
-elif composer --version | grep -q 'Composer version';
+# Install or Update Composer based on current state. Updates are direct from
+# master branch on GitHub repository.
+if composer --version | grep -q 'Composer version';
 then
 	printf "Updating Composer...\n"
 	composer self-update
