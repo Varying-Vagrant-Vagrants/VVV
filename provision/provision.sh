@@ -273,7 +273,9 @@ then
 	cd /srv/www/wp-cli
 	composer install
 else
-	printf "\nSkip wp-cli installation, already available\n"
+	printf "\nUpdating wp-cli....\n"
+	cd /srv/www/wp-cli
+	git pull --rebase origin master
 fi
 # Link wp to the /usr/local/bin directory
 ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
