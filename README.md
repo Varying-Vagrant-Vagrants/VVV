@@ -15,7 +15,18 @@ The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable
 
 The default configuration provided by VVV is intended to match what [10up](http://10up.com) finds to be a common server setup when working with high traffic WordPress sites. 
 
-### VVV as a Scaffold
+### How to Use Varying Vagrant Vagrants
+
+#### VVV as a MAMP/XAMPP Replacement
+
+The best part is that VVV is ready to use as is. Clone or download the repository and `vagrant up` to get a sandboxed Ubuntu server on your computer with everything needed to develop a WordPress theme or plugin.
+
+Multiple projects can be developed at once in the same environment provided by VVV.
+* Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes using the same test content.
+* Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop a plugin the same way.
+* Install additional instances of WordPress in `/srv/www/` and configure a few pieces of VVV accordingly to work with the new installation.
+
+#### VVV as a Scaffold
 
 Entirely different server configurations can be created by modifying the files included with this repository.
 
@@ -37,16 +48,12 @@ Immediate goals for VVV include:
 
 [Vagrant](http://vagrantup.com) is a "tool for building and distributing development environments". It works with virtualization software such as [VirtualBox](http://virtualbox.org) to provide a virtual machine that is sandboxed away from your local environment.
 
-### How To Use Varying Vagrant Vagrants
-
-The best part is that it's ready to use as is. Clone or download the repository and `vagrant up` to get a sandboxed Ubuntu server on your computer with everything needed to develop a WordPress theme or plugin.
-
 ### The First Vagrant Up
 
-1. Start with any operating system. Vagrant and VirtualBox have installation packages for Windows, OSX and Linux.
+1. Start with any operating system.
 1. Install [VirtualBox 4.2.12](https://www.virtualbox.org/wiki/Downloads).
 1. Install [Vagrant 1.2.2](http://downloads.vagrantup.com/tags/v1.2.2)
-    * `vagrant` will now be available as a command in the terminal
+    * `vagrant` will now be available as a command in the terminal, try it out.
 1. Clone the Varying Vagrant Vagrants repository into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
     * OR download and extract the repository master [zip file](https://github.com/10up/varying-vagrant-vagrants/archive/master.zip)
@@ -58,15 +65,15 @@ The best part is that it's ready to use as is. Clone or download the repository 
 1. Add a record to your local machine's hosts file
     * `192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev`
     * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev" >>/private/etc/hosts'`
-1. Visit `http://local.wordpress.dev/` in your browser for WordPress 3.5.1, `http://local.wordpress-trunk.dev` for WordPress trunk, or `http://192.168.50.4` for a default web page.
+1. Visit `http://local.wordpress.dev/` in your browser for WordPress 3.5.1, `http://local.wordpress-trunk.dev` for WordPress trunk, or `http://192.168.50.4` for the default dashboard.
 
 Fancy, yeah?
 
 ### What Did That Do?
 
-The first time you run `vagrant up`, a pre-packaged virtual machine box is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants is about 280MB.
+The first time you run `vagrant up`, a pre-packaged virtual machine box is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an Ubuntu 12.04 installation (Precise release) and is about 280MB.
 
-After this box is download, it begins to boot as a sandboxed virtual machine using VirtualBox. When ready, it runs the provisioning script also provided with this repository. This initiates the download and installation of around 88MB of packages to be installed on the new virtual machine.
+After this box is download, it begins to boot as a sandboxed virtual machine using VirtualBox. When ready, it runs the provisioning script also provided with this repository. This initiates the download and installation of around 88MB of packages on the new virtual machine.
 
 The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will more than likely only take several minutes.
 
@@ -144,7 +151,7 @@ A bunch of stuff!
 
 ### Feedback?
 
-Let us have it! If you have tips that we need to know, open a new issue, send them our way at [@jeremyfelt](http://twitter.com/jeremyfelt), or find us in [other ways](http://10up.com). Some blog posts have been written documenting the process that may provide insight....
+Let us have it! If you have tips that we need to know, open a new issue or find us in [other ways](http://10up.com). Some blog posts have been written documenting the process that may provide insight....
 
 * [Hi WordPress, Meet Vagrant](http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/)
 * [Evolving WordPress Development With Vagrant](http://jeremyfelt.com/code/2013/03/17/evolving-wordpress-development-with-vagrant/)
