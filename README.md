@@ -141,7 +141,7 @@ A bunch of stuff!
 1. [subversion](http://subversion.apache.org/) 1.7.9
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
-1. [WordPress 3.5.1](http://wordpress.org)
+1. [WordPress 3.5.2](http://wordpress.org)
 1. [WordPress trunk](http://core.svn.wordpress.org/trunk)
 1. [WP-CLI](http://wp-cli.org)
 1. [WordPress Unit Tests](http://make.wordpress.org/core/handbook/automated-testing/)
