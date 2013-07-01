@@ -5,7 +5,8 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-# We calculate the duration of provisioning at the end of this script.
+# By storing the date now, we can calculate the duration of provisioning at the
+# end of this script.
 start_seconds=`date +%s`
 
 # Capture a basic ping result to one of Google's DNS servers to try and
@@ -16,15 +17,15 @@ ping_result=`ping -c 2 8.8.8.8 2>&1`
 # PACKAGE INSTALLATION
 #
 # Build a bash array to pass all of the packages we want to install to a single
-# apt-get command. This avoids having to do all the leg work each time a
-# package is set to install. It also allows us to easily comment out or add
-# single packages. We set the array as empty to begin with so that we can
-# append individual packages to it as required.
+# apt-get command. This avoids doing all the leg work each time a package is
+# set to install. It also allows us to easily comment out or add single
+# packages. We set the array as empty to begin with so that we can append
+# individual packages to it as required.
 apt_package_install_list=()
 
-# Start with a bash array containing all of the packages that we want to 
-# install on the system. We'll then loop through each of these and check
-# individual status before passing to the apt_package_install_list array.
+# Start with a bash array containing all packages we want to install in the
+# virtual machine. We'll then loop through each of these and check individual
+# status before adding them to the apt_package_install_list array.
 apt_package_check_list=(
 
 	# PHP5
