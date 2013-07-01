@@ -11,7 +11,7 @@ start_seconds=`date +%s`
 # Capture a basic ping result to one of Google's DNS servers to try and
 # determine if outside access is available to us. If it isn't, we'll
 # want to skip a few things in the future rather than creating a bunch of errors.
-ping_result=`ping -c 3 8.8.8.8 2>&1`
+ping_result=`ping -c 2 8.8.8.8 2>&1`
 
 # PACKAGE INSTALLATION
 #
