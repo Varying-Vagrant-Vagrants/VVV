@@ -376,4 +376,10 @@ fi
 end_seconds=`date +%s`
 echo -----------------------------
 echo Provisioning complete in `expr $end_seconds - $start_seconds` seconds
+if echo $ping_result | grep "bytes from"
+then
+	echo External network connection established, packages up to date.
+else
+	echo No externa; network available. Package installation and maintenance skipped.
+fi
 echo For further setup instructions, visit http://192.168.50.4
