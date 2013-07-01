@@ -79,7 +79,7 @@ echo "Check for packages to install..."
 # not yet installed, it should be added to the array of packages to install.
 for pkg in "${apt_package_check_list[@]}"
 do
-	if dpkg -s $pkg | grep -q 'Status: install ok installed';
+	if dpkg -s $pkg 2>&1 | grep -q 'Status: install ok installed';
 	then 
 		echo $pkg already installed
 	else
