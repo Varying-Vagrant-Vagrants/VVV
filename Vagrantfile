@@ -9,6 +9,11 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |v|
 	v.customize ["modifyvm", :id, "--memory", 512]
   end
+
+  # Forward Agent
+  #
+  # Enable agent forwarding on vagrant ssh commands
+  config.ssh.forward_agent = true
   
   # Default Ubuntu Box
   #
