@@ -51,7 +51,8 @@ Immediate goals for VVV include:
 ### The First Vagrant Up
 
 1. Start with any operating system.
-1. Install [VirtualBox 4.2.12](https://www.virtualbox.org/wiki/Downloads).
+1. Install [VirtualBox 4.2.16](https://www.virtualbox.org/wiki/Downloads)
+    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.16 release.
 1. Install [Vagrant 1.2.2](http://downloads.vagrantup.com/tags/v1.2.2)
     * `vagrant` will now be available as a command in the terminal, try it out.
 1. Clone the Varying Vagrant Vagrants repository into a local directory
