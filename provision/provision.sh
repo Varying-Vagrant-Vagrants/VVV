@@ -244,11 +244,8 @@ ln -sf /srv/config/vimrc /home/vagrant/.vimrc | echo "Linked vim configuration t
 #
 # Make sure the services we expect to be running are running.
 printf "\nRestart services...\n"
-printf "service nginx restart\n"
 service nginx restart
-printf "service php5-fpm restart\n"
 service php5-fpm restart
-printf "service memcached restart\n"
 service memcached restart
 
 # MySQL gives us an error if we restart a non running service, which
