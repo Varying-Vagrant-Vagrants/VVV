@@ -109,7 +109,7 @@ fi
 # Provide our custom apt sources before running `apt-get update`
 ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list | echo "Linked custom apt sources"
 
-if echo $ping_result | grep -q "bytes from"
+if [[ $ping_result == *bytes?from* ]]
 then
 	# If there are any packages to be installed in the apt_package_list array,
 	# then we'll run `apt-get update` and then `apt-get install` to proceed.
@@ -283,7 +283,7 @@ mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep...."
 # an initial data set for MySQL.
 /srv/database/import-sql.sh
 
-if echo $ping_result | grep "bytes from"
+if [[ $ping_result == *bytes?from* ]]
 then
 	# WP-CLI Install
 	if [ ! -d /srv/www/wp-cli ]
@@ -377,7 +377,7 @@ fi
 end_seconds=`date +%s`
 echo -----------------------------
 echo Provisioning complete in `expr $end_seconds - $start_seconds` seconds
-if echo $ping_result | grep "bytes from"
+if [[ $ping_result == *bytes?from* ]]
 then
 	echo External network connection established, packages up to date.
 else
