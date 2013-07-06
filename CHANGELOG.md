@@ -1,5 +1,7 @@
 # Varying Vagrant Vagrants Changelog
 
+## 0.9-working
+
 ## 0.8
 * Enable SSH agent forwarding
 * Wrap update/installation procedures with a network status check
