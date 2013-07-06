@@ -34,15 +34,15 @@ then
 	db_exist=`mysql -u root -pblank --skip-column-names -e "$mysql_cmd"`
 	if [ "$?" != "0" ]
 	then
-		printf "Error - Create $pre_dot database via init-custom.sql before attempting import\n\n"
+		printf "  * Error - Create $pre_dot database via init-custom.sql before attempting import\n\n"
 	else
 		if [ "" == "$db_exist" ]
 		then
 			printf "mysql -u root -pblank $pre_dot < $pre_dot.sql\n"
 			mysql -u root -pblank $pre_dot < $pre_dot.sql
-			printf "Import of $pre_dot successful\n"
+			printf "  * Import of $pre_dot successful\n"
 		else
-			printf "Skipped import of $pre_dot - tables exist\n"
+			printf "  * Skipped import of $pre_dot - tables exist\n"
 		fi
 	fi
 	done
