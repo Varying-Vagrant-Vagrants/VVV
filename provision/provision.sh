@@ -82,9 +82,9 @@ for pkg in "${apt_package_check_list[@]}"
 do
 	if dpkg -s $pkg 2>&1 | grep -q 'Status: install ok installed';
 	then 
-		echo $pkg already installed
+		echo "  * " $pkg already installed
 	else
-		echo $pkg not yet installed
+		echo "  * " $pkg not yet installed
 		apt_package_install_list+=($pkg)
 	fi
 done
@@ -96,8 +96,9 @@ done
 # so that provisioning does not require any user input.
 if dpkg -s mysql-server | grep -q 'Status: install ok installed';
 then
-	echo "mysql-server already installed"
+	echo "  * mysql-server already installed"
 else 
+	echo "  * mysql-server not yet installed"
 	# We need to set the selections to automatically fill the password prompt
 	# for mysql while it is being installed. The password in the following two
 	# lines *is* actually set to the word 'blank' for the root user.
