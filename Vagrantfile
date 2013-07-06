@@ -12,17 +12,29 @@ Vagrant.configure("2") do |config|
 
   # Forward Agent
   #
-  # Enable agent forwarding on vagrant ssh commands
+  # Enable agent forwarding on vagrant ssh commands. This allows you to use identities
+  # established on the host machine inside the guest. See the manual for ssh-add
   config.ssh.forward_agent = true
   
   # Default Ubuntu Box
   #
   # This box is provided by Vagrant at vagrantup.com and is a nicely sized (290MB)
-  # box containing the Unbuntu 12.0.4 Precise 32 bit release.
+  # box containing the Unbuntu 12.0.4 Precise 32 bit release. Once this box is downloaded
+  # to your host computer, it is cached for future use under the specified box name.
   config.vm.box = "std-precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
   config.vm.hostname = "precise32-dev"
+
+  # Default Box IP Address
+  #
+  # This is the IP address that your host will communicate to the guest through. In the
+  # case of the default `192.168.50.4` that we've provided, Virtualbox will setup another
+  # network adapter on your host machine with the IP `192.168.50.1` as a gateway.
+  #
+  # If you are already on a network using the 192.168.50.x subnet, this should be changed.
+  # If you are running more than one VM through Virtualbox, different subnets should be used
+  # for those as well. This includes other Vagrant boxes.
   config.vm.network :private_network, ip: "192.168.50.4"
  
   # Drive mapping
@@ -30,7 +42,9 @@ Vagrant.configure("2") do |config|
   # The following config.vm.share_folder settings will map directories in your Vagrant
   # virtual machine to directories on your local machine. Once these are mapped, any
   # changes made to the files in these directories will affect both the local and virtual
-  # machine versions. Think of it as two different ways to access the same file.
+  # machine versions. Think of it as two different ways to access the same file. When the
+  # virtual machine is destroyed with `vagrant destroy`, your files will remain in your local
+  # environment.
 
   # /srv/database/
   #
