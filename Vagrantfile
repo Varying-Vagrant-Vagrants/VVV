@@ -62,6 +62,11 @@ Vagrant.configure("2") do |config|
   # This directory is currently used to maintain various config files for php and 
   # nginx as well as any pre-existing database files.
   config.vm.synced_folder "config/", "/srv/config"
+
+  # /home/vagrant/bin
+  #
+  # Make scripts available inside of the VM
+  config.vm.synced_folder "bin/", "/home/vagrant/bin"
   
   # /srv/config/nginx-config/sites/
   #
