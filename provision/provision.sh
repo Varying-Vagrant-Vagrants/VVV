@@ -216,6 +216,18 @@ printf "\nLink Directories...\n"
 ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
 ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
 
+# /etc/nginx/symlinked-confs
+symlink_conf_dir=/etc/nginx/symlinked-confs
+symlink_target_filename=vvv-nginx.conf
+if [ -e $symlink_conf_dir ]
+then rm -r $symlink_conf_dir
+fi
+echo "Looking for $symlink_target_filename files to symlink into $symlink_conf_dir..."
+mkdir $symlink_conf_dir
+for site_config_file in $(find /srv/www -type f -name $symlink_target_filename); do
+	ln -s $site_config_file $symlink_conf_dir/$(md5sum <<< $site_config_file | cut -c1-32).conf | echo "Symlinked Nginx config $site_config_file"
+done
+
 # Configuration for php5-fpm
 ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo "Linked www.conf to /etc/php5/fpm/pool.d/"
 
