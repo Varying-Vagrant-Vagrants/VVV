@@ -314,7 +314,9 @@ define( "WP_DEBUG", true );
 PHP
 		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
-		printf "Skip WordPress installation, already available\n"
+		printf "Updating WordPress stable...\n"
+		cd /srv/www/wordpress-default
+		wp core upgrade
 	fi
 
 	# Checkout, install and configure WordPress trunk
