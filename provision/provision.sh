@@ -276,17 +276,19 @@ else
 	printf "\nNo custom MySQL scripting found in database/init-custom.sql, skipping...\n"
 fi
 
+for init_sql_file in $(find /srv/www/ -type f -name vvv-init.sql)
+do
+	mysql -u root -pblank < $init_sql_file | printf "\nRun DB init $init_sql_file...\n"
+done
+
+
 # Setup MySQL by importing an init file that creates necessary
 # users and databases that our vagrant setup relies on.
 mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep...."
 
-# Process each mysqldump SQL file in database/backups to import 
-# an initial data set for MySQL.
-/srv/database/import-sql.sh
-
+# WP-CLI Install before import-sql.sh since it depends on it
 if [[ $ping_result == *bytes?from* ]]
 then
-	# WP-CLI Install
 	if [ ! -d /srv/www/wp-cli ]
 	then
 		printf "\nDownloading wp-cli.....http://wp-cli.org\n"
@@ -300,7 +302,14 @@ then
 	fi
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
+fi
 
+# Process each mysqldump SQL file in database/backups to import
+# an initial data set for MySQL.
+/srv/database/import-sql.sh
+
+if [[ $ping_result == *bytes?from* ]]
+then
 	# Install and configure the latest stable version of WordPress
 	if [ ! -d /srv/www/wordpress-default ]
 	then
