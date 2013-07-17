@@ -63,9 +63,8 @@ Immediate goals for VVV include:
 1. Start the Vagrant environment
     * `vagrant up` - *omg magic happens*
     * Be patient, this could take a while, especially on the first run.
-1. Add a record to your local machine's hosts file
-    * `192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev`
-    * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev" >>/private/etc/hosts'`
+1. Add records to your local machine's hosts file, which are prompted at the end of `vagrant up` and which are located in `config/hosts-hosts`
+    * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'cat config/hosts-hosts >>/private/etc/hosts'`
 1. Visit `http://local.wordpress.dev/` in your browser for WordPress 3.5.1, `http://local.wordpress-trunk.dev` for WordPress trunk, or `http://192.168.50.4` for the default dashboard.
 
 Fancy, yeah?

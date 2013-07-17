@@ -391,10 +391,29 @@ else
 fi
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'
-if ! grep -q "$DOMAINS" /etc/hosts
-then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
+
+echo "# Hosts for varying-vagrant-vagrants:" > /srv/config/hosts-hosts
+echo "# Make sure the following exist in your host machine's hosts file"
+echo "# Full list will be located in config/hosts-hosts"
+wp_domains='local.wordpress.dev local.wordpress-trunk.dev'
+if ! grep -q "$wp_domains" /etc/hosts
+then
+	echo "127.0.0.1 $wp_domains" >> /etc/hosts
 fi
+echo "$vagrant_ip $wp_domains" | tee -a /srv/config/hosts-hosts
+
+# Look for additional domains defined in the sites
+for site_domains_file in $(find /srv/www -type f -name 'vvv-domains')
+do
+	cat $site_domains_file | sed '/^(#| *$)/d' | while read site_domain_line
+	do
+		if ! grep -q "$site_domain_line" /etc/hosts
+		then
+			echo "127.0.0.1 $site_domain_line" >> /etc/hosts
+		fi
+		echo "$vagrant_ip $site_domain_line" | tee -a /srv/config/hosts-hosts
+	done
+done
 
 end_seconds=`date +%s`
 echo -----------------------------
