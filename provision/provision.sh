@@ -9,6 +9,9 @@
 # end of this script.
 start_seconds=`date +%s`
 
+# TODO: Grab this from the Vagrantfile
+vagrant_ip=192.168.50.4
+
 # Capture a basic ping result to one of Google's DNS servers to try and
 # determine if outside access is available to us. If it isn't, we'll
 # want to skip a few things in the future rather than creating a bunch of errors.
@@ -147,7 +150,7 @@ then
 		apt-get install --assume-yes ${apt_package_install_list[@]}
 
 		# Clean up apt caches
-		apt-get clean			
+		apt-get clean
 	fi
 
 	# ack-grep
@@ -381,4 +384,4 @@ then
 else
 	echo No external network available. Package installation and maintenance skipped.
 fi
-echo For further setup instructions, visit http://192.168.50.4
+echo For further setup instructions, visit http://$vagrant_ip
