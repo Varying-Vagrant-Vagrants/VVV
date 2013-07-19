@@ -212,7 +212,8 @@ printf "\nLink Directories...\n"
 # Configuration for nginx
 if [ ! -e /etc/nginx/server.key ]; then
 	echo "Generate Nginx server private key..."
-	openssl genrsa -out /etc/nginx/server.key 2048
+	vvvgenrsa=`openssl genrsa -out /etc/nginx/server.key 2048 2>&1`
+	echo $vvvgenrsa
 fi
 if [ ! -e /etc/nginx/server.csr ]; then
 	echo "Generate Certificate Signing Request (CSR)..."
