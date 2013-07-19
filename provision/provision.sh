@@ -210,6 +210,18 @@ fi
 printf "\nLink Directories...\n"
 
 # Configuration for nginx
+if [ ! -e /etc/nginx/server.key ]; then
+	echo "Generate Nginx server private key..."
+	openssl genrsa -out /etc/nginx/server.key 2048
+fi
+if [ ! -e /etc/nginx/server.csr ]; then
+	echo "Generate Certificate Signing Request (CSR)..."
+	openssl req -new -batch -key /etc/nginx/server.key -out /etc/nginx/server.csr
+fi
+if [ ! -e /etc/nginx/server.crt ]; then
+	echo "Sign the certificate using the above private key and CSR..."
+	openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt
+fi
 ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
 ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
 
