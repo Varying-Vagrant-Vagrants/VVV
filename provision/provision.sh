@@ -221,7 +221,8 @@ if [ ! -e /etc/nginx/server.csr ]; then
 fi
 if [ ! -e /etc/nginx/server.crt ]; then
 	echo "Sign the certificate using the above private key and CSR..."
-	openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt
+	vvvsigncert=`openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt 2>&1`
+	echo $vvvsigncert
 fi
 ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo "Linked nginx.conf to /etc/nginx/"
 ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo "Linked nginx-wp-common.conf to /etc/nginx/"
