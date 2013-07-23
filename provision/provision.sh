@@ -353,14 +353,16 @@ PHP
 	fi
 
 	# Checkout and configure the WordPress unit tests
-	if [ ! -f /home/vagrant/flags/disable_wp_tests ]
+	if [ ! -d /srv/www/wordpress-unit-tests ]
 	then
-		if [ ! -d /srv/www/wordpress-unit-tests ]
+		printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
+		# Must be in a WP directory to run wp
+		cd /srv/www/wordpress-trunk
+		wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
+	else
+		if [ ! -d /srv/www/wordpress-unit-tests/.svn ]
 		then
-			printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
-			# Must be in a WP directory to run wp
-			cd /srv/www/wordpress-trunk
-			wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
+			printf "Skipping WordPress unit tests...\n"
 		else
 			printf "Updating WordPress unit tests...\n"	
 			cd /srv/www/wordpress-unit-tests

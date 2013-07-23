@@ -90,10 +90,6 @@ Vagrant.configure("2") do |config|
   end
 
   # Provisioning
-  #
-  # Various flags are available to disable portions of the default provisioning script to
-  # run. These flags are mapped in the provision/flags directory
-  config.vm.synced_folder "provision/flags/", "/home/vagrant/flags/"
   # 
   # Process one or more provisioning scripts depending on the existence of custom files.
   #
