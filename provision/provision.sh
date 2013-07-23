@@ -20,6 +20,8 @@ then
 	ping_result=`ping -c 2 4.2.2.2 2>&1`
 fi
 
+# Capture the current IP address of the virtual machine into a variable that
+# can be used when necessary throughout provisioning.
 vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
 
 # PACKAGE INSTALLATION
