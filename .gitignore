@@ -9,8 +9,6 @@
 /Customfile
 
 # Allow for custom provisioning scripts that are not included with the repo
-/provision/flags/*
-!/provision/flags/readme.txt
 /provision/provision-custom.sh
 /provision/provision-pre.sh
 /provision/provision-post.sh
