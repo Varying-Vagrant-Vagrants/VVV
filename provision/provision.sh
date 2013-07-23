@@ -9,10 +9,17 @@
 # end of this script.
 start_seconds=`date +%s`
 
-# Capture a basic ping result to one of Google's DNS servers to try and
-# determine if outside access is available to us. If it isn't, we'll
-# want to skip a few things in the future rather than creating a bunch of errors.
+# Capture a basic ping result to Google's primary DNS server to determine if
+# outside access is available to us. If this does not reply after 2 attempts,
+# we try one of Level3's DNS servers as well. If neither of these IPs replies to
+# a ping, then we'll skip a few things further in provisioning rather than
+# creating a bunch of errors.
 ping_result=`ping -c 2 8.8.4.4 2>&1`
+if [[ $ping_result != *bytes?from* ]]
+then
+	ping_result=`ping -c 2 4.2.2.2 2>&1`
+fi
+
 vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
 
 # PACKAGE INSTALLATION
