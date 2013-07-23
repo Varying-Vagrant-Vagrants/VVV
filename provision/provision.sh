@@ -13,6 +13,7 @@ start_seconds=`date +%s`
 # determine if outside access is available to us. If it isn't, we'll
 # want to skip a few things in the future rather than creating a bunch of errors.
 ping_result=`ping -c 2 8.8.8.8 2>&1`
+vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
 
 # PACKAGE INSTALLATION
 #
@@ -398,4 +399,4 @@ then
 else
 	echo No external network available. Package installation and maintenance skipped.
 fi
-echo For further setup instructions, visit http://192.168.50.4
+echo For further setup instructions, visit http://$vvv_ip
