@@ -130,15 +130,15 @@ Now that you're up and running with a default configuration, start poking around
 A bunch of stuff!
 
 1. [Ubuntu](http://ubuntu.com) 12.04 LTS (Precise Pangolin)
-1. [nginx](http://nginx.org) 1.4.1
+1. [nginx](http://nginx.org) 1.4.2
 1. [mysql](http://mysql.com) 5.5.31
-1. [php-fpm](http://php-fpm.org) 5.4.15
+1. [php-fpm](http://php-fpm.org) 5.4.17
 1. [memcached](http://memcached.org/) 1.4.13
 1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.6) 3.0.6
 1. [xdebug](http://xdebug.org/) 2.2.1
 1. [PHPUnit](http://pear.phpunit.de/) 3.7.21
 1. [ack-grep](http://beyondgrep.com/) 2.04
-1. [git](http://git-scm.com) 1.8.3
+1. [git](http://git-scm.com) 1.8.3.4
 1. [subversion](http://subversion.apache.org/) 1.7.9
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
