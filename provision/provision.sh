@@ -68,6 +68,9 @@ apt_package_check_list=(
 	# memcached is made available for object caching
 	memcached
 
+	# mysql is the default database
+	mysql-server
+
 	# other packages that come in handy
 	imagemagick
 	subversion
@@ -105,21 +108,12 @@ done
 
 # MySQL
 #
-# The current state of MySQL should be done outside of the looping done above.
-# This allows us to set the MySQL specific settings for the root password
-# so that provisioning does not require any user input.
-if dpkg -s mysql-server | grep -q 'Status: install ok installed';
-then
-	echo "  * mysql-server already installed"
-else 
-	echo "  * mysql-server not yet installed"
-	# We need to set the selections to automatically fill the password prompt
-	# for mysql while it is being installed. The password in the following two
-	# lines *is* actually set to the word 'blank' for the root user.
-	echo mysql-server mysql-server/root_password password blank | debconf-set-selections
-	echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
-	apt_package_install_list+=('mysql-server')
-fi
+# Use debconf-set-selections to specify the default password for the root MySQL
+# account. This runs on every provision, even if MySQL has been installed. If
+# MySQL is already installed, it will not affect anything. The password in the
+# following two lines *is* actually set to the word 'blank' for the root user.
+echo mysql-server mysql-server/root_password password blank | debconf-set-selections
+echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
 
 # Provide our custom apt sources before running `apt-get update`
 ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list | echo "Linked custom apt sources"
