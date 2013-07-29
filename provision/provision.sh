@@ -80,6 +80,7 @@ apt_package_check_list=(
 	curl
 	make
 	vim
+	colordiff
 
 	# dos2unix
 	# Allows conversion of DOS style line endings to something we'll have less
