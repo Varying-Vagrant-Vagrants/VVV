@@ -6,8 +6,8 @@ deb http://ppa.launchpad.net/svn/ppa/ubuntu precise main
 deb-src http://ppa.launchpad.net/svn/ppa/ubuntu precise main
 
 # Provides PHP 5.4
-deb http://ppa.launchpad.net/ondrej/php5/ubuntu precise main
-deb-src http://ppa.launchpad.net/ondrej/php5/ubuntu precise main
+deb http://ppa.launchpad.net/ondrej/php5-oldstable/ubuntu precise main
+deb-src http://ppa.launchpad.net/ondrej/php5-oldstable/ubuntu precise main
 
 # Provides Nginx 1.4
 deb http://nginx.org/packages/ubuntu/ precise nginx
