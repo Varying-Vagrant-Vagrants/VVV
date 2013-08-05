@@ -100,7 +100,7 @@ do
 		space_count=`expr 20 - "${#pkg}"` #11
 		pack_space_count=`expr 30 - "${#package_version}"`
 		real_space=`expr ${space_count} + ${pack_space_count} + ${#package_version}`
-		printf " * $pkg %${real_space}.${#package_version}s" $package_version
+		printf " * $pkg %${real_space}.${#package_version}s ${package_version}\n"
 	else
 		echo " *" $pkg [not installed]
 		apt_package_install_list+=($pkg)
