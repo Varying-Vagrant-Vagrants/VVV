@@ -254,6 +254,14 @@ ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf | echo " 
 # Custom bash_profile for our vagrant user
 ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile | echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
 
+# Custom subversion config (to ignore .git)
+mkdir -p /home/vagrant/.subversion
+ln -sf /srv/config/svnconfig /home/vagrant/.subversion/config | echo " * /srv/config/svnconfig -> /home/vagrant/.subversion/config"
+
+# Custom git config  (to ignore .svn)
+ln -sf /srv/config/gitconfig /home/vagrant/.gitconfig | echo " * /srv/config/gitconfig -> /home/vagrant/.gitconfig"
+ln -sf /srv/config/gitignore /home/vagrant/.gitignore | echo " * /srv/config/gitignore -> /home/vagrant/.gitignore"
+
 # Custom bash_aliases included by vagrant user's .bashrc
 ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo " * /srv/config/bash_aleases -> /home/vagrant/.bash_aliases"
 
