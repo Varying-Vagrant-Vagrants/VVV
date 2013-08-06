@@ -224,7 +224,7 @@ then rm -r $symlink_conf_dir
 fi
 echo "Looking for $symlink_target_filename files to symlink into $symlink_conf_dir..."
 mkdir $symlink_conf_dir
-for site_config_file in $(find /srv/www -type f -name $symlink_target_filename); do
+for site_config_file in $(find /srv/www -name $symlink_target_filename); do
 	ln -s $site_config_file $symlink_conf_dir/$(md5sum <<< $site_config_file | cut -c1-32).conf | echo "Symlinked Nginx config $site_config_file"
 done
 
@@ -288,7 +288,7 @@ else
 	printf "\nNo custom MySQL scripting found in database/init-custom.sql, skipping...\n"
 fi
 
-for init_sql_file in $(find /srv/www/ -type f -name vvv-init.sql)
+for init_sql_file in $(find /srv/www/ -name vvv-init.sql)
 do
 	mysql -u root -pblank < $init_sql_file | printf "\nRun DB init $init_sql_file...\n"
 done
@@ -403,7 +403,7 @@ fi
 echo "$vagrant_ip $wp_domains" | tee -a /srv/config/host-hosts
 
 # Look for additional domains defined in the sites
-for site_domains_file in $(find /srv/www -type f -name 'vvv-domains')
+for site_domains_file in $(find /srv/www -name 'vvv-domains')
 do
 	cat $site_domains_file | sed '/^(#| *$)/d' | while read site_domain_line
 	do

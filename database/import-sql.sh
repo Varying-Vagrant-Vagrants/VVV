@@ -54,7 +54,7 @@ fi
 # Load vvv-data.sql dumps in each WordPress project if WordPress is not installed
 if [ -e /usr/local/bin/wp ]; then
 	echo "Looking for vvv-data.sql files in WordPress projects within /srv/www..."
-	for vvv_data_sql in $(find /srv/www -type f -name vvv-data.sql); do
+	for vvv_data_sql in $(find /srv/www -name vvv-data.sql); do
 		cd $(dirname $vvv_data_sql)
 		if ! wp core is-installed >/dev/null 2>&1; then
 			wp db import $vvv_data_sql
