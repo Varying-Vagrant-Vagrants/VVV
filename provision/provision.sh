@@ -78,6 +78,10 @@ apt_package_check_list=(
 	vim
 	colordiff
 
+	# Req'd for Webgrind
+	python
+	graphviz
+
 	# dos2unix
 	# Allows conversion of DOS style line endings to something we'll have less
 	# trouble with in Linux.
@@ -92,7 +96,7 @@ for pkg in "${apt_package_check_list[@]}"
 do
 	package_version=`dpkg -s $pkg 2>&1 | grep 'Version:' | cut -d " " -f 2`
 	if [[ $package_version != "" ]]
-	then 
+	then
 		space_count=`expr 20 - "${#pkg}"` #11
 		pack_space_count=`expr 30 - "${#package_version}"`
 		real_space=`expr ${space_count} + ${pack_space_count} + ${#package_version}`
@@ -120,7 +124,7 @@ then
 	# If there are any packages to be installed in the apt_package_list array,
 	# then we'll run `apt-get update` and then `apt-get install` to proceed.
 	if [ ${#apt_package_install_list[@]} = 0 ];
-	then 
+	then
 		printf "No apt packages to install.\n\n"
 	else
 		# Before running `apt-get update`, we should add the public keys for
@@ -152,7 +156,7 @@ then
 		apt-get install --assume-yes ${apt_package_install_list[@]}
 
 		# Clean up apt caches
-		apt-get clean			
+		apt-get clean
 	fi
 
 	# ack-grep
@@ -303,7 +307,7 @@ fi
 # users and databases that our vagrant setup relies on.
 mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep...."
 
-# Process each mysqldump SQL file in database/backups to import 
+# Process each mysqldump SQL file in database/backups to import
 # an initial data set for MySQL.
 /srv/database/import-sql.sh
 
@@ -323,6 +327,21 @@ then
 	fi
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
+
+	# Webgrind install (for viewing callgrind/cachegrind files produced by
+	# xdebug profiler)
+	if [ ! -d /srv/www/default/webgrind ]
+	then
+		printf "\nDownloading webgrind.....https://github.com/jokkedk/webgrind\n"
+		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
+
+		printf "\nLinking webgrind config file...\n"
+		ln -sf /srv/config/webgrind-config.php /srv/www/default/webgrind/config.php | echo " * /srv/config/webgrind-config.php -> /srv/www/default/webgrind/config.php"
+	else
+		printf "\nUpdating webgrind....\n"
+		cd /srv/www/default/webgrind
+		git pull --rebase origin master
+	fi
 
 	# Install and configure the latest stable version of WordPress
 	if [ ! -d /srv/www/wordpress-default ]
@@ -374,7 +393,7 @@ PHP
 		then
 			printf "Skipping WordPress unit tests...\n"
 		else
-			printf "Updating WordPress unit tests...\n"	
+			printf "Updating WordPress unit tests...\n"
 			cd /srv/www/wordpress-unit-tests
 			svn up --ignore-externals
 		fi

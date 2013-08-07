@@ -13,7 +13,7 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
 
 The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable way for developers to work in an environment that matches a project's production environment as closely as possible.
 
-The default configuration provided by VVV is intended to match what [10up](http://10up.com) finds to be a common server setup when working with high traffic WordPress sites. 
+The default configuration provided by VVV is intended to match what [10up](http://10up.com) finds to be a common server setup when working with high traffic WordPress sites.
 
 ### How to Use Varying Vagrant Vagrants
 
@@ -149,6 +149,7 @@ A bunch of stuff!
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
 1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.3
+1. [Webgrind](https://github.com/jokkedk/webgrind) 1.1
 
 ### Feedback?
 
