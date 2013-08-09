@@ -79,7 +79,6 @@ apt_package_check_list=(
 	colordiff
 
 	# Req'd for Webgrind
-	python
 	graphviz
 
 	# dos2unix
