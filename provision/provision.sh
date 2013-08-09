@@ -320,6 +320,7 @@ then
 		printf "\nUpdating wp-cli....\n"
 		cd /srv/www/wp-cli
 		git pull --rebase origin master
+		composer update
 	fi
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
