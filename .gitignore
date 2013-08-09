@@ -36,7 +36,7 @@
 
 # And a few of our web directories are important to share.
 !/www/default/
-
+/www/default/webgrind
 /www/default/database-admin
 /www/default/memcached-admin/Temp/.version
 /www/default/memcached-admin/Temp/latest
