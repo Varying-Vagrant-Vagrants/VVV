@@ -29,7 +29,7 @@
 # BUT....
 
 # We do have some default nginx configs that should be included
-!/config/nginx-config/sites/00-default.conf
+!/config/nginx-config/sites/default.conf
 
 # And we do have a default SQL file that should be included
 !/database/init.sql
