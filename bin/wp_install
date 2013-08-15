@@ -17,7 +17,7 @@ function randomStr {
 ##
 echo "Provisioning new wordpress install"
 INIT_DIR=`PWD`
-VPATH=www/wp-$1
+VPATH=www/local-$1
 if [ -d $VPATH ]; then
   echo "Site 'wp-$1' Already Exists"
   exit 1;
@@ -30,15 +30,15 @@ echo "Creating new nginx site conf"
 cp config/nginx-config/sites/local-nginx-example.conf-sample config/nginx-config/sites/local-$1-dev.conf
 
 sed -i '' "s/testserver.com/local.$1.dev/g" config/nginx-config/sites/local-$1-dev.conf
-sed -i '' "s/wordpress-local/wp-$1/g" config/nginx-config/sites/local-$1-dev.conf
+sed -i '' "s/wordpress-local/local-$1/g" config/nginx-config/sites/local-$1-dev.conf
 
 ###############################################################################
 # append Create DB to init-custom.php
 ##
 echo "Adding Create DB lines to init-custom.php"
 SQL="
-CREATE DATABASE IF NOT EXISTS \`wp_$1\`;
-GRANT ALL PRIVILEGES ON \`wp_$1\`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
+CREATE DATABASE IF NOT EXISTS \`local_$1\`;
+GRANT ALL PRIVILEGES ON \`local_$1\`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
 "
 echo $SQL >> database/init-custom.sql
 
@@ -63,7 +63,7 @@ mv wp-config-sample.php wp-config.php
 for i in {1..8}
 do sed -i '' "1,/put your unique phrase here/s/put your unique phrase here/$(randomStr 50)/" wp-config.php
 done
-sed -i '' "s/database_name_here/wp_$1/" wp-config.php
+sed -i '' "s/database_name_here/local_$1/" wp-config.php
 sed -i '' 's/username_here/wp/' wp-config.php
 sed -i '' "s/password_here/wp/" wp-config.php
 
