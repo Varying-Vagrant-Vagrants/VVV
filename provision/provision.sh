@@ -358,6 +358,7 @@ then
 define( "WP_DEBUG", true );
 PHP
 		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		/srv/config/wordpress-config/wordpress-import.sh
 	else
 		printf "Updating WordPress stable...\n"
 		cd /srv/www/wordpress-default
@@ -375,6 +376,7 @@ PHP
 define( "WP_DEBUG", true );
 PHP
 		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		/srv/config/wordpress-config/wordpress-import.sh
 	else
 		printf "Updating WordPress trunk...\n"
 		cd /srv/www/wordpress-trunk
