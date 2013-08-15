@@ -7,8 +7,4 @@
  * explicitly forcing WordPress to believe that rewrite is available.
  *
  */
-
-function nginx_got_rewrite( $rewrite_available ) {
-    return true;
-}
-add_filter( 'got_rewrite', 'nginx_got_rewrite', 999 );
+add_filter( 'got_rewrite', '__return_true', 999 );
