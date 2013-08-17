@@ -150,6 +150,8 @@ A bunch of stuff!
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
 1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.3
 1. [Webgrind](https://github.com/jokkedk/webgrind) 1.1
+1. [NodeJs](http://nodejs.org/) Current Stable Version
+1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
 
 ### Feedback?
 
