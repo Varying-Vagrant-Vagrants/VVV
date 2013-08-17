@@ -230,6 +230,20 @@ then
 		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
 	fi
+
+    # Grunt
+    #
+    # Install or Update Grunt based on gurrent state.  Updates are direct
+    # from NPM
+	if [ ! -d /usr/lib/node_modules/grunt-cli  ]
+    then
+        printf "Installing Grunt CLI\n"
+        npm install -g grunt-cli
+    else
+        printf "Updating Grunt CLI\n"
+        npm update -g grunt-cli
+    fi
+
 else
 	printf "\nNo network connection available, skipping package installation"
 fi
