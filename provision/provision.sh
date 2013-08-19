@@ -280,6 +280,14 @@ ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf | echo " 
 # Custom bash_profile for our vagrant user
 ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile | echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
 
+# Custom subversion config (to ignore .git)
+mkdir -p /home/vagrant/.subversion
+ln -sf /srv/config/svnconfig /home/vagrant/.subversion/config | echo " * /srv/config/svnconfig -> /home/vagrant/.subversion/config"
+
+# Custom git config  (to ignore .svn)
+ln -sf /srv/config/gitconfig /home/vagrant/.gitconfig | echo " * /srv/config/gitconfig -> /home/vagrant/.gitconfig"
+ln -sf /srv/config/gitignore /home/vagrant/.gitignore | echo " * /srv/config/gitignore -> /home/vagrant/.gitignore"
+
 # Custom bash_aliases included by vagrant user's .bashrc
 ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo " * /srv/config/bash_aleases -> /home/vagrant/.bash_aliases"
 
@@ -393,7 +401,7 @@ PHP
 	# Checkout, install and configure WordPress trunk
 	if [ ! -d /srv/www/wordpress-trunk ]
 	then
-		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
+		printf "Checking out WordPress trunk from official SVN repo....http://core.svn.wordpress.org/trunk\n"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
 		printf "Configuring WordPress trunk...\n"
@@ -402,9 +410,30 @@ define( "WP_DEBUG", true );
 PHP
 		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
-		printf "Updating WordPress trunk...\n"
+		printf "Updating WordPress trunk from official SVN repo...\n"
 		cd /srv/www/wordpress-trunk
 		svn up --ignore-externals
+	fi
+
+	# Clone the Git repo on top of the SVN one and keep it up to date
+	if [ ! -d /srv/www/wordpress-trunk/.git ]
+	then
+		cd /srv/www/wordpress-trunk/
+		printf "Cloning WordPress GitHub mirror repo on top of SVN... https://github.com/WordPress/WordPress.git\n"
+		git clone https://github.com/WordPress/WordPress.git /tmp/wp-git
+		mv /tmp/wp-git/.git ./.git
+		rm -rf /tmp/wp-git
+		git config core.filemode false
+		echo -e ".svn\n/wp-config.php\n/.gitignore\n/wp-content/" > .gitignore
+	else
+		printf "Update WordPress from GitHub mirror"
+		git fetch origin
+		current_branch=$(git rev-parse --abbrev-ref)
+		if [ "$current_ref" == 'master' ]
+		then
+			printf "Softly fast-forwarding Git master HEAD (since it can be 15 mins behind SVN)"
+			git reset --soft origin/master
+		fi
 	fi
 
 	# Checkout and configure the WordPress unit tests
