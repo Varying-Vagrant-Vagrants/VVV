@@ -85,6 +85,12 @@ apt_package_check_list=(
 	# Allows conversion of DOS style line endings to something we'll have less
 	# trouble with in Linux.
 	dos2unix
+
+    # nodejs for use by grunt
+    g++ 
+    make
+    nodejs
+
 )
 
 echo "Check for apt packages to install..."
@@ -145,6 +151,20 @@ then
 		# Launchpad git key A1715D88E1DF1F24
 		gpg -q --keyserver keyserver.ubuntu.com --recv-key A1715D88E1DF1F24
 		gpg -q -a --export A1715D88E1DF1F24 | apt-key add -
+
+		# Launchpad nodejs key C7917B12 
+		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12 
+		gpg -q -a --export  C7917B12  | apt-key add -
+
+        hasnodejs=`cat /etc/apt/sources.list | grep 'node.js'`;
+        if [[ ! "$hasnodejs" == *"node.js"* ]];
+        then
+            printf "Adding node.js ppa to /etc/apt/sources.list\n"
+            echo '' >> /etc/apt/sources.list
+            echo '## node.js ppa' >> /etc/apt/sources.list
+            echo 'deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu precise main' >> /etc/apt/sources.list
+            echo 'deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu precise main' >> /etc/apt/sources.list
+        fi
 
 		# update all of the package references before installing anything
 		printf "Running apt-get update....\n"
@@ -210,6 +230,20 @@ then
 		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
 	fi
+
+    # Grunt
+    #
+    # Install or Update Grunt based on gurrent state.  Updates are direct
+    # from NPM
+	if [ ! -d /usr/lib/node_modules/grunt-cli  ]
+    then
+        printf "Installing Grunt CLI\n"
+        npm install -g grunt-cli
+    else
+        printf "Updating Grunt CLI\n"
+        npm update -g grunt-cli
+    fi
+
 else
 	printf "\nNo network connection available, skipping package installation"
 fi
