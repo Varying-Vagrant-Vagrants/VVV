@@ -88,7 +88,6 @@ apt_package_check_list=(
 
 	# nodejs for use by grunt
 	g++
-	make
 	nodejs
 
 )
