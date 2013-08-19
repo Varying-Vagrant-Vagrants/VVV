@@ -15,4 +15,8 @@ deb-src http://nginx.org/packages/ubuntu/ precise nginx
 
 # Provides Git 1.8
 deb http://ppa.launchpad.net/git-core/ppa/ubuntu precise main 
-deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu precise main 
+deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu precise main
+
+# Provides Node.js
+deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu precise main
+deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu precise main

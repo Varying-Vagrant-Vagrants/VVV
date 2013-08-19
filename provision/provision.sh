@@ -86,10 +86,10 @@ apt_package_check_list=(
 	# trouble with in Linux.
 	dos2unix
 
-    # nodejs for use by grunt
-    g++ 
-    make
-    nodejs
+	# nodejs for use by grunt
+	g++
+	make
+	nodejs
 
 )
 
@@ -155,16 +155,6 @@ then
 		# Launchpad nodejs key C7917B12 
 		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12 
 		gpg -q -a --export  C7917B12  | apt-key add -
-
-        hasnodejs=`cat /etc/apt/sources.list | grep 'node.js'`;
-        if [[ ! "$hasnodejs" == *"node.js"* ]];
-        then
-            printf "Adding node.js ppa to /etc/apt/sources.list\n"
-            echo '' >> /etc/apt/sources.list
-            echo '## node.js ppa' >> /etc/apt/sources.list
-            echo 'deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu precise main' >> /etc/apt/sources.list
-            echo 'deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu precise main' >> /etc/apt/sources.list
-        fi
 
 		# update all of the package references before installing anything
 		printf "Running apt-get update....\n"
