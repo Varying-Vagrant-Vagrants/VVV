@@ -390,10 +390,10 @@ PHP
 		wp core upgrade
 	fi
 
-	# Checkout, install and configure WordPress trunk
+	# Checkout, install and configure WordPress trunk via core.svn
 	if [ ! -d /srv/www/wordpress-trunk ]
 	then
-		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
+		printf "Checking out WordPress trunk from core.svn....http://core.svn.wordpress.org/trunk\n"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
 		printf "Configuring WordPress trunk...\n"
@@ -405,6 +405,23 @@ PHP
 		printf "Updating WordPress trunk...\n"
 		cd /srv/www/wordpress-trunk
 		svn up --ignore-externals
+	fi
+
+	# Checkout, install and configure WordPress trunk via develop.svn
+	if [ ! -d /srv/www/wordpress-develop ]
+	then
+		printf "Checking out WordPress trunk from develop.svn....http://develop.svn.wordpress.org/trunk\n"
+		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
+		cd /srv/www/wordpress-develop/src/
+		printf "Configuring WordPress develop...\n"
+		wp core config --dbname=wordpress_develop_src --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+define( "WP_DEBUG", true );
+PHP
+		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop - SRC" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	else
+		printf "Updating WordPress trunk...\n"
+		cd /srv/www/wordpress-develop/
+		svn up
 	fi
 
 	# Checkout and configure the WordPress unit tests
@@ -442,7 +459,7 @@ else
 fi
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'
+DOMAINS='local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev'
 if ! grep -q "$DOMAINS" /etc/hosts
 then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
