@@ -53,7 +53,7 @@ Immediate goals for VVV include:
 1. Start with any operating system.
 1. Install [VirtualBox 4.2.16](https://www.virtualbox.org/wiki/Downloads)
     * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.16 release.
-1. Install [Vagrant 1.2.5](http://downloads.vagrantup.com/tags/v1.2.5)
+1. Install [Vagrant 1.2.7](http://downloads.vagrantup.com/tags/v1.2.7)
     * `vagrant` will now be available as a command in the terminal, try it out.
 1. Clone the Varying Vagrant Vagrants repository into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
@@ -66,7 +66,7 @@ Immediate goals for VVV include:
 1. Add a record to your local machine's hosts file
     * `192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev`
     * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev" >>/private/etc/hosts'`
-1. Visit `http://local.wordpress.dev/` in your browser for WordPress 3.5.1, `http://local.wordpress-trunk.dev` for WordPress trunk, or `http://192.168.50.4` for the default dashboard.
+1. Visit `http://local.wordpress.dev/` in your browser for WordPress 3.6.0, `http://local.wordpress-trunk.dev` for WordPress trunk, or `http://192.168.50.4` for the default dashboard.
 
 Fancy, yeah?
 
@@ -131,12 +131,12 @@ A bunch of stuff!
 
 1. [Ubuntu](http://ubuntu.com) 12.04 LTS (Precise Pangolin)
 1. [nginx](http://nginx.org) 1.4.2
-1. [mysql](http://mysql.com) 5.5.31
+1. [mysql](http://mysql.com) 5.5.32
 1. [php-fpm](http://php-fpm.org) 5.4.17
 1. [memcached](http://memcached.org/) 1.4.13
-1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.6) 3.0.6
-1. [xdebug](http://xdebug.org/) 2.2.1
-1. [PHPUnit](http://pear.phpunit.de/) 3.7.21
+1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8) 3.0.8
+1. [xdebug](http://xdebug.org/) 2.2.3
+1. [PHPUnit](http://pear.phpunit.de/) 3.7.24
 1. [ack-grep](http://beyondgrep.com/) 2.04
 1. [git](http://git-scm.com) 1.8.3.4
 1. [subversion](http://subversion.apache.org/) 1.7.9
