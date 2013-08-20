@@ -414,14 +414,22 @@ PHP
 		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
 		cd /srv/www/wordpress-develop/src/
 		printf "Configuring WordPress develop...\n"
-		wp core config --dbname=wordpress_develop_src --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( "WP_DEBUG", true );
 PHP
-		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop - SRC" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		printf "Updating WordPress trunk...\n"
 		cd /srv/www/wordpress-develop/
 		svn up
+	fi
+
+	if [ ! -d /srv/www/wordpress-develop/build ]
+	then
+		printf "Initializing grunt in WordPress develop...\n"
+		cd /srv/www/wordpress-develop/
+		npm install
+		grunt
 	fi
 
 	# Checkout and configure the WordPress unit tests
@@ -459,7 +467,7 @@ else
 fi
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev'
+DOMAINS='local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev'
 if ! grep -q "$DOMAINS" /etc/hosts
 then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
