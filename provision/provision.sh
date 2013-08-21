@@ -78,6 +78,9 @@ apt_package_check_list=(
 	vim
 	colordiff
 
+	# Req'd for i18n tools
+	gettext
+
 	# Req'd for Webgrind
 	graphviz
 
