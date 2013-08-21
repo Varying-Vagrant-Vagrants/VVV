@@ -109,7 +109,7 @@ All database usernames and passwords for WordPress installations included by def
 
 All WordPress admin usernames and passwords for WordPress installations included by default are `admin` and `password`.
 
-#### WordPress Default - Stable Release
+#### WordPress Stable
 * URL: `http://local.wordpress.dev`
 * DB Name: `wordpress_default`
 
