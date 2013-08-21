@@ -25,6 +25,7 @@ Multiple projects can be developed at once in the same environment provided by V
 * Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes using the same test content.
 * Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop a plugin the same way.
 * Install additional instances of WordPress in `/srv/www/` and configure a few pieces of VVV accordingly to work with the new installation.
+* Use the `wordpress-develop` directory to participate in WordPress core development.
 
 #### VVV as a Scaffold
 
@@ -64,27 +65,32 @@ Immediate goals for VVV include:
     * `vagrant up` - *omg magic happens*
     * Be patient, this could take a while, especially on the first run.
 1. Add a record to your local machine's hosts file
-    * `192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev`
-    * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev" >>/private/etc/hosts'`
-1. Visit `http://local.wordpress.dev/` in your browser for WordPress 3.6.0, `http://local.wordpress-trunk.dev` for WordPress trunk, or `http://192.168.50.4` for the default dashboard.
+    * `192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
+    * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
+1. Visit any of the following default sites in your browser:
+    * `http://local.wordpress.dev/` for WordPress stable
+    * `http://local.wordpress-trunk.dev/` for WordPress trunk
+    * `http://src.wordpress-develop.dev/` for trunk WordPress development files
+    * `http://build.wordpress-develop.dev/` for version of those development files built with Grunt
+    * `http://192.168.50.4` for a default dashboard containing several useful tools
 
 Fancy, yeah?
 
 ### What Did That Do?
 
-The first time you run `vagrant up`, a pre-packaged virtual machine box is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an Ubuntu 12.04 installation (Precise release) and is about 280MB.
+The first time you run `vagrant up`, a packaged box containing a virtual machine is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an Ubuntu 12.04 installation (Precise release) and is about 280MB.
 
 After this box is download, it begins to boot as a sandboxed virtual machine using VirtualBox. When ready, it runs the provisioning script also provided with this repository. This initiates the download and installation of around 88MB of packages on the new virtual machine.
 
 The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will more than likely only take several minutes.
 
-On future runs of `vagrant up`, the pre-packaged box will already be cached on your machine and Vagrant will only need to deal with provisioning. If the machine has been destroyed with `vagrant destroy`, it will need to download the full 88MB of packages to install. If the vagrant has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything.
+On future runs of `vagrant up`, the packaged box will already be cached on your local machine and Vagrant will only need to deal with provisioning. If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 88MB of packages to install. If the Vagrant has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything.
 
 ### Now What?
 
 Now that you're up and running with a default configuration, start poking around and modifying things.
 
-1. Access the server with `vagrant ssh` from your `vagrant-local` directory. You can do pretty much anything you would do with a standard Ubuntu installation on a full server.
+1. Access the server via the command line with `vagrant ssh` from your `vagrant-local` directory. You can do pretty much anything you would do with a standard Ubuntu installation on a full server.
     * If you are on a Windows PC, you may need to install additional software for this to work seamlessly. A terminal program such as [Putty](www.chiark.greenend.org.uk/~sgtatham/putty/download.html) will provide access immediately.
 1. Destroy the box and start from scratch with `vagrant destroy`
     * As explained before, the initial 280MB box file will be cached on your machine. the next `vagrant up` command will initiate the complete provisioning process again.
@@ -93,43 +99,44 @@ Now that you're up and running with a default configuration, start poking around
     * The network configuration picks an IP of 192.168.50.4. This works if you are *not* on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you *are* on a 192.168.50.x sub domain already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
     * If you require any custom SQL commands to run when the virtual machine boots, move `database/init-custom.sql.sample` to `database/init-custom.sql` and edit it to add whichever `CREATE DATABASE` and `GRANT ALL PRIVILEGES` statements you want to run on startup to prepare mysql for SQL imports (see next bullet).
     * Have any SQL files that should be imported in the `database/backups/` directory and named as `db_name.sql`. The `import-sql.sh` script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step's SQL.
-    * Check out the example nginx configurations in `config/nginx-config/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for basic WordPress 3.5.1 and trunk setups.
-    * Once a database is imported on the initial `vagrant up`, it will persist on the local machine a mapped mysql data directory.
+    * Check out the example nginx configurations in `config/nginx-config/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for basic WordPress stable, trunk, and develop setups.
+    * Once a database is imported on the initial `vagrant up`, it will persist on the local machine in a mapped `database/data` directory.
     * Other stuff. Familiarize and all that.
 
 ### Credentials and Such
 
+All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
+
+All WordPress admin usernames and passwords for WordPress installations included by default are `admin` and `password`.
+
 #### WordPress Default - Stable Release
 * URL: `http://local.wordpress.dev`
 * DB Name: `wordpress_default`
-* DB User: `wp`
-* DB Pass: `wp`
-* Admin User: `admin`
-* Admin Pass: `password`
 
 #### WordPress Trunk
 * URL: `http://local.wordpress-trunk.dev`
 * DB Name: `wordpress_trunk`
-* DB User: `wp`
-* DB Pass: `wp`
-* Admin User: `admin`
-* Admin Pass: `password`
+
+#### WordPress Develop
+* /src URL: `http://src.wordpress-develop.dev`
+* /build URL: `http://build.wordpress-develop.dev`
+* DB Name: `wordpress_develop`
+* DB Name: `wordpress_unit_tests`
 
 #### MySQL Root
 * [Connecting to MySQL](https://github.com/10up/varying-vagrant-vagrants/wiki/Connecting-to-MySQL) from local
 * User: `root`
 * Pass: `blank`
 
-#### WordPress Unit Tests
-* DB Name: `wordpress_unit_tests`
-* DB User: `wp`
-* DB Pass: `wp`
-
 ### What do you get?
 
 A bunch of stuff!
 
 1. [Ubuntu](http://ubuntu.com) 12.04 LTS (Precise Pangolin)
+1. [WordPress Develop](http://develop.svn.wordpress.org/trunk/)
+1. [WordPress Stable](http://wordpress.org)
+1. [WordPress Trunk](http://core.svn.wordpress.org/trunk)
+1. [WP-CLI](http://wp-cli.org)
 1. [nginx](http://nginx.org) 1.4.2
 1. [mysql](http://mysql.com) 5.5.32
 1. [php-fpm](http://php-fpm.org) 5.4.17
@@ -142,10 +149,6 @@ A bunch of stuff!
 1. [subversion](http://subversion.apache.org/) 1.7.9
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
-1. [WordPress 3.6.0](http://wordpress.org)
-1. [WordPress trunk](http://core.svn.wordpress.org/trunk)
-1. [WP-CLI](http://wp-cli.org)
-1. [WordPress Unit Tests](http://make.wordpress.org/core/handbook/automated-testing/)
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
 1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.3
@@ -155,7 +158,7 @@ A bunch of stuff!
 
 ### Feedback?
 
-Let us have it! If you have tips that we need to know, open a new issue or find us in [other ways](http://10up.com). Some blog posts have been written documenting the process that may provide insight....
+Let us have it! If you have tips that we need to know, open a new issue. Some blog posts have been written documenting the process that may provide insight....
 
 * [Hi WordPress, Meet Vagrant](http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/)
 * [Evolving WordPress Development With Vagrant](http://jeremyfelt.com/code/2013/03/17/evolving-wordpress-development-with-vagrant/)
