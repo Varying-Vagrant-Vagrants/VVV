@@ -433,18 +433,6 @@ PHP
 		grunt
 	fi
 
-	# Checkout and configure the WordPress i18n tools
-	if [ ! -d /srv/www/wordpress-i18n-tools ]
-	then
-		I18N_SVN='http://i18n.svn.wordpress.org/tools/trunk/'
-		printf "Downloading WordPress i18n Tools.....$I18N_SVN\n"
-		svn checkout $I18N_SVN /srv/www/wordpress-i18n-tools
-	else
-		printf "Updating WordPress i18n Tools...\n"
-		cd /srv/www/wordpress-i18n-tools/
-		svn up
-	fi
-
 	# Download phpMyAdmin 4.0.3
 	if [ ! -d /srv/www/default/database-admin ]
 	then
