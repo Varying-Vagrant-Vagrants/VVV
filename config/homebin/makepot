@@ -1,0 +1,4 @@
+#!/bin/sh
+# Convenience script to run makepot.php
+
+php /srv/www/wordpress-i18n-tools/makepot.php $1 $2 $3 $4
