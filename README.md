@@ -80,11 +80,11 @@ Fancy, yeah?
 
 The first time you run `vagrant up`, a packaged box containing a virtual machine is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an Ubuntu 12.04 installation (Precise release) and is about 280MB.
 
-After this box is download, it begins to boot as a sandboxed virtual machine using VirtualBox. When ready, it runs the provisioning script also provided with this repository. This initiates the download and installation of around 88MB of packages on the new virtual machine.
+After this box is download, it begins to boot as a sandboxed virtual machine using VirtualBox. When ready, it runs the provisioning script also provided with this repository. This initiates the download and installation of around 105MB of packages on the new virtual machine.
 
 The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will more than likely only take several minutes.
 
-On future runs of `vagrant up`, the packaged box will already be cached on your local machine and Vagrant will only need to deal with provisioning. If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 88MB of packages to install. If the Vagrant has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything.
+On future runs of `vagrant up`, the packaged box will already be cached on your local machine and Vagrant will only need to deal with provisioning. If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 105MB of packages to install. If the Vagrant has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything.
 
 ### Now What?
 
@@ -124,9 +124,9 @@ All WordPress admin usernames and passwords for WordPress installations included
 * DB Name: `wordpress_unit_tests`
 
 #### MySQL Root
-* [Connecting to MySQL](https://github.com/10up/varying-vagrant-vagrants/wiki/Connecting-to-MySQL) from local
 * User: `root`
 * Pass: `blank`
+* See: [Connecting to MySQL](https://github.com/10up/varying-vagrant-vagrants/wiki/Connecting-to-MySQL) from your local machine
 
 ### What do you get?
 
