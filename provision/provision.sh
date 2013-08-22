@@ -129,7 +129,7 @@ then
 	# then we'll run `apt-get update` and then `apt-get install` to proceed.
 	if [ ${#apt_package_install_list[@]} = 0 ];
 	then
-		printf "No apt packages to install.\n\n"
+		echo "No apt packages to install.\n"
 	else
 		# Before running `apt-get update`, we should add the public keys for
 		# the packages that we are installing from non standard sources via
@@ -156,11 +156,11 @@ then
 		gpg -q -a --export  C7917B12  | apt-key add -
 
 		# update all of the package references before installing anything
-		printf "Running apt-get update....\n"
+		echo "Running apt-get update..."
 		apt-get update --assume-yes
 
 		# install required packages
-		printf "Installing apt-get packages...\n"
+		echo "Installing apt-get packages..."
 		apt-get install --assume-yes ${apt_package_install_list[@]}
 
 		# Clean up apt caches
@@ -185,10 +185,10 @@ then
 	# master branch on GitHub repository.
 	if composer --version | grep -q 'Composer version';
 	then
-		printf "Updating Composer...\n"
+		echo "Updating Composer..."
 		composer self-update
 	else
-		printf "Installing Composer...\n"
+		echo "Installing Composer..."
 		curl -sS https://getcomposer.org/installer | php
 		chmod +x composer.phar
 		mv composer.phar /usr/local/bin/composer
@@ -201,21 +201,21 @@ then
 	# packages are controlled in the `/srv/config/phpunit-composer.json` file.
 	if [ ! -d /usr/local/src/vvv-phpunit ]
 	then
-		printf "Installing PHPUnit, Hamcrest and Mockery...\n"
+		echo "Installing PHPUnit, Hamcrest and Mockery..."
 		mkdir -p /usr/local/src/vvv-phpunit
 		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
 	else
 		cd /usr/local/src/vvv-phpunit
-		if composer show -i | grep -q 'mockery' ; then echo 'Mockery installed' ; else vvvphpunit_update=1;fi
-		if composer show -i | grep -q 'phpunit' ; then echo 'PHPUnit installed' ; else vvvphpunit_update=1;fi
-		if composer show -i | grep -q 'hamcrest'; then echo 'Hamcrest installed'; else vvvphpunit_update=1;fi
+		if composer show -i | grep -q 'mockery' ; then echo "Mockery installed" ; else vvvphpunit_update=1; fi
+		if composer show -i | grep -q 'phpunit' ; then echo "PHPUnit installed" ; else vvvphpunit_update=1; fi
+		if composer show -i | grep -q 'hamcrest'; then echo "Hamcrest installed"; else vvvphpunit_update=1; fi
 		cd ~/
 	fi
 
 	if [ "$vvvphpunit_update" = 1 ]
 	then
-		printf "Update PHPUnit, Hamcrest and Mockery...\n"
+		echo "Update PHPUnit, Hamcrest and Mockery..."
 		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
 	fi
@@ -226,15 +226,15 @@ then
 	# from NPM
 	if [ ! -d /usr/lib/node_modules/grunt-cli  ]
 	then
-		printf "Installing Grunt CLI\n"
+		echo "Installing Grunt CLI"
 		npm install -g grunt-cli
 	else
-		printf "Updating Grunt CLI\n"
+		echo "Updating Grunt CLI"
 		npm update -g grunt-cli
 	fi
 
 else
-	printf "\nNo network connection available, skipping package installation"
+	echo "\nNo network connection available, skipping package installation"
 fi
 
 # Configuration for nginx
@@ -254,7 +254,7 @@ if [ ! -e /etc/nginx/server.crt ]; then
 fi
 
 # SYMLINK HOST FILES
-printf "\nSetup configuration file links...\n"
+echo "\nSetup configuration file links..."
 
 ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
 ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
@@ -296,7 +296,7 @@ vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
 # RESTART SERVICES
 #
 # Make sure the services we expect to be running are running.
-printf "\nRestart services...\n"
+echo "\nRestart services..."
 service nginx restart
 service php5-fpm restart
 service memcached restart
@@ -310,10 +310,10 @@ php5dismod xdebug
 exists_mysql=`service mysql status`
 if [ "mysql stop/waiting" == "$exists_mysql" ]
 then
-	printf "service mysql start"
+	echo "service mysql start"
 	service mysql start
 else
-	printf "service mysql restart"
+	echo "service mysql restart"
 	service mysql restart
 fi
 
@@ -323,14 +323,14 @@ fi
 # the mysqldump files located in database/backups/
 if [ -f /srv/database/init-custom.sql ]
 then
-	mysql -u root -pblank < /srv/database/init-custom.sql | printf "\nInitial custom MySQL scripting...\n"
+	mysql -u root -pblank < /srv/database/init-custom.sql | echo "\nInitial custom MySQL scripting..."
 else
-	printf "\nNo custom MySQL scripting found in database/init-custom.sql, skipping...\n"
+	echo "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
 fi
 
 # Setup MySQL by importing an init file that creates necessary
 # users and databases that our vagrant setup relies on.
-mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep...."
+mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep..."
 
 # Process each mysqldump SQL file in database/backups to import
 # an initial data set for MySQL.
@@ -341,12 +341,12 @@ then
 	# WP-CLI Install
 	if [ ! -d /srv/www/wp-cli ]
 	then
-		printf "\nDownloading wp-cli.....http://wp-cli.org\n"
+		echo "\nDownloading wp-cli, see http://wp-cli.org"
 		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
 		composer install
 	else
-		printf "\nUpdating wp-cli....\n"
+		echo "\nUpdating wp-cli..."
 		cd /srv/www/wp-cli
 		git pull --rebase origin master
 		composer update
@@ -358,13 +358,13 @@ then
 	# xdebug profiler)
 	if [ ! -d /srv/www/default/webgrind ]
 	then
-		printf "\nDownloading webgrind.....https://github.com/jokkedk/webgrind\n"
+		echo "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
 		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
 
-		printf "\nLinking webgrind config file...\n"
+		echo "\nLinking webgrind config file..."
 		ln -sf /srv/config/webgrind-config.php /srv/www/default/webgrind/config.php | echo " * /srv/config/webgrind-config.php -> /srv/www/default/webgrind/config.php"
 	else
-		printf "\nUpdating webgrind....\n"
+		echo "\nUpdating webgrind..."
 		cd /srv/www/default/webgrind
 		git pull --rebase origin master
 	fi
@@ -372,20 +372,20 @@ then
 	# Install and configure the latest stable version of WordPress
 	if [ ! -d /srv/www/wordpress-default ]
 	then
-		printf "Downloading WordPress.....http://wordpress.org\n"
+		echo "Downloading WordPress Stable, see http://wordpress.org/"
 		cd /srv/www/
 		curl -O http://wordpress.org/latest.tar.gz
 		tar -xvf latest.tar.gz
 		mv wordpress wordpress-default
 		rm latest.tar.gz
 		cd /srv/www/wordpress-default
-		printf "Configuring WordPress...\n"
+		echo "Configuring WordPress Stable..."
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-define( "WP_DEBUG", true );
+define( 'WP_DEBUG', true );
 PHP
 		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
-		printf "Updating WordPress stable...\n"
+		echo "Updating WordPress Stable..."
 		cd /srv/www/wordpress-default
 		wp core upgrade
 	fi
@@ -393,16 +393,16 @@ PHP
 	# Checkout, install and configure WordPress trunk via core.svn
 	if [ ! -d /srv/www/wordpress-trunk ]
 	then
-		printf "Checking out WordPress trunk from core.svn....http://core.svn.wordpress.org/trunk\n"
+		echo "Checking out WordPress trunk from core.svn., see http://core.svn.wordpress.org/trunk"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
-		printf "Configuring WordPress trunk...\n"
+		echo "Configuring WordPress trunk..."
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-define( "WP_DEBUG", true );
+define( 'WP_DEBUG', true );
 PHP
 		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
-		printf "Updating WordPress trunk...\n"
+		echo "Updating WordPress trunk..."
 		cd /srv/www/wordpress-trunk
 		svn up --ignore-externals
 	fi
@@ -410,24 +410,24 @@ PHP
 	# Checkout, install and configure WordPress trunk via develop.svn
 	if [ ! -d /srv/www/wordpress-develop ]
 	then
-		printf "Checking out WordPress trunk from develop.svn....http://develop.svn.wordpress.org/trunk\n"
+		echo "Checking out WordPress trunk from develop.svn., see http://develop.svn.wordpress.org/trunk"
 		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
 		cd /srv/www/wordpress-develop/src/
-		printf "Configuring WordPress develop...\n"
+		echo "Configuring WordPress develop..."
 		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-define( "WP_DEBUG", true );
+define( 'WP_DEBUG', true );
 PHP
 		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/tests/
 	else
-		printf "Updating WordPress trunk...\n"
+		echo "Updating WordPress trunk..."
 		cd /srv/www/wordpress-develop/
 		svn up
 	fi
 
 	if [ ! -d /srv/www/wordpress-develop/build ]
 	then
-		printf "Initializing grunt in WordPress develop...\n"
+		echo "Initializing grunt in WordPress develop..."
 		cd /srv/www/wordpress-develop/
 		npm install
 		grunt
@@ -436,17 +436,17 @@ PHP
 	# Download phpMyAdmin 4.0.3
 	if [ ! -d /srv/www/default/database-admin ]
 	then
-		printf "Downloading phpMyAdmin 4.0.3....\n"
+		echo "Downloading phpMyAdmin 4.0.3..."
 		cd /srv/www/default
 		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.3/phpMyAdmin-4.0.3-english.tar.gz/download#!md5!07dc6ed4d65488661d2581de8d325493'
 		tar -xf phpmyadmin.tar.gz
 		mv phpMyAdmin-4.0.3-english database-admin
 		rm phpmyadmin.tar.gz
 	else
-		printf "PHPMyAdmin 4.0.3 already installed.\n"
+		echo "PHPMyAdmin 4.0.3 already installed."
 	fi
 else
-	printf "\nNo network available, skipping network installations"
+	echo "\nNo network available, skipping network installations"
 fi
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
@@ -456,12 +456,12 @@ then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
 
 end_seconds=`date +%s`
-echo -----------------------------
-echo Provisioning complete in `expr $end_seconds - $start_seconds` seconds
+echo "-----------------------------"
+echo "Provisioning complete in `expr $end_seconds - $start_seconds` seconds"
 if [[ $ping_result == *bytes?from* ]]
 then
-	echo External network connection established, packages up to date.
+	echo "External network connection established, packages up to date."
 else
-	echo No external network available. Package installation and maintenance skipped.
+	echo "No external network available. Package installation and maintenance skipped."
 fi
-echo For further setup instructions, visit http://$vvv_ip
+echo "For further setup instructions, visit http://$vvv_ip"
