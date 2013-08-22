@@ -129,7 +129,7 @@ then
 	# then we'll run `apt-get update` and then `apt-get install` to proceed.
 	if [ ${#apt_package_install_list[@]} = 0 ];
 	then
-		echo "No apt packages to install.\n"
+		echo -e "No apt packages to install.\n"
 	else
 		# Before running `apt-get update`, we should add the public keys for
 		# the packages that we are installing from non standard sources via
@@ -234,7 +234,7 @@ then
 	fi
 
 else
-	echo "\nNo network connection available, skipping package installation"
+	echo -e "\nNo network connection available, skipping package installation"
 fi
 
 # Configuration for nginx
@@ -254,7 +254,7 @@ if [ ! -e /etc/nginx/server.crt ]; then
 fi
 
 # SYMLINK HOST FILES
-echo "\nSetup configuration file links..."
+echo -e "\nSetup configuration file links..."
 
 ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
 ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
@@ -296,7 +296,7 @@ vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
 # RESTART SERVICES
 #
 # Make sure the services we expect to be running are running.
-echo "\nRestart services..."
+echo -e "\nRestart services..."
 service nginx restart
 service php5-fpm restart
 service memcached restart
@@ -323,9 +323,9 @@ fi
 # the mysqldump files located in database/backups/
 if [ -f /srv/database/init-custom.sql ]
 then
-	mysql -u root -pblank < /srv/database/init-custom.sql | echo "\nInitial custom MySQL scripting..."
+	mysql -u root -pblank < /srv/database/init-custom.sql | echo -e "\nInitial custom MySQL scripting..."
 else
-	echo "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
+	echo -e "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
 fi
 
 # Setup MySQL by importing an init file that creates necessary
@@ -341,12 +341,12 @@ then
 	# WP-CLI Install
 	if [ ! -d /srv/www/wp-cli ]
 	then
-		echo "\nDownloading wp-cli, see http://wp-cli.org"
+		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
 		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
 		composer install
 	else
-		echo "\nUpdating wp-cli..."
+		echo -e "\nUpdating wp-cli..."
 		cd /srv/www/wp-cli
 		git pull --rebase origin master
 		composer update
@@ -358,13 +358,13 @@ then
 	# xdebug profiler)
 	if [ ! -d /srv/www/default/webgrind ]
 	then
-		echo "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
+		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
 		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
 
-		echo "\nLinking webgrind config file..."
+		echo -e "\nLinking webgrind config file..."
 		ln -sf /srv/config/webgrind-config.php /srv/www/default/webgrind/config.php | echo " * /srv/config/webgrind-config.php -> /srv/www/default/webgrind/config.php"
 	else
-		echo "\nUpdating webgrind..."
+		echo -e "\nUpdating webgrind..."
 		cd /srv/www/default/webgrind
 		git pull --rebase origin master
 	fi
@@ -446,7 +446,7 @@ PHP
 		echo "PHPMyAdmin 4.0.3 already installed."
 	fi
 else
-	echo "\nNo network available, skipping network installations"
+	echo -e "\nNo network available, skipping network installations"
 fi
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
