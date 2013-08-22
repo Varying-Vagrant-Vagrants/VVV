@@ -393,7 +393,7 @@ PHP
 	# Checkout, install and configure WordPress trunk via core.svn
 	if [ ! -d /srv/www/wordpress-trunk ]
 	then
-		echo "Checking out WordPress trunk from core.svn., see http://core.svn.wordpress.org/trunk"
+		echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
 		echo "Configuring WordPress trunk..."
@@ -410,7 +410,7 @@ PHP
 	# Checkout, install and configure WordPress trunk via develop.svn
 	if [ ! -d /srv/www/wordpress-develop ]
 	then
-		echo "Checking out WordPress trunk from develop.svn., see http://develop.svn.wordpress.org/trunk"
+		echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
 		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
 		cd /srv/www/wordpress-develop/src/
 		echo "Configuring WordPress develop..."
