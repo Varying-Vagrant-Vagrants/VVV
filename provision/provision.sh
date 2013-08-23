@@ -151,8 +151,8 @@ then
 		gpg -q --keyserver keyserver.ubuntu.com --recv-key A1715D88E1DF1F24
 		gpg -q -a --export A1715D88E1DF1F24 | apt-key add -
 
-		# Launchpad nodejs key C7917B12 
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12 
+		# Launchpad nodejs key C7917B12
+		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
 		gpg -q -a --export  C7917B12  | apt-key add -
 
 		# update all of the package references before installing anything
@@ -433,17 +433,17 @@ PHP
 		grunt
 	fi
 
-	# Download phpMyAdmin 4.0.3
+	# Download phpMyAdmin 4.0.5
 	if [ ! -d /srv/www/default/database-admin ]
 	then
-		echo "Downloading phpMyAdmin 4.0.3..."
+		echo "Downloading phpMyAdmin 4.0.5..."
 		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.3/phpMyAdmin-4.0.3-english.tar.gz/download#!md5!07dc6ed4d65488661d2581de8d325493'
+		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.5/phpMyAdmin-4.0.5-english.tar.gz/download'
 		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.0.3-english database-admin
+		mv phpMyAdmin-4.0.5-english database-admin
 		rm phpmyadmin.tar.gz
 	else
-		echo "PHPMyAdmin 4.0.3 already installed."
+		echo "PHPMyAdmin already installed."
 	fi
 else
 	echo -e "\nNo network available, skipping network installations"
