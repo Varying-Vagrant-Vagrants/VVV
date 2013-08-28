@@ -26,6 +26,19 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "vvv"
 
+  # Local Machine Hosts
+  #
+  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+  # installed, the following will automatically configure your local machine's hosts file to
+  # be aware of the domains specified below. Watch the provisioning script as you may be
+  # required to enter a password for Vagrant to access your hosts file.
+  #
+  # By default, we'll include the domains setup by VVV. A short term goal is to read these in
+  # from a local config file so that they can be more dynamic to your setup.
+  if defined? VagrantPlugins::HostsUpdater
+    config.hostsupdater.aliases = [ "local.wordpress.dev", "local.wordpress-trunk.dev", "src.wordpress-develop.dev", "build.wordpress-develop.dev" ]
+  end
+
   # Default Box IP Address
   #
   # This is the IP address that your host will communicate to the guest through. In the
