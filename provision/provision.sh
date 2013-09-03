@@ -451,9 +451,14 @@ PHP
 else
 	echo -e "\nNo network available, skipping network installations"
 fi
+
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev'
+DOMAINS='local.wordpress.dev 
+         local.wordpress-trunk.dev
+         src.wordpress-develop.dev
+         build.wordpress-develop.dev'
+
 if ! grep -q "$DOMAINS" /etc/hosts
 then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi

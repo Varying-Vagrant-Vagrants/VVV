@@ -36,7 +36,12 @@ Vagrant.configure("2") do |config|
   # By default, we'll include the domains setup by VVV. A short term goal is to read these in
   # from a local config file so that they can be more dynamic to your setup.
   if defined? VagrantPlugins::HostsUpdater
-    config.hostsupdater.aliases = [ "local.wordpress.dev", "local.wordpress-trunk.dev", "src.wordpress-develop.dev", "build.wordpress-develop.dev" ]
+    config.hostsupdater.aliases = [
+      "local.wordpress.dev",
+      "local.wordpress-trunk.dev",
+      "src.wordpress-develop.dev",
+      "build.wordpress-develop.dev"
+    ]
   end
 
   # Default Box IP Address
