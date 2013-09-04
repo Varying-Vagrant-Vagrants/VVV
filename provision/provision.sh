@@ -301,11 +301,11 @@ vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
 # Make sure the services we expect to be running are running.
 echo -e "\nRestart services..."
 service nginx restart
-service php5-fpm restart
 service memcached restart
 
 # Disable PHP Xdebug module by default
 php5dismod xdebug
+service php5-fpm restart
 
 # MySQL gives us an error if we restart a non running service, which
 # happens after a `vagrant halt`. Check to see if it's running before
