@@ -16,6 +16,9 @@
 # No need to share individual site configs with each other
 /config/nginx-config/sites/*.conf
 
+# Ignore anything in the 'custom' directory in config
+/config/custom/*
+
 # No need to share our mysql data with each other
 /database/data/*
 
