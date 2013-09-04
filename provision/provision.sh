@@ -363,9 +363,6 @@ then
 	then
 		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
 		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
-
-		echo -e "\nLinking webgrind config file..."
-		ln -sf /srv/config/webgrind-config.php /srv/www/default/webgrind/config.php | echo " * /srv/config/webgrind-config.php -> /srv/www/default/webgrind/config.php"
 	else
 		echo -e "\nUpdating webgrind..."
 		cd /srv/www/default/webgrind
