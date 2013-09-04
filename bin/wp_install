@@ -1,0 +1,77 @@
+#! /usr/bin/env bash
+
+###########################################################
+# Helper functions
+##
+function randomStr {
+  if [ ! -n "$1" ];
+    then LEN=20
+    else LEN="$1"
+  fi
+  echo $(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c $LEN)
+}
+
+#
+###############################################################################
+# check if site already exists
+##
+echo "Provisioning new wordpress install"
+INIT_DIR=`PWD`
+VPATH=www/local-$1
+if [ -d $VPATH ]; then
+  echo "Site 'wp-$1' Already Exists"
+  exit 1;
+fi
+
+###############################################################################
+# create nginx site config
+##
+echo "Creating new nginx site conf"
+cp config/nginx-config/sites/local-nginx-example.conf-sample config/nginx-config/sites/local-$1-dev.conf
+
+sed -i '' "s/testserver.com/local.$1.dev/g" config/nginx-config/sites/local-$1-dev.conf
+sed -i '' "s/wordpress-local/local-$1/g" config/nginx-config/sites/local-$1-dev.conf
+
+###############################################################################
+# append Create DB to init-custom.php
+##
+echo "Adding Create DB lines to init-custom.php"
+SQL="
+CREATE DATABASE IF NOT EXISTS \`local_$1\`;
+GRANT ALL PRIVILEGES ON \`local_$1\`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
+"
+echo $SQL >> database/init-custom.sql
+
+###############################################################################
+# append local.$1.dev to /etc/hosts
+##
+echo "Updating /etc/hosts with 'local.$1.dev'"
+sudo sh -c "echo '192.168.50.4 local.$1.dev' >>/etc/hosts"
+
+###############################################################################
+# install and configure the latest stable version of WordPress
+##
+printf "Downloading WordPress.....http://wordpress.org\n"
+if [ ! -f latest.tar.gz ]; then
+  curl -O http://wordpress.org/latest.tar.gz
+fi
+tar -xvf latest.tar.gz
+mv wordpress $VPATH
+printf "Configuring WordPress...\n"
+cd $VPATH
+mv wp-config-sample.php wp-config.php
+for i in {1..8}
+do sed -i '' "1,/put your unique phrase here/s/put your unique phrase here/$(randomStr 50)/" wp-config.php
+done
+sed -i '' "s/database_name_here/local_$1/" wp-config.php
+sed -i '' 's/username_here/wp/' wp-config.php
+sed -i '' "s/password_here/wp/" wp-config.php
+
+###############################################################################
+# go back
+##
+cd $INIT_DIR
+
+## Provision to make sure all services are restarted
+Vagrant up
+Vagrant provision
