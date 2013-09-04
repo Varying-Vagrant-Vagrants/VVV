@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 dir = Dir.pwd
+vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
 Vagrant.configure("2") do |config|
 
@@ -119,7 +120,7 @@ Vagrant.configure("2") do |config|
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh 
   # file) should go in this script. If it does not exist, no extra provisioning will run.
-  if File.exists?(File.join(File.expand_path(File.dirname(__FILE__)),'provision','provision-pre.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-pre.sh" )
   end
 
@@ -129,7 +130,7 @@ Vagrant.configure("2") do |config|
   # provision directory. If it is detected that a provision-custom.sh script has been
   # created, that is run as a replacement. This is an opportunity to replace the entirety
   # of the provisioning provided by default.
-  if File.exists?(File.join(File.expand_path(File.dirname(__FILE__)),'provision','provision-custom.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-custom.sh" )
   else
     config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
@@ -139,7 +140,7 @@ Vagrant.configure("2") do |config|
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
-  if File.exists?(File.join(File.expand_path(File.dirname(__FILE__)),'provision','provision-post.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-post.sh" )
   end
 end
