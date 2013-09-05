@@ -17,11 +17,6 @@ Vagrant.configure("2") do |config|
   # established on the host machine inside the guest. See the manual for ssh-add
   config.ssh.forward_agent = true
 
-  # SSH timeout
-  #
-  # Bump up the default time to wait when attempting a single connection via SSH from 30
-  config.ssh.timeout = 80
-
   # Default Ubuntu Box
   #
   # This box is provided by Vagrant at vagrantup.com and is a nicely sized (290MB)
