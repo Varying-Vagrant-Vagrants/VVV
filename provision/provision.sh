@@ -357,6 +357,18 @@ then
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
+	if [ ! -d /srv/www/default/memcached-admin ]
+	then
+		echo -e "\nDownloading PHPMemcachedAdmin, see https://code.google.com/p/phpmemcacheadmin/"
+		cd /srv/www/default
+		wget -q -O phpmemcachedadmin.tar.gz 'https://phpmemcacheadmin.googlecode.com/files/phpMemcachedAdmin-1.2.2-r262.tar.gz'
+		mkdir memcached-admin
+		tar -xf phpmemcachedadmin.tar.gz --directory memcached-admin
+		rm phpmemcachedadmin.tar.gz
+	else
+		echo "PHPMemcachedAdmin already installed."
+	fi
+
 	# Webgrind install (for viewing callgrind/cachegrind files produced by
 	# xdebug profiler)
 	if [ ! -d /srv/www/default/webgrind ]
