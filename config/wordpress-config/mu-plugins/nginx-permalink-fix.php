@@ -8,3 +8,7 @@
  *
  */
 add_filter( 'got_rewrite', '__return_true', 999 );
+
+// Don't generate .htaccess files when rewrite rules are generated
+add_filter( 'flush_rewrite_rules_hard', '__return_false', 10 );
+
