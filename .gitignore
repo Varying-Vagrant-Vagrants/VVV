@@ -1,6 +1,7 @@
 # Stuff that pops up locally for me - @jeremyfelt
 *.sublime*
 .DS_Store
+.idea
 
 # Because this really is a working directory, ignore vagrant's files
 /.vagrant
