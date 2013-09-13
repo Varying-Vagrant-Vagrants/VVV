@@ -471,7 +471,9 @@ DOMAINS='local.wordpress.dev
          build.wordpress-develop.dev'
 
 if ! grep -q "$DOMAINS" /etc/hosts
-then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
+then
+	DOMAINS=$(echo $DOMAINS)
+	echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
 
 end_seconds=`date +%s`
