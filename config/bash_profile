@@ -1,0 +1,26 @@
+# bash_profile
+#
+# Symlinked to the vagrant user's home directory. This loads
+# the default .bashrc provided by the virtual machine, which in
+# turn loads the .bash_aliases file that we provide. Use this
+# bash_profile to set environment variables and such.
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# Set the WP_TESTS_DIR path directory so that we can use phpunit inside
+# plugins almost immediately.
+export WP_TESTS_DIR=/srv/www/wordpress-develop/tests/phpunit/
+
+# add autocomplete for grunt
+eval "$(grunt --completion=bash)"

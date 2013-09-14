@@ -1,6 +1,0 @@
-server {
-    listen       80;
-    server_name  testserver.com;
-    root         /srv/www;
-    include /etc/nginx/nginx-wp-common.conf;
-}

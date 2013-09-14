@@ -1,12 +1,5 @@
-Store .sql dumps in this database, then create and credential a file in the server-conf directory that creates the databases needed to suck in these SQL dumps.
+SQL files created with mysqldump should be stored in database/backups so that they are automatically imported as the Vagrant VM boots up.
 
-So.. create-dbs.sql lives in vagrant-web/server-conf and contains this:
+For this to work properly, databases should be created in your database/init-custom.sql file as explained in database/init-custom.sql.sample.
 
-CREATE DATABASE my_database;
-GRANT ALL PRIVILEGES ON my_database.* TO 'thisguy'@'localhost' IDENTIFIED BY 'thatpaass';
-
-CREATE DATABASE my_other_database;
-
-...etc, etc, etc...
-
-Other SQL dumps live in /vagrant-web/server-conf/db-dumps and automatically get sucked in from the shell if they exist and have a .sql file extension. (See provision.sh)
+Once these original files have been imported, they will exist in database/data as the actual mysql data directory and will not need to be reimported on the next vagrant up.

@@ -1,0 +1,4 @@
+* text=auto
+
+# Force provisioning script to use LF, even on Windows
+*.sh    eol=lf

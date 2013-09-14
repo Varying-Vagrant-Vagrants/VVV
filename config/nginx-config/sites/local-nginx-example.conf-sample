@@ -1,0 +1,45 @@
+################################################################
+# Example configuration file for nginx
+#
+# To add a new local WordPress domain to your environment, copy
+# this file using a filename that matches the domain you wish to
+# setup. For example - mylocaldomain.com.conf would be an ideal 
+# filename for http://mylocaldomain.com
+#
+# Once copied, you will need to modify two settings in the server
+# configuration provided:
+#
+# 1. server_name - Change the server_name parameter in the server
+#                  configuration below to mylocaldomain.com
+# 2. root        - Change root to the full path that your WordPress
+#                  site lives at inside Vagrant. An example would be
+#                  /srv/www/mylocal-wordpress
+#
+# You do not need to worry about modifying the listen or include
+# parameters as those are the same across all test sites for most
+# basic WordPress configurations.
+#
+# Once your new domain has been added, make sure to restart the
+# nginx process by running `vagrant provision` in your local
+# environment or `sudo service nginx restart` after `vagrant ssh`
+################################################################
+server {
+    # Determines the port number that nginx will listen to for this
+    # server configuration. 80 is the default http port.
+    listen       80;
+
+    # Listen for HTTPS requests as well
+    listen       443 ssl;
+
+    # Tells nginx what domain name should trigger this configuration. If
+    # you would like multiple domains or subdomains, they can be space
+    # delimited here. See http://nginx.org/en/docs/http/server_names.html
+    server_name  testserver.com;
+
+    # Tells nginx which directory the files for this domain are located
+    root         /srv/www/wordpress-local;
+
+    # Includes a basic WordPress configuration to help with the common
+    # rules needed by a web server to deal with WordPress properly.
+    include /etc/nginx/nginx-wp-common.conf;
+}
