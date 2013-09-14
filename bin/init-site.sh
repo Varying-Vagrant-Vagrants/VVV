@@ -24,18 +24,26 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
+vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
+
 domain=$1
 repo_root=/srv/www/$domain
 dev_domain=vvv.$domain
 docroot=$repo_root/docroot
-db_name=$(sed 's/[^a-z0-9][^a-z0-9]*/_/g' <<< "$domain")
-db_pass=$db_name
-db_user=$db_name
+
+db_name=$(sed "s:\.:_:g" <<< $domain)
+db_name=$(sed "s:-::g" <<< $db_name)
+db_user=$(sed "s:_[^_]*$::g" <<< $db_name)
+db_user=$(sed "s:_::g" <<< $db_user)
+db_user=$(cut -c1-16 <<< $db_user)
+db_pass=$db_user
 
 echo "Domain: $domain"
 echo "Dev domain: $dev_domain"
-echo "Database: $db_name"
 echo "Repo root: $repo_root"
+echo "DB_NAME: $db_name"
+echo "DB_USER: $db_user"
+echo "DB_PASS: $db_pass"
 
 mkdir -p $repo_root
 cd $repo_root
@@ -50,7 +58,6 @@ git_ignores=(
 	'/wp-cli.local.yml'
 	'/docroot/wp-content/uploads/*'
 	'/config/active-env'
-	'/config/*-mine.env.php'
 	'/config/*-overrides.env.php'
 )
 for ignored in "${git_ignores[@]}"; do
@@ -79,19 +86,6 @@ if [ ! -e $nginx_conf_file ]; then
 	git add -v $nginx_conf_file
 fi
 
-# Set db init script
-db_init_path=database/vvv-init.sql
-printf 'CREATE DATABASE IF NOT EXISTS `%s`;\n' $db_name > $db_init_path
-printf 'GRANT ALL PRIVILEGES ON `%s`.* TO "%s"@"localhost" IDENTIFIED BY "%s";\n' $db_name $db_user $db_pass >> $db_init_path
-printf 'USE `%s`;\n' $db_name >> $db_init_path
-git add -v $db_init_path
-
-db_data_path=database/vvv-data.sql
-if [ ! -e $db_data_path ]; then
-	touch $db_data_path
-	git add -v $db_data_path
-fi
-
 # Add WP-CLI configs
 if [ ! -e wp-cli.yml ]; then
 	printf 'path: docroot/\n' > wp-cli.yml
@@ -114,7 +108,7 @@ fi
 # Download WordPress
 if [ ! -e docroot/wp-login.php ]; then
 	wp core download --path=docroot
-	git add docroot
+	git add -A docroot
 fi
 
 # Set up configs
@@ -217,6 +211,46 @@ chmod +x bin/load-db-vvv
 git add -v bin/dump-db-vvv
 git add -v bin/load-db-vvv
 
-echo 'Do a `vagrant reload` to recognize the new site.'
+## Set db init script
+mysql_cmd='use `'$db_name'`' # Required to support hypens in database names
+mysql -u root -pblank -e "$mysql_cmd" 2>/dev/null || db_not_exists=1
+if [ "$db_not_exists" == "1" ]; then
+	db_init_path=database/vvv-init.sql
+	echo "Creating '$db_name' database and '$db_user' user:"
+	touch $db_init_path
+	printf 'CREATE DATABASE IF NOT EXISTS `%s` CHARACTER SET utf8;\n' $db_name >> $db_init_path
+	printf 'GRANT ALL PRIVILEGES ON `%s`.* TO "%s"@"localhost" IDENTIFIED BY "%s";\n' $db_name $db_user $db_pass >> $db_init_path
+	cat $db_init_path
+	# @todo: vvv-init.sh shouldn't even be necessary; we should be able to use WP-CLI to introspect DB constants
+	git add $db_init_path
+	mysql -u root -pblank < $db_init_path || echo "User $db_user may already exist"
+fi
+
+# Set up empty DB dump
+db_data_path=database/vvv-data.sql
+if ! wp core is-installed >/dev/null 2>&1 && [ ! -e $db_data_path ]; then
+	echo "Setting up empty site, storing dump in $db_data_path"
+	admin_name=$db_user
+	admin_pass=$(openssl rand -base64 32)
+	wp core install --url=$dev_domain --title="$domain" --admin_name=$db_user --admin_email="admin@$domain" --admin_password="$admin_pass"
+	printf "Initial WordPress admin user credentials:\nUser: %s\nPass: %s\n" $admin_name $admin_pass | tee wp-admin-user-credentials.txt
+	wp db dump $db_data_path
+	git add -v $db_data_path
+fi
+
+# Append hosts file to vaggrant machine
+if ! grep -q "$dev_domain" /etc/hosts
+then
+	echo
+	echo "Appending domain to VM hosts file:"
+	echo "127.0.0.1 $dev_domain" | sudo tee -a /etc/hosts
+fi
+
+echo
+echo "Make sure you add the following to your host machine's hosts file:"
+echo "$vvv_ip $dev_domain"
+
+echo
+echo 'To recognize your new site, do `vagrant reload --provision`'
 echo 'Navigate to and git-commit:'
 pwd
