@@ -28,6 +28,9 @@ server {
     # server configuration. 80 is the default http port.
     listen       80;
 
+    # Listen for HTTPS requests as well
+    listen       443 ssl;
+
     # Tells nginx what domain name should trigger this configuration. If
     # you would like multiple domains or subdomains, they can be space
     # delimited here. See http://nginx.org/en/docs/http/server_names.html

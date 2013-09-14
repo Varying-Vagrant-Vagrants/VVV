@@ -1,4 +1,4 @@
-# bash_profile 
+# bash_profile
 #
 # Symlinked to the vagrant user's home directory. This loads
 # the default .bashrc provided by the virtual machine, which in
@@ -20,4 +20,7 @@ fi
 
 # Set the WP_TESTS_DIR path directory so that we can use phpunit inside
 # plugins almost immediately.
-export WP_TESTS_DIR=/srv/www/wordpress-unit-tests/
+export WP_TESTS_DIR=/srv/www/wordpress-develop/tests/phpunit/
+
+# add autocomplete for grunt
+eval "$(grunt --completion=bash)"

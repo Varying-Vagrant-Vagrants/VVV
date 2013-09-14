@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 dir = Dir.pwd
+vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
 Vagrant.configure("2") do |config|
 
@@ -15,16 +16,34 @@ Vagrant.configure("2") do |config|
   # Enable agent forwarding on vagrant ssh commands. This allows you to use identities
   # established on the host machine inside the guest. See the manual for ssh-add
   config.ssh.forward_agent = true
-  
+
   # Default Ubuntu Box
   #
   # This box is provided by Vagrant at vagrantup.com and is a nicely sized (290MB)
-  # box containing the Unbuntu 12.0.4 Precise 32 bit release. Once this box is downloaded
+  # box containing the Ubuntu 12.0.4 Precise 32 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = "std-precise32"
+  config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
-  config.vm.hostname = "precise32-dev"
+  config.vm.hostname = "vvv"
+
+  # Local Machine Hosts
+  #
+  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+  # installed, the following will automatically configure your local machine's hosts file to
+  # be aware of the domains specified below. Watch the provisioning script as you may be
+  # required to enter a password for Vagrant to access your hosts file.
+  #
+  # By default, we'll include the domains setup by VVV. A short term goal is to read these in
+  # from a local config file so that they can be more dynamic to your setup.
+  if defined? VagrantPlugins::HostsUpdater
+    config.hostsupdater.aliases = [
+      "local.wordpress.dev",
+      "local.wordpress-trunk.dev",
+      "src.wordpress-develop.dev",
+      "build.wordpress-develop.dev"
+    ]
+  end
 
   # Default Box IP Address
   #
@@ -53,7 +72,7 @@ Vagrant.configure("2") do |config|
   # This directory is used to maintain default database scripts as well as backed
   # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/", "/srv/database"
-  config.vm.synced_folder "database/data/", "/var/lib/mysql", :extra => 'dmode=777,fmode=777'
+  config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
 
   # /srv/config/
   #
@@ -80,7 +99,7 @@ Vagrant.configure("2") do |config|
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
-  config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
+  config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
 
   # Customfile - POSSIBLY UNSTABLE
   #
@@ -95,17 +114,13 @@ Vagrant.configure("2") do |config|
   end
 
   # Provisioning
-  #
-  # Various flags are available to disable portions of the default provisioning script to
-  # run. These flags are mapped in the provision/flags directory
-  config.vm.synced_folder "provision/flags/", "/home/vagrant/flags/"
   # 
   # Process one or more provisioning scripts depending on the existence of custom files.
   #
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh 
   # file) should go in this script. If it does not exist, no extra provisioning will run.
-  if File.exists?('provision/provision-pre.sh') then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-pre.sh" )
   end
 
@@ -115,7 +130,7 @@ Vagrant.configure("2") do |config|
   # provision directory. If it is detected that a provision-custom.sh script has been
   # created, that is run as a replacement. This is an opportunity to replace the entirety
   # of the provisioning provided by default.
-  if File.exists?('provision/provision-custom.sh') then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-custom.sh" )
   else
     config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
@@ -125,7 +140,7 @@ Vagrant.configure("2") do |config|
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
-  if File.exists?('provision/provision-post.sh') then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-post.sh" )
   end
 end

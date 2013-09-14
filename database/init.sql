@@ -5,6 +5,8 @@ CREATE DATABASE IF NOT EXISTS `wordpress_default`;
 GRANT ALL PRIVILEGES ON `wordpress_default`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
 CREATE DATABASE IF NOT EXISTS `wordpress_trunk`;
 GRANT ALL PRIVILEGES ON `wordpress_trunk`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
+CREATE DATABASE IF NOT EXISTS `wordpress_develop`;
+GRANT ALL PRIVILEGES ON `wordpress_develop`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
 CREATE DATABASE IF NOT EXISTS `wordpress_unit_tests`;
 GRANT ALL PRIVILEGES ON `wordpress_unit_tests`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
 

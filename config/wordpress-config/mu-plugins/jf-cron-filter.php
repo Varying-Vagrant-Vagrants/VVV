@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Alter the timeout on cron requests from 0.01 to 0.3. Something about
+ * Alter the timeout on cron requests from 0.01 to 0.5. Something about
  * the Vagrant and/or Ubuntu setup doesn't like these self requests 
  * happening so quickly.
  */

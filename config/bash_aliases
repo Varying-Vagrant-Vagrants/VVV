@@ -5,33 +5,3 @@
 # provisioning is finished. This allows for various scripts and configurations to
 # be available to us.
 #
-
-# Start monitoring config files for changes so that we can 
-# copy changes over or run any necessary import scripts
-start_config_monitor() {
-    local FOUND=""
-    FOUND=`gem list watchr | grep -i watchr`
-    if [ "$FOUND" == "" ]; then
-       sudo gem install watchr
-    fi
-    cd /srv/config/
-    watchr watchr.script &
-}
-
-# Stop monitoring config files as it's possible that we may
-# not want to do something on every config change
-stop_config_monitor() {
-    pkill -f "watchr watchr.script"
-}
-
-# If XDebug is enabled, disable it
-xdebug_off() {
-	sudo php5dismod xdebug
-	sudo service php5-fpm restart
-}
-
-# If XDebug is disabled, enable it
-xdebug_on() {
-	sudo php5enmod xdebug
-	sudo service php5-fpm restart
-}
