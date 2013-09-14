@@ -24,11 +24,9 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
-vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
-
 domain=$1
 repo_root=/srv/www/$domain
-dev_domain=vvv.$domain
+dev_domain=vvv.$(sed 's:^www\.::' <<< $domain)
 docroot=$repo_root/docroot
 
 db_name=$(sed "s:\.:_:g" <<< $domain)
@@ -238,19 +236,9 @@ if ! wp core is-installed >/dev/null 2>&1 && [ ! -e $db_data_path ]; then
 	git add -v $db_data_path
 fi
 
-# Append hosts file to vaggrant machine
-if ! grep -q "$dev_domain" /etc/hosts
-then
-	echo
-	echo "Appending domain to VM hosts file:"
-	echo "127.0.0.1 $dev_domain" | sudo tee -a /etc/hosts
-fi
-
-echo
-echo "Make sure you add the following to your host machine's hosts file:"
-echo "$vvv_ip $dev_domain"
-
 echo
 echo 'To recognize your new site, do `vagrant reload --provision`'
+
+echo
 echo 'Navigate to and git-commit:'
 pwd
