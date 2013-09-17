@@ -6,6 +6,8 @@ vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
 Vagrant.configure("2") do |config|
 
+  # Store the current version of Vagrant for use in conditionals when dealing
+  # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
