@@ -77,7 +77,7 @@ apt_package_check_list=(
 	make
 	vim
 	colordiff
-    postfix
+	postfix
 
 	# Req'd for i18n tools
 	gettext
