@@ -118,10 +118,9 @@ done
 #
 # Use debconf-set-selections to specify the default password for the root MySQL
 # account. This runs on every provision, even if MySQL has been installed. If
-# MySQL is already installed, it will not affect anything. The password in the
-# following two lines *is* actually set to the word 'blank' for the root user.
-echo mysql-server mysql-server/root_password password blank | debconf-set-selections
-echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
+# MySQL is already installed, it will not affect anything. 
+echo mysql-server mysql-server/root_password password root | debconf-set-selections
+echo mysql-server mysql-server/root_password_again password root | debconf-set-selections
 
 # Provide our custom apt sources before running `apt-get update`
 ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list | echo "Linked custom apt sources"
@@ -326,14 +325,14 @@ fi
 # the mysqldump files located in database/backups/
 if [ -f /srv/database/init-custom.sql ]
 then
-	mysql -u root -pblank < /srv/database/init-custom.sql | echo -e "\nInitial custom MySQL scripting..."
+	mysql -u root -proot < /srv/database/init-custom.sql | echo -e "\nInitial custom MySQL scripting..."
 else
 	echo -e "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
 fi
 
 # Setup MySQL by importing an init file that creates necessary
 # users and databases that our vagrant setup relies on.
-mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep..."
+mysql -u root -proot < /srv/database/init.sql | echo "Initial MySQL prep..."
 
 # Process each mysqldump SQL file in database/backups to import
 # an initial data set for MySQL.
