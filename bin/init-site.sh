@@ -173,6 +173,7 @@ fetch_stable_plugin_file batcache batcache.php > docroot/wp-content/mu-plugins/b
 git add -v docroot/wp-content/mu-plugins/batcache.php
 
 # Add some convenience commands for VVV development
+if [ ! -e bin/dump-db-vvv ]; then
 cat > bin/dump-db-vvv <<'BASH'
 #!/usr/bin/env bash
 set -e
@@ -187,7 +188,9 @@ if [ $(cat config/active-env) != 'vvv' ]; then
 fi
 wp db export database/vvv-data.sql
 BASH
+fi
 
+if [ ! -e bin/load-db-vvv ]; then
 cat > bin/load-db-vvv <<'BASH'
 #!/usr/bin/env bash
 set -e
@@ -203,6 +206,7 @@ fi
 wp db import database/vvv-data.sql
 sudo service memcached restart
 BASH
+fi
 
 chmod +x bin/dump-db-vvv
 chmod +x bin/load-db-vvv
