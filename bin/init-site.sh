@@ -230,7 +230,7 @@ fi
 
 # Set up empty DB dump
 db_data_path=database/vvv-data.sql
-if ! wp core is-installed >/dev/null 2>&1 && [ ! -e $db_data_path ]; then
+if [ ! -e $db_data_path ]; then
 	echo "Setting up empty site, storing dump in $db_data_path"
 	admin_name=$db_user
 	admin_pass=$(openssl rand -base64 32)
