@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
   # If you are running more than one VM through Virtualbox, different subnets should be used
   # for those as well. This includes other Vagrant boxes.
   config.vm.network :private_network, ip: "192.168.50.4"
- 
+
   # Drive mapping
   #
   # The following config.vm.share_folder settings will map directories in your Vagrant
@@ -86,17 +86,17 @@ Vagrant.configure("2") do |config|
   #
   # If a server-conf directory exists in the same directory as your Vagrantfile,
   # a mapped directory inside the VM will be created that contains these files.
-  # This directory is currently used to maintain various config files for php and 
+  # This directory is currently used to maintain various config files for php and
   # nginx as well as any pre-existing database files.
   config.vm.synced_folder "config/", "/srv/config"
-  
+
   # /srv/config/nginx-config/sites/
   #
   # If a sites directory exists inside the above server-conf directory, it will be
   # added as a mapped directory inside the VM as well. This is used to maintain specific
   # site configuration files for nginx
   config.vm.synced_folder "config/nginx-config/sites/", "/etc/nginx/custom-sites"
-  
+
   # /srv/www/
   #
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
@@ -112,20 +112,20 @@ Vagrant.configure("2") do |config|
   #
   # Use this to insert your own (and possibly rewrite) Vagrant config lines. Helpful
   # for mapping additional drives. If a file 'Customfile' exists in the same directory
-  # as this Vagrantfile, it will be evaluated as ruby inline as it loads. 
-  # 
-  # Note that if you find yourself using a Customfile for anything crazy or specifying 
+  # as this Vagrantfile, it will be evaluated as ruby inline as it loads.
+  #
+  # Note that if you find yourself using a Customfile for anything crazy or specifying
   # different provisioning, then you may want to consider a new Vagrantfile entirely.
-  if File.exists?('Customfile') then
-    eval(IO.read('Customfile'), binding)
+  if File.exists?(File.join(vagrant_dir,'Customfile')) then
+    eval(IO.read(File.join(vagrant_dir,'Customfile')), binding)
   end
 
   # Provisioning
-  # 
+  #
   # Process one or more provisioning scripts depending on the existence of custom files.
   #
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
-  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh 
+  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
   if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-pre.sh" )
