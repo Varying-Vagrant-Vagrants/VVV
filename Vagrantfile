@@ -116,8 +116,8 @@ Vagrant.configure("2") do |config|
   #
   # Note that if you find yourself using a Customfile for anything crazy or specifying
   # different provisioning, then you may want to consider a new Vagrantfile entirely.
-  if File.exists?('Customfile') then
-    eval(IO.read('Customfile'), binding)
+  if File.exists?(File.join(vagrant_dir,'Customfile')) then
+    eval(IO.read(File.join(vagrant_dir,'Customfile')), binding)
   end
 
   # Provisioning
