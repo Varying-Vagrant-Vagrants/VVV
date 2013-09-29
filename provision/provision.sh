@@ -486,6 +486,15 @@ then
 	echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
 
+# Look for additional domains defined in the sites
+for DOMAINS_FILE in $(find /srv/www -maxdepth 2 -name 'domains.dat')
+do
+	IFS=', ' read -ra HOSTS <<< `cat $DOMAINS_FILE`;
+	for HOST in "${HOSTS[@]}"; do
+    	echo "127.0.0.1 $HOST" >> /etc/hosts 
+	done
+done
+
 end_seconds=`date +%s`
 echo "-----------------------------"
 echo "Provisioning complete in `expr $end_seconds - $start_seconds` seconds"
