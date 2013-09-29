@@ -475,7 +475,8 @@ fi
 
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='local.wordpress.dev 
+DOMAINS='vvv.dev
+         local.wordpress.dev
          local.wordpress-trunk.dev
          src.wordpress-develop.dev
          build.wordpress-develop.dev'
@@ -495,4 +496,4 @@ then
 else
 	echo "No external network available. Package installation and maintenance skipped."
 fi
-echo "For further setup instructions, visit http://$vvv_ip"
+echo "For further setup instructions, visit http://vvv.dev"
