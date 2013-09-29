@@ -487,7 +487,7 @@ then
 fi
 
 # Look for additional domains defined in the sites
-for DOMAINS_FILE in $(find /srv/www -maxdepth 2 -name 'domains.dat')
+for DOMAINS_FILE in $(find /srv/www/*/data -maxdepth 3 -name 'hosts.dat')
 do
 	IFS=', ' read -ra HOSTS <<< `cat $DOMAINS_FILE`;
 	for HOST in "${HOSTS[@]}"; do

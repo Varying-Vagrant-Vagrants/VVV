@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
 
 	# Get all the domains.dat files
 	paths = []
-	Dir.glob('www/*/domains.dat').each do |path|
+	Dir.glob('www/*/data/hosts.dat').each do |path|
 		paths << path
 	end
 
