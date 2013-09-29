@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
-  config.vm.hostname = "vvv"
+  config.vm.hostname = "vvv.dev"
 
   # Local Machine Hosts
   #
@@ -42,6 +42,7 @@ Vagrant.configure("2") do |config|
   # from a local config file so that they can be more dynamic to your setup.
   if defined? VagrantPlugins::HostsUpdater
     config.hostsupdater.aliases = [
+      "vvv.dev",
       "local.wordpress.dev",
       "local.wordpress-trunk.dev",
       "src.wordpress-develop.dev",
