@@ -41,12 +41,33 @@ Vagrant.configure("2") do |config|
   # By default, we'll include the domains setup by VVV. A short term goal is to read these in
   # from a local config file so that they can be more dynamic to your setup.
   if defined? VagrantPlugins::HostsUpdater
-    config.hostsupdater.aliases = [
+
+	# Get all the domains.dat files
+	paths = []
+	Dir.glob('www/**/vvv-hosts.dat').each do |path|
+		paths << path
+	end
+
+	# Put all the hosts into a single array
+	hosts = []
+	paths.each do |path|
+		file_hosts = IO.read(path).split(",")
+		hosts.concat file_hosts
+	end
+
+	# Include the VVV hosts
+	# We could put these in /srv/www/vvv-hosts.dat, or similar, perhaps?
+	vvv_hosts = [
       "local.wordpress.dev",
       "local.wordpress-trunk.dev",
       "src.wordpress-develop.dev",
       "build.wordpress-develop.dev"
     ]
+    hosts.concat vvv_hosts
+
+    # Finally, pass to Hosts Updater
+    config.hostsupdater.aliases = hosts
+
   end
 
   # Default Box IP Address
