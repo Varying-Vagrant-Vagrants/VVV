@@ -487,9 +487,9 @@ then
 fi
 
 # Look for additional domains defined in the sites
-for DOMAINS_FILE in $(find /srv/www/*/data -maxdepth 3 -name 'hosts.dat')
+for HOSTS_FILE in $(find /srv/www/ -maxdepth 4 -name 'vvv-hosts.dat')
 do
-	IFS=', ' read -ra HOSTS <<< `cat $DOMAINS_FILE`;
+	IFS=', ' read -ra HOSTS <<< `cat $HOSTS_FILE`;
 	for HOST in "${HOSTS[@]}"; do
     	echo "127.0.0.1 $HOST" >> /etc/hosts 
 	done

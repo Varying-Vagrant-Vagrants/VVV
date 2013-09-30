@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
 
 	# Get all the domains.dat files
 	paths = []
-	Dir.glob('www/*/data/hosts.dat').each do |path|
+	Dir.glob('www/*/data/vvv-hosts.dat').each do |path|
 		paths << path
 	end
 
@@ -55,7 +55,8 @@ Vagrant.configure("2") do |config|
 		hosts.concat file_hosts
 	end
 
-	# Include the VVV hosts, though ideally we'd have these in domains.dat, perhaps?
+	# Include the VVV hosts
+	# We could put these in /srv/www/vvv-hosts.dat, or similar, perhaps?
 	vvv_hosts = [
       "local.wordpress.dev",
       "local.wordpress-trunk.dev",
