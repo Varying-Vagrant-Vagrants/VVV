@@ -65,14 +65,14 @@ Immediate goals for VVV include:
     * `vagrant up` - *omg magic happens*
     * Be patient, this could take a while, especially on the first run.
 1. Add a record to your local machine's hosts file
-    * `192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
+    * `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
     * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
 1. Visit any of the following default sites in your browser:
     * [http://local.wordpress.dev](http://local.wordpress.dev/) for WordPress stable
     * [http://local.wordpress-trunk.dev](http://local.wordpress-trunk.dev/) for WordPress trunk
     * [http://src.wordpress-develop.dev](http://src.wordpress-develop.dev/) for trunk WordPress development files
     * [http://build.wordpress-develop.dev](http://build.wordpress-develop.dev/) for version of those development files built with Grunt
-    * [http://192.168.50.4](http://192.168.50.4) for a default dashboard containing several useful tools
+    * [http://vvv.dev](http://vvv.dev) for a default dashboard containing several useful tools
 
 Fancy, yeah?
 
