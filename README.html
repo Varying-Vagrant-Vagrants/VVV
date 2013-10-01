@@ -1,0 +1,163 @@
+<h1>Varying Vagrant Vagrants</h1>
+<p>Varying Vagrant Vagrants is an evolving <a href="http://vagrantup.com">Vagrant</a> configuration focused on <a href="http://wordpress.org">WordPress</a> development.</p>
+<ul>
+<li><strong>Version</strong>: 0.9-working</li>
+<li><strong>Latest Stable</strong>: <a href="https://github.com/10up/varying-vagrant-vagrants/tree/v0.8">v0.8</a></li>
+<li><strong>Contributors</strong>: <a href="http://github.com/jeremyfelt">@jeremyfelt</a>, <a href="http://github.com/carldanley">@carldanley</a>, <a href="http://github.com/ericmann">@ericmann</a>, <a href="http://github.com/lkwdwrd">@lkwdwrd</a>, <a href="http://github.com/TheLastCicada">@TheLastCicada</a>, <a href="http://github.com/tddewey">@tddewey</a>, <a href="http://github.com/johnpbloch">@johnpbloch</a>, <a href="http://github.com/kadamwhite">@kadamwhite</a>, <a href="http://github.com/scribu">@scribu</a>, <a href="http://github.com/danielbachhuber">@danielbachhuber</a>, <a href="http://github.com/tollmanz">@tollmanz</a>, <a href="http://github.com/mbijon">@mbijon</a>, <a href="http://github.com/markjaquith">@markjaquith</a>, <a href="http://github.com/curtismchale">@curtismchale</a>, <a href="http://github.com/mamaduka">@Mamaduka</a>, <a href="http://github.com/lgedeon">@lgedeon</a>, <a href="http://github.com/pmgarman">@pmgarman</a>, <a href="http://github.com/westonruter">@westonruter</a>, <a href="http://github.com/petemall">@petemall</a>, <a href="http://github.com/cmmarslender">@cmmarslender</a>, <a href="http://github.com/mintindeed">@mintindeed</a>, <a href="http://github.com/mboynes">@mboynes</a>, <a href="http://github.com/aaronjorbin">@aaronjorbin</a>, <a href="http://github.com/tobiasbg">@tobiasbg</a>, <a href="http://github.com/ocean90">@ocean90</a>, <a href="http://github.com/lvnilesh">@lvnilesh</a>, <a href="http://github.com/alexw23">@alexw23</a>, <a href="https://github.com/zamoose">@zamoose</a></li>
+<li><strong>Contributing</strong>: Contributions are more than welcome. Please submit pull requests against the <a href="https://github.com/10up/varying-vagrant-vagrants/">master branch</a>. Thanks!</li>
+</ul>
+<h2>Overview</h2>
+<h3>The Purpose of Varying Vagrant Vagrants</h3>
+<p>The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable way for developers to work in an environment that matches a project&#39;s production environment as closely as possible.</p>
+<p>The default configuration provided by VVV is intended to match what <a href="http://10up.com">10up</a> finds to be a common server setup when working with high traffic WordPress sites.</p>
+<h3>How to Use Varying Vagrant Vagrants</h3>
+<h4>VVV as a MAMP/XAMPP Replacement</h4>
+<p>The best part is that VVV is ready to use as is. Clone or download the repository and <code>vagrant up</code> to get a sandboxed Ubuntu server on your computer with everything needed to develop a WordPress theme or plugin.</p>
+<p>Multiple projects can be developed at once in the same environment provided by VVV.
+<em> Use <code>wp-content/themes</code> in either the <code>wordpress-default</code> or <code>wordpress-trunk</code> directories to develop multiple themes using the same test content.
+</em> Use <code>wp-content/plugins</code> in either the <code>wordpress-default</code> or <code>wordpress-trunk</code> directories to develop a plugin the same way.
+<em> Install additional instances of WordPress in <code>/srv/www/</code> and configure a few pieces of VVV accordingly to work with the new installation.
+</em> Use the <code>wordpress-develop</code> directory to participate in WordPress core development.</p>
+<h4>VVV as a Scaffold</h4>
+<p>Entirely different server configurations can be created by modifying the files included with this repository.</p>
+<p>The existing configuration can also be extended significantly through the use of additional provisioning scripts, <code>provision-pre.sh</code> and <code>provision-post.sh</code>.</p>
+<p>It is not necessary to track the changes made to the main repository. Feel free to check this project out and then change everything to make it your own.</p>
+<h3>The Future of Varying Vagrant Vagrants</h3>
+<p>Immediate goals for VVV include:</p>
+<ul>
+<li>Continue to work towards a stable state of software and configuration included in the default provisioning.</li>
+<li>Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.</li>
+<li>Provide a method for describing WordPress environment requirements at a project level so that developers joining a project can ramp up quickly. This includes code, database, and content files.</li>
+</ul>
+<h2>Getting Started</h2>
+<h3>What is Vagrant?</h3>
+<p><a href="http://vagrantup.com">Vagrant</a> is a &quot;tool for building and distributing development environments&quot;. It works with virtualization software such as <a href="http://virtualbox.org">VirtualBox</a> to provide a virtual machine that is sandboxed away from your local environment.</p>
+<h3>The First Vagrant Up</h3>
+<ol>
+<li>Start with any operating system.</li>
+<li>Install <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox 4.2.18</a><ul>
+<li>VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don&#39;t feel like being a guinea pig, check out the <a href="https://www.virtualbox.org/wiki/Download_Old_Builds_4_2">older downloads</a> page and download the 4.2.16 release.</li>
+</ul>
+</li>
+<li>Install <a href="http://downloads.vagrantup.com/tags/v1.3.2">Vagrant 1.3.2</a><ul>
+<li><code>vagrant</code> will now be available as a command in the terminal, try it out.</li>
+</ul>
+</li>
+<li>Clone the Varying Vagrant Vagrants repository into a local directory<ul>
+<li><code>git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local</code></li>
+<li>OR download and extract the repository master <a href="https://github.com/10up/varying-vagrant-vagrants/archive/master.zip">zip file</a></li>
+</ul>
+</li>
+<li>Change into the new directory<ul>
+<li><code>cd vagrant-local</code></li>
+</ul>
+</li>
+<li>Start the Vagrant environment<ul>
+<li><code>vagrant up</code> - <em>omg magic happens</em></li>
+<li>Be patient, this could take a while, especially on the first run.</li>
+</ul>
+</li>
+<li>Add a record to your local machine&#39;s hosts file<ul>
+<li><code>192.168.50.4  local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev</code></li>
+<li>On -nix systems you can use: (note that location of host file after the &gt;&gt; may vary) <code>sudo sh -c &#39;echo &quot;192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev&quot; &gt;&gt;/private/etc/hosts&#39;</code></li>
+</ul>
+</li>
+<li>Visit any of the following default sites in your browser:<ul>
+<li><a href="http://local.wordpress.dev/"><a href="http://local.wordpress.dev">http://local.wordpress.dev</a></a> for WordPress stable</li>
+<li><a href="http://local.wordpress-trunk.dev/"><a href="http://local.wordpress-trunk.dev">http://local.wordpress-trunk.dev</a></a> for WordPress trunk</li>
+<li><a href="http://src.wordpress-develop.dev/"><a href="http://src.wordpress-develop.dev">http://src.wordpress-develop.dev</a></a> for trunk WordPress development files</li>
+<li><a href="http://build.wordpress-develop.dev/"><a href="http://build.wordpress-develop.dev">http://build.wordpress-develop.dev</a></a> for version of those development files built with Grunt</li>
+<li><a href="http://192.168.50.4"><a href="http://192.168.50.4">http://192.168.50.4</a></a> for a default dashboard containing several useful tools</li>
+</ul>
+</li>
+</ol>
+<p>Fancy, yeah?</p>
+<h3>What Did That Do?</h3>
+<p>The first time you run <code>vagrant up</code>, a packaged box containing a virtual machine is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an Ubuntu 12.04 installation (Precise release) and is about 280MB.</p>
+<p>After this box is downloaded, it begins to boot as a sandboxed virtual machine using VirtualBox. When ready, it runs the provisioning script also provided with this repository. This initiates the download and installation of around 105MB of packages on the new virtual machine.</p>
+<p>The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will more than likely only take several minutes.</p>
+<p>On future runs of <code>vagrant up</code>, the packaged box will already be cached on your local machine and Vagrant will only need to deal with provisioning. If the virtual machine has been destroyed with <code>vagrant destroy</code>, it will need to download the full 105MB of packages to install. If the Vagrant has been powered off with <code>vagrant halt</code>, the provisioning script will run but will not need to download anything.</p>
+<h3>Now What?</h3>
+<p>Now that you&#39;re up and running with a default configuration, start poking around and modifying things.</p>
+<ol>
+<li>Access the server via the command line with <code>vagrant ssh</code> from your <code>vagrant-local</code> directory. You can do pretty much anything you would do with a standard Ubuntu installation on a full server.<ul>
+<li>If you are on a Windows PC, you may need to install additional software for this to work seamlessly. A terminal program such as <a href="www.chiark.greenend.org.uk/~sgtatham/putty/download.html">Putty</a> will provide access immediately.</li>
+</ul>
+</li>
+<li>Destroy the box and start from scratch with <code>vagrant destroy</code><ul>
+<li>As explained before, the initial 280MB box file will be cached on your machine. the next <code>vagrant up</code> command will initiate the complete provisioning process again.</li>
+</ul>
+</li>
+<li>Power off the box with <code>vagrant halt</code> or suspend it with <code>vagrant suspend</code>. If you suspend it, you can bring it back quickly with <code>vagrant resume</code>, if you halt it, you can bring it back with <code>vagrant up</code>.</li>
+<li>Start modifying and adding local files to fit your needs.<ul>
+<li>The network configuration picks an IP of 192.168.50.4. This works if you are <em>not</em> on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you <em>are</em> on a 192.168.50.x sub domain already. You can configure any IP address in the <code>Vagrantfile</code> and it will be used on the next <code>vagrant up</code></li>
+<li>If you require any custom SQL commands to run when the virtual machine boots, move <code>database/init-custom.sql.sample</code> to <code>database/init-custom.sql</code> and edit it to add whichever <code>CREATE DATABASE</code> and <code>GRANT ALL PRIVILEGES</code> statements you want to run on startup to prepare mysql for SQL imports (see next bullet).</li>
+<li>Have any SQL files that should be imported in the <code>database/backups/</code> directory and named as <code>db_name.sql</code>. The <code>import-sql.sh</code> script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step&#39;s SQL.</li>
+<li>Check out the example nginx configurations in <code>config/nginx-config/sites</code> and create any other site specific configs you think should be available on server start. The web directory is <code>/srv/www/</code> and default configs are provided for basic WordPress stable, trunk, and develop setups.</li>
+<li>Once a database is imported on the initial <code>vagrant up</code>, it will persist on the local machine in a mapped <code>database/data</code> directory.</li>
+<li>Other stuff. Familiarize and all that.</li>
+</ul>
+</li>
+</ol>
+<h3>Credentials and Such</h3>
+<p>All database usernames and passwords for WordPress installations included by default are <code>wp</code> and <code>wp</code>.</p>
+<p>All WordPress admin usernames and passwords for WordPress installations included by default are <code>admin</code> and <code>password</code>.</p>
+<h4>WordPress Stable</h4>
+<ul>
+<li>URL: <code>http://local.wordpress.dev</code></li>
+<li>DB Name: <code>wordpress_default</code></li>
+</ul>
+<h4>WordPress Trunk</h4>
+<ul>
+<li>URL: <code>http://local.wordpress-trunk.dev</code></li>
+<li>DB Name: <code>wordpress_trunk</code></li>
+</ul>
+<h4>WordPress Develop</h4>
+<ul>
+<li>/src URL: <code>http://src.wordpress-develop.dev</code></li>
+<li>/build URL: <code>http://build.wordpress-develop.dev</code></li>
+<li>DB Name: <code>wordpress_develop</code></li>
+<li>DB Name: <code>wordpress_unit_tests</code></li>
+</ul>
+<h4>MySQL Root</h4>
+<ul>
+<li>User: <code>root</code></li>
+<li>Pass: <code>blank</code></li>
+<li>See: <a href="https://github.com/10up/varying-vagrant-vagrants/wiki/Connecting-to-MySQL">Connecting to MySQL</a> from your local machine</li>
+</ul>
+<h3>What do you get?</h3>
+<p>A bunch of stuff!</p>
+<ol>
+<li><a href="http://ubuntu.com">Ubuntu</a> 12.04 LTS (Precise Pangolin)</li>
+<li><a href="http://develop.svn.wordpress.org/trunk/">WordPress Develop</a></li>
+<li><a href="http://wordpress.org">WordPress Stable</a></li>
+<li><a href="http://core.svn.wordpress.org/trunk">WordPress Trunk</a></li>
+<li><a href="http://wp-cli.org">WP-CLI</a></li>
+<li><a href="http://nginx.org">nginx</a> 1.4.2</li>
+<li><a href="http://mysql.com">mysql</a> 5.5.32</li>
+<li><a href="http://php-fpm.org">php-fpm</a> 5.4.17</li>
+<li><a href="http://memcached.org/">memcached</a> 1.4.13</li>
+<li>PHP <a href="http://pecl.php.net/package/memcache/3.0.8">memcache extension</a> 3.0.8</li>
+<li><a href="http://xdebug.org/">xdebug</a> 2.2.3</li>
+<li><a href="http://pear.phpunit.de/">PHPUnit</a> 3.7.24</li>
+<li><a href="http://beyondgrep.com/">ack-grep</a> 2.04</li>
+<li><a href="http://git-scm.com">git</a> 1.8.3.4</li>
+<li><a href="http://subversion.apache.org/">subversion</a> 1.7.9</li>
+<li><a href="http://ngrep.sourceforge.net/usage.html">ngrep</a></li>
+<li><a href="http://dos2unix.sourceforge.net/">dos2unix</a></li>
+<li><a href="https://github.com/composer/composer">Composer</a></li>
+<li><a href="https://code.google.com/p/phpmemcacheadmin/">phpMemcachedAdmin</a> 1.2.2 BETA</li>
+<li><a href="http://www.phpmyadmin.net">phpMyAdmin</a> 4.0.5</li>
+<li><a href="https://github.com/jokkedk/webgrind">Webgrind</a> 1.1</li>
+<li><a href="http://nodejs.org/">NodeJs</a> Current Stable Version</li>
+<li><a href="https://github.com/gruntjs/grunt-cli">grunt-cli</a> Current Stable Version</li>
+</ol>
+<h3>Feedback?</h3>
+<p>Let us have it! If you have tips that we need to know, open a new issue. Some blog posts have been written documenting the process that may provide insight....</p>
+<ul>
+<li><a href="http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/">Hi WordPress, Meet Vagrant</a></li>
+<li><a href="http://jeremyfelt.com/code/2013/03/17/evolving-wordpress-development-with-vagrant/">Evolving WordPress Development With Vagrant</a></li>
+<li><a href="http://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/">Varying Vagrant Vagrants</a></li>
+<li><a href="http://jeremyfelt.com/code/2013/02/04/an-wordpress-meetup-introduction-to-vagrant-what-youll-need/">A WordPress Meetup Introduction to Vagrant</a></li>
+<li><a href="http://jeremyfelt.com/code/2013/01/08/clear-nginx-cache-in-vagrant/">Clear nginx Cache in Vagrant</a></li>
+</ul>
