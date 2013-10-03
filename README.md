@@ -54,8 +54,10 @@ Immediate goals for VVV include:
 1. Start with any operating system.
 1. Install [VirtualBox 4.2.18](https://www.virtualbox.org/wiki/Downloads)
     * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.16 release.
-1. Install [Vagrant 1.3.2](http://downloads.vagrantup.com/tags/v1.3.2)
+1. Install [Vagrant 1.3.3](http://downloads.vagrantup.com/tags/v1.3.3)
     * `vagrant` will now be available as a command in the terminal, try it out.
+1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin. Optional, but useful.
+    * `vagrant plugin install vagrant-hostsupdater`
 1. Clone the Varying Vagrant Vagrants repository into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
     * OR download and extract the repository master [zip file](https://github.com/10up/varying-vagrant-vagrants/archive/master.zip)
@@ -65,6 +67,7 @@ Immediate goals for VVV include:
     * `vagrant up` - *omg magic happens*
     * Be patient, this could take a while, especially on the first run.
 1. Add a record to your local machine's hosts file
+    * ***Note:*** If you have [vagrant hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) installed, this will be done for you.
     * `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
     * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
 1. Visit any of the following default sites in your browser:
