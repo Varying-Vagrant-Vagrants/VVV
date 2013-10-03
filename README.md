@@ -66,7 +66,7 @@ Immediate goals for VVV include:
     * Be patient, this could take a while, especially on the first run.
 1. Add a record to your local machine's hosts file
     * `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
-    * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4 local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
+    * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
 1. Visit any of the following default sites in your browser:
     * [http://local.wordpress.dev](http://local.wordpress.dev/) for WordPress stable
     * [http://local.wordpress-trunk.dev](http://local.wordpress-trunk.dev/) for WordPress trunk
