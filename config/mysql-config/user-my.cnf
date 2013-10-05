@@ -1,3 +1,6 @@
+# Custom MySQL configuration to save the root user's password for both client
+# and mysqladmin access. This allows us to use `mysql -u root` to access
+# MySQL rather than having to use a password.
 [client]
 user     = root
 password = blank
