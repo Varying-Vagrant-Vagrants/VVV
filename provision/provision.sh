@@ -285,6 +285,7 @@ ln -sf /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini | echo "
 
 # Configuration for mysql
 cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
+ln -sf /srv/config/mysql-config/user-my.cnf /home/vagrant/.my.cnf | echo " * /srv/config/mysql-config/user-my.cnf -> /home/vagrant/.my.cnf"
 
 # Configuration for memcached
 ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf | echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"

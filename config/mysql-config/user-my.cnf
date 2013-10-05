@@ -1,0 +1,7 @@
+[client]
+user     = root
+password = blank
+
+[mysqladmin] 
+user     = root
+password = blank
