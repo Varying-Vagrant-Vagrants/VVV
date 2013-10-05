@@ -393,6 +393,28 @@ then
 		git pull --rebase origin master
 	fi
 
+	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
+	if [ ! -d /srv/www/phpcs ]
+	then
+		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
+		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
+	else
+		echo -e "\nUpdating PHP_CodeSniffer (phpcs)..."
+		cd /srv/www/phpcs
+		git pull --rebase origin master
+	fi
+
+	# Sniffs WordPress Coding Standards
+	if [ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]
+	then
+		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
+		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
+	else
+		echo -e "\nUpdating PHP_CodeSniffer..."
+		cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
+		git pull --rebase origin master
+	fi
+
 	# Install and configure the latest stable version of WordPress
 	if [ ! -d /srv/www/wordpress-default ]
 	then
