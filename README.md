@@ -128,7 +128,7 @@ All WordPress admin usernames and passwords for WordPress installations included
 
 #### MySQL Root
 * User: `root`
-* Pass: `blank`
+* Pass: `root`
 * See: [Connecting to MySQL](https://github.com/10up/varying-vagrant-vagrants/wiki/Connecting-to-MySQL) from your local machine
 
 ### What do you get?
