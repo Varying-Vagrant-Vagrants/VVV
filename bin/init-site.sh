@@ -215,7 +215,7 @@ git add -v bin/load-db-vvv
 
 ## Set db init script
 mysql_cmd='use `'$db_name'`' # Required to support hypens in database names
-mysql -u root -pblank -e "$mysql_cmd" 2>/dev/null || db_not_exists=1
+mysql -u root -proot -e "$mysql_cmd" 2>/dev/null || db_not_exists=1
 if [ "$db_not_exists" == "1" ]; then
 	db_init_path=database/vvv-init.sql
 	echo "Creating '$db_name' database and '$db_user' user:"
@@ -225,7 +225,7 @@ if [ "$db_not_exists" == "1" ]; then
 	cat $db_init_path
 	# @todo: vvv-init.sh shouldn't even be necessary; we should be able to use WP-CLI to introspect DB constants
 	git add $db_init_path
-	mysql -u root -pblank < $db_init_path || echo "User $db_user may already exist"
+	mysql -u root -proot < $db_init_path || echo "User $db_user may already exist"
 fi
 
 # Set up empty DB dump

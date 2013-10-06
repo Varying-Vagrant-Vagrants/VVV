@@ -77,6 +77,7 @@ apt_package_check_list=(
 	make
 	vim
 	colordiff
+	postfix
 
 	# Req'd for i18n tools
 	gettext
@@ -118,10 +119,18 @@ done
 #
 # Use debconf-set-selections to specify the default password for the root MySQL
 # account. This runs on every provision, even if MySQL has been installed. If
-# MySQL is already installed, it will not affect anything. The password in the
-# following two lines *is* actually set to the word 'blank' for the root user.
-echo mysql-server mysql-server/root_password password blank | debconf-set-selections
-echo mysql-server mysql-server/root_password_again password blank | debconf-set-selections
+# MySQL is already installed, it will not affect anything. 
+echo mysql-server mysql-server/root_password password root | debconf-set-selections
+echo mysql-server mysql-server/root_password_again password root | debconf-set-selections
+
+# Postfix
+#
+# Use debconf-set-selections to specify the selections in the postfix setup. Set
+# up as an 'Internet Site' with the host name 'vvv'. Note that if your current
+# Internet connection does not allow communication over port 25, you will not be
+# able to send mail, even with postfix installed.
+echo postfix postfix/main_mailer_type select Internet Site | debconf-set-selections
+echo postfix postfix/mailname string vvv | debconf-set-selections
 
 # Provide our custom apt sources before running `apt-get update`
 ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list | echo "Linked custom apt sources"
@@ -288,6 +297,7 @@ ln -sf /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini | echo "
 
 # Configuration for mysql
 cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
+ln -sf /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf | echo " * /srv/config/mysql-config/root-my.cnf -> /home/vagrant/.my.cnf"
 
 # Configuration for memcached
 ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf | echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
@@ -338,20 +348,20 @@ fi
 # the mysqldump files located in database/backups/
 if [ -f /srv/database/init-custom.sql ]
 then
-	mysql -u root -pblank < /srv/database/init-custom.sql | echo -e "\nInitial custom MySQL scripting..."
+	mysql -u root -proot < /srv/database/init-custom.sql | echo -e "\nInitial custom MySQL scripting..."
 else
 	echo -e "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
 fi
 
 for init_sql_file in $(find /srv/www/ -name vvv-init.sql)
 do
-	mysql -u root -pblank < $init_sql_file | printf "\nRun DB init $init_sql_file...\n"
+	mysql -u root -proot < $init_sql_file | printf "\nRun DB init $init_sql_file...\n"
 done
 
 
 # Setup MySQL by importing an init file that creates necessary
 # users and databases that our vagrant setup relies on.
-mysql -u root -pblank < /srv/database/init.sql | echo "Initial MySQL prep..."
+mysql -u root -proot < /srv/database/init.sql | echo "Initial MySQL prep..."
 
 # WP-CLI Install before import-sql.sh since it depends on it
 if [[ $ping_result == *bytes?from* ]]
@@ -401,6 +411,28 @@ then
 	else
 		echo -e "\nUpdating webgrind..."
 		cd /srv/www/default/webgrind
+		git pull --rebase origin master
+	fi
+
+	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
+	if [ ! -d /srv/www/phpcs ]
+	then
+		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
+		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
+	else
+		echo -e "\nUpdating PHP_CodeSniffer (phpcs)..."
+		cd /srv/www/phpcs
+		git pull --rebase origin master
+	fi
+
+	# Sniffs WordPress Coding Standards
+	if [ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]
+	then
+		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
+		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
+	else
+		echo -e "\nUpdating PHP_CodeSniffer..."
+		cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
 		git pull --rebase origin master
 	fi
 
@@ -490,7 +522,8 @@ echo "# Full list will be located in config/host-hosts"
 
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='local.wordpress.dev 
+DOMAINS='vvv.dev
+         local.wordpress.dev
          local.wordpress-trunk.dev
          src.wordpress-develop.dev
          build.wordpress-develop.dev'
@@ -524,4 +557,4 @@ then
 else
 	echo "No external network available. Package installation and maintenance skipped."
 fi
-echo "For further setup instructions, visit http://$vvv_ip"
+echo "For further setup instructions, visit http://vvv.dev"

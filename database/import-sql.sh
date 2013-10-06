@@ -31,15 +31,15 @@ then
 	do
 	pre_dot=${file%%.*}
 	mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
-	db_exist=`mysql -u root -pblank --skip-column-names -e "$mysql_cmd"`
+	db_exist=`mysql -u root -proot --skip-column-names -e "$mysql_cmd"`
 	if [ "$?" != "0" ]
 	then
 		printf "  * Error - Create $pre_dot database via init-custom.sql before attempting import\n\n"
 	else
 		if [ "" == "$db_exist" ]
 		then
-			printf "mysql -u root -pblank $pre_dot < $pre_dot.sql\n"
-			mysql -u root -pblank $pre_dot < $pre_dot.sql
+			printf "mysql -u root -proot $pre_dot < $pre_dot.sql\n"
+			mysql -u root -proot $pre_dot < $pre_dot.sql
 			printf "  * Import of $pre_dot successful\n"
 		else
 			printf "  * Skipped import of $pre_dot - tables exist\n"
