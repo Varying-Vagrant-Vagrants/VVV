@@ -479,14 +479,14 @@ PHP
 		grunt
 	fi
 
-	# Download phpMyAdmin 4.0.5
+	# Download phpMyAdmin 4.0.8
 	if [ ! -d /srv/www/default/database-admin ]
 	then
-		echo "Downloading phpMyAdmin 4.0.5..."
+		echo "Downloading phpMyAdmin 4.0.8..."
 		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.5/phpMyAdmin-4.0.5-english.tar.gz/download'
+		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.8/phpMyAdmin-4.0.8-english.tar.gz/download'
 		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.0.5-english database-admin
+		mv phpMyAdmin-4.0.8-english database-admin
 		rm phpmyadmin.tar.gz
 	else
 		echo "PHPMyAdmin already installed."

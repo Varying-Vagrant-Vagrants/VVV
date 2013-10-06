@@ -53,8 +53,8 @@ Immediate goals for VVV include:
 
 1. Start with any operating system.
 1. Install [VirtualBox 4.2.18](https://www.virtualbox.org/wiki/Downloads)
-    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.16 release.
-1. Install [Vagrant 1.3.3](http://downloads.vagrantup.com/tags/v1.3.3)
+    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.18 release.
+1. Install [Vagrant 1.3.4](http://downloads.vagrantup.com/tags/v1.3.4)
     * `vagrant` will now be available as a command in the terminal, try it out.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin. Optional, but useful.
     * `vagrant plugin install vagrant-hostsupdater`
@@ -71,11 +71,11 @@ Immediate goals for VVV include:
     * `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
     * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
 1. Visit any of the following default sites in your browser:
-    * [http://local.wordpress.dev](http://local.wordpress.dev/) for WordPress stable
-    * [http://local.wordpress-trunk.dev](http://local.wordpress-trunk.dev/) for WordPress trunk
-    * [http://src.wordpress-develop.dev](http://src.wordpress-develop.dev/) for trunk WordPress development files
-    * [http://build.wordpress-develop.dev](http://build.wordpress-develop.dev/) for version of those development files built with Grunt
-    * [http://vvv.dev](http://vvv.dev) for a default dashboard containing several useful tools
+    * [http://local.wordpress.dev/](http://local.wordpress.dev/) for WordPress stable
+    * [http://local.wordpress-trunk.dev/](http://local.wordpress-trunk.dev/) for WordPress trunk
+    * [http://src.wordpress-develop.dev/](http://src.wordpress-develop.dev/) for trunk WordPress development files
+    * [http://build.wordpress-develop.dev/](http://build.wordpress-develop.dev/) for version of those development files built with Grunt
+    * [http://vvv.dev/](http://vvv.dev/) for a default dashboard containing several useful tools
 
 Fancy, yeah?
 
@@ -154,7 +154,7 @@ A bunch of stuff!
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
-1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.5
+1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.8
 1. [Webgrind](https://github.com/jokkedk/webgrind) 1.1
 1. [NodeJs](http://nodejs.org/) Current Stable Version
 1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
