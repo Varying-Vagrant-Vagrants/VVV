@@ -51,7 +51,7 @@ Vagrant.configure("2") do |config|
 	# Put all the hosts into a single array
 	hosts = []
 	paths.each do |path|
-		file_hosts = IO.read(path).split(",")
+		file_hosts = IO.read(path).split( "\s" )
 		hosts.concat file_hosts
 	end
 
