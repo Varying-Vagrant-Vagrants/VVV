@@ -164,6 +164,11 @@ Vagrant.configure("2") do |config|
     config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
   end
 
+  # auto-site-setup.sh iterates through all sites requiring setup, and sets them up.
+  if File.exists?(File.join(vagrant_dir,'provision','auto-site-setup.sh')) then
+    config.vm.provision :shell, :path => File.join( "provision", "auto-site-setup.sh" )
+  end
+
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
