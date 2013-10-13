@@ -53,8 +53,8 @@ Immediate goals for VVV include:
 
 1. Start with any operating system.
 1. Install [VirtualBox 4.2.18](https://www.virtualbox.org/wiki/Downloads)
-    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.16 release.
-1. Install [Vagrant 1.3.3](http://downloads.vagrantup.com/tags/v1.3.3)
+    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.18 release.
+1. Install [Vagrant 1.3.4](http://downloads.vagrantup.com/tags/v1.3.4)
     * `vagrant` will now be available as a command in the terminal, try it out.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin. Optional, but useful.
     * `vagrant plugin install vagrant-hostsupdater`
@@ -66,16 +66,16 @@ Immediate goals for VVV include:
 1. Start the Vagrant environment
     * `vagrant up` - *omg magic happens*
     * Be patient, this could take a while, especially on the first run.
-1. Add records to your local machine's hosts file, which are prompted at the end of `vagrant up` and which are located in `config/hosts-hosts`
+1. Add a record to your local machine's hosts file
     * ***Note:*** If you have [vagrant hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) installed, this will be done for you.
     * `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
     * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
 1. Visit any of the following default sites in your browser:
-    * [http://local.wordpress.dev](http://local.wordpress.dev/) for WordPress stable
-    * [http://local.wordpress-trunk.dev](http://local.wordpress-trunk.dev/) for WordPress trunk
-    * [http://src.wordpress-develop.dev](http://src.wordpress-develop.dev/) for trunk WordPress development files
-    * [http://build.wordpress-develop.dev](http://build.wordpress-develop.dev/) for version of those development files built with Grunt
-    * [http://vvv.dev](http://vvv.dev) for a default dashboard containing several useful tools
+    * [http://local.wordpress.dev/](http://local.wordpress.dev/) for WordPress stable
+    * [http://local.wordpress-trunk.dev/](http://local.wordpress-trunk.dev/) for WordPress trunk
+    * [http://src.wordpress-develop.dev/](http://src.wordpress-develop.dev/) for trunk WordPress development files
+    * [http://build.wordpress-develop.dev/](http://build.wordpress-develop.dev/) for version of those development files built with Grunt
+    * [http://vvv.dev/](http://vvv.dev/) for a default dashboard containing several useful tools
 
 Fancy, yeah?
 
@@ -100,8 +100,8 @@ Now that you're up and running with a default configuration, start poking around
 1. Power off the box with `vagrant halt` or suspend it with `vagrant suspend`. If you suspend it, you can bring it back quickly with `vagrant resume`, if you halt it, you can bring it back with `vagrant up`.
 1. Start modifying and adding local files to fit your needs.
     * The network configuration picks an IP of 192.168.50.4. This works if you are *not* on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you *are* on a 192.168.50.x sub domain already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
-    * If you require any custom SQL commands to run when the virtual machine boots, move `database/init-custom.sql.sample` to `database/init-custom.sql` and edit it to add whichever `CREATE DATABASE` and `GRANT ALL PRIVILEGES` statements you want to run on startup to prepare mysql for SQL imports (see next bullet); alternatively, you may place vvv-init.sql files within the projects in the www directory and they will be read-in automatically.
-    * Have any SQL files that should be imported in the `database/backups/` directory and named as `db_name.sql`. The `import-sql.sh` script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step's SQL; alternatively, you may place vvv-data.sql files within the WordPress projects in the www directory and they will be read-in automatically if WordPress is not installed.
+    * If you require any custom SQL commands to run when the virtual machine boots, move `database/init-custom.sql.sample` to `database/init-custom.sql` and edit it to add whichever `CREATE DATABASE` and `GRANT ALL PRIVILEGES` statements you want to run on startup to prepare mysql for SQL imports (see next bullet).
+    * Have any SQL files that should be imported in the `database/backups/` directory and named as `db_name.sql`. The `import-sql.sh` script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step's SQL.
     * Check out the example nginx configurations in `config/nginx-config/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for basic WordPress stable, trunk, and develop setups.
     * Once a database is imported on the initial `vagrant up`, it will persist on the local machine in a mapped `database/data` directory.
     * Other stuff. Familiarize and all that.
@@ -154,7 +154,7 @@ A bunch of stuff!
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
-1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.5
+1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.8
 1. [Webgrind](https://github.com/jokkedk/webgrind) 1.1
 1. [NodeJs](http://nodejs.org/) Current Stable Version
 1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version

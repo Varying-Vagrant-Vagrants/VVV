@@ -91,11 +91,6 @@ Vagrant.configure("2") do |config|
   # nginx as well as any pre-existing database files.
   config.vm.synced_folder "config/", "/srv/config"
 
-  # /home/vagrant/bin
-  #
-  # Make scripts available inside of the VM
-  config.vm.synced_folder "bin/", "/home/vagrant/bin"
-
   # /srv/config/nginx-config/sites/
   #
   # If a sites directory exists inside the above server-conf directory, it will be
