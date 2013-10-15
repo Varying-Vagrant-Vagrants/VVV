@@ -52,9 +52,9 @@ Immediate goals for VVV include:
 ### The First Vagrant Up
 
 1. Start with any operating system.
-1. Install [VirtualBox 4.2.18](https://www.virtualbox.org/wiki/Downloads)
-    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) page and download the 4.2.18 release.
-1. Install [Vagrant 1.3.4](http://downloads.vagrantup.com/tags/v1.3.4)
+1. Install [VirtualBox 4.3](https://www.virtualbox.org/wiki/Downloads)
+    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds) page and download the 4.3 release.
+1. Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
     * `vagrant` will now be available as a command in the terminal, try it out.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin. Optional, but useful.
     * `vagrant plugin install vagrant-hostsupdater`
@@ -87,7 +87,7 @@ After this box is downloaded, it begins to boot as a sandboxed virtual machine u
 
 The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will more than likely only take several minutes.
 
-On future runs of `vagrant up`, the packaged box will already be cached on your local machine and Vagrant will only need to deal with provisioning. If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 105MB of packages to install. If the Vagrant has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything.
+On future runs of `vagrant up`, the packaged box will already be cached on your local machine and Vagrant will only need to deal with provisioning. If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 108MB of packages to install. If the Vagrant has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything.
 
 ### Now What?
 
@@ -140,15 +140,17 @@ A bunch of stuff!
 1. [WordPress Stable](http://wordpress.org)
 1. [WordPress Trunk](http://core.svn.wordpress.org/trunk)
 1. [WP-CLI](http://wp-cli.org)
-1. [nginx](http://nginx.org) 1.4.2
+1. [nginx](http://nginx.org) 1.4.3
 1. [mysql](http://mysql.com) 5.5.32
-1. [php-fpm](http://php-fpm.org) 5.4.17
+1. [php-fpm](http://php-fpm.org) 5.4.20
 1. [memcached](http://memcached.org/) 1.4.13
 1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8) 3.0.8
+1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.3) 2.2.3
+1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.0RC2) 3.1.0RC2
 1. [xdebug](http://xdebug.org/) 2.2.3
 1. [PHPUnit](http://pear.phpunit.de/) 3.7.24
 1. [ack-grep](http://beyondgrep.com/) 2.04
-1. [git](http://git-scm.com) 1.8.3.4
+1. [git](http://git-scm.com) 1.8.4
 1. [subversion](http://subversion.apache.org/) 1.7.9
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
