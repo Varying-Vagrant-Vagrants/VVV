@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
-  config.vm.hostname = "vvv"
+  config.vm.hostname = "vvv.dev"
 
   # Local Machine Hosts
   #
@@ -58,10 +58,11 @@ Vagrant.configure("2") do |config|
 	# Include the VVV hosts
 	# We could put these in /srv/www/vvv-hosts.dat, or similar, perhaps?
 	vvv_hosts = [
-      "local.wordpress.dev",
-      "local.wordpress-trunk.dev",
-      "src.wordpress-develop.dev",
-      "build.wordpress-develop.dev"
+		"vvv.dev",
+    	"local.wordpress.dev",
+    	"local.wordpress-trunk.dev",
+    	"src.wordpress-develop.dev",
+    	"build.wordpress-develop.dev"
     ]
     hosts.concat vvv_hosts
 
