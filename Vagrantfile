@@ -55,8 +55,14 @@ Vagrant.configure("2") do |config|
     # that are found into a single array.
     hosts = []
     paths.each do |path|
+      new_hosts = []
       file_hosts = IO.read(path).split( "\n" )
-      hosts.concat file_hosts
+      file_hosts.each do |line|
+        if line[0..0] != "#"
+          new_hosts << line
+        end
+      end
+      hosts.concat new_hosts
     end
 
     # Pass the final hosts array to the hostsupdate plugin so it can perform magic.
