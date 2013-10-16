@@ -13,8 +13,11 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-nginx.conf'); do
 	DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
 	DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
 	DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< $SITE_CONFIG_FILE | cut -c1-32).conf"
-	# echo $DEST_CONFIG_FILE
-	ln -s $SITE_CONFIG_FILE /etc/nginx/custom-sites/$DEST_CONFIG_FILE | echo "Symlinked Nginx config $SITE_CONFIG_FILE"
+	# We allow the replacement of the {vvv_path_to_folder} token with
+	# whatever you want, allowing flexible placement of the site folder
+	# while still having an Nginx config which works.
+	DIR=`dirname $SITE_CONFIG_FILE`
+	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
 done
 
 # Look for site setup scripts
