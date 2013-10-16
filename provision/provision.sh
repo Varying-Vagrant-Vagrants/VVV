@@ -506,10 +506,13 @@ while read hostfile
 do
 	while IFS='' read -r line || [ -n "$line" ]
 	do
-		if ! grep -q "^127.0.0.1 $line$" /etc/hosts
+		if [ "#" != ${line:0:1} ]
 		then
-			echo "127.0.0.1 $line" >> /etc/hosts
-			echo " * Added $line from $hostfile"
+			if ! grep -q "^127.0.0.1 $line$" /etc/hosts
+			then
+				echo "127.0.0.1 $line" >> /etc/hosts
+				echo " * Added $line from $hostfile"
+			fi
 		fi
 	done < $hostfile
 done
