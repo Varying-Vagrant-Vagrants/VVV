@@ -23,10 +23,10 @@ done
 # Look for site setup scripts
 for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-init.sh'); do
 	DIR=`dirname $SITE_CONFIG_FILE`
-	{
+	(
 		cd $DIR
 		bash vvv-init.sh
-	}
+	)
 done;
 
 # RESTART SERVICES AGAIN
