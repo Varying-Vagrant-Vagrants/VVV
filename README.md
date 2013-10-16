@@ -52,8 +52,9 @@ Immediate goals for VVV include:
 ### The First Vagrant Up
 
 1. Start with any operating system.
-1. Install [VirtualBox 4.3](https://www.virtualbox.org/wiki/Downloads)
-    * VVV (and Vagrant) has been tested with this version. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds) page and download the 4.3 release.
+1. Install [VirtualBox 4.3](https://www.virtualbox.org/wiki/Downloads) or [Virtualbox 4.2.18](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2)
+    * VVV (and Vagrant) has been tested with these versions. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds) page and download a previous release.
+    * It is worth noting some parts of Virtualbox were rewritten and it may be in your best interest to stay with 4.2 for a bit before upgrading. There is no absolute need at this point to have 4.3.
 1. Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
     * `vagrant` will now be available as a command in the terminal, try it out.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin. Optional, but useful.
