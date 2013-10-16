@@ -21,7 +21,13 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-nginx.conf'); do
 done
 
 # Look for site setup scripts
-find /srv/www -maxdepth 4 -name 'vvv-init.sh' -exec {} \;
+for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-init.sh'); do
+	DIR=`dirname $SITE_CONFIG_FILE`
+	{
+		cd $DIR
+		bash vvv-init.sh
+	}
+done;
 
 # RESTART SERVICES AGAIN
 #
