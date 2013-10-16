@@ -42,31 +42,19 @@ Vagrant.configure("2") do |config|
   # from a local config file so that they can be more dynamic to your setup.
   if defined? VagrantPlugins::HostsUpdater
 
-	# Get all the domains.dat files
-	paths = []
-	Dir.glob('www/**/vvv-hosts.dat').each do |path|
-		paths << path
-	end
+    # Get all the vvv-hosts.dat files
+    paths = []
+    Dir.glob('www/**/vvv-hosts.dat').each do |path|
+      paths << path
+    end
 
-	# Put all the hosts into a single array
-	hosts = []
-	paths.each do |path|
-		file_hosts = IO.read(path).split( "\s" )
-		hosts.concat file_hosts
-	end
+    # Put all the hosts into a single array
+    hosts = []
+    paths.each do |path|
+      file_hosts = IO.read(path).split( "\s" )
+      hosts.concat file_hosts
+    end
 
-	# Include the VVV hosts
-	# We could put these in /srv/www/vvv-hosts.dat, or similar, perhaps?
-	vvv_hosts = [
-		"vvv.dev",
-    	"local.wordpress.dev",
-    	"local.wordpress-trunk.dev",
-    	"src.wordpress-develop.dev",
-    	"build.wordpress-develop.dev"
-    ]
-    hosts.concat vvv_hosts
-
-    # Finally, pass to Hosts Updater
     config.hostsupdater.aliases = hosts
 
   end
