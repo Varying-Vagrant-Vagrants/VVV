@@ -495,27 +495,26 @@ else
 	echo -e "\nNo network available, skipping network installations"
 fi
 
-# Add any custom domains to the virtual machine's hosts file so that it
-# is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='vvv.dev
-         local.wordpress.dev
-         local.wordpress-trunk.dev
-         src.wordpress-develop.dev
-         build.wordpress-develop.dev'
-
-if ! grep -q "$DOMAINS" /etc/hosts
-then
-	DOMAINS=$(echo $DOMAINS)
-	echo "127.0.0.1 $DOMAINS" >> /etc/hosts
-fi
-
-# Look for additional domains defined in the sites
-for HOSTS_FILE in $(find /srv/www/ -maxdepth 4 -name 'vvv-hosts.dat')
+# Parse any vvv-hosts.data file located in www/ or subdirectories of www/
+# for domains to be added to the virtual machine's host file so that it is
+# self aware.
+#
+# Domains should be entered on new lines.
+echo "Adding domains to the virtual machine's /etc/hosts file..."
+find /srv/www/ -maxdepth 4 -name 'vvv-hosts.dat' | \
+while read hostfile
 do
-	IFS=', ' read -ra HOSTS <<< `cat $HOSTS_FILE`;
-	for HOST in "${HOSTS[@]}"; do
-    	echo "127.0.0.1 $HOST" >> /etc/hosts 
-	done
+	while IFS='' read -r line || [ -n "$line" ]
+	do
+		if [ "#" != ${line:0:1} ]
+		then
+			if ! grep -q "^127.0.0.1 $line$" /etc/hosts
+			then
+				echo "127.0.0.1 $line" >> /etc/hosts
+				echo " * Added $line from $hostfile"
+			fi
+		fi
+	done < $hostfile
 done
 
 end_seconds=`date +%s`
