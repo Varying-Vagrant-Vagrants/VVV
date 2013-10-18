@@ -3,8 +3,8 @@
 # MySQL rather than having to use a password.
 [client]
 user     = root
-password = blank
+password = root
 
 [mysqladmin] 
 user     = root
-password = blank
+password = root
