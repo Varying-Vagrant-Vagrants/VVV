@@ -8,32 +8,26 @@
 * **Possible Breaking:** Change MySQL root password to `root`
 	* **Note:** If anything is setup to rely on the previous password of `blank`, this  may break.
 	* You can also now access `mysql -u root` without a password.
-* Verify support for Vagrant 1.3.5 and Virtualbox 4.3
-	* **Note:** While continuing to work with Vagrant 1.2.x and Virtualbox 4.2.x
 * **Introduce** support for the WordPress develop.svn
 	* This was added pretty much the day it was available. Such a pleasure to work with!
 	* Allowed us to remove the old `wordpress-unit-tests` in favor of the new `wordpress-develop/tests`
 * **Introduce** support for the Vagrant hostsupdater plugin
-	* `vagrant plugin install vagrant-hostsupdater`
+	* Use `vagrant plugin install vagrant-hostsupdater` to install.
 	* Very, very much recommended for an easier and happier life.
-* **Introduce** PHP_CodeSniffer and WordPress-Coding-Standards
-* **Introduce** `vagrant_dir` in `Vagrantfile`, which allows us to...
-	* Check 'Customfile' relative to Vagrantfile, not the current working directory.
-	* Check for custom provision scripts relative to Vagrantfile, not the current working directory
-* **Introduce** postfix and a default postfix config. Mail works!
+* **Introduce** Postfix with a default config. Mail works! (But check your spam)
 * **Introduce** the WordPress i18n Tools, including `config/homebin/makepot`
-* **Introduce** Webgrind
-* **Remove** entire well intended but not so useful flags system.
-	* **Note:** The only remaining flag was for the WordPress unit tests. These unit tests are no longer part of VVV. See the note about tests offered with develop.svn.
+* **Introduce** PHP_CodeSniffer, WordPress-Coding-Standards, and Webgrind
+* **Remove** entire well intended but not so useful flags system
+* Rather than include PHPMemcachedadmin in the VVV repository, download it on initial provision
+* Verify support for Vagrant 1.3.5 (as well as 1.2.x) and Virtualbox 4.3 (as well as 4.2.x)
+* Move `xdebug_on` and `xdebug_off` controls to executable files in `config/homebin`
+* Generate `vagrant_dir` in `Vagrantfile` for accessing relative file locations
+* Add a basic network connectivity check by pinging Google DNS servers
 * Update stable version of WordPress automatically on provision
-* Provide default certs for SSL in Nginx
-* Update to phpMyAdmin 4.0.8
-* General cleanup to screen output during provisioning.
-* Rather than include PHPMemcachedadmin, download it on initial provision.
+* General cleanup to screen output during provisioning
 * Many updates to the default nginx configuration
 * Remove poor, unused implementation of Watchr
-* Move xdebug controls to executable files, introduce config/homebin
-* Add a basic network connectivity check by pinging Google DNS servers
+* Provide default certs for SSL in Nginx
 
 ## 0.8
 * Enable SSH agent forwarding
