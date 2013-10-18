@@ -133,7 +133,8 @@ echo postfix postfix/main_mailer_type select Internet Site | debconf-set-selecti
 echo postfix postfix/mailname string vvv | debconf-set-selections
 
 # Provide our custom apt sources before running `apt-get update`
-ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list | echo "Linked custom apt sources"
+ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
+echo "Linked custom apt sources"
 
 if [[ $ping_result == *bytes?from* ]]
 then
@@ -268,35 +269,47 @@ fi
 # SYMLINK HOST FILES
 echo -e "\nSetup configuration file links..."
 
-ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
-ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
+ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf 
+echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
+
+ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
+echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
 
 # Configuration for php5-fpm
-ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
+ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
+echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
 
 # Provide additional directives for PHP in a custom ini file
-ln -sf /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini | echo " * /srv/config/php5-fpm-config/php-custom.ini -> /etc/php5/fpm/conf.d/php-custom.ini"
+ln -sf /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
+echo " * /srv/config/php5-fpm-config/php-custom.ini -> /etc/php5/fpm/conf.d/php-custom.ini"
 
 # Configuration for Xdebug
-ln -sf /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini | echo " * /srv/config/php5-fpm-config/xdebug.ini -> /etc/php5/fpm/conf.d/xdebug.ini"
+ln -sf /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
+echo " * /srv/config/php5-fpm-config/xdebug.ini -> /etc/php5/fpm/conf.d/xdebug.ini"
 
 # Configuration for APC
-ln -sf /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini | echo " * /srv/config/php5-fpm-config/apc.ini -> /etc/php5/fpm/conf.d/apc.ini"
+ln -sf /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini
+echo " * /srv/config/php5-fpm-config/apc.ini -> /etc/php5/fpm/conf.d/apc.ini"
 
 # Configuration for memcached
-ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf | echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
+ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf
+echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
 
 # Custom bash_profile for our vagrant user
-ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile | echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
+ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile
+echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
 
 # Custom bash_aliases included by vagrant user's .bashrc
-ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases | echo " * /srv/config/bash_aleases -> /home/vagrant/.bash_aliases"
+ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases
+echo " * /srv/config/bash_aleases -> /home/vagrant/.bash_aliases"
 
 # Custom home bin directory
-ln -nsf /srv/config/homebin /home/vagrant/bin | echo " * /srv/config/homebin -> /home/vagrant/bin"
+ln -nsf /srv/config/homebin /home/vagrant/bin
+echo " * /srv/config/homebin -> /home/vagrant/bin"
 
 # Custom vim configuration via .vimrc
-ln -sf /srv/config/vimrc /home/vagrant/.vimrc | echo " * /srv/config/vimrc -> /home/vagrant/.vimrc"
+ln -sf /srv/config/vimrc /home/vagrant/.vimrc
+echo " * /srv/config/vimrc -> /home/vagrant/.vimrc"
 
 # Capture the current IP address of the virtual machine into a variable that
 # can be used when necessary throughout provisioning.
@@ -318,8 +331,10 @@ if mysql --version &>/dev/null
 then
 	echo -e "\nSetup MySQL configuration file links..."
 	# Configuration for MySQL
-	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
-	ln -sf /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf | echo " * /srv/config/mysql-config/root-my.cnf -> /home/vagrant/.my.cnf"
+	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf 
+	echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
+	ln -sf /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf
+	echo " * /srv/config/mysql-config/root-my.cnf -> /home/vagrant/.my.cnf"
 
 	# MySQL gives us an error if we restart a non running service, which
 	# happens after a `vagrant halt`. Check to see if it's running before
@@ -340,14 +355,16 @@ then
 	# the mysqldump files located in database/backups/
 	if [ -f /srv/database/init-custom.sql ]
 	then
-		mysql -u root -proot < /srv/database/init-custom.sql | echo -e "\nInitial custom MySQL scripting..."
+		mysql -u root -proot < /srv/database/init-custom.sql
+		echo -e "\nInitial custom MySQL scripting..."
 	else
 		echo -e "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
 	fi
 
 	# Setup MySQL by importing an init file that creates necessary
 	# users and databases that our vagrant setup relies on.
-	mysql -u root -proot < /srv/database/init.sql | echo "Initial MySQL prep..."
+	mysql -u root -proot < /srv/database/init.sql
+	echo "Initial MySQL prep..."
 
 	# Process each mysqldump SQL file in database/backups to import
 	# an initial data set for MySQL.
