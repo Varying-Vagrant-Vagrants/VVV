@@ -271,6 +271,18 @@ echo -e "\nSetup configuration file links..."
 ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf | echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
 ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf | echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
 
+# /etc/nginx/symlinked-confs
+symlink_conf_dir=/etc/nginx/symlinked-confs
+symlink_target_filename=vvv-nginx.conf
+if [ -e $symlink_conf_dir ]
+then rm -r $symlink_conf_dir
+fi
+echo "Looking for $symlink_target_filename files to symlink into $symlink_conf_dir..."
+mkdir $symlink_conf_dir
+for site_config_file in $(find /srv/www -name $symlink_target_filename); do
+	ln -s $site_config_file $symlink_conf_dir/$(md5sum <<< $site_config_file | cut -c1-32).conf | echo "Symlinked Nginx config $site_config_file"
+done
+
 # Configuration for php5-fpm
 ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf | echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
 
@@ -341,17 +353,19 @@ else
 	echo -e "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
 fi
 
+for init_sql_file in $(find /srv/www/ -name vvv-init.sql)
+do
+	mysql -u root -proot < $init_sql_file | printf "\nRun DB init $init_sql_file...\n"
+done
+
+
 # Setup MySQL by importing an init file that creates necessary
 # users and databases that our vagrant setup relies on.
 mysql -u root -proot < /srv/database/init.sql | echo "Initial MySQL prep..."
 
-# Process each mysqldump SQL file in database/backups to import
-# an initial data set for MySQL.
-/srv/database/import-sql.sh
-
+# WP-CLI Install before import-sql.sh since it depends on it
 if [[ $ping_result == *bytes?from* ]]
 then
-	# WP-CLI Install
 	if [ ! -d /srv/www/wp-cli ]
 	then
 		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
@@ -366,7 +380,14 @@ then
 	fi
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
+fi
 
+# Process each mysqldump SQL file in database/backups to import
+# an initial data set for MySQL.
+/srv/database/import-sql.sh
+
+if [[ $ping_result == *bytes?from* ]]
+then
 	# Download and extract phpMemcachedAdmin to provide a dashboard view and admin interface
 	# to the goings on of memcached when running
 	if [ ! -d /srv/www/default/memcached-admin ]
@@ -495,6 +516,10 @@ else
 	echo -e "\nNo network available, skipping network installations"
 fi
 
+echo "# Hosts for varying-vagrant-vagrants (put in host machine's hosts file):" > /srv/config/host-hosts
+echo "# Make sure the following exist in your host machine's hosts file"
+echo "# Full list will be located in config/host-hosts"
+
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
 DOMAINS='vvv.dev
@@ -508,6 +533,20 @@ then
 	DOMAINS=$(echo $DOMAINS)
 	echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
+echo "$vvv_ip $(echo $DOMAINS)" | tee -a /srv/config/host-hosts
+
+# Look for additional domains defined in the sites
+for site_domains_file in $(find /srv/www -name 'vvv-domains')
+do
+	cat $site_domains_file | sed '/^(#| *$)/d' | while read site_domain_line
+	do
+		if ! grep -q "$site_domain_line" /etc/hosts
+		then
+			echo "127.0.0.1 $site_domain_line" >> /etc/hosts
+		fi
+		echo "$vvv_ip $site_domain_line" | tee -a /srv/config/host-hosts
+	done
+done
 
 end_seconds=`date +%s`
 echo "-----------------------------"

@@ -31,15 +31,15 @@ then
 	do
 	pre_dot=${file%%.*}
 	mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
-	db_exist=`mysql -u root -pblank --skip-column-names -e "$mysql_cmd"`
+	db_exist=`mysql -u root -proot --skip-column-names -e "$mysql_cmd"`
 	if [ "$?" != "0" ]
 	then
 		printf "  * Error - Create $pre_dot database via init-custom.sql before attempting import\n\n"
 	else
 		if [ "" == "$db_exist" ]
 		then
-			printf "mysql -u root -pblank $pre_dot < $pre_dot.sql\n"
-			mysql -u root -pblank $pre_dot < $pre_dot.sql
+			printf "mysql -u root -proot $pre_dot < $pre_dot.sql\n"
+			mysql -u root -proot $pre_dot < $pre_dot.sql
 			printf "  * Import of $pre_dot successful\n"
 		else
 			printf "  * Skipped import of $pre_dot - tables exist\n"
@@ -48,5 +48,20 @@ then
 	done
 	printf "Databases imported\n"
 else
-	printf "No custom databases to import\n"
+	printf "No databases to import in /srv/database/backups\n"
+fi
+
+# Load vvv-data.sql dumps in each WordPress project if WordPress is not installed
+if [ -e /usr/local/bin/wp ]; then
+	echo "Looking for vvv-data.sql files in WordPress projects within /srv/www..."
+	for vvv_data_sql in $(find /srv/www -name vvv-data.sql); do
+		cd $(dirname $vvv_data_sql)
+		if ! wp core is-installed >/dev/null 2>&1; then
+			wp db import $vvv_data_sql
+		else
+			echo "Skipping since already installed: $vvv_data_sql"
+		fi
+	done
+else
+	echo "Skipping import of /srv/www/**/vvv-data.sql since WP-CLI not installed"
 fi
