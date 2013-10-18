@@ -243,7 +243,7 @@ then
 		npm update -g grunt-cli &>/dev/null
 	else
 		echo "Installing Grunt CLI"
-		npm install -g grunt-cli &/dev/null
+		npm install -g grunt-cli &>/dev/null
 	fi
 
 else
