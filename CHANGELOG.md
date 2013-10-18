@@ -3,8 +3,6 @@
 ## 0.9-working
 * **Possible Annoying:** Use `precise32` for the Vagrant box name for better cross project box caching.
     * **Note:** This will probably cause a new Vagrant box to download. Use `vagrant box remove std-precise32` after a `vagrant destroy` to remove the old one and start with this.
-* **Possible Breaking:** Remove flags system entirely.
-	* **Note:** The only remaining flag was for the WordPress unit tests. The functionality of this flag can be duplicated by creating the empty directory `{vvv_dir}/www/wordpress-unit-tests`.
 * **Possible Breaking:** Change VM hostname to `vvv.dev`
     * **Note:** If you had anything setup to rely on the hostname of precise32-dev, this may break.
 * **Possible Breaking:** Change MySQL root password to `root`
@@ -25,6 +23,8 @@
 * **Introduce** postfix and a default postfix config. Mail works!
 * **Introduce** the WordPress i18n Tools, including `config/homebin/makepot`
 * **Introduce** Webgrind
+* **Remove** entire well intended but not so useful flags system.
+	* **Note:** The only remaining flag was for the WordPress unit tests. These unit tests are no longer part of VVV. See the note about tests offered with develop.svn.
 * Update stable version of WordPress automatically on provision
 * Provide default certs for SSL in Nginx
 * Update to phpMyAdmin 4.0.8
