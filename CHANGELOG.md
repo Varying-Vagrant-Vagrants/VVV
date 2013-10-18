@@ -1,15 +1,39 @@
 # Varying Vagrant Vagrants Changelog
 
 ## 0.9-working
-* Use `precise32` for the Vagrant box name for better cross project box caching.
+* **Possible Annoying:** Use `precise32` for the Vagrant box name for better cross project box caching.
     * **Note:** This will probably cause a new Vagrant box to download. Use `vagrant box remove std-precise32` after a `vagrant destroy` to remove the old one and start with this.
 * **Possible Breaking:** Remove flags system entirely.
 	* **Note:** The only remaining flag was for the WordPress unit tests. The functionality of this flag can be duplicated by creating the empty directory `{vvv_dir}/www/wordpress-unit-tests`.
-* **Possible Breaking:** Change VM hostname to `vvv`
+* **Possible Breaking:** Change VM hostname to `vvv.dev`
     * **Note:** If you had anything setup to rely on the hostname of precise32-dev, this may break.
+* **Possible Breaking:** Change MySQL root password to `root`
+	* **Note:** If anything is setup to rely on the previous password of `blank`, this  may break.
+	* You can also now access `mysql -u root` without a password.
+* Verify support for Vagrant 1.3.5 and Virtualbox 4.3
+	* **Note:** While continuing to work with Vagrant 1.2.x and Virtualbox 4.2.x
+* **Introduce** support for the WordPress develop.svn
+	* This was added pretty much the day it was available. Such a pleasure to work with!
+	* Allowed us to remove the old `wordpress-unit-tests` in favor of the new `wordpress-develop/tests`
+* **Introduce** support for the Vagrant hostsupdater plugin
+	* `vagrant plugin install vagrant-hostsupdater`
+	* Very, very much recommended for an easier and happier life.
+* **Introduce** PHP_CodeSniffer and WordPress-Coding-Standards
+* **Introduce** `vagrant_dir` in `Vagrantfile`, which allows us to...
+	* Check 'Customfile' relative to Vagrantfile, not the current working directory.
+	* Check for custom provision scripts relative to Vagrantfile, not the current working directory
+* **Introduce** postfix and a default postfix config. Mail works!
+* **Introduce** the WordPress i18n Tools, including `config/homebin/makepot`
+* **Introduce** Webgrind
 * Update stable version of WordPress automatically on provision
 * Provide default certs for SSL in Nginx
 * Update to phpMyAdmin 4.0.8
+* General cleanup to screen output during provisioning.
+* Rather than include PHPMemcachedadmin, download it on initial provision.
+* Many updates to the default nginx configuration
+* Remove poor, unused implementation of Watchr
+* Move xdebug controls to executable files, introduce config/homebin
+* Add a basic network connectivity check by pinging Google DNS servers
 
 ## 0.8
 * Enable SSH agent forwarding
