@@ -283,10 +283,6 @@ ln -sf /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini | 
 # Configuration for APC
 ln -sf /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini | echo " * /srv/config/php5-fpm-config/apc.ini -> /etc/php5/fpm/conf.d/apc.ini"
 
-# Configuration for mysql
-cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
-ln -sf /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf | echo " * /srv/config/mysql-config/root-my.cnf -> /home/vagrant/.my.cnf"
-
 # Configuration for memcached
 ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf | echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
 
@@ -320,6 +316,11 @@ service php5-fpm restart
 # If MySQL is installed, go through the various imports and service tasks.
 if mysql --version &>/dev/null
 then
+	echo -e "\nSetup MySQL configuration file links..."
+	# Configuration for MySQL
+	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf | echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
+	ln -sf /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf | echo " * /srv/config/mysql-config/root-my.cnf -> /home/vagrant/.my.cnf"
+
 	# MySQL gives us an error if we restart a non running service, which
 	# happens after a `vagrant halt`. Check to see if it's running before
 	# deciding whether to start or restart.
