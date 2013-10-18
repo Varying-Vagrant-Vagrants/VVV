@@ -497,9 +497,9 @@ PHP
 
 	if [ ! -d /srv/www/wordpress-develop/build ]
 	then
-		echo "Initializing grunt in WordPress develop..."
+		echo "Initializing grunt in WordPress develop... This may take a few moments."
 		cd /srv/www/wordpress-develop/
-		npm install
+		npm install &>/dev/null
 		grunt
 	fi
 
