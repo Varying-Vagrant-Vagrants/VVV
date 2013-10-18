@@ -240,10 +240,10 @@ then
 	if grunt --version ;
 	then
 		echo "Updating Grunt CLI"
-		npm update -g grunt-cli
+		npm update -g grunt-cli &>/dev/null
 	else
 		echo "Installing Grunt CLI"
-		npm install -g grunt-cli
+		npm install -g grunt-cli &/dev/null
 	fi
 
 else
