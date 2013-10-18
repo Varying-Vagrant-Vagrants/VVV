@@ -1,6 +1,6 @@
 # Varying Vagrant Vagrants Changelog
 
-## 0.9-working
+## 0.9
 * **Possible Annoying:** Use `precise32` for the Vagrant box name for better cross project box caching.
     * **Note:** This will probably cause a new Vagrant box to download. Use `vagrant box remove std-precise32` after a `vagrant destroy` to remove the old one and start with this.
 * **Possible Breaking:** Change VM hostname to `vvv.dev`
