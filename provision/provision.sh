@@ -301,7 +301,7 @@ echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
 
 # Custom bash_aliases included by vagrant user's .bashrc
 ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases
-echo " * /srv/config/bash_aleases -> /home/vagrant/.bash_aliases"
+echo " * /srv/config/bash_aliases -> /home/vagrant/.bash_aliases"
 
 # Custom home bin directory
 ln -nsf /srv/config/homebin /home/vagrant/bin
