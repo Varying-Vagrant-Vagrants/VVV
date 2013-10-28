@@ -502,7 +502,6 @@ PHP
 	then
 		echo "Initializing grunt in WordPress develop... This may take a few moments."
 		cd /srv/www/wordpress-develop/
-		npm install &>/dev/null
 		grunt
 	fi
 
