@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
 
   # Drive mapping
   #
-  # The following config.vm.share_folder settings will map directories in your Vagrant
+  # The following config.vm.synced_folder settings will map directories in your Vagrant
   # virtual machine to directories on your local machine. Once these are mapped, any
   # changes made to the files in these directories will affect both the local and virtual
   # machine versions. Think of it as two different ways to access the same file. When the
@@ -80,7 +80,7 @@ Vagrant.configure("2") do |config|
   if vagrant_version >= "1.3.0"
     config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
   else
-    config.vm.synced_folder "database/data/", "/var/lib/mysql", :extra => [ "dmode=777", "fmode=777" ]
+    config.vm.synced_folder "database/data/", "/var/lib/mysql", :extra => 'dmode=777,fmode=777'
   end
 
   # /srv/config/
@@ -106,7 +106,7 @@ Vagrant.configure("2") do |config|
   if vagrant_version >= "1.3.0"
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
   else
-    config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => [ "dmode=775", "fmode=774" ]
+    config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
   end
 
   # Customfile - POSSIBLY UNSTABLE
