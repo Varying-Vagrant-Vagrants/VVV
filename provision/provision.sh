@@ -489,7 +489,7 @@ define( 'WP_DEBUG', true );
 PHP
 		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
-		cd ..
+		cd /srv/www/wordpress-develop/
 		npm install
 	else
 		echo "Updating WordPress trunk..."
