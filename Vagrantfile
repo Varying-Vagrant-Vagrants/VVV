@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
 
     # Capture the paths to all vvv-hosts.dat files under the www/ directory.
     paths = []
-    Dir.glob('www/**/vvv-hosts.dat').each do |path|
+    Dir.glob(vagrant_dir + '/www/**/vvv-hosts.dat').each do |path|
       paths << path
     end
 
