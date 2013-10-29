@@ -500,6 +500,8 @@ fi
 # self aware.
 #
 # Domains should be entered on new lines.
+echo "Cleaning the virtual machine's /etc/hosts file..."
+sed -n '/# vvv-auto$/!p' /etc/hosts > /etc/hosts
 echo "Adding domains to the virtual machine's /etc/hosts file..."
 find /srv/www/ -maxdepth 4 -name 'vvv-hosts.dat' | \
 while read hostfile
@@ -510,7 +512,7 @@ do
 		then
 			if ! grep -q "^127.0.0.1 $line$" /etc/hosts
 			then
-				echo "127.0.0.1 $line" >> /etc/hosts
+				echo "127.0.0.1 $line # vvv-auto" >> /etc/hosts
 				echo " * Added $line from $hostfile"
 			fi
 		fi
