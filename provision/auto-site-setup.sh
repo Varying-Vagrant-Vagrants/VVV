@@ -33,4 +33,4 @@ done;
 #
 # Make sure the services we expect to be running are running.
 echo -e "\nRestart Nginx..."
-# service nginx restart
+service nginx restart
