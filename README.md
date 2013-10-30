@@ -21,7 +21,7 @@ The default WordPress configurations provided by VVV are intended to create an e
 
 #### VVV as a MAMP/XAMPP Replacement
 
-The best part is that VVV is ready to use as is. Clone or download the repository and `vagrant up` to automatically build a sandboxed Ubuntu server on your computer containing everything needed to contribute to WordPress core or develop a WordPress theme or plugin.
+The best part is that VVV is ready to use as is. Setup VVV and then type `vagrant up` to automatically build a sandboxed Ubuntu server on your computer containing everything needed to contribute to WordPress core or develop a WordPress theme or plugin.
 
 Multiple projects can be developed at once in the same environment provided by VVV.
 * Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes using the same test content.
@@ -31,9 +31,7 @@ Multiple projects can be developed at once in the same environment provided by V
 
 #### VVV as a Scaffold
 
-Entirely different server configurations can be created by modifying the files included with this repository.
-
-The existing configuration can also be extended significantly through the use of additional provisioning scripts, `provision-pre.sh` and `provision-post.sh`.
+Entirely different server configurations can be created by modifying the files included with this repository or through the use of additional provisioning scripts, `provision-pre.sh` and `provision-post.sh`.
 
 It is not necessary to track the changes made to the main repository. Feel free to check this project out and then change everything to make it your own.
 
@@ -59,7 +57,7 @@ Immediate goals for VVV include:
     * It is worth noting some parts of Virtualbox were rewritten and it may be in your best interest to stay with 4.2.x for a bit before upgrading. There is no absolute need at this point to have 4.3.
 1. Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
     * `vagrant` will now be available as a command in the terminal, try it out.
-1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin. Optional, but very useful.
+1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin.
     * `vagrant plugin install vagrant-hostsupdater`
 1. Clone the Varying Vagrant Vagrants repository into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
@@ -68,8 +66,8 @@ Immediate goals for VVV include:
 1. Change into the new directory
     * `cd vagrant-local`
 1. Start the Vagrant environment
-    * `vagrant up` - *omg magic happens*
-    * Be patient, this could take a while, especially on the first run.
+    * `vagrant up`
+    * Be patient, magic happens. This could take a while, especially on the first run.
 1. Add a record to your local machine's hosts file
     * ***Note:*** If you installed [vagrant hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) in step 4, this has automatically been done for you.
     * `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
@@ -87,11 +85,13 @@ Fancy, yeah?
 
 The first time you run `vagrant up`, a packaged box containing a virtual machine is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an Ubuntu 12.04 installation (Precise release) and is about 280MB.
 
-After this box is downloaded, it begins to boot as a sandboxed virtual machine using VirtualBox. When ready, it runs the provisioning script also provided with this repository. This initiates the download and installation of around 105MB of packages on the new virtual machine.
+After this box is downloaded, it begins to boot as a sandboxed virtual machine using VirtualBox. Once booted, it runs the provisioning script included with VVV. This initiates the download and installation of around 100MB of packages on the new virtual machine.
 
-The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will more than likely only take several minutes.
+The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will likely only take several minutes.
 
-On future runs of `vagrant up`, the packaged box will already be cached on your local machine and Vagrant will only need to deal with provisioning. If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 108MB of packages to install. If the Vagrant has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything.
+On future runs of `vagrant up`, the packaged box will be cached on your local machine and Vagrant will only need to apply provisioning.
+    * If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 100MB of package data.
+    * If the virtual machine has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything large.
 
 ### Now What?
 
@@ -108,7 +108,6 @@ Now that you're up and running with a default configuration, start poking around
     * Have any SQL files that should be imported in the `database/backups/` directory and named as `db_name.sql`. The `import-sql.sh` script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step's SQL.
     * Check out the example nginx configurations in `config/nginx-config/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for basic WordPress stable, trunk, and develop setups.
     * Once a database is imported on the initial `vagrant up`, it will persist on the local machine in a mapped `database/data` directory.
-    * Other stuff. Familiarize and all that.
 
 ### Credentials and Such
 
