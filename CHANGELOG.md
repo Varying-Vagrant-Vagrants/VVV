@@ -9,7 +9,7 @@
     * **Note:** If you had anything setup to rely on the hostname of precise32-dev, this may break.
 * Update stable version of WordPress automatically on provision
 * Provide default certs for SSL in Nginx
-* Update to phpMyAdmin 4.0.5
+* Update to phpMyAdmin 4.0.8
 
 ## 0.8
 * Enable SSH agent forwarding

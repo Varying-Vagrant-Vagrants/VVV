@@ -1,0 +1,14 @@
+# This file contains a list of the domains supported by default
+# in Varying Vagrant Vagrants. Both Vagrantfile and provision.sh
+# parse this file for domains to add to both your host and guest
+# machines as the virtual machines boot.
+#
+# In addition to this file, other files named vvv-hosts can
+# be created with additional domain information. These will be
+# automatically parsed as long as they are located in subdirectories
+# of the www/ directory.
+vvv.dev
+local.wordpress.dev
+local.wordpress-trunk.dev
+src.wordpress-develop.dev
+build.wordpress-develop.dev

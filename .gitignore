@@ -35,11 +35,11 @@
 # We do have some default nginx configs that should be included
 !/config/nginx-config/sites/default.conf
 
-# Ignore file containing hosts which needs to get appended to system's hosts file
-/config/host-hosts
-
 # And we do have a default SQL file that should be included
 !/database/init.sql
+
+# And we provide our default host names in a dat file.
+!/www/vvv-hosts
 
 # And a few of our web directories are important to share.
 !/www/default/
