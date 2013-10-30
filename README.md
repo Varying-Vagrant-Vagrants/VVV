@@ -90,8 +90,8 @@ After this box is downloaded, it begins to boot as a sandboxed virtual machine u
 The time for all of this to happen depends a lot on the speed of your Internet connection. If you are on a fast cable connection, it will likely only take several minutes.
 
 On future runs of `vagrant up`, the packaged box will be cached on your local machine and Vagrant will only need to apply provisioning.
-    * If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 100MB of package data.
-    * If the virtual machine has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything large.
+* If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 100MB of package data.
+* If the virtual machine has been powered off with `vagrant halt`, the provisioning script will run but will not need to download anything large.
 
 ### Now What?
 
