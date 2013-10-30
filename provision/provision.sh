@@ -495,7 +495,7 @@ else
 	echo -e "\nNo network available, skipping network installations"
 fi
 
-# Parse any vvv-hosts.data file located in www/ or subdirectories of www/
+# Parse any vvv-hosts file located in www/ or subdirectories of www/
 # for domains to be added to the virtual machine's host file so that it is
 # self aware.
 #
@@ -503,7 +503,7 @@ fi
 echo "Cleaning the virtual machine's /etc/hosts file..."
 sed -n '/# vvv-auto$/!p' /etc/hosts > /etc/hosts
 echo "Adding domains to the virtual machine's /etc/hosts file..."
-find /srv/www/ -maxdepth 4 -name 'vvv-hosts.dat' | \
+find /srv/www/ -maxdepth 4 -name 'vvv-hosts' | \
 while read hostfile
 do
 	while IFS='' read -r line || [ -n "$line" ]

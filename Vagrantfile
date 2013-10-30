@@ -38,20 +38,20 @@ Vagrant.configure("2") do |config|
   # be aware of the domains specified below. Watch the provisioning script as you may be
   # required to enter a password for Vagrant to access your hosts file.
   #
-  # By default, we'll include the domains setup by VVV through the vvv-hosts.dat file
+  # By default, we'll include the domains setup by VVV through the vvv-hosts file
   # located in the www/ directory.
   #
-  # Other domains can be automatically added by including a vvv-hosts.data file containing
+  # Other domains can be automatically added by including a vvv-hosts file containing
   # individual domains separated by whitespace in subdirectories of www/.
   if defined? VagrantPlugins::HostsUpdater
 
-    # Capture the paths to all vvv-hosts.dat files under the www/ directory.
+    # Capture the paths to all vvv-hosts files under the www/ directory.
     paths = []
-    Dir.glob(vagrant_dir + '/www/**/vvv-hosts.dat').each do |path|
+    Dir.glob(vagrant_dir + '/www/**/vvv-hosts').each do |path|
       paths << path
     end
 
-    # Parse through the vvv-hosts.data files in each of the found paths and put the hosts
+    # Parse through the vvv-hosts files in each of the found paths and put the hosts
     # that are found into a single array.
     hosts = []
     paths.each do |path|
