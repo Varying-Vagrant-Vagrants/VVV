@@ -521,19 +521,29 @@ else
 	echo -e "\nNo network available, skipping network installations"
 fi
 
-# Add any custom domains to the virtual machine's hosts file so that it
-# is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='vvv.dev
-         local.wordpress.dev
-         local.wordpress-trunk.dev
-         src.wordpress-develop.dev
-         build.wordpress-develop.dev'
-
-if ! grep -q "$DOMAINS" /etc/hosts
-then
-	DOMAINS=$(echo $DOMAINS)
-	echo "127.0.0.1 $DOMAINS" >> /etc/hosts
-fi
+# Parse any vvv-hosts file located in www/ or subdirectories of www/
+# for domains to be added to the virtual machine's host file so that it is
+# self aware.
+#
+# Domains should be entered on new lines.
+echo "Cleaning the virtual machine's /etc/hosts file..."
+sed -n '/# vvv-auto$/!p' /etc/hosts > /etc/hosts
+echo "Adding domains to the virtual machine's /etc/hosts file..."
+find /srv/www/ -maxdepth 4 -name 'vvv-hosts' | \
+while read hostfile
+do
+	while IFS='' read -r line || [ -n "$line" ]
+	do
+		if [ "#" != ${line:0:1} ]
+		then
+			if ! grep -q "^127.0.0.1 $line$" /etc/hosts
+			then
+				echo "127.0.0.1 $line # vvv-auto" >> /etc/hosts
+				echo " * Added $line from $hostfile"
+			fi
+		fi
+	done < $hostfile
+done
 
 end_seconds=`date +%s`
 echo "-----------------------------"
