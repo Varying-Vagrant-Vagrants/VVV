@@ -527,7 +527,8 @@ fi
 #
 # Domains should be entered on new lines.
 echo "Cleaning the virtual machine's /etc/hosts file..."
-sed -n '/# vvv-auto$/!p' /etc/hosts > /etc/hosts
+sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
+mv /tmp/hosts /etc/hosts
 echo "Adding domains to the virtual machine's /etc/hosts file..."
 find /srv/www/ -maxdepth 4 -name 'vvv-hosts' | \
 while read hostfile
