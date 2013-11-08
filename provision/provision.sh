@@ -278,6 +278,11 @@ echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
 cp /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
 echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
 
+# TODO(jeremyfelt) - Make sure nothing is linked before deleting, otherwise UNEXPECTED!
+mkdir /etc/nginx/custom-sites/
+rm /etc/nginx/custom-sites/*.conf
+cp /srv/config/nginx-config/sites/*.conf /etc/nginx/custom-sites/
+
 # Configuration for php5-fpm
 cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
 echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
