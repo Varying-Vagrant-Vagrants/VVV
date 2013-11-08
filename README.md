@@ -52,26 +52,25 @@ Immediate goals for VVV include:
 ### The First Vagrant Up
 
 1. Start with any operating system.
-1. Install [VirtualBox 4.3](https://www.virtualbox.org/wiki/Downloads) or [Virtualbox 4.2.18](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2)
-    * VVV (and Vagrant) has been tested with these versions. If a newer version appears on the downloads page and you don't feel like being a guinea pig, check out the [older downloads](https://www.virtualbox.org/wiki/Download_Old_Builds) page and download a previous release.
-    * It is worth noting some parts of Virtualbox were rewritten and it may be in your best interest to stay with 4.2.x for a bit before upgrading. There is no absolute need at this point to have 4.3.
+1. Install [Virtualbox 4.2.x](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) or [VirtualBox 4.3.2](https://www.virtualbox.org/wiki/Downloads)
+    * Major portions of Virtualbox were rewritten for 4.3, and it's possible that there are still bugs to be shaken out. VVV is completely compatible with earlier versions of Virtualbox, so 4.2.18 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
+    * VVV itself leans in the 4.3.x direction in the master branch to stay ahead of the curve.
 1. Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
     * `vagrant` will now be available as a command in the terminal, try it out.
-1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin.
-    * `vagrant plugin install vagrant-hostsupdater`
-1. Clone the Varying Vagrant Vagrants repository into a local directory
+    * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if an older version is in use.
+    * ***Note:*** If Virtualbox 4.3.x is installed, Vagrant 1.3.5 or later is required.
+1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
+    * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the various VVV domains in your browser.
+1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
     * OR download and extract the repository master [zip file](https://github.com/10up/varying-vagrant-vagrants/archive/master.zip)
     * OR grab a [stable release](https://github.com/10up/varying-vagrant-vagrants/releases) if you'd like some extra comfort.
-1. Change into the new directory
-    * `cd vagrant-local`
-1. Start the Vagrant environment
-    * `vagrant up`
+1. Change into the new directory with `cd vagrant-local`
+1. Start the Vagrant environment with `vagrant up`
     * Be patient, magic happens. This could take a while, especially on the first run.
 1. Add a record to your local machine's hosts file
-    * ***Note:*** If you installed [vagrant hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) in step 4, this has automatically been done for you.
-    * `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
-    * On -nix systems you can use: (note that location of host file after the >> may vary) `sudo sh -c 'echo "192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev" >>/private/etc/hosts'`
+    * ***Note:*** If you installed [vagrant hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) in step 4, the host entries are made for you automatically. Watch the provisioning script, as an administrator or `su` ***password may be required*** to properly modify the hosts file on your local machine.
+    * A manual entry should look like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
 1. Visit any of the following default sites in your browser:
     * [http://local.wordpress.dev/](http://local.wordpress.dev/) for WordPress stable
     * [http://local.wordpress-trunk.dev/](http://local.wordpress-trunk.dev/) for WordPress trunk
