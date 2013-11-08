@@ -42,7 +42,5 @@
 !/www/vvv-hosts
 
 # And a few of our web directories are important to share.
-!/www/default/
-/www/default/webgrind
-/www/default/database-admin
-/www/default/memcached-admin
+/www/default/*
+!/www/default/index.php
