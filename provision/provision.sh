@@ -269,6 +269,9 @@ fi
 # SYMLINK HOST FILES
 echo -e "\nSetup configuration file links..."
 
+cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
+echo " * /srv/config/init/vvv-start.conf -> /etc/init/vvv-start.conf"
+
 cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf 
 echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
 
