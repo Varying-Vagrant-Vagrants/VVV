@@ -351,11 +351,13 @@ service php5-fpm restart
 if mysql --version &>/dev/null
 then
 	echo -e "\nSetup MySQL configuration file links..."
-	# Configuration for MySQL
-	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf 
-	echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
+
+	# Copy mysql configuration from local
+	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf
 	cp /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf
-	echo " * /srv/config/mysql-config/root-my.cnf -> /home/vagrant/.my.cnf"
+
+	echo " * /srv/config/mysql-config/my.cnf               -> /etc/mysql/my.cnf"	
+	echo " * /srv/config/mysql-config/root-my.cnf          -> /home/vagrant/.my.cnf"
 
 	# MySQL gives us an error if we restart a non running service, which
 	# happens after a `vagrant halt`. Check to see if it's running before
