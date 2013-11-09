@@ -266,50 +266,71 @@ if [ ! -e /etc/nginx/server.crt ]; then
 	echo $vvvsigncert
 fi
 
-# SYMLINK HOST FILES
-echo -e "\nSetup configuration file links..."
+echo -e "\nSetup configuration files..."
 
-ln -sf /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf 
-echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
+# Unlink all previous symlinked config files. This allows us to avoid errors
+# as we proceed to copy over new versions of these config files. It is likely
+# that this section will be removed after everyone has had a fair chance. With
+# a `vagrant destroy`, none of this is necessary.
+unlink /etc/nginx/nginx.conf
+unlink /etc/nginx/nginx-wp-common.conf
+unlink /etc/php5/fpm/pool.d/www.conf
+unlink /etc/php5/fpm/conf.d/php-custom.ini
+unlink /etc/php5/fpm/conf.d/xdebug.ini
+unlink /etc/php5/fpm/conf.d/apc.ini
+unlink /etc/memcached.conf
+unlink /home/vagrant/.bash_profile
+unlink /home/vagrant/.bash_aliases
+unlink /home/vagrant/.vimrc
 
-ln -sf /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
+# Used to to ensure proper services are started on `vagrant up`
+cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
+
+echo " * /srv/config/init/vvv-start.conf               -> /etc/init/vvv-start.conf"
+
+# Copy nginx configuration from local
+cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf
+cp /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
+if [ ! -d /etc/nginx/custom-sites ]
+then
+	mkdir /etc/nginx/custom-sites/
+fi
+rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
+
+echo " * /srv/config/nginx-config/nginx.conf           -> /etc/nginx/nginx.conf"
 echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
+echo " * /srv/config/nginx-config/sites/               -> /etc/nginx/custom-sites"
 
-# Configuration for php5-fpm
-ln -sf /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
-echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
+# Copy php-fpm configuration from local
+cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
+cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
+cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
+cp /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini
 
-# Provide additional directives for PHP in a custom ini file
-ln -sf /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
-echo " * /srv/config/php5-fpm-config/php-custom.ini -> /etc/php5/fpm/conf.d/php-custom.ini"
+echo " * /srv/config/php5-fpm-config/www.conf          -> /etc/php5/fpm/pool.d/www.conf"
+echo " * /srv/config/php5-fpm-config/php-custom.ini    -> /etc/php5/fpm/conf.d/php-custom.ini"
+echo " * /srv/config/php5-fpm-config/xdebug.ini        -> /etc/php5/fpm/conf.d/xdebug.ini"
+echo " * /srv/config/php5-fpm-config/apc.ini           -> /etc/php5/fpm/conf.d/apc.ini"
 
-# Configuration for Xdebug
-ln -sf /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
-echo " * /srv/config/php5-fpm-config/xdebug.ini -> /etc/php5/fpm/conf.d/xdebug.ini"
+# Copy memcached configuration from local
+cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
 
-# Configuration for APC
-ln -sf /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini
-echo " * /srv/config/php5-fpm-config/apc.ini -> /etc/php5/fpm/conf.d/apc.ini"
+echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 
-# Configuration for memcached
-ln -sf /srv/config/memcached-config/memcached.conf /etc/memcached.conf
-echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
+# Copy custom dotfiles and bin file for the vagrant user from local
+cp /srv/config/bash_profile /home/vagrant/.bash_profile
+cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
+cp /srv/config/vimrc /home/vagrant/.vimrc
+if [ ! -d /home/vagrant/bin ]
+then
+	mkdir /home/vagrant/bin
+fi
+rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
 
-# Custom bash_profile for our vagrant user
-ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile
-echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
-
-# Custom bash_aliases included by vagrant user's .bashrc
-ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases
-echo " * /srv/config/bash_aliases -> /home/vagrant/.bash_aliases"
-
-# Custom home bin directory
-ln -nsf /srv/config/homebin /home/vagrant/bin
-echo " * /srv/config/homebin -> /home/vagrant/bin"
-
-# Custom vim configuration via .vimrc
-ln -sf /srv/config/vimrc /home/vagrant/.vimrc
-echo " * /srv/config/vimrc -> /home/vagrant/.vimrc"
+echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
+echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
+echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
+echo " * /srv/config/homebin                           -> /home/vagrant/bin"
 
 # Capture the current IP address of the virtual machine into a variable that
 # can be used when necessary throughout provisioning.
@@ -330,11 +351,13 @@ service php5-fpm restart
 if mysql --version &>/dev/null
 then
 	echo -e "\nSetup MySQL configuration file links..."
-	# Configuration for MySQL
-	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf 
-	echo " * /srv/config/mysql-config/my.cnf -> /etc/mysql/my.cnf"
-	ln -sf /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf
-	echo " * /srv/config/mysql-config/root-my.cnf -> /home/vagrant/.my.cnf"
+
+	# Copy mysql configuration from local
+	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf
+	cp /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf
+
+	echo " * /srv/config/mysql-config/my.cnf               -> /etc/mysql/my.cnf"	
+	echo " * /srv/config/mysql-config/root-my.cnf          -> /home/vagrant/.my.cnf"
 
 	# MySQL gives us an error if we restart a non running service, which
 	# happens after a `vagrant halt`. Check to see if it's running before

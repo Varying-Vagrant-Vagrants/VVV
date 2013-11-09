@@ -111,13 +111,6 @@ Vagrant.configure("2") do |config|
   # nginx as well as any pre-existing database files.
   config.vm.synced_folder "config/", "/srv/config"
 
-  # /srv/config/nginx-config/sites/
-  #
-  # If a sites directory exists inside the above server-conf directory, it will be
-  # added as a mapped directory inside the VM as well. This is used to maintain specific
-  # site configuration files for nginx
-  config.vm.synced_folder "config/nginx-config/sites/", "/etc/nginx/custom-sites"
-
   # /srv/www/
   #
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory

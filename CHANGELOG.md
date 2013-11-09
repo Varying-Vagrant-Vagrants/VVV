@@ -1,5 +1,9 @@
 # Varying Vagrant Vagrants Changelog
 
+## 1.0-working
+* **Introduce** Auto site setup during provisioning
+* `vagrant up` after halt meets expectations
+
 ## 0.9
 * **Possible Annoying:** Use `precise32` for the Vagrant box name for better cross project box caching.
     * **Note:** This will probably cause a new Vagrant box to download. Use `vagrant box remove std-precise32` after a `vagrant destroy` to remove the old one and start with this.
