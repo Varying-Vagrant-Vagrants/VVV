@@ -266,42 +266,39 @@ if [ ! -e /etc/nginx/server.crt ]; then
 	echo $vvvsigncert
 fi
 
-# SYMLINK HOST FILES
-echo -e "\nSetup configuration file links..."
+echo -e "\nSetup configuration files..."
 
+# Used to to ensure proper services are started on `vagrant up`
 cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
 echo " * /srv/config/init/vvv-start.conf -> /etc/init/vvv-start.conf"
 
-cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf 
-echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
-
+# Copy nginx configuration from local
+cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf
 cp /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
-echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
-
-# TODO(jeremyfelt) - Make sure nothing is linked before deleting, otherwise UNEXPECTED!
 if [ ! -d /etc/nginx/custom-sites ]
 then
 	mkdir /etc/nginx/custom-sites/
 fi
 rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
 
-# Configuration for php5-fpm
+echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
+echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
+echo " * /srv/config/nginx-config/sites/ -> /etc/nginx/custom-sites"
+
+# TODO(jeremyfelt) - Make sure nothing is linked before deleting, otherwise UNEXPECTED!
+
+# Copy php-fpm configuration from local
 cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
-echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
-
-# Provide additional directives for PHP in a custom ini file
 cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
-echo " * /srv/config/php5-fpm-config/php-custom.ini -> /etc/php5/fpm/conf.d/php-custom.ini"
-
-# Configuration for Xdebug
 cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
-echo " * /srv/config/php5-fpm-config/xdebug.ini -> /etc/php5/fpm/conf.d/xdebug.ini"
-
-# Configuration for APC
 cp /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini
+
+echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
+echo " * /srv/config/php5-fpm-config/php-custom.ini -> /etc/php5/fpm/conf.d/php-custom.ini"
+echo " * /srv/config/php5-fpm-config/xdebug.ini -> /etc/php5/fpm/conf.d/xdebug.ini"
 echo " * /srv/config/php5-fpm-config/apc.ini -> /etc/php5/fpm/conf.d/apc.ini"
 
-# Configuration for memcached
+# Copy memcached configuration from local
 cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
 echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
 
