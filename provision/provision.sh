@@ -302,21 +302,20 @@ echo " * /srv/config/php5-fpm-config/apc.ini -> /etc/php5/fpm/conf.d/apc.ini"
 cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
 echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
 
-# Custom bash_profile for our vagrant user
-ln -sf /srv/config/bash_profile /home/vagrant/.bash_profile
+# Copy custom dotfiles and bin file for the vagrant user from local
+cp /srv/config/bash_profile /home/vagrant/.bash_profile
+cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
+cp /srv/config/vimrc /home/vagrant/.vimrc
+if [ ! -d /home/vagrant/bin ]
+then
+	mkdir /home/vagrant/bin
+fi
+rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
+
 echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
-
-# Custom bash_aliases included by vagrant user's .bashrc
-ln -sf /srv/config/bash_aliases /home/vagrant/.bash_aliases
 echo " * /srv/config/bash_aliases -> /home/vagrant/.bash_aliases"
-
-# Custom home bin directory
-ln -nsf /srv/config/homebin /home/vagrant/bin
-echo " * /srv/config/homebin -> /home/vagrant/bin"
-
-# Custom vim configuration via .vimrc
-ln -sf /srv/config/vimrc /home/vagrant/.vimrc
-echo " * /srv/config/vimrc -> /home/vagrant/.vimrc"
+echo " * /srv/config/homebin      -> /home/vagrant/bin"
+echo " * /srv/config/vimrc        -> /home/vagrant/.vimrc"
 
 # Capture the current IP address of the virtual machine into a variable that
 # can be used when necessary throughout provisioning.
