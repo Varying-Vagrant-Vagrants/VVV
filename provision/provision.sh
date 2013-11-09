@@ -285,7 +285,8 @@ unlink /home/vagrant/.vimrc
 
 # Used to to ensure proper services are started on `vagrant up`
 cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
-echo " * /srv/config/init/vvv-start.conf -> /etc/init/vvv-start.conf"
+
+echo " * /srv/config/init/vvv-start.conf               -> /etc/init/vvv-start.conf"
 
 # Copy nginx configuration from local
 cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf
@@ -296,11 +297,9 @@ then
 fi
 rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
 
-echo " * /srv/config/nginx-config/nginx.conf -> /etc/nginx/nginx.conf"
+echo " * /srv/config/nginx-config/nginx.conf           -> /etc/nginx/nginx.conf"
 echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
-echo " * /srv/config/nginx-config/sites/ -> /etc/nginx/custom-sites"
-
-# TODO(jeremyfelt) - Make sure nothing is linked before deleting, otherwise UNEXPECTED!
+echo " * /srv/config/nginx-config/sites/               -> /etc/nginx/custom-sites"
 
 # Copy php-fpm configuration from local
 cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
@@ -308,14 +307,15 @@ cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.in
 cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
 cp /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini
 
-echo " * /srv/config/php5-fpm-config/www.conf -> /etc/php5/fpm/pool.d/www.conf"
-echo " * /srv/config/php5-fpm-config/php-custom.ini -> /etc/php5/fpm/conf.d/php-custom.ini"
-echo " * /srv/config/php5-fpm-config/xdebug.ini -> /etc/php5/fpm/conf.d/xdebug.ini"
-echo " * /srv/config/php5-fpm-config/apc.ini -> /etc/php5/fpm/conf.d/apc.ini"
+echo " * /srv/config/php5-fpm-config/www.conf          -> /etc/php5/fpm/pool.d/www.conf"
+echo " * /srv/config/php5-fpm-config/php-custom.ini    -> /etc/php5/fpm/conf.d/php-custom.ini"
+echo " * /srv/config/php5-fpm-config/xdebug.ini        -> /etc/php5/fpm/conf.d/xdebug.ini"
+echo " * /srv/config/php5-fpm-config/apc.ini           -> /etc/php5/fpm/conf.d/apc.ini"
 
 # Copy memcached configuration from local
 cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
-echo " * /srv/config/memcached-config/memcached.conf -> /etc/memcached.conf"
+
+echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 
 # Copy custom dotfiles and bin file for the vagrant user from local
 cp /srv/config/bash_profile /home/vagrant/.bash_profile
@@ -327,10 +327,10 @@ then
 fi
 rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
 
-echo " * /srv/config/bash_profile -> /home/vagrant/.bash_profile"
-echo " * /srv/config/bash_aliases -> /home/vagrant/.bash_aliases"
-echo " * /srv/config/homebin      -> /home/vagrant/bin"
-echo " * /srv/config/vimrc        -> /home/vagrant/.vimrc"
+echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
+echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
+echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
+echo " * /srv/config/homebin                           -> /home/vagrant/bin"
 
 # Capture the current IP address of the virtual machine into a variable that
 # can be used when necessary throughout provisioning.
