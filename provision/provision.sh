@@ -268,6 +268,21 @@ fi
 
 echo -e "\nSetup configuration files..."
 
+# Unlink all previous symlinked config files. This allows us to avoid errors
+# as we proceed to copy over new versions of these config files. It is likely
+# that this section will be removed after everyone has had a fair chance. With
+# a `vagrant destroy`, none of this is necessary.
+unlink /etc/nginx/nginx.conf
+unlink /etc/nginx/nginx-wp-common.conf
+unlink /etc/php5/fpm/pool.d/www.conf
+unlink /etc/php5/fpm/conf.d/php-custom.ini
+unlink /etc/php5/fpm/conf.d/xdebug.ini
+unlink /etc/php5/fpm/conf.d/apc.ini
+unlink /etc/memcached.conf
+unlink /home/vagrant/.bash_profile
+unlink /home/vagrant/.bash_aliases
+unlink /home/vagrant/.vimrc
+
 # Used to to ensure proper services are started on `vagrant up`
 cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
 echo " * /srv/config/init/vvv-start.conf -> /etc/init/vvv-start.conf"
