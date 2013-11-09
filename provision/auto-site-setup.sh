@@ -7,6 +7,15 @@
 # the configs and add them back in again.
 find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
+# Look for site setup scripts
+for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-init.sh'); do
+	DIR=`dirname $SITE_CONFIG_FILE`
+	(
+		cd $DIR
+		bash vvv-init.sh
+	)
+done
+
 # Look for Nginx vhost files, symlink them into the custom sites dir
 for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-nginx.conf'); do
 	DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
@@ -19,15 +28,6 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-nginx.conf'); do
 	DIR=`dirname $SITE_CONFIG_FILE`
 	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
 done
-
-# Look for site setup scripts
-for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-init.sh'); do
-	DIR=`dirname $SITE_CONFIG_FILE`
-	(
-		cd $DIR
-		bash vvv-init.sh
-	)
-done;
 
 # RESTART SERVICES AGAIN
 #
