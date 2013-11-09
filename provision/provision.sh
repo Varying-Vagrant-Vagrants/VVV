@@ -528,7 +528,7 @@ fi
 find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
 # Look for site setup scripts
-for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-init.sh'); do
+for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-init.sh'); do
 	DIR=`dirname $SITE_CONFIG_FILE`
 	(
 		cd $DIR
@@ -537,7 +537,7 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-init.sh'); do
 done
 
 # Look for Nginx vhost files, symlink them into the custom sites dir
-for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 4 -name 'vvv-nginx.conf'); do
+for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 	DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
 	DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
 	DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
@@ -566,7 +566,7 @@ echo "Cleaning the virtual machine's /etc/hosts file..."
 sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
 mv /tmp/hosts /etc/hosts
 echo "Adding domains to the virtual machine's /etc/hosts file..."
-find /srv/www/ -maxdepth 4 -name 'vvv-hosts' | \
+find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
 while read hostfile
 do
 	while IFS='' read -r line || [ -n "$line" ]
