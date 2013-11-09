@@ -279,7 +279,10 @@ cp /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
 echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
 
 # TODO(jeremyfelt) - Make sure nothing is linked before deleting, otherwise UNEXPECTED!
-mkdir /etc/nginx/custom-sites/
+if [ ! -d /etc/nginx/custom-sites ]
+then
+	mkdir /etc/nginx/custom-sites/
+fi
 rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
 
 # Configuration for php5-fpm
