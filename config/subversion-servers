@@ -1,0 +1,158 @@
+### This file specifies server-specific parameters,
+### including HTTP proxy information, HTTP timeout settings,
+### and authentication settings.
+###
+### The currently defined server options are:
+###   http-proxy-host            Proxy host for HTTP connection
+###   http-proxy-port            Port number of proxy host service
+###   http-proxy-username        Username for auth to proxy service
+###   http-proxy-password        Password for auth to proxy service
+###   http-proxy-exceptions      List of sites that do not use proxy
+###   http-timeout               Timeout for HTTP requests in seconds
+###   http-compression           Whether to compress HTTP requests
+###   neon-debug-mask            Debug mask for Neon HTTP library
+###   http-auth-types            Auth types to use for HTTP library
+###   ssl-authority-files        List of files, each of a trusted CA
+###   ssl-trust-default-ca       Trust the system 'default' CAs
+###   ssl-client-cert-file       PKCS#12 format client certificate file
+###   ssl-client-cert-password   Client Key password, if needed.
+###   ssl-pkcs11-provider        Name of PKCS#11 provider to use.
+###   http-library               Which library to use for http/https
+###                              connections (neon or serf)
+###   store-passwords            Specifies whether passwords used
+###                              to authenticate against a
+###                              Subversion server may be cached
+###                              to disk in any way.
+###   store-plaintext-passwords  Specifies whether passwords may
+###                              be cached on disk unencrypted.
+###   store-ssl-client-cert-pp   Specifies whether passphrase used
+###                              to authenticate against a client
+###                              certificate may be cached to disk
+###                              in any way
+###   store-ssl-client-cert-pp-plaintext
+###                              Specifies whether client cert
+###                              passphrases may be cached on disk
+###                              unencrypted (i.e., as plaintext).
+###   store-auth-creds           Specifies whether any auth info
+###                              (passwords as well as server certs)
+###                              may be cached to disk.
+###   username                   Specifies the default username.
+###
+### Set store-passwords to 'no' to avoid storing passwords on disk
+### in any way, including in password stores. It defaults to 'yes',
+### but Subversion will never save your password to disk in plaintext
+### unless you tell it to.
+### Note that this option only prevents saving of *new* passwords;
+### it doesn't invalidate existing passwords.  (To do that, remove
+### the cache files by hand as described in the Subversion book.)
+###
+### Set store-plaintext-passwords to 'no' to avoid storing
+### passwords in unencrypted form in the auth/ area of your config
+### directory. Set it to 'yes' to allow Subversion to store
+### unencrypted passwords in the auth/ area.  The default is
+### 'ask', which means that Subversion will ask you before
+### saving a password to disk in unencrypted form.  Note that
+### this option has no effect if either 'store-passwords' or 
+### 'store-auth-creds' is set to 'no'.
+###
+### Set store-ssl-client-cert-pp to 'no' to avoid storing ssl
+### client certificate passphrases in the auth/ area of your
+### config directory.  It defaults to 'yes', but Subversion will
+### never save your passphrase to disk in plaintext unless you tell
+### it to via 'store-ssl-client-cert-pp-plaintext' (see below).
+###
+### Note store-ssl-client-cert-pp only prevents the saving of *new*
+### passphrases; it doesn't invalidate existing passphrases.  To do
+### that, remove the cache files by hand as described in the
+### Subversion book at http://svnbook.red-bean.com/nightly/en/\
+###                    svn.serverconfig.netmodel.html\
+###                    #svn.serverconfig.netmodel.credcache
+###
+### Set store-ssl-client-cert-pp-plaintext to 'no' to avoid storing
+### passphrases in unencrypted form in the auth/ area of your
+### config directory.  Set it to 'yes' to allow Subversion to
+### store unencrypted passphrases in the auth/ area.  The default
+### is 'ask', which means that Subversion will prompt before
+### saving a passphrase to disk in unencrypted form.  Note that
+### this option has no effect if either 'store-auth-creds' or 
+### 'store-ssl-client-cert-pp' is set to 'no'.
+###
+### Set store-auth-creds to 'no' to avoid storing any Subversion
+### credentials in the auth/ area of your config directory.
+### Note that this includes SSL server certificates.
+### It defaults to 'yes'.  Note that this option only prevents
+### saving of *new* credentials;  it doesn't invalidate existing
+### caches.  (To do that, remove the cache files by hand.)
+###
+### HTTP timeouts, if given, are specified in seconds.  A timeout
+### of 0, i.e. zero, causes a builtin default to be used.
+###
+### The commented-out examples below are intended only to
+### demonstrate how to use this file; any resemblance to actual
+### servers, living or dead, is entirely coincidental.
+
+### In the 'groups' section, the URL of the repository you're
+### trying to access is matched against the patterns on the right.
+### If a match is found, the server options are taken from the
+### section with the corresponding name on the left.
+
+[groups]
+# group1 = *.collab.net
+# othergroup = repository.blarggitywhoomph.com
+# thirdgroup = *.example.com
+
+### Information for the first group:
+# [group1]
+# http-proxy-host = proxy1.some-domain-name.com
+# http-proxy-port = 80
+# http-proxy-username = blah
+# http-proxy-password = doubleblah
+# http-timeout = 60
+# http-auth-types = basic;digest;negotiate
+# neon-debug-mask = 130
+# store-plaintext-passwords = no
+# username = harry
+
+### Information for the second group:
+# [othergroup]
+# http-proxy-host = proxy2.some-domain-name.com
+# http-proxy-port = 9000
+# No username and password for the proxy, so use the defaults below.
+
+### You can set default parameters in the 'global' section.
+### These parameters apply if no corresponding parameter is set in
+### a specifically matched group as shown above.  Thus, if you go
+### through the same proxy server to reach every site on the
+### Internet, you probably just want to put that server's
+### information in the 'global' section and not bother with
+### 'groups' or any other sections.
+###
+### Most people might want to configure password caching
+### parameters here, but you can also configure them per server
+### group (per-group settings override global settings).
+###
+### If you go through a proxy for all but a few sites, you can
+### list those exceptions under 'http-proxy-exceptions'.  This only
+### overrides defaults, not explicitly matched server names.
+###
+### 'ssl-authority-files' is a semicolon-delimited list of files,
+### each pointing to a PEM-encoded Certificate Authority (CA) 
+### SSL certificate.  See details above for overriding security 
+### due to SSL.
+[global]
+# http-proxy-exceptions = *.exception.com, www.internal-site.org
+# http-proxy-host = defaultproxy.whatever.com
+# http-proxy-port = 7000
+# http-proxy-username = defaultusername
+# http-proxy-password = defaultpassword
+# http-compression = no
+# http-auth-types = basic;digest;negotiate
+# No http-timeout, so just use the builtin default.
+# No neon-debug-mask, so neon debugging is disabled.
+# ssl-authority-files = /path/to/CAcert.pem;/path/to/CAcert2.pem
+#
+# Password / passphrase caching parameters:
+# store-passwords = no
+store-plaintext-passwords = no
+# store-ssl-client-cert-pp = no
+# store-ssl-client-cert-pp-plaintext = no

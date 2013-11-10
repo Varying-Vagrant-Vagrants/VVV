@@ -282,6 +282,7 @@ unlink /etc/memcached.conf
 unlink /home/vagrant/.bash_profile
 unlink /home/vagrant/.bash_aliases
 unlink /home/vagrant/.vimrc
+unlink /home/vagrant/.subversion/servers
 
 # Used to to ensure proper services are started on `vagrant up`
 cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
@@ -321,6 +322,7 @@ echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 cp /srv/config/bash_profile /home/vagrant/.bash_profile
 cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
 cp /srv/config/vimrc /home/vagrant/.vimrc
+cp /srv/config/subversion-servers /home/vagrant/.subversion/servers
 if [ ! -d /home/vagrant/bin ]
 then
 	mkdir /home/vagrant/bin
@@ -330,6 +332,7 @@ rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
 echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
 echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
+echo " * /srv/config/subversion-servers                -> /home/vagrant/.subversion/servers"
 echo " * /srv/config/homebin                           -> /home/vagrant/bin"
 
 # Capture the current IP address of the virtual machine into a variable that
