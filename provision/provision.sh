@@ -282,7 +282,6 @@ unlink /etc/memcached.conf
 unlink /home/vagrant/.bash_profile
 unlink /home/vagrant/.bash_aliases
 unlink /home/vagrant/.vimrc
-unlink /home/vagrant/.subversion/servers
 
 # Used to to ensure proper services are started on `vagrant up`
 cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
