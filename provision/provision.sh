@@ -464,6 +464,17 @@ then
 		git pull --rebase origin master
 	fi
 
+	# Download WordPress TimeStack
+	if [ ! -d /srv/www/timestack ]
+	then
+		echo "Downloading WordPress TimeStack..."
+		git clone git://github.com/joehoyle/Time-Stack.git /srv/www/timestack
+	else
+		echo "Updating WordPress TimeStack..."
+		cd /srv/www/timetrack
+		git pull --rebase origin master
+	fi
+
 	# Install and configure the latest stable version of WordPress
 	if [ ! -d /srv/www/wordpress-default ]
 	then
@@ -529,6 +540,25 @@ PHP
 		cd /srv/www/wordpress-develop/
 		grunt
 	fi
+
+	# Install WordPress TimeStack Plugin on WordPress Stable
+	if [ ! -d /srv/www/wordpress-default/wp-content/plugins/time-stack-plugin ]
+	then
+		echo "Downloading WordPress TimeStack Plugin..."
+		git clone git://github.com/joehoyle/Time-Stack-Plugin.git /srv/www/wordpress-default/wp-content/plugins/time-stack-plugin
+	else
+		echo "Updating WordPress TimeStack Plugin..."
+		cd /srv/www/wordpress-default/wp-content/plugins/time-stack-plugin
+		git pull --rebase origin master
+	fi
+
+	# Install WordPress TimeStack Plugin on WordPress trunk 
+	echo "Copy WordPress TimeStack Plugin to WordPress trunk"
+	cp -rf /srv/www/wordpress-default/wp-content/plugins/time-stack-plugin /srv/www/wordpress-trunk/wp-content/plugins/time-stack-plugin
+
+	# Install WordPress TimeStack Plugin on WordPress develop 
+	echo "Copy WordPress TimeStack Plugin to WordPress develop"
+	cp -rf /srv/www/wordpress-default/wp-content/plugins/time-stack-plugin /srv/www/wordpress-develop/src/wp-content/plugins/time-stack-plugin
 
 	# Download phpMyAdmin 4.0.9
 	if [ ! -d /srv/www/default/database-admin ]
