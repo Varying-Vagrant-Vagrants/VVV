@@ -25,6 +25,7 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	<li><a href="memcached-admin/">phpMemcachedAdmin</a></li>
 	<li><a href="webgrind/">Webgrind</a></li>
 	<li><a href="phpinfo/">PHP Info</a></li>
+	<li><a href="http://timestack.dev">WP Time Stack</a></li>
 </ul>
 
 <ul class="nav">
