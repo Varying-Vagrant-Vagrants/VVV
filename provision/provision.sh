@@ -13,9 +13,9 @@ start_seconds="$(date +%s)"
 
 # Capture a basic ping result to Google's primary DNS server to determine if
 # outside access is available to us. If this does not reply after 2 attempts,
-# we try one of Level3's DNS servers as well. If neither of these IPs replies to
-# a ping, then we'll skip a few things further in provisioning rather than
-# creating a bunch of errors.
+# we try one of Level3's DNS servers as well. If neither IP replies to a ping,
+# then we'll skip a few things further in provisioning rather than creating a
+# bunch of errors.
 ping_result="$(ping -c 2 8.8.4.4 2>&1)"
 if [[ $ping_result != *bytes?from* ]]; then
 	ping_result="$(ping -c 2 4.2.2.2 2>&1)"
@@ -207,9 +207,9 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# PHPUnit
 	#
-	# Check that PHPUnit, Mockery, and Hamcrest are all successfully installed. If
-	# not, then Composer should be given another shot at it. Versions for these
-	# packages are controlled in the `/srv/config/phpunit-composer.json` file.
+	# Check that PHPUnit, Mockery, and Hamcrest are all successfully installed.
+	# If not, then Composer should be given another shot at it. Versions for
+	# these packages are controlled in `/srv/config/phpunit-composer.json`.
 	if [[ ! -d /usr/local/src/vvv-phpunit ]]; then
 		echo "Installing PHPUnit, Hamcrest and Mockery..."
 		mkdir -p /usr/local/src/vvv-phpunit
@@ -433,8 +433,8 @@ if [[ $ping_result == *bytes?from* ]]; then
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
-	# Download and extract phpMemcachedAdmin to provide a dashboard view and admin interface
-	# to the goings on of memcached when running
+	# Download and extract phpMemcachedAdmin to provide a dashboard view and
+	# admin interface to the goings on of memcached when running
 	if [[ ! -d /srv/www/default/memcached-admin ]]; then
 		echo -e "\nDownloading phpMemcachedAdmin, see https://code.google.com/p/phpmemcacheadmin/"
 		cd /srv/www/default
