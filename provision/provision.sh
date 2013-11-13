@@ -9,16 +9,16 @@
 
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
-start_seconds=`date +%s`
+start_seconds="$(date +%s)"
 
 # Capture a basic ping result to Google's primary DNS server to determine if
 # outside access is available to us. If this does not reply after 2 attempts,
 # we try one of Level3's DNS servers as well. If neither of these IPs replies to
 # a ping, then we'll skip a few things further in provisioning rather than
 # creating a bunch of errors.
-ping_result=`ping -c 2 8.8.4.4 2>&1`
+ping_result="$(ping -c 2 8.8.4.4 2>&1)"
 if [[ $ping_result != *bytes?from* ]]; then
-	ping_result=`ping -c 2 4.2.2.2 2>&1`
+	ping_result="$(ping -c 2 4.2.2.2 2>&1)"
 fi
 
 # PACKAGE INSTALLATION
@@ -102,11 +102,11 @@ echo "Check for apt packages to install..."
 # Loop through each of our packages that should be installed on the system. If
 # not yet installed, it should be added to the array of packages to install.
 for pkg in "${apt_package_check_list[@]}"; do
-	package_version=`dpkg -s $pkg 2>&1 | grep 'Version:' | cut -d " " -f 2`
+	package_version="$(dpkg -s $pkg 2>&1 | grep 'Version:' | cut -d " " -f 2)"
 	if [[ $package_version != "" ]]; then
-		space_count=`expr 20 - "${#pkg}"` #11
-		pack_space_count=`expr 30 - "${#package_version}"`
-		real_space=`expr ${space_count} + ${pack_space_count} + ${#package_version}`
+		space_count="$(expr 20 - "${#pkg}")" #11
+		pack_space_count="$(expr 30 - "${#package_version}")"
+		real_space="$(expr ${space_count} + ${pack_space_count} + ${#package_version})"
 		printf " * $pkg %${real_space}.${#package_version}s ${package_version}\n"
 	else
 		echo " *" $pkg [not installed]
@@ -257,7 +257,7 @@ fi
 # Configuration for nginx
 if [ ! -e /etc/nginx/server.key ]; then
 	echo "Generate Nginx server private key..."
-	vvvgenrsa=`openssl genrsa -out /etc/nginx/server.key 2048 2>&1`
+	vvvgenrsa="$(openssl genrsa -out /etc/nginx/server.key 2048 2>&1)"
 	echo $vvvgenrsa
 fi
 if [ ! -e /etc/nginx/server.csr ]; then
@@ -266,7 +266,7 @@ if [ ! -e /etc/nginx/server.csr ]; then
 fi
 if [ ! -e /etc/nginx/server.crt ]; then
 	echo "Sign the certificate using the above private key and CSR..."
-	vvvsigncert=`openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt 2>&1`
+	vvvsigncert="$(openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt 2>&1)"
 	echo $vvvsigncert
 fi
 
@@ -338,7 +338,7 @@ echo " * /srv/config/homebin                           -> /home/vagrant/bin"
 
 # Capture the current IP address of the virtual machine into a variable that
 # can be used when necessary throughout provisioning.
-vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
+vvv_ip="$(ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1)"
 
 # RESTART SERVICES
 #
@@ -365,7 +365,7 @@ if mysql --version &>/dev/null; then
 	# MySQL gives us an error if we restart a non running service, which
 	# happens after a `vagrant halt`. Check to see if it's running before
 	# deciding whether to start or restart.
-	exists_mysql=`service mysql status`
+	exists_mysql="$(service mysql status)"
 	if [ "mysql stop/waiting" == "$exists_mysql" ]; then
 		echo "service mysql start"
 		service mysql start
@@ -558,7 +558,7 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 	# We allow the replacement of the {vvv_path_to_folder} token with
 	# whatever you want, allowing flexible placement of the site folder
 	# while still having an Nginx config which works.
-	DIR=`dirname $SITE_CONFIG_FILE`
+	DIR="$(dirname $SITE_CONFIG_FILE)"
 	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
 done
 
@@ -591,9 +591,9 @@ while read hostfile; do
 	done < $hostfile
 done
 
-end_seconds=`date +%s`
+end_seconds="$(date +%s)"
 echo "-----------------------------"
-echo "Provisioning complete in `expr $end_seconds - $start_seconds` seconds"
+echo "Provisioning complete in "$(expr $end_seconds - $start_seconds)" seconds"
 if [[ $ping_result == *bytes?from* ]]; then
 	echo "External network connection established, packages up to date."
 else
