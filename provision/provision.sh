@@ -324,6 +324,9 @@ echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 cp /srv/config/bash_profile /home/vagrant/.bash_profile
 cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
 cp /srv/config/vimrc /home/vagrant/.vimrc
+if [[ ! -d /home/vagrant/.subversion ]]; then
+	mkdir /home/vagrant/.subversion
+fi
 cp /srv/config/subversion-servers /home/vagrant/.subversion/servers
 if [[ ! -d /home/vagrant/bin ]]; then
 	mkdir /home/vagrant/bin
