@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # provision.sh
 #
 # This file is specified in Vagrantfile and is loaded by Vagrant as the primary
