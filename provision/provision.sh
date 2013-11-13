@@ -568,8 +568,6 @@ done
 echo -e "\nRestart Nginx..."
 service nginx restart
 
-
-
 # Parse any vvv-hosts file located in www/ or subdirectories of www/
 # for domains to be added to the virtual machine's host file so that it is
 # self aware.
