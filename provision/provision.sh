@@ -94,6 +94,9 @@ apt_package_check_list=(
 	g++
 	nodejs
 
+	# Ruby is needed for SASS
+	ruby
+
 )
 
 echo "Check for apt packages to install..."
@@ -245,6 +248,16 @@ then
 		echo "Installing Grunt CLI"
 		npm install -g grunt-cli &>/dev/null
 	fi
+
+	if sass -v;
+	then 
+		echo "updating sass"
+		gem update sass
+	else
+		echo "installing sass"
+		gem install sass --pre
+	fi
+
 
 else
 	echo -e "\nNo network connection available, skipping package installation"
