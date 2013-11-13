@@ -106,7 +106,7 @@ echo "Check for apt packages to install..."
 # not yet installed, it should be added to the array of packages to install.
 for pkg in "${apt_package_check_list[@]}"; do
 	package_version="$(dpkg -s $pkg 2>&1 | grep 'Version:' | cut -d " " -f 2)"
-	if [[ -n "$(package_version)" ]]; then
+	if [[ -n "${#package_version}" ]]; then
 		space_count="$(expr 20 - "${#pkg}")" #11
 		pack_space_count="$(expr 30 - "${#package_version}")"
 		real_space="$(expr ${space_count} + ${pack_space_count} + ${#package_version})"
@@ -195,7 +195,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 	#
 	# Install or Update Composer based on current state. Updates are direct from
 	# master branch on GitHub repository.
-	if [[ "$(composer --version | grep -q 'Composer version')" ]]; then
+	if [[ -n "$(composer --version | grep -q 'Composer version')" ]]; then
 		echo "Updating Composer..."
 		composer self-update
 	else
@@ -217,17 +217,17 @@ if [[ $ping_result == *bytes?from* ]]; then
 		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
 	else
 		cd /usr/local/src/vvv-phpunit
-		if [[ "$(composer show -i | grep -q 'mockery')" ]]; then
+		if [[ -n "$(composer show -i | grep -q 'mockery')" ]]; then
 			echo "Mockery installed"
 		else 
 			vvvphpunit_update=1
 		fi
-		if [[ "$(composer show -i | grep -q 'phpunit')" ]]; then
+		if [[ -n "$(composer show -i | grep -q 'phpunit')" ]]; then
 			echo "PHPUnit installed"
 		else
 			vvvphpunit_update=1
 		fi
-		if [[ "$(composer show -i | grep -q 'hamcrest')" ]]; then
+		if [[ -n "$(composer show -i | grep -q 'hamcrest')" ]]; then
 			echo "Hamcrest installed"
 		else
 			vvvphpunit_update=1
@@ -601,7 +601,7 @@ find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
 while read hostfile; do
 	while IFS='' read -r line || [ -n "$line" ]; do
 		if [[ "#" != ${line:0:1} ]]; then
-			if [[ ! "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+			if [[ -e "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
 				echo "127.0.0.1 $line # vvv-auto" >> /etc/hosts
 				echo " * Added $line from $hostfile"
 			fi
