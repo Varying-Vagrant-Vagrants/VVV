@@ -52,14 +52,14 @@ Immediate goals for VVV include:
 ### The First Vagrant Up
 
 1. Start with any operating system.
-1. Install [Virtualbox 4.2.x](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) or [VirtualBox 4.3.2](https://www.virtualbox.org/wiki/Downloads)
-    * Major portions of Virtualbox were rewritten for 4.3, and it's possible that there are still bugs to be shaken out. VVV is completely compatible with earlier versions of Virtualbox, so 4.2.18 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
+1. Install [VirtualBox 4.2.x](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) or [VirtualBox 4.3.2](https://www.virtualbox.org/wiki/Downloads)
+    * Major portions of VirtualBox were rewritten for 4.3, and it's possible that there are still bugs to be shaken out. VVV is completely compatible with earlier versions of VirtualBox, so 4.2.18 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
     * VVV itself leans in the 4.3.x direction in the master branch to stay ahead of the curve.
-    * Virtualbox 4.3.2 or higher is recommended for OS X Mavericks. Previous versions had an issue related to the cleanup of old Virtualbox files.
+    * VirtualBox 4.3.2 or higher is recommended for OS X Mavericks. Previous versions had an issue related to the cleanup of old VirtualBox files.
 1. Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
     * `vagrant` will now be available as a command in the terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if an older version is in use.
-    * ***Note:*** If Virtualbox 4.3.x is installed, Vagrant 1.3.5 or later is required.
+    * ***Note:*** If VirtualBox 4.3.x is installed, Vagrant 1.3.5 or later is required.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
     * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the various VVV domains in your browser.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
