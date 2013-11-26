@@ -372,7 +372,8 @@ php5dismod xdebug
 service php5-fpm restart
 
 # If MySQL is installed, go through the various imports and service tasks.
-if [[ "$(mysql --version &>/dev/null)" ]]; then
+exists_mysql="$(service mysql status)"
+if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
 	echo -e "\nSetup MySQL configuration file links..."
 
 	# Copy mysql configuration from local
@@ -385,8 +386,7 @@ if [[ "$(mysql --version &>/dev/null)" ]]; then
 	# MySQL gives us an error if we restart a non running service, which
 	# happens after a `vagrant halt`. Check to see if it's running before
 	# deciding whether to start or restart.
-	exists_mysql="$(service mysql status)"
-	if [[ "mysql stop/waiting" == "$exists_mysql" ]]; then
+	if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
 		echo "service mysql start"
 		service mysql start
 	else
