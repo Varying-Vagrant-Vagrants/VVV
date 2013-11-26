@@ -508,7 +508,7 @@ PHP
 		cd /srv/www/wordpress-develop/
 		npm install &>/dev/null
 	else
-		echo "Updating WordPress trunk..."
+		echo "Updating WordPress develop..."
 		cd /srv/www/wordpress-develop/
 		svn up
 		npm install &>/dev/null
