@@ -356,10 +356,6 @@ echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
 echo " * /srv/config/subversion-servers                -> /home/vagrant/.subversion/servers"
 echo " * /srv/config/homebin                           -> /home/vagrant/bin"
 
-# Capture the current IP address of the virtual machine into a variable that
-# can be used when necessary throughout provisioning.
-vvv_ip="$(ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1)"
-
 # RESTART SERVICES
 #
 # Make sure the services we expect to be running are running.
