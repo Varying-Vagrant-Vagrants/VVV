@@ -106,7 +106,7 @@ echo "Check for apt packages to install..."
 # not yet installed, it should be added to the array of packages to install.
 for pkg in "${apt_package_check_list[@]}"; do
 	package_version="$(dpkg -s $pkg 2>&1 | grep 'Version:' | cut -d " " -f 2)"
-	if [[ -n "${#package_version}" ]]; then
+	if [[ -n "${package_version}" ]]; then
 		space_count="$(expr 20 - "${#pkg}")" #11
 		pack_space_count="$(expr 30 - "${#package_version}")"
 		real_space="$(expr ${space_count} + ${pack_space_count} + ${#package_version})"
