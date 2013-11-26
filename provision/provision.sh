@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # provision.sh
 #
 # This file is specified in Vagrantfile and is loaded by Vagrant as the primary
@@ -7,17 +9,16 @@
 
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
-start_seconds=`date +%s`
+start_seconds="$(date +%s)"
 
 # Capture a basic ping result to Google's primary DNS server to determine if
 # outside access is available to us. If this does not reply after 2 attempts,
-# we try one of Level3's DNS servers as well. If neither of these IPs replies to
-# a ping, then we'll skip a few things further in provisioning rather than
-# creating a bunch of errors.
-ping_result=`ping -c 2 8.8.4.4 2>&1`
-if [[ $ping_result != *bytes?from* ]]
-then
-	ping_result=`ping -c 2 4.2.2.2 2>&1`
+# we try one of Level3's DNS servers as well. If neither IP replies to a ping,
+# then we'll skip a few things further in provisioning rather than creating a
+# bunch of errors.
+ping_result="$(ping -c 2 8.8.4.4 2>&1)"
+if [[ $ping_result != *bytes?from* ]]; then
+	ping_result="$(ping -c 2 4.2.2.2 2>&1)"
 fi
 
 # PACKAGE INSTALLATION
@@ -103,14 +104,12 @@ echo "Check for apt packages to install..."
 
 # Loop through each of our packages that should be installed on the system. If
 # not yet installed, it should be added to the array of packages to install.
-for pkg in "${apt_package_check_list[@]}"
-do
-	package_version=`dpkg -s $pkg 2>&1 | grep 'Version:' | cut -d " " -f 2`
-	if [[ $package_version != "" ]]
-	then
-		space_count=`expr 20 - "${#pkg}"` #11
-		pack_space_count=`expr 30 - "${#package_version}"`
-		real_space=`expr ${space_count} + ${pack_space_count} + ${#package_version}`
+for pkg in "${apt_package_check_list[@]}"; do
+	package_version="$(dpkg -s $pkg 2>&1 | grep 'Version:' | cut -d " " -f 2)"
+	if [[ -n "${#package_version}" ]]; then
+		space_count="$(expr 20 - "${#pkg}")" #11
+		pack_space_count="$(expr 30 - "${#package_version}")"
+		real_space="$(expr ${space_count} + ${pack_space_count} + ${#package_version})"
 		printf " * $pkg %${real_space}.${#package_version}s ${package_version}\n"
 	else
 		echo " *" $pkg [not installed]
@@ -139,12 +138,10 @@ echo postfix postfix/mailname string vvv | debconf-set-selections
 ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
 echo "Linked custom apt sources"
 
-if [[ $ping_result == *bytes?from* ]]
-then
+if [[ $ping_result == *bytes?from* ]]; then
 	# If there are any packages to be installed in the apt_package_list array,
 	# then we'll run `apt-get update` and then `apt-get install` to proceed.
-	if [ ${#apt_package_install_list[@]} = 0 ];
-	then
+	if [[ ${#apt_package_install_list[@]} = 0 ]]; then
 		echo -e "No apt packages to install.\n"
 	else
 		# Before running `apt-get update`, we should add the public keys for
@@ -187,8 +184,7 @@ then
 	#
 	# Install ack-rep directory from the version hosted at beyondgrep.com as the
 	# PPAs for Ubuntu Precise are not available yet.
-	if [ -f /usr/bin/ack ]
-	then
+	if [[ -f /usr/bin/ack ]]; then
 		echo "ack-grep already installed"
 	else
 		echo "Installing ack-grep as ack"
@@ -199,8 +195,7 @@ then
 	#
 	# Install or Update Composer based on current state. Updates are direct from
 	# master branch on GitHub repository.
-	if composer --version | grep -q 'Composer version';
-	then
+	if [[ -n "$(composer --version | grep -q 'Composer version')" ]]; then
 		echo "Updating Composer..."
 		composer self-update
 	else
@@ -212,25 +207,35 @@ then
 
 	# PHPUnit
 	#
-	# Check that PHPUnit, Mockery, and Hamcrest are all successfully installed. If
-	# not, then Composer should be given another shot at it. Versions for these
-	# packages are controlled in the `/srv/config/phpunit-composer.json` file.
-	if [ ! -d /usr/local/src/vvv-phpunit ]
-	then
+	# Check that PHPUnit, Mockery, and Hamcrest are all successfully installed.
+	# If not, then Composer should be given another shot at it. Versions for
+	# these packages are controlled in `/srv/config/phpunit-composer.json`.
+	if [[ ! -d /usr/local/src/vvv-phpunit ]]; then
 		echo "Installing PHPUnit, Hamcrest and Mockery..."
 		mkdir -p /usr/local/src/vvv-phpunit
 		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
 	else
 		cd /usr/local/src/vvv-phpunit
-		if composer show -i | grep -q 'mockery' ; then echo "Mockery installed" ; else vvvphpunit_update=1; fi
-		if composer show -i | grep -q 'phpunit' ; then echo "PHPUnit installed" ; else vvvphpunit_update=1; fi
-		if composer show -i | grep -q 'hamcrest'; then echo "Hamcrest installed"; else vvvphpunit_update=1; fi
+		if [[ -n "$(composer show -i | grep -q 'mockery')" ]]; then
+			echo "Mockery installed"
+		else 
+			vvvphpunit_update=1
+		fi
+		if [[ -n "$(composer show -i | grep -q 'phpunit')" ]]; then
+			echo "PHPUnit installed"
+		else
+			vvvphpunit_update=1
+		fi
+		if [[ -n "$(composer show -i | grep -q 'hamcrest')" ]]; then
+			echo "Hamcrest installed"
+		else
+			vvvphpunit_update=1
+		fi
 		cd ~/
 	fi
 
-	if [ "$vvvphpunit_update" = 1 ]
-	then
+	if [[ "$vvvphpunit_update" = 1 ]]; then
 		echo "Update PHPUnit, Hamcrest and Mockery..."
 		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
@@ -240,8 +245,7 @@ then
 	#
 	# Install or Update Grunt based on gurrent state.  Updates are direct
 	# from NPM
-	if grunt --version ;
-	then
+	if [[ "$(grunt --version)" ]]; then
 		echo "Updating Grunt CLI"
 		npm update -g grunt-cli &>/dev/null
 		npm update -g grunt-sass &>/dev/null
@@ -268,18 +272,18 @@ else
 fi
 
 # Configuration for nginx
-if [ ! -e /etc/nginx/server.key ]; then
+if [[ ! -e /etc/nginx/server.key ]]; then
 	echo "Generate Nginx server private key..."
-	vvvgenrsa=`openssl genrsa -out /etc/nginx/server.key 2048 2>&1`
+	vvvgenrsa="$(openssl genrsa -out /etc/nginx/server.key 2048 2>&1)"
 	echo $vvvgenrsa
 fi
-if [ ! -e /etc/nginx/server.csr ]; then
+if [[ ! -e /etc/nginx/server.csr ]]; then
 	echo "Generate Certificate Signing Request (CSR)..."
 	openssl req -new -batch -key /etc/nginx/server.key -out /etc/nginx/server.csr
 fi
-if [ ! -e /etc/nginx/server.crt ]; then
+if [[ ! -e /etc/nginx/server.crt ]]; then
 	echo "Sign the certificate using the above private key and CSR..."
-	vvvsigncert=`openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt 2>&1`
+	vvvsigncert="$(openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt 2>&1)"
 	echo $vvvsigncert
 fi
 
@@ -308,8 +312,7 @@ echo " * /srv/config/init/vvv-start.conf               -> /etc/init/vvv-start.co
 # Copy nginx configuration from local
 cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf
 cp /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
-if [ ! -d /etc/nginx/custom-sites ]
-then
+if [[ ! -d /etc/nginx/custom-sites ]]; then
 	mkdir /etc/nginx/custom-sites/
 fi
 rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
@@ -342,8 +345,7 @@ if [[ ! -d /home/vagrant/.subversion ]]; then
 	mkdir /home/vagrant/.subversion
 fi
 cp /srv/config/subversion-servers /home/vagrant/.subversion/servers
-if [ ! -d /home/vagrant/bin ]
-then
+if [[ ! -d /home/vagrant/bin ]]; then
 	mkdir /home/vagrant/bin
 fi
 rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
@@ -356,7 +358,7 @@ echo " * /srv/config/homebin                           -> /home/vagrant/bin"
 
 # Capture the current IP address of the virtual machine into a variable that
 # can be used when necessary throughout provisioning.
-vvv_ip=`ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
+vvv_ip="$(ifconfig eth1 | ack "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1)"
 
 # RESTART SERVICES
 #
@@ -370,8 +372,7 @@ php5dismod xdebug
 service php5-fpm restart
 
 # If MySQL is installed, go through the various imports and service tasks.
-if mysql --version &>/dev/null
-then
+if [[ "$(mysql --version &>/dev/null)" ]]; then
 	echo -e "\nSetup MySQL configuration file links..."
 
 	# Copy mysql configuration from local
@@ -384,9 +385,8 @@ then
 	# MySQL gives us an error if we restart a non running service, which
 	# happens after a `vagrant halt`. Check to see if it's running before
 	# deciding whether to start or restart.
-	exists_mysql=`service mysql status`
-	if [ "mysql stop/waiting" == "$exists_mysql" ]
-	then
+	exists_mysql="$(service mysql status)"
+	if [[ "mysql stop/waiting" == "$exists_mysql" ]]; then
 		echo "service mysql start"
 		service mysql start
 	else
@@ -398,8 +398,7 @@ then
 	#
 	# Create the databases (unique to system) that will be imported with
 	# the mysqldump files located in database/backups/
-	if [ -f /srv/database/init-custom.sql ]
-	then
+	if [[ -f /srv/database/init-custom.sql ]]; then
 		mysql -u root -proot < /srv/database/init-custom.sql
 		echo -e "\nInitial custom MySQL scripting..."
 	else
@@ -418,11 +417,9 @@ else
 	echo -e "\nMySQL is not installed. No databases imported."
 fi
 
-if [[ $ping_result == *bytes?from* ]]
-then
+if [[ $ping_result == *bytes?from* ]]; then
 	# WP-CLI Install
-	if [ ! -d /srv/www/wp-cli ]
-	then
+	if [[ ! -d /srv/www/wp-cli ]]; then
 		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
 		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
@@ -436,10 +433,9 @@ then
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
-	# Download and extract phpMemcachedAdmin to provide a dashboard view and admin interface
-	# to the goings on of memcached when running
-	if [ ! -d /srv/www/default/memcached-admin ]
-	then
+	# Download and extract phpMemcachedAdmin to provide a dashboard view and
+	# admin interface to the goings on of memcached when running
+	if [[ ! -d /srv/www/default/memcached-admin ]]; then
 		echo -e "\nDownloading phpMemcachedAdmin, see https://code.google.com/p/phpmemcacheadmin/"
 		cd /srv/www/default
 		wget -q -O phpmemcachedadmin.tar.gz 'https://phpmemcacheadmin.googlecode.com/files/phpMemcachedAdmin-1.2.2-r262.tar.gz'
@@ -452,8 +448,7 @@ then
 
 	# Webgrind install (for viewing callgrind/cachegrind files produced by
 	# xdebug profiler)
-	if [ ! -d /srv/www/default/webgrind ]
-	then
+	if [[ ! -d /srv/www/default/webgrind ]]; then
 		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
 		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
 	else
@@ -463,8 +458,7 @@ then
 	fi
 
 	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
-	if [ ! -d /srv/www/phpcs ]
-	then
+	if [[ ! -d /srv/www/phpcs ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
 		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
 	else
@@ -474,8 +468,7 @@ then
 	fi
 
 	# Sniffs WordPress Coding Standards
-	if [ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]
-	then
+	if [[ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]]; then
 		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
 		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
@@ -485,8 +478,7 @@ then
 	fi
 
 	# Install and configure the latest stable version of WordPress
-	if [ ! -d /srv/www/wordpress-default ]
-	then
+	if [[ ! -d /srv/www/wordpress-default ]]; then
 		echo "Downloading WordPress Stable, see http://wordpress.org/"
 		cd /srv/www/
 		curl -O http://wordpress.org/latest.tar.gz
@@ -506,8 +498,7 @@ PHP
 	fi
 
 	# Checkout, install and configure WordPress trunk via core.svn
-	if [ ! -d /srv/www/wordpress-trunk ]
-	then
+	if [[ ! -d /srv/www/wordpress-trunk ]]; then
 		echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
@@ -523,8 +514,7 @@ PHP
 	fi
 
 	# Checkout, install and configure WordPress trunk via develop.svn
-	if [ ! -d /srv/www/wordpress-develop ]
-	then
+	if [[ ! -d /srv/www/wordpress-develop ]]; then
 		echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
 		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
 		cd /srv/www/wordpress-develop/src/
@@ -543,16 +533,14 @@ PHP
 		npm install &>/dev/null
 	fi
 
-	if [ ! -d /srv/www/wordpress-develop/build ]
-	then
+	if [[ ! -d /srv/www/wordpress-develop/build ]]; then
 		echo "Initializing grunt in WordPress develop... This may take a few moments."
 		cd /srv/www/wordpress-develop/
 		grunt
 	fi
 
 	# Download phpMyAdmin 4.0.9
-	if [ ! -d /srv/www/default/database-admin ]
-	then
+	if [[ ! -d /srv/www/default/database-admin ]]; then
 		echo "Downloading phpMyAdmin 4.0.9..."
 		cd /srv/www/default
 		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.9/phpMyAdmin-4.0.9-all-languages.tar.gz/download'
@@ -574,7 +562,7 @@ find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
 # Look for site setup scripts
 for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-init.sh'); do
-	DIR=`dirname $SITE_CONFIG_FILE`
+	DIR="$(dirname $SITE_CONFIG_FILE)"
 	(
 		cd $DIR
 		bash vvv-init.sh
@@ -590,7 +578,7 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 	# We allow the replacement of the {vvv_path_to_folder} token with
 	# whatever you want, allowing flexible placement of the site folder
 	# while still having an Nginx config which works.
-	DIR=`dirname $SITE_CONFIG_FILE`
+	DIR="$(dirname $SITE_CONFIG_FILE)"
 	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
 done
 
@@ -599,8 +587,6 @@ done
 # Make sure the services we expect to be running are running.
 echo -e "\nRestart Nginx..."
 service nginx restart
-
-
 
 # Parse any vvv-hosts file located in www/ or subdirectories of www/
 # for domains to be added to the virtual machine's host file so that it is
@@ -612,14 +598,10 @@ sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
 mv /tmp/hosts /etc/hosts
 echo "Adding domains to the virtual machine's /etc/hosts file..."
 find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
-while read hostfile
-do
-	while IFS='' read -r line || [ -n "$line" ]
-	do
-		if [ "#" != ${line:0:1} ]
-		then
-			if ! grep -q "^127.0.0.1 $line$" /etc/hosts
-			then
+while read hostfile; do
+	while IFS='' read -r line || [ -n "$line" ]; do
+		if [[ "#" != ${line:0:1} ]]; then
+			if [[ -e "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
 				echo "127.0.0.1 $line # vvv-auto" >> /etc/hosts
 				echo " * Added $line from $hostfile"
 			fi
@@ -627,11 +609,10 @@ do
 	done < $hostfile
 done
 
-end_seconds=`date +%s`
+end_seconds="$(date +%s)"
 echo "-----------------------------"
-echo "Provisioning complete in `expr $end_seconds - $start_seconds` seconds"
-if [[ $ping_result == *bytes?from* ]]
-then
+echo "Provisioning complete in "$(expr $end_seconds - $start_seconds)" seconds"
+if [[ $ping_result == *bytes?from* ]]; then
 	echo "External network connection established, packages up to date."
 else
 	echo "No external network available. Package installation and maintenance skipped."
