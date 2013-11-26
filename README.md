@@ -26,7 +26,7 @@ The best part is that VVV is ready to use as is. Setup VVV and then type `vagran
 Multiple projects can be developed at once in the same environment provided by VVV.
 * Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes using the same test content.
 * Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop a plugin the same way.
-* Install additional instances of WordPress in `/srv/www/` and configure a few pieces of VVV accordingly to work with the new installation.
+* Install additional instances of WordPress in `/srv/www/` with VVV's implementation of [auto site configuration](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup).
 * Use the `wordpress-develop` directory to participate in WordPress core development.
 
 #### VVV as a Scaffold
