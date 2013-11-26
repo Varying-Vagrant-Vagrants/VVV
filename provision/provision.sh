@@ -94,10 +94,6 @@ apt_package_check_list=(
 	# nodejs for use by grunt
 	g++
 	nodejs
-
-	# Ruby is needed for SASS
-	ruby
-
 )
 
 echo "Check for apt packages to install..."
@@ -256,17 +252,6 @@ if [[ $ping_result == *bytes?from* ]]; then
 		npm install -g grunt-sass &>/dev/null
 		npm install -g grunt-cssjanus &>/dev/null
 	fi
-
-	if sass -v;
-	then 
-		echo "updating sass"
-		gem update sass
-	else
-		echo "installing sass"
-		gem install sass --pre
-	fi
-
-
 else
 	echo -e "\nNo network connection available, skipping package installation"
 fi
