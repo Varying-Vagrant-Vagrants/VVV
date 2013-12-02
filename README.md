@@ -52,7 +52,7 @@ Immediate goals for VVV include:
 ### The First Vagrant Up
 
 1. Start with any operating system.
-1. Install [VirtualBox 4.2.x](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) or [VirtualBox 4.3.2](https://www.virtualbox.org/wiki/Downloads)
+1. Install [VirtualBox 4.2.x](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) or [VirtualBox 4.3.4](https://www.virtualbox.org/wiki/Downloads)
     * Major portions of VirtualBox were rewritten for 4.3, and it's possible that there are still bugs to be shaken out. VVV is completely compatible with earlier versions of VirtualBox, so 4.2.18 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
     * VVV itself leans in the 4.3.x direction in the master branch to stay ahead of the curve.
     * VirtualBox 4.3.2 or higher is recommended for OS X Mavericks. Previous versions had an issue related to the cleanup of old VirtualBox files.
