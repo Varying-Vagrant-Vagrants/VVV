@@ -167,8 +167,10 @@ A bunch of stuff!
 1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
 
 ### Need Help?
-* There is a [Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) for any topic related to WordPress and Vagrant that is a great place to get started. 
-* The [VVV Wiki](https://github.com/10up/varying-vagrant-vagrants/wiki) also contains documentation that might help you out
+
+* Don't hesitate to open a new issue on GitHub if you run into trouble.
+* There is a [Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) for any topic related to WordPress and Vagrant that is a great place to get started.
+* The [VVV Wiki](https://github.com/10up/varying-vagrant-vagrants/wiki) also contains documentation that may help.
 
 ### Feedback?
 
