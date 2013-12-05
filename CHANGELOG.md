@@ -23,7 +23,7 @@
 * **Introduce** PHP_CodeSniffer, WordPress-Coding-Standards, and Webgrind
 * **Remove** entire well intended but not so useful flags system
 * Rather than include PHPMemcachedadmin in the VVV repository, download it on initial provision
-* Verify support for Vagrant 1.3.5 (as well as 1.2.x) and Virtualbox 4.3 (as well as 4.2.x)
+* Verify support for Vagrant 1.3.5 (as well as 1.2.x) and VirtualBox 4.3 (as well as 4.2.x)
 * Move `xdebug_on` and `xdebug_off` controls to executable files in `config/homebin`
 * Generate `vagrant_dir` in `Vagrantfile` for accessing relative file locations
 * Add a basic network connectivity check by pinging Google DNS servers
