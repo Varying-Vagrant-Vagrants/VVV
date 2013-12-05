@@ -96,19 +96,20 @@ On future runs of `vagrant up`, the packaged box will be cached on your local ma
 
 ### Now What?
 
-Now that you're up and running with a default configuration, start poking around and modifying things.
+Now that you're up and running, start poking around and modifying things.
 
-1. Access the server via the command line with `vagrant ssh` from your `vagrant-local` directory. You can do pretty much anything you would do with a standard Ubuntu installation on a full server.
+1. Access the server via the command line with `vagrant ssh` from your `vagrant-local` directory. You can do almost anything you would do with a standard Ubuntu installation on a full server.
     * If you are on a Windows PC, you may need to install additional software for this to work seamlessly. A terminal program such as [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) will provide access immediately.
 1. Destroy the box and start from scratch with `vagrant destroy`
     * As explained before, the initial 280MB box file will be cached on your machine. the next `vagrant up` command will initiate the complete provisioning process again.
-1. Power off the box with `vagrant halt` or suspend it with `vagrant suspend`. If you suspend it, you can bring it back quickly with `vagrant resume`, if you halt it, you can bring it back with `vagrant up`.
-1. Start modifying and adding local files to fit your needs.
-    * The network configuration picks an IP of 192.168.50.4. This works if you are *not* on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you *are* on a 192.168.50.x sub domain already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
-    * If you require any custom SQL commands to run when the virtual machine boots, move `database/init-custom.sql.sample` to `database/init-custom.sql` and edit it to add whichever `CREATE DATABASE` and `GRANT ALL PRIVILEGES` statements you want to run on startup to prepare mysql for SQL imports (see next bullet).
-    * Have any SQL files that should be imported in the `database/backups/` directory and named as `db_name.sql`. The `import-sql.sh` script will run automatically when the VM is built and import these databases into the new mysql install as long as the proper databases have already been created via the previous step's SQL.
-    * Check out the example nginx configurations in `config/nginx-config/sites` and create any other site specific configs you think should be available on server start. The web directory is `/srv/www/` and default configs are provided for basic WordPress stable, trunk, and develop setups.
-    * Once a database is imported on the initial `vagrant up`, it will persist on the local machine in a mapped `database/data` directory.
+1. Power off the box with `vagrant halt` and turn it back on with `vagrant up`.
+1. Suspend the box's state in memory with `vagrant suspend` and bring it right back with `vagrant resume`.
+1. Reapply provisioning to a running box with `vagrant provision`.
+1. Start modifying and adding local files to fit your needs. Take a look at [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) for tips on adding new projects.
+
+#### Caveats
+
+The network configuration picks an IP of 192.168.50.4. This works if you are *not* on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you *are* on a 192.168.50.x sub domain already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
 
 ### Credentials and Such
 
