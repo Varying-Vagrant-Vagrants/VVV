@@ -168,13 +168,11 @@ A bunch of stuff!
 
 ### Need Help?
 
-* Don't hesitate to open a new issue on GitHub if you run into trouble.
+* Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * There is a [Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) for any topic related to WordPress and Vagrant that is a great place to get started.
 * The [VVV Wiki](https://github.com/10up/varying-vagrant-vagrants/wiki) also contains documentation that may help.
 
-### Feedback?
-
-Let us have it! If you have tips that we need to know, open a new issue. Some blog posts have been written documenting the process that may provide insight....
+### More Context
 
 * [Hi WordPress, Meet Vagrant](http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/)
 * [Evolving WordPress Development With Vagrant](http://jeremyfelt.com/code/2013/03/17/evolving-wordpress-development-with-vagrant/)
