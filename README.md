@@ -142,29 +142,29 @@ A bunch of stuff!
 
 1. [Ubuntu](http://ubuntu.com) 12.04 LTS (Precise Pangolin)
 1. [WordPress Develop](http://develop.svn.wordpress.org/trunk/)
-1. [WordPress Stable](http://wordpress.org)
-1. [WordPress Trunk](http://core.svn.wordpress.org/trunk)
-1. [WP-CLI](http://wp-cli.org)
-1. [nginx](http://nginx.org) 1.4.4
-1. [mysql](http://mysql.com) 5.5.34
-1. [php-fpm](http://php-fpm.org) 5.4.22
+1. [WordPress Stable](http://wordpress.org/)
+1. [WordPress Trunk](http://core.svn.wordpress.org/trunk/)
+1. [WP-CLI](http://wp-cli.org/)
+1. [nginx](http://nginx.org/) 1.4.4
+1. [mysql](http://mysql.com/) 5.5.34
+1. [php-fpm](http://php-fpm.org/) 5.4.22
 1. [memcached](http://memcached.org/) 1.4.13
-1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8) 3.0.8
-1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.3) 2.2.3
-1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.0RC2) 3.1.0RC2
+1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8/) 3.0.8
+1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.3/) 2.2.3
+1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.0RC2/) 3.1.0RC2
 1. [xdebug](http://xdebug.org/) 2.2.3
 1. [PHPUnit](http://pear.phpunit.de/) 3.7.24
 1. [ack-grep](http://beyondgrep.com/) 2.04
-1. [git](http://git-scm.com) 1.8.5
+1. [git](http://git-scm.com/) 1.8.5
 1. [subversion](http://subversion.apache.org/) 1.7.9
-1. [ngrep](http://ngrep.sourceforge.net/usage.html)
+1. [ngrep](http://ngrep.sourceforge.net/usage.html/)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
-1. [Composer](https://github.com/composer/composer)
+1. [Composer](https://github.com/composer/composer/)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
-1. [phpMyAdmin](http://www.phpmyadmin.net) 4.0.9 (multi-language)
-1. [Webgrind](https://github.com/jokkedk/webgrind)
+1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.0.9 (multi-language)
+1. [Webgrind](https://github.com/jokkedk/webgrind/)
 1. [NodeJs](http://nodejs.org/) Current Stable Version
-1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
+1. [grunt-cli](https://github.com/gruntjs/grunt-cli/) Current Stable Version
 
 ### Need Help?
 
