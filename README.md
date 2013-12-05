@@ -56,28 +56,26 @@ Immediate goals for VVV include:
 1. Install [VirtualBox 4.2.x](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) or [VirtualBox 4.3.4](https://www.virtualbox.org/wiki/Downloads)
     * Major portions of VirtualBox were rewritten for 4.3, and it's possible that there are still bugs to be shaken out. VVV is completely compatible with earlier versions of VirtualBox, so 4.2.18 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
     * VVV itself leans in the 4.3.x direction in the master branch to stay ahead of the curve.
-    * VirtualBox 4.3.2 or higher is recommended for OS X Mavericks. Previous versions had an issue related to the cleanup of old VirtualBox files.
 1. Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
-    * `vagrant` will now be available as a command in the terminal, try it out.
-    * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if an older version is in use.
+    * `vagrant` will now be available as a command in your terminal, try it out.
+    * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
     * ***Note:*** If VirtualBox 4.3.x is installed, Vagrant 1.3.5 or later is required.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
-    * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the various VVV domains in your browser.
+    * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the provisioned VVV domains in your browser.
+    * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
     * OR download and extract the repository master [zip file](https://github.com/10up/varying-vagrant-vagrants/archive/master.zip)
     * OR grab a [stable release](https://github.com/10up/varying-vagrant-vagrants/releases) if you'd like some extra comfort.
 1. Change into the new directory with `cd vagrant-local`
 1. Start the Vagrant environment with `vagrant up`
-    * Be patient, magic happens. This could take a while, especially on the first run.
-1. Add a record to your local machine's hosts file
-    * ***Note:*** If you installed [vagrant hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) in step 4, the host entries are made for you automatically. Watch the provisioning script, as an administrator or `su` ***password may be required*** to properly modify the hosts file on your local machine.
-    * A manual entry should look like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
+    * Be patient as the magic happens. This could take a while on the first run as your local machine downloads the required files.
+    * Watch as the script ends, as an administrator or `su` ***password may be required*** to properly modify the hosts file on your local machine.
 1. Visit any of the following default sites in your browser:
     * [http://local.wordpress.dev/](http://local.wordpress.dev/) for WordPress stable
     * [http://local.wordpress-trunk.dev/](http://local.wordpress-trunk.dev/) for WordPress trunk
     * [http://src.wordpress-develop.dev/](http://src.wordpress-develop.dev/) for trunk WordPress development files
-    * [http://build.wordpress-develop.dev/](http://build.wordpress-develop.dev/) for version of those development files built with Grunt
+    * [http://build.wordpress-develop.dev/](http://build.wordpress-develop.dev/) for the version of those development files built with Grunt
     * [http://vvv.dev/](http://vvv.dev/) for a default dashboard containing several useful tools
 
 Fancy, yeah?
