@@ -32,7 +32,7 @@ Multiple projects can be developed at once in the same environment provided by V
 
 #### VVV as a Scaffold
 
-Entirely different server configurations can be created by modifying the files included with this repository or through the use of additional provisioning scripts, `provision-pre.sh` and `provision-post.sh`.
+Entirely different server configurations can be created by modifying the files included with this repository or through the use of additional provisioning scripts.
 
 It is not necessary to track the changes made to the main repository. Feel free to check this project out and then change everything to make it your own.
 
