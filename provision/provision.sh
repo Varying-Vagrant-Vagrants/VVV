@@ -520,13 +520,13 @@ PHP
 		grunt
 	fi
 
-	# Download phpMyAdmin 4.0.9
+	# Download phpMyAdmin
 	if [[ ! -d /srv/www/default/database-admin ]]; then
-		echo "Downloading phpMyAdmin 4.0.9..."
+		echo "Downloading phpMyAdmin 4.0.10..."
 		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.9/phpMyAdmin-4.0.9-all-languages.tar.gz/download'
+		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.10/phpMyAdmin-4.0.10-all-languages.tar.gz/download'
 		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.0.9-all-languages database-admin
+		mv phpMyAdmin-4.0.10-all-languages database-admin
 		rm phpmyadmin.tar.gz
 	else
 		echo "PHPMyAdmin already installed."
