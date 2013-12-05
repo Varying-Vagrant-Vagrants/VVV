@@ -21,13 +21,14 @@ The default WordPress configurations provided by VVV are intended to create an e
 
 #### VVV as a MAMP/XAMPP Replacement
 
-The best part is that VVV is ready to use as is. Setup VVV and then type `vagrant up` to automatically build a sandboxed Ubuntu server on your computer containing everything needed to contribute to WordPress core or develop a WordPress theme or plugin.
+VVV is ready to use as is. Download or clone VVV and then type `vagrant up` to automatically build a sandboxed Ubuntu server on your computer containing everything needed to contribute to WordPress core or develop a WordPress theme or plugin.
 
 Multiple projects can be developed at once in the same environment provided by VVV.
-* Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes using the same test content.
-* Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop a plugin the same way.
-* Install additional instances of WordPress in `/srv/www/` with VVV's implementation of [auto site configuration](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup).
-* Use the `wordpress-develop` directory to participate in WordPress core development.
+
+* Use the `wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
+* Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes.
+* Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop plugins.
+* Take advantage of VVV's [auto site configuration](https://github.com/10up/varying-vagrant-vagrants-wiki/Auto-site-Setup) to provision additional instances of WordPress in `/srv/www/`.
 
 #### VVV as a Scaffold
 
