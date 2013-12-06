@@ -23,7 +23,7 @@ The default WordPress configurations provided by VVV are intended to create an e
 
 VVV is ready to use as is. Download or clone VVV and then type `vagrant up` to automatically build a sandboxed Ubuntu server on your computer containing everything needed to contribute to WordPress core or develop a WordPress theme or plugin.
 
-Multiple projects can be developed at once in the same environment provided by VVV.
+Multiple projects can be developed at once in the same environment.
 
 * Use the `wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
 * Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes.
@@ -32,7 +32,7 @@ Multiple projects can be developed at once in the same environment provided by V
 
 #### VVV as a Scaffold
 
-Entirely different server configurations can be created by modifying the files included with this repository or through the use of additional provisioning scripts.
+Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) provisioning scripts.
 
 It is not necessary to track the changes made to the main repository. Feel free to check this project out and then change everything to make it your own.
 
