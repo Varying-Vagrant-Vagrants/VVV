@@ -42,7 +42,6 @@ Immediate goals for VVV include:
 
 * Continue to work towards a stable state of software and configuration included in the default provisioning.
 * Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
-* Provide a method for easing the process of adding new sites to the VVV environment.
 
 ## Getting Started
 
