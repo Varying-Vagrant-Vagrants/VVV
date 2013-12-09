@@ -501,6 +501,12 @@ PHP
 		cd /srv/www/wordpress-develop/src/
 		echo "Configuring WordPress develop..."
 		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+// Allow (src|build).wordpress-develop.dev to share the same database
+if ( 'build' == basename( dirname( __FILE__) ) ) {
+	define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
+	define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
+}
+
 define( 'WP_DEBUG', true );
 PHP
 		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
