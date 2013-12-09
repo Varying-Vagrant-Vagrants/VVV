@@ -117,7 +117,7 @@ done
 #
 # Use debconf-set-selections to specify the default password for the root MySQL
 # account. This runs on every provision, even if MySQL has been installed. If
-# MySQL is already installed, it will not affect anything. 
+# MySQL is already installed, it will not affect anything.
 echo mysql-server mysql-server/root_password password root | debconf-set-selections
 echo mysql-server mysql-server/root_password_again password root | debconf-set-selections
 
@@ -215,7 +215,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 		cd /usr/local/src/vvv-phpunit
 		if [[ -n "$(composer show -i | grep -q 'mockery')" ]]; then
 			echo "Mockery installed"
-		else 
+		else
 			vvvphpunit_update=1
 		fi
 		if [[ -n "$(composer show -i | grep -q 'phpunit')" ]]; then
@@ -361,7 +361,7 @@ if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
 	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf
 	cp /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf
 
-	echo " * /srv/config/mysql-config/my.cnf               -> /etc/mysql/my.cnf"	
+	echo " * /srv/config/mysql-config/my.cnf               -> /etc/mysql/my.cnf"
 	echo " * /srv/config/mysql-config/root-my.cnf          -> /home/vagrant/.my.cnf"
 
 	# MySQL gives us an error if we restart a non running service, which
@@ -501,6 +501,12 @@ PHP
 		cd /srv/www/wordpress-develop/src/
 		echo "Configuring WordPress develop..."
 		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+// Allow (src|build).wordpress-develop.dev to share the same database
+if ( 'build' == basename( dirname( __FILE__) ) ) {
+	define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
+	define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
+}
+
 define( 'WP_DEBUG', true );
 PHP
 		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
