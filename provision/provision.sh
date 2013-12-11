@@ -589,7 +589,7 @@ find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
 while read hostfile; do
 	while IFS='' read -r line || [ -n "$line" ]; do
 		if [[ "#" != ${line:0:1} ]]; then
-			if [[ -e "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+			if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
 				echo "127.0.0.1 $line # vvv-auto" >> /etc/hosts
 				echo " * Added $line from $hostfile"
 			fi
