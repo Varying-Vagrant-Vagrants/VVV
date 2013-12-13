@@ -1,5 +1,7 @@
 # Varying Vagrant Vagrants Changelog
 
+## 1.1-working
+
 ## 1.0
 * **Introduce** [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) during provisioning to allow for easy new project configuration.
 * **Happy Fix** `vagrant up` after halt meets expectations and no longer requires provisioning to be reapplied.
