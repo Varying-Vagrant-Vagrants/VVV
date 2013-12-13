@@ -28,7 +28,7 @@ Multiple projects can be developed at once in the same environment.
 * Use the `wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
 * Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes.
 * Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop plugins.
-* Take advantage of VVV's [auto site configuration](https://github.com/10up/varying-vagrant-vagrants-wiki/Auto-site-Setup) to provision additional instances of WordPress in `/srv/www/`.
+* Take advantage of VVV's [auto site configuration](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) to provision additional instances of WordPress in `/srv/www/`.
 
 #### VVV as a Scaffold
 
