@@ -99,11 +99,10 @@ Now that you're up and running, start poking around and modifying things.
 
 1. Access the server via the command line with `vagrant ssh` from your `vagrant-local` directory. You can do almost anything you would do with a standard Ubuntu installation on a full server.
     * **MS Windows users:** An SSH client is generally not distributed with Windows PCs by default. However, a terminal emulator such as [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) will provide access immediately. For detailed instructions on connecting with PuTTY, consult the [VVV Wiki](https://github.com/10up/varying-vagrant-vagrants/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY).
-1. Destroy the box and start from scratch with `vagrant destroy`
-    * As previously explained, the initial 280MB box file will be cached on your local machine; and the subsequent `vagrant up` command will re-initiate the complete provisioning process.
 1. Power off the box with `vagrant halt` and turn it back on with `vagrant up`.
 1. Suspend the box's state in memory with `vagrant suspend` and bring it right back with `vagrant resume`.
 1. Reapply provisioning to a running box with `vagrant provision`.
+1. Destroy the box with `vagrant destroy`. Files added in the `www` directory will persist on the next `vagrant up`.
 1. Start modifying and adding local files to fit your needs. Take a look at [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) for tips on adding new projects.
 
 #### Caveats
