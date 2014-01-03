@@ -239,7 +239,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# Grunt
 	#
-	# Install or Update Grunt based on gurrent state.  Updates are direct
+	# Install or Update Grunt based on current state.  Updates are direct
 	# from NPM
 	if [[ "$(grunt --version)" ]]; then
 		echo "Updating Grunt CLI"
