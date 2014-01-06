@@ -72,6 +72,7 @@ apt_package_check_list=(
 	imagemagick
 	subversion
 	git-core
+	zip
 	unzip
 	ngrep
 	curl
