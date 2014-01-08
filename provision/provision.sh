@@ -220,16 +220,6 @@ if [[ $ping_result == *bytes?from* ]]; then
 		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
 	else
 		cd /usr/local/src/vvv-phpunit
-		if [[ -n "$(composer show -i | grep -q 'mockery')" ]]; then
-			echo "Mockery installed"
-		else
-			vvvphpunit_update=1
-		fi
-		if [[ -n "$(composer show -i | grep -q 'phpunit')" ]]; then
-			echo "PHPUnit installed"
-		else
-			vvvphpunit_update=1
-		fi
 		if [[ -n "$(composer show -i | grep -q 'hamcrest')" ]]; then
 			echo "Hamcrest installed"
 		else
@@ -239,7 +229,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 	fi
 
 	if [[ "$vvvphpunit_update" = 1 ]]; then
-		echo "Update PHPUnit, Hamcrest and Mockery..."
+		echo "Update Hamcrest..."
 		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
 		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
 	fi
