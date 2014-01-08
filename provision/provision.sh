@@ -194,12 +194,18 @@ if [[ $ping_result == *bytes?from* ]]; then
 	# master branch on GitHub repository.
 	if [[ -n "$(composer --version | grep -q 'Composer version')" ]]; then
 		echo "Updating Composer..."
-		composer self-update
+		COMPOSER_HOME=/usr/local/src/composer composer self-update
+		COMPOSER_HOME=/usr/local/src/composer composer global update
 	else
 		echo "Installing Composer..."
 		curl -sS https://getcomposer.org/installer | php
 		chmod +x composer.phar
 		mv composer.phar /usr/local/bin/composer
+
+		COMPOSER_HOME=/usr/local/src/composer composer global require --no-update phpunit/phpunit:3.7.*
+		COMPOSER_HOME=/usr/local/src/composer composer global require --no-update mockery/mockery:1.8.*
+		COMPOSER_HOME=/usr/local/src/composer composer global require --no-update d11wtq/boris:v1.0.2
+		COMPOSER_HOME=/usr/local/src/composer composer global update
 	fi
 
 	# PHPUnit
