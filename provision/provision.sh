@@ -194,48 +194,19 @@ if [[ $ping_result == *bytes?from* ]]; then
 	# master branch on GitHub repository.
 	if [[ -n "$(composer --version | grep -q 'Composer version')" ]]; then
 		echo "Updating Composer..."
-		composer self-update
+		COMPOSER_HOME=/usr/local/src/composer composer self-update
+		COMPOSER_HOME=/usr/local/src/composer composer global update
 	else
 		echo "Installing Composer..."
 		curl -sS https://getcomposer.org/installer | php
 		chmod +x composer.phar
 		mv composer.phar /usr/local/bin/composer
-	fi
 
-	# PHPUnit
-	#
-	# Check that PHPUnit, Mockery, and Hamcrest are all successfully installed.
-	# If not, then Composer should be given another shot at it. Versions for
-	# these packages are controlled in `/srv/config/phpunit-composer.json`.
-	if [[ ! -d /usr/local/src/vvv-phpunit ]]; then
-		echo "Installing PHPUnit, Hamcrest and Mockery..."
-		mkdir -p /usr/local/src/vvv-phpunit
-		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
-	else
-		cd /usr/local/src/vvv-phpunit
-		if [[ -n "$(composer show -i | grep -q 'mockery')" ]]; then
-			echo "Mockery installed"
-		else
-			vvvphpunit_update=1
-		fi
-		if [[ -n "$(composer show -i | grep -q 'phpunit')" ]]; then
-			echo "PHPUnit installed"
-		else
-			vvvphpunit_update=1
-		fi
-		if [[ -n "$(composer show -i | grep -q 'hamcrest')" ]]; then
-			echo "Hamcrest installed"
-		else
-			vvvphpunit_update=1
-		fi
-		cd ~/
-	fi
-
-	if [[ "$vvvphpunit_update" = 1 ]]; then
-		echo "Update PHPUnit, Hamcrest and Mockery..."
-		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
+		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:3.7.*
+		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update mockery/mockery:0.8.*
+		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update d11wtq/boris:v1.0.2
+		COMPOSER_HOME=/usr/local/src/composer composer -q global config bin-dir /usr/local/bin
+		COMPOSER_HOME=/usr/local/src/composer composer global update
 	fi
 
 	# Grunt
