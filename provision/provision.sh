@@ -209,32 +209,6 @@ if [[ $ping_result == *bytes?from* ]]; then
 		COMPOSER_HOME=/usr/local/src/composer composer global update
 	fi
 
-	# PHPUnit
-	#
-	# Check that PHPUnit, Mockery, and Hamcrest are all successfully installed.
-	# If not, then Composer should be given another shot at it. Versions for
-	# these packages are controlled in `/srv/config/phpunit-composer.json`.
-	if [[ ! -d /usr/local/src/vvv-phpunit ]]; then
-		echo "Installing PHPUnit, Hamcrest and Mockery..."
-		mkdir -p /usr/local/src/vvv-phpunit
-		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sh -c "cd /usr/local/src/vvv-phpunit && composer install"
-	else
-		cd /usr/local/src/vvv-phpunit
-		if [[ -n "$(composer show -i | grep -q 'hamcrest')" ]]; then
-			echo "Hamcrest installed"
-		else
-			vvvphpunit_update=1
-		fi
-		cd ~/
-	fi
-
-	if [[ "$vvvphpunit_update" = 1 ]]; then
-		echo "Update Hamcrest..."
-		cp /srv/config/phpunit-composer.json /usr/local/src/vvv-phpunit/composer.json
-		sh -c "cd /usr/local/src/vvv-phpunit && composer update"
-	fi
-
 	# Grunt
 	#
 	# Install or Update Grunt based on current state.  Updates are direct
