@@ -433,8 +433,30 @@ PHP
 	else
 		echo "Updating WordPress Stable..."
 		cd /srv/www/wordpress-default
-		wp core upgrade
+		wp core update
 	fi
+
+	# Install and configure a multisite configuration for WordPress
+	if [[ ! -d /srv/www/wordpress-network ]]; then
+		echo "Downloading WordPress Stable, see http://wordpress.org/"
+		cd /srv/www/
+		curl -O http://wordpress.org/latest.tar.gz
+		tar -xvf latest.tar.gz
+		mv wordpress wordpress-network
+		rm latest.tar.gz
+		cd /srv/www/wordpress-network
+		echo "Configuring WordPress Network..."
+		wp core config --dbname=wordpress_network --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+define( 'WP_DEBUG', true );
+PHP
+		wp core multisite-install --url=local.wordpress.dev --quiet --title="Local WordPress Network" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	else
+		echo "Updating WordPress Network..."
+		cd /srv/www/wordpress-network
+		wp core update
+	fi
+
+
 
 	# Checkout, install and configure WordPress trunk via core.svn
 	if [[ ! -d /srv/www/wordpress-trunk ]]; then
