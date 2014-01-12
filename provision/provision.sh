@@ -449,7 +449,7 @@ PHP
 		wp core config --dbname=wordpress_network --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core multisite-install --url=local.wordpress.dev --quiet --title="Local WordPress Network" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core multisite-install --url=local.wordpress-network.dev --quiet --title="Local WordPress Network" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		echo "Updating WordPress Network..."
 		cd /srv/www/wordpress-network
