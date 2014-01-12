@@ -10,5 +10,6 @@
 vvv.dev
 local.wordpress.dev
 local.wordpress-trunk.dev
+local.wordpress-network.dev
 src.wordpress-develop.dev
 build.wordpress-develop.dev
