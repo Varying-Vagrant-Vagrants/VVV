@@ -433,7 +433,7 @@ PHP
 	else
 		echo "Updating WordPress Stable..."
 		cd /srv/www/wordpress-default
-		wp core upgrade
+		wp core update
 	fi
 
 	# Checkout, install and configure WordPress trunk via core.svn
