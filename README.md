@@ -159,7 +159,7 @@ A bunch of stuff!
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
-1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.0.10 (multi-language)
+1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.1.3 (multi-language)
 1. [Webgrind](https://github.com/jokkedk/webgrind)
 1. [NodeJs](http://nodejs.org/) Current Stable Version
 1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
