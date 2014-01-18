@@ -1,0 +1,4 @@
+#!/bin/bash
+#
+# A script to convert the included develop.svn.wordpress.org repository into
+# the git mirror, develop.git.wordpress.org.
