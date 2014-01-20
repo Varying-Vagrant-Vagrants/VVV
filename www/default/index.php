@@ -32,6 +32,7 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	<li><a href="http://local.wordpress-trunk.dev/">http://local.wordpress-trunk.dev</a> for WordPress trunk</li>
 	<li><a href="http://src.wordpress-develop.dev/">http://src.wordpress-develop.dev</a> for trunk WordPress development files</li>
 	<li><a href="http://build.wordpress-develop.dev/">http://build.wordpress-develop.dev</a> for a Grunt build of those development files</li>
+	<li><a href="http://local.wordpress-network.dev/">http://local.wordpress-network.dev</a> for WordPress network install</li>
 </ul>
 </body>
 </html>

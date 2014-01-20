@@ -3,6 +3,8 @@
 # available for use.
 CREATE DATABASE IF NOT EXISTS `wordpress_default`;
 GRANT ALL PRIVILEGES ON `wordpress_default`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
+CREATE DATABASE IF NOT EXISTS `wordpress_network`;
+GRANT ALL PRIVILEGES ON `wordpress_network`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
 CREATE DATABASE IF NOT EXISTS `wordpress_trunk`;
 GRANT ALL PRIVILEGES ON `wordpress_trunk`.* TO 'wp'@'localhost' IDENTIFIED BY 'wp';
 CREATE DATABASE IF NOT EXISTS `wordpress_develop`;
