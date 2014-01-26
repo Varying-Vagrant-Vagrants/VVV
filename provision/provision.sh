@@ -426,14 +426,14 @@ if [[ $ping_result == *bytes?from* ]]; then
 		rm latest.tar.gz
 		cd /srv/www/wordpress-default
 		echo "Configuring WordPress Stable..."
-		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php --allow-root <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root 
 	else
 		echo "Updating WordPress Stable..."
 		cd /srv/www/wordpress-default
-		wp core upgrade
+		wp core upgrade --allow-root 
 	fi
 
 	# Checkout, install and configure WordPress trunk via core.svn
@@ -442,10 +442,10 @@ PHP
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
 		cd /srv/www/wordpress-trunk
 		echo "Configuring WordPress trunk..."
-		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php --allow-root <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root 
 	else
 		echo "Updating WordPress trunk..."
 		cd /srv/www/wordpress-trunk
@@ -458,7 +458,7 @@ PHP
 		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
 		cd /srv/www/wordpress-develop/src/
 		echo "Configuring WordPress develop..."
-		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php --allow-root <<PHP
 // Allow (src|build).wordpress-develop.dev to share the same database
 if ( 'build' == basename( dirname( __FILE__) ) ) {
 	define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
@@ -467,7 +467,7 @@ if ( 'build' == basename( dirname( __FILE__) ) ) {
 
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root 
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
 		cd /srv/www/wordpress-develop/
 		npm install &>/dev/null
