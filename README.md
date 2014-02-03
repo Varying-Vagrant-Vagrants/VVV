@@ -2,7 +2,7 @@
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration focused on [WordPress](http://wordpress.org) development.
 
-VVV is a [10up](http://10up.com) creation and [moved](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
+VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
 * **Version**: 1.1-working
 * **Latest Stable**: [v1.0](https://github.com/varying-vagrant-vagrants/vvv/tree/v1.0)
