@@ -2,8 +2,10 @@
 
 Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration focused on [WordPress](http://wordpress.org) development.
 
+VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
+
 * **Version**: 1.1-working
-* **Latest Stable**: [v1.0](https://github.com/10up/varying-vagrant-vagrants/tree/v1.0)
+* **Latest Stable**: [v1.0](https://github.com/varying-vagrant-vagrants/vvv/tree/v1.0)
 * **Contributors**: [@jeremyfelt](http://github.com/jeremyfelt), [@carldanley](http://github.com/carldanley), [@ericmann](http://github.com/ericmann), [@lkwdwrd](http://github.com/lkwdwrd), [@TheLastCicada](http://github.com/TheLastCicada), [@tddewey](http://github.com/tddewey), [@johnpbloch](http://github.com/johnpbloch), [@kadamwhite](http://github.com/kadamwhite), [@scribu](http://github.com/scribu), [@danielbachhuber](http://github.com/danielbachhuber), [@tollmanz](http://github.com/tollmanz), [@mbijon](http://github.com/mbijon), [@markjaquith](http://github.com/markjaquith), [@curtismchale](http://github.com/curtismchale), [@Mamaduka](http://github.com/mamaduka), [@lgedeon](http://github.com/lgedeon), [@pmgarman](http://github.com/pmgarman), [@westonruter](http://github.com/westonruter), [@petemall](http://github.com/petemall), [@cmmarslender](http://github.com/cmmarslender), [@mintindeed](http://github.com/mintindeed), [@mboynes](http://github.com/mboynes), [@aaronjorbin](http://github.com/aaronjorbin), [@tobiasbg](http://github.com/tobiasbg), [@simonwheatley](http://github.com/simonwheatley), [@ocean90](http://github.com/ocean90), [@lvnilesh](http://github.com/lvnilesh), [@alexw23](http://github.com/alexw23), [@zamoose](https://github.com/zamoose), [@leewillis77](https://github.com/leewillis77), [@imichaeli](https://github.com/imichaeli), [@andrezrv](https://github.com/andrezrv), [@cadwell](https://github.com/cadwell), [@cfoellmann](https://github.com/cfoellmann), [@westi](https://github.com/westi), [@ryanduff](https://github.com/ryanduff), [@selinerdominik](https://github.com/selinerdominik), [@ericandrewlewis](https://github.com/ericandrewlewis), [@vDevices](https://github.com/vDevices), [@sunnyratilal](https://github.com/sunnyratilal), [@enejb](https://github.com/enejb)
 * **Contributing**: Contributions are more than welcome. Please submit pull requests against the [master branch](https://github.com/10up/varying-vagrant-vagrants). Thanks!
 
@@ -28,11 +30,11 @@ Multiple projects can be developed at once in the same environment.
 * Use the `wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
 * Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes.
 * Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop plugins.
-* Take advantage of VVV's [auto site configuration](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) to provision additional instances of WordPress in `/srv/www/`.
+* Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `/srv/www/`.
 
 #### VVV as a Scaffold
 
-Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) provisioning scripts.
+Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts.
 
 It is not necessary to track the changes made to the main repository. Feel free to check this project out and then change everything to make it your own.
 
@@ -64,8 +66,8 @@ Immediate goals for VVV include:
     * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/10up/varying-vagrant-vagrants.git vagrant-local`
-    * OR download and extract the repository master [zip file](https://github.com/10up/varying-vagrant-vagrants/archive/master.zip)
-    * OR grab a [stable release](https://github.com/10up/varying-vagrant-vagrants/releases) if you'd like some extra comfort.
+    * OR download and extract the repository master [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/master.zip)
+    * OR grab a [stable release](https://github.com/varying-vagrant-vagrants/vvv/releases) if you'd like some extra comfort.
 1. Change into the new directory with `cd vagrant-local`
 1. Start the Vagrant environment with `vagrant up`
     * Be patient as the magic happens. This could take a while on the first run as your local machine downloads the required files.
@@ -103,7 +105,7 @@ Now that you're up and running, start poking around and modifying things.
 1. Suspend the box's state in memory with `vagrant suspend` and bring it right back with `vagrant resume`.
 1. Reapply provisioning to a running box with `vagrant provision`.
 1. Destroy the box with `vagrant destroy`. Files added in the `www` directory will persist on the next `vagrant up`.
-1. Start modifying and adding local files to fit your needs. Take a look at [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) for tips on adding new projects.
+1. Start modifying and adding local files to fit your needs. Take a look at [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) for tips on adding new projects.
 
 #### Caveats
 
@@ -132,7 +134,7 @@ All WordPress admin usernames and passwords for WordPress installations included
 #### MySQL Root
 * User: `root`
 * Pass: `root`
-* See: [Connecting to MySQL](https://github.com/10up/varying-vagrant-vagrants/wiki/Connecting-to-MySQL) from your local machine
+* See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 ### What do you get?
 
@@ -168,7 +170,7 @@ A bunch of stuff!
 
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * There is a [Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) for any topic related to WordPress and Vagrant that is a great place to get started.
-* The [VVV Wiki](https://github.com/10up/varying-vagrant-vagrants/wiki) also contains documentation that may help.
+* The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
 ### More Context
 
