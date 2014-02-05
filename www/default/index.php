@@ -28,10 +28,10 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 </ul>
 
 <ul class="nav">
-	<li><a href="http://local.wordpress.dev/">http://local.wordpress.dev</a> for WordPress stable</li>
-	<li><a href="http://local.wordpress-trunk.dev/">http://local.wordpress-trunk.dev</a> for WordPress trunk</li>
-	<li><a href="http://src.wordpress-develop.dev/">http://src.wordpress-develop.dev</a> for trunk WordPress development files</li>
-	<li><a href="http://build.wordpress-develop.dev/">http://build.wordpress-develop.dev</a> for a Grunt build of those development files</li>
+	<li><a href="http://local.wordpress.dev/">http://local.wordpress.dev</a> for WordPress stable (/www/wordpress-default)</li>
+	<li><a href="http://local.wordpress-trunk.dev/">http://local.wordpress-trunk.dev</a> for WordPress trunk (/www/wordpress-trunk)</li>
+	<li><a href="http://src.wordpress-develop.dev/">http://src.wordpress-develop.dev</a> for trunk WordPress development files (/www/wordpress-developer/src)</li>
+	<li><a href="http://build.wordpress-develop.dev/">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (/www/wordpress-developer/build)</li>
 </ul>
 </body>
 </html>
