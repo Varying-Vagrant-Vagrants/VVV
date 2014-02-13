@@ -169,7 +169,7 @@ A bunch of stuff!
 ### Need Help?
 
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
-* There is a [Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) for any topic related to WordPress and Vagrant that is a great place to get started.
+* The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
 ### History
