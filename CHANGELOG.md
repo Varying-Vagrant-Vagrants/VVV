@@ -1,6 +1,11 @@
 # Varying Vagrant Vagrants Changelog
 
 ## 1.1-working
+* Transition to Varying Vagrant Vagrants organization.
+* Add a CONTRIBUTING document.
+* Add `--allow-root` to all `wp-cli` calls in VVV core.
+* Use a new global composer configuration.
+* Add `zip` as a package during provisioning.
 
 ## 1.0
 * **Introduce** [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) during provisioning to allow for easy new project configuration.
