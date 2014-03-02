@@ -172,6 +172,14 @@ A bunch of stuff!
 * The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
+### Common Caveats
+
+These are common to Vagrant environments and worth noting:
+* If the directory VVV is inside of is moved once provisioned, it may break.
+    * If `vagrant destroy` is used before moving, this should be fine.
+* If Virtualbox is uninstalled, VVV will break.
+* If Vagrant is uninstalled, VVV will break.
+
 ### History
 
 VVV has come a long way since it was first [launched as Varying Vagrant Vagrants](http://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/) in December of 2012. Initially introduced as an exploration of workflow for immediate project needs at [10up](http://10up.com), VVV caught speed quickly as more and more of the team was introduced. During an internal [10up developer summit](http://10up.com/blog/10up-2013-developer-summit/) in March of 2013, Vagrant as a tool was a highlight and more developers made the conversion.
