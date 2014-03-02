@@ -174,9 +174,11 @@ A bunch of stuff!
 
 ### Common Caveats
 
-* This is common to vagrant, but if you move the directory that VVV is inside of, you will break it
-* If you uninstall Virtualbox, you will break it
-* If you uninstall Vagrant, you will break it
+These are common to Vagrant environments and worth noting:
+* If the directory VVV is inside of is moved once provisioned, it may break.
+    * If `vagrant destroy` is used before moving, this should be fine.
+* If Virtualbox is uninstalled, VVV will break.
+* If Vagrant is uninstalled, VVV will break.
 
 ### History
 
