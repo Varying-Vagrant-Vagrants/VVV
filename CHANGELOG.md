@@ -1,11 +1,13 @@
 # Varying Vagrant Vagrants Changelog
 
-## 1.1-working
-* Transition to Varying Vagrant Vagrants organization.
+## 1.1
+* Transition to [Varying Vagrant Vagrants organization](https://github.com/Varying-Vagrant-Vagrants).
 * Add a CONTRIBUTING document.
 * Add `--allow-root` to all `wp-cli` calls in VVV core.
 * Use a new global composer configuration.
 * Add `zip` as a package during provisioning.
+* Introduce a helpful caveats section.
+* Remove `tcp_nodelay` config in Nginx. Reasoning in 0cce79501.
 
 ## 1.0
 * **Introduce** [Auto Site Setup](https://github.com/10up/varying-vagrant-vagrants/wiki/Auto-site-Setup) during provisioning to allow for easy new project configuration.
