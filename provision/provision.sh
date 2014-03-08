@@ -474,7 +474,15 @@ PHP
 	else
 		echo "Updating WordPress develop..."
 		cd /srv/www/wordpress-develop/
-		svn up
+		if [[ -e .svn ]]; then
+			svn up
+		else
+			if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
+				git pull --no-edit git://develop.git.wordpress.org/ master
+			else
+				echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
+			fi
+		fi
 		npm install &>/dev/null
 	fi
 
