@@ -20,7 +20,7 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 <body>
 <ul class="nav">
 	<li class="active"><a href="#">Home</a></li>
-	<li><a href="http://github.com/10up/varying-vagrant-vagrants">Repository</a></li>
+	<li><a href="https://github.com/varying-vagrant-vagrants/vvv/">Repository</a></li>
 	<li><a href="database-admin/">phpMyAdmin</a></li>
 	<li><a href="memcached-admin/">phpMemcachedAdmin</a></li>
 	<li><a href="opcache-status/opcache.php">Opcache Status</a></li>
