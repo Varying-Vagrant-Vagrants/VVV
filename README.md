@@ -151,16 +151,15 @@ A bunch of stuff!
 1. [memcached](http://memcached.org/) 1.4.13
 1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8/) 3.0.8
 1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.3/) 2.2.3
-1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.0RC2/) 3.1.0RC2
-1. [xdebug](http://xdebug.org/) 2.2.3
+1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.2/) 3.1.2
 1. [PHPUnit](http://pear.phpunit.de/) 4.0.x
 1. [ack-grep](http://beyondgrep.com/) 2.04
-1. [git](http://git-scm.com/) 1.8.5
+1. [git](http://git-scm.com/) 1.9.x
 1. [subversion](http://subversion.apache.org/) 1.7.9
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
-1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
+1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/)
 1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.1.3 (multi-language)
 1. [Opcache Status](https://github.com/rlerdorf/opcache-status)
 1. [Webgrind](https://github.com/jokkedk/webgrind)
