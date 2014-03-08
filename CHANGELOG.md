@@ -3,8 +3,9 @@
 ## 1.2-working
 * WordPress: Add `develop_git` to convert the default SVN checkout to Git.
 * PHP: Update to PHP 5.5.x
-* PHP: Remove php-apc and enable built in opcache.
+* PHP: Remove php-apc and apc.ini. Enable built in opcache.
 * PHP: Start tracking custom php5-fpm.conf file.
+* PHP: Start tracking custom opcache.ini file.
 * VVV Dashboard: Add [Opcache Status](https://github.com/rlerdorf/opcache-status) for opcache monitoring.
 
 ## 1.1
