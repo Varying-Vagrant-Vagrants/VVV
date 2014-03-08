@@ -153,7 +153,7 @@ A bunch of stuff!
 1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.3/) 2.2.3
 1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.0RC2/) 3.1.0RC2
 1. [xdebug](http://xdebug.org/) 2.2.3
-1. [PHPUnit](http://pear.phpunit.de/) 3.7.24
+1. [PHPUnit](http://pear.phpunit.de/) 4.0.x
 1. [ack-grep](http://beyondgrep.com/) 2.04
 1. [git](http://git-scm.com/) 1.8.5
 1. [subversion](http://subversion.apache.org/) 1.7.9
