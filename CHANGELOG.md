@@ -6,6 +6,7 @@
 * PHP: Remove php-apc and apc.ini. Enable built in opcache.
 * PHP: Start tracking custom php5-fpm.conf file.
 * PHP: Start tracking custom opcache.ini file.
+* PHP: Update to PHPUnit 4.0.x
 * VVV Dashboard: Add [Opcache Status](https://github.com/rlerdorf/opcache-status) for opcache monitoring.
 
 ## 1.1
