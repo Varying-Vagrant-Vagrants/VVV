@@ -57,7 +57,6 @@ apt_package_check_list=(
 	php5-curl
 	php-pear
 	php5-gd
-	php-apc
 
 	# nginx is installed as the default web server
 	nginx
@@ -265,15 +264,17 @@ echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-co
 echo " * /srv/config/nginx-config/sites/               -> /etc/nginx/custom-sites"
 
 # Copy php-fpm configuration from local
+cp /srv/config/php5-fpm-config/php5-fpm.conf /etc/php5/fpm/php5-fpm.conf
 cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
 cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
+cp /srv/config/php5-fpm-config/opcache.ini /etc/php5/fpm/conf.d/opcache.ini
 cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
-cp /srv/config/php5-fpm-config/apc.ini /etc/php5/fpm/conf.d/apc.ini
 
+echo " * /srv/config/php5-fpm-config/php5-fpm.conf     -> /etc/php5/fpm/php5-fpm.conf"
 echo " * /srv/config/php5-fpm-config/www.conf          -> /etc/php5/fpm/pool.d/www.conf"
 echo " * /srv/config/php5-fpm-config/php-custom.ini    -> /etc/php5/fpm/conf.d/php-custom.ini"
+echo " * /srv/config/php5-fpm-config/opcache.ini       -> /etc/php5/fpm/conf.d/opcache.ini"
 echo " * /srv/config/php5-fpm-config/xdebug.ini        -> /etc/php5/fpm/conf.d/xdebug.ini"
-echo " * /srv/config/php5-fpm-config/apc.ini           -> /etc/php5/fpm/conf.d/apc.ini"
 
 # Copy memcached configuration from local
 cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
@@ -383,6 +384,18 @@ if [[ $ping_result == *bytes?from* ]]; then
 		rm phpmemcachedadmin.tar.gz
 	else
 		echo "phpMemcachedAdmin already installed."
+	fi
+
+	# Checkout Opcache Status to provide a dashboard for viewing statistics
+	# about PHP's built in opcache.
+	if [[ ! -d /srv/www/default/opcache-status ]]; then
+		echo -e "\nDownloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
+		cd /srv/www/default
+		git clone https://github.com/rlerdorf/opcache-status.git opcache-status
+	else
+		echo -e "\nUpdating Opcache Status"
+		cd /srv/www/default/opcache-status
+		git pull --rebase origin master
 	fi
 
 	# Webgrind install (for viewing callgrind/cachegrind files produced by
