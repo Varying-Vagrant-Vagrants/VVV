@@ -4,7 +4,7 @@ Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configur
 
 VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
-* **Version**: 1.1
+* **Version**: 1.2-working
 * **Latest Stable**: [v1.1](https://github.com/varying-vagrant-vagrants/vvv/tree/v1.1)
 * **Contributors**: [@jeremyfelt](https://github.com/jeremyfelt), [@carldanley](https://github.com/carldanley), [@ericmann](https://github.com/ericmann), [@lkwdwrd](https://github.com/lkwdwrd), [@TheLastCicada](https://github.com/TheLastCicada), [@tddewey](https://github.com/tddewey), [@johnpbloch](https://github.com/johnpbloch), [@kadamwhite](https://github.com/kadamwhite), [@scribu](https://github.com/scribu), [@danielbachhuber](https://github.com/danielbachhuber), [@tollmanz](https://github.com/tollmanz), [@mbijon](https://github.com/mbijon), [@markjaquith](https://github.com/markjaquith), [@curtismchale](https://github.com/curtismchale), [@Mamaduka](https://github.com/mamaduka), [@lgedeon](https://github.com/lgedeon), [@pmgarman](https://github.com/pmgarman), [@westonruter](https://github.com/westonruter), [@petemall](https://github.com/petemall), [@cmmarslender](https://github.com/cmmarslender), [@mintindeed](https://github.com/mintindeed), [@mboynes](https://github.com/mboynes), [@aaronjorbin](https://github.com/aaronjorbin), [@tobiasbg](https://github.com/tobiasbg), [@simonwheatley](https://github.com/simonwheatley), [@ocean90](https://github.com/ocean90), [@lvnilesh](https://github.com/lvnilesh), [@alexw23](https://github.com/alexw23), [@zamoose](https://github.com/zamoose), [@leewillis77](https://github.com/leewillis77), [@imichaeli](https://github.com/imichaeli), [@andrezrv](https://github.com/andrezrv), [@cadwell](https://github.com/cadwell), [@cfoellmann](https://github.com/cfoellmann), [@westi](https://github.com/westi), [@ryanduff](https://github.com/ryanduff), [@selinerdominik](https://github.com/selinerdominik), [@ericandrewlewis](https://github.com/ericandrewlewis), [@vDevices](https://github.com/vDevices), [@sunnyratilal](https://github.com/sunnyratilal), [@enejb](https://github.com/enejb), [@salcode](https://github.com/salcode)
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/CONTRIBUTING.md). Thanks!
@@ -147,7 +147,7 @@ A bunch of stuff!
 1. [WP-CLI](http://wp-cli.org/)
 1. [nginx](http://nginx.org/) 1.4.x
 1. [mysql](http://www.mysql.com/) 5.5.x
-1. [php-fpm](http://php-fpm.org/) 5.4.x
+1. [php-fpm](http://php-fpm.org/) 5.5.x
 1. [memcached](http://memcached.org/) 1.4.13
 1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8/) 3.0.8
 1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.3/) 2.2.3
@@ -162,6 +162,7 @@ A bunch of stuff!
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/) 1.2.2 BETA
 1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.1.3 (multi-language)
+1. [Opcache Status](https://github.com/rlerdorf/opcache-status)
 1. [Webgrind](https://github.com/jokkedk/webgrind)
 1. [NodeJs](http://nodejs.org/) Current Stable Version
 1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
