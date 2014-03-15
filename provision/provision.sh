@@ -465,7 +465,7 @@ PHP
 		svn up --ignore-externals
 	fi
 
-	# Checkout, install and configure WordPress trunk via develop.svn
+	# Checkout, install and configure WordPress develop via develop.svn
 	if [[ ! -d /srv/www/wordpress-develop ]]; then
 		echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
 		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
