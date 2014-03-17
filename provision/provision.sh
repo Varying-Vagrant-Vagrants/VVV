@@ -284,6 +284,7 @@ echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 # Copy custom dotfiles and bin file for the vagrant user from local
 cp /srv/config/bash_profile /home/vagrant/.bash_profile
 cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
+cp /srv/config/bash_prompt /home/vagrant/.bash_prompt
 cp /srv/config/vimrc /home/vagrant/.vimrc
 if [[ ! -d /home/vagrant/.subversion ]]; then
 	mkdir /home/vagrant/.subversion
@@ -296,6 +297,7 @@ rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
 
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
 echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
+echo " * /srv/config/bash_prompt                       -> /home/vagrant/.bash_prompt"
 echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
 echo " * /srv/config/subversion-servers                -> /home/vagrant/.subversion/servers"
 echo " * /srv/config/homebin                           -> /home/vagrant/bin"
