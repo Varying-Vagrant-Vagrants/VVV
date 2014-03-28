@@ -30,5 +30,6 @@ cd /srv/www/wordpress-develop/
 echo "Moving .git dir to /srv/www/wordpress-develop/"
 mv /tmp/wp-git/.git .git
 git config core.fileMode false
+git config diff.noprefix true
 
 echo "Done"
