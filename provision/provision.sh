@@ -191,7 +191,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 	#
 	# Install or Update Composer based on current state. Updates are direct from
 	# master branch on GitHub repository.
-	if [[ -n "$(composer --version | grep -q 'Composer version')" ]]; then
+	if [[ -n "$(composer --version --no-ansi | grep -q 'Composer version')" ]]; then
 		echo "Updating Composer..."
 		COMPOSER_HOME=/usr/local/src/composer composer self-update
 		COMPOSER_HOME=/usr/local/src/composer composer global update
