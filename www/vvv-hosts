@@ -8,7 +8,3 @@
 # automatically parsed as long as they are located in subdirectories
 # of the www/ directory.
 vvv.dev
-local.wordpress.dev
-local.wordpress-trunk.dev
-src.wordpress-develop.dev
-build.wordpress-develop.dev

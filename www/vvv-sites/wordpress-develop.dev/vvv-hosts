@@ -1,0 +1,3 @@
+# Provision WordPress trunk via core.svn
+src.wordpress-develop.dev
+build.wordpress-develop.dev
