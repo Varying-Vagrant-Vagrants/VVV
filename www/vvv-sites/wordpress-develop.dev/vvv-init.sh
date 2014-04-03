@@ -2,6 +2,14 @@
 #
 # vvv-init.sh
 
+# Make a database, if we don't already have one
+echo -e "\n Creating databases 'wordpress_develop' & 'wordpress_unit_tests' (if it's not already there)"
+mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS wordpress_develop"
+mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_develop.* TO wp@localhost IDENTIFIED BY 'wp';"
+mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS wordpress_unit_tests"
+mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_unit_tests.* TO wp@'localhost' IDENTIFIED BY 'wp';"
+echo -e "\n DB operations done.\n\n"
+
 # Checkout, install and configure WordPress trunk via develop.svn
 if [[ ! -d /srv/www/wordpress-develop ]]; then
 	echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"

@@ -2,6 +2,12 @@
 #
 # vvv-init.sh
 
+# Make a database, if we don't already have one
+echo -e "\nCreating database 'wordpress_trunk' (if it's not already there)"
+mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS wordpress_trunk"
+mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_trunk.* TO wp@localhost IDENTIFIED BY 'wp';"
+echo -e "\n DB operations done.\n\n"
+
 # Checkout, install and configure WordPress trunk via core.svn
 if [[ ! -d /srv/www/wordpress-trunk ]]; then
 	echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
