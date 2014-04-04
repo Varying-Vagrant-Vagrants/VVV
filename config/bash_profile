@@ -24,3 +24,6 @@ export WP_TESTS_DIR=/srv/www/wordpress-develop/tests/phpunit/
 
 # add autocomplete for grunt
 eval "$(grunt --completion=bash)"
+
+# add autocomplete for wp-cli
+. /srv/www/wp-cli/utils/wp-completion.bash
