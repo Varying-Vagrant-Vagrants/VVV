@@ -7,6 +7,7 @@
 * PHP: Start tracking custom php5-fpm.conf file.
 * PHP: Start tracking custom opcache.ini file.
 * PHP: Update to PHPUnit 4.0.x
+* WP-Cli: Add support for autocomplete.
 * VVV Dashboard: Add [Opcache Status](https://github.com/rlerdorf/opcache-status) for opcache monitoring.
 
 ## 1.1
