@@ -1,6 +1,4 @@
-#!/bin/bash
-#
-# vvv-init.sh
+# Provision WordPress stable
 
 # Make a database, if we don't already have one
 echo -e "\nCreating database 'wordpress_default' (if it's not already there)"

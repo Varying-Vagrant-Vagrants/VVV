@@ -1,6 +1,4 @@
-#!/bin/bash
-#
-# vvv-init.sh
+# Provision WordPress trunk via core.svn
 
 # Make a database, if we don't already have one
 echo -e "\nCreating database 'wordpress_trunk' (if it's not already there)"

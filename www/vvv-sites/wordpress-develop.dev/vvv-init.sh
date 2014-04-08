@@ -1,6 +1,4 @@
-#!/bin/bash
-#
-# vvv-init.sh
+# Provision WordPress trunk via develop.svn and build.svn
 
 # Make a database, if we don't already have one
 echo -e "\n Creating databases 'wordpress_develop' & 'wordpress_unit_tests' (if it's not already there)"
