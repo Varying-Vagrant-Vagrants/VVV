@@ -1,0 +1,4 @@
+#!/bin/bash
+#
+# This script is run whenever `vagrant suspend` is used to suspend
+# the virtual machine's current state.

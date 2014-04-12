@@ -178,5 +178,11 @@ Vagrant.configure("2") do |config|
     config.trigger.before :halt, :stdout => true do
       run "vagrant ssh -c 'vagrant_halt'"
     end
+    config.trigger.before :suspend, :stdout => true do
+      run "vagrant ssh -c 'vagrant_suspend'"
+    end
+    config.trigger.before :destroy, :stdout => true do
+      run "vagrant ssh -c 'vagrant_destroy'"
+    end
   end
 end

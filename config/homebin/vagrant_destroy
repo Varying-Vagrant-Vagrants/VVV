@@ -1,0 +1,4 @@
+#!/bin/bash
+#
+# This script is run whenever `vagrant destroy` is used to destroy
+# the virtual machine.
