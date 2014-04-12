@@ -1,0 +1,4 @@
+#!/bin/bash
+#
+# This script is run whenever `vagrant halt` is used to power off
+# the virtual machine.

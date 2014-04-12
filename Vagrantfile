@@ -166,4 +166,17 @@ Vagrant.configure("2") do |config|
   if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "provision-post.sh" )
   end
+
+  # Vagrant Triggers
+  #
+  # If the vagrant-triggers plugin is installed, we can run various scripts on Vagrant
+  # state changes like `vagrant up`, `vagrant halt`, `vagrant suspend`, and `vagrant destroy`
+  #
+  # These scripts are run on the host machine, so we use `vagrant ssh` to tunnel back
+  # into the VM and execute things.
+  if defined? VagrantPlugins::Triggers
+    config.trigger.before :halt, :stdout => true do
+      run "vagrant ssh -c 'vagrant_halt'"
+    end
+  end
 end
