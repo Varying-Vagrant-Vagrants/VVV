@@ -2,3 +2,8 @@
 #
 # This script is run whenever `vagrant destroy` is used to destroy
 # the virtual machine.
+
+# Call a custom trigger command. Include an executable with this name
+# in the local config/homebin directory to issue custom commands
+# during `vagrant destroy`.
+vagrant_destroy_custom

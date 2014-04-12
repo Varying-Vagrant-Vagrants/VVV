@@ -14,6 +14,11 @@
 /provision/provision-pre.sh
 /provision/provision-post.sh
 
+# Ignore custom trigger scripts in config/homebin.
+/config/homebin/vagrant_halt_custom
+/config/homebin/vagrant_suspend_custom
+/config/homebin/vagrant_destroy_custom
+
 # No need to share individual site configs with each other
 /config/nginx-config/sites/*.conf
 

@@ -2,3 +2,8 @@
 #
 # This script is run whenever `vagrant suspend` is used to suspend
 # the virtual machine's current state.
+
+# Call a custom trigger command. Include an executable with this name
+# in the local config/homebin directory to issue custom commands
+# during `vagrant suspend`.
+vagrant_suspend_custom
