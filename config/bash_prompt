@@ -1,0 +1,7 @@
+# bash_prompt
+#
+# This file is copied into the home directory of the vagrant user on the virtual
+# machine during provisioning and is included in the .bashrc automatically as
+# provisioning is finished. This allows for various scripts and configurations to
+# be available to us.
+#

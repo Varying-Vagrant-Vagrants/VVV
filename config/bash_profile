@@ -13,6 +13,14 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
+# setup bash prompt
+if [ -n "$BASH_VERSION" ]; then
+    # include .bash_prompt if it exists
+    if [ -f "$HOME/.bash_prompt" ]; then
+        . "$HOME/.bash_prompt"
+    fi
+fi
+
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"

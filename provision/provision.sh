@@ -284,6 +284,7 @@ echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 # Copy custom dotfiles and bin file for the vagrant user from local
 cp /srv/config/bash_profile /home/vagrant/.bash_profile
 cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
+cp /srv/config/bash_prompt /home/vagrant/.bash_prompt
 cp /srv/config/vimrc /home/vagrant/.vimrc
 if [[ ! -d /home/vagrant/.subversion ]]; then
 	mkdir /home/vagrant/.subversion
@@ -296,6 +297,7 @@ rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
 
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
 echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
+echo " * /srv/config/bash_prompt                       -> /home/vagrant/.bash_prompt"
 echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
 echo " * /srv/config/subversion-servers                -> /home/vagrant/.subversion/servers"
 echo " * /srv/config/homebin                           -> /home/vagrant/bin"
@@ -442,11 +444,11 @@ if [[ $ping_result == *bytes?from* ]]; then
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php --allow-root <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root 
+		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root
 	else
 		echo "Updating WordPress Stable..."
 		cd /srv/www/wordpress-default
-		wp core upgrade --allow-root 
+		wp core upgrade --allow-root
 	fi
 
 	# Checkout, install and configure WordPress trunk via core.svn
@@ -458,7 +460,7 @@ PHP
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php --allow-root <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root 
+		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root
 	else
 		echo "Updating WordPress trunk..."
 		cd /srv/www/wordpress-trunk
@@ -480,7 +482,7 @@ if ( 'build' == basename( dirname( __FILE__) ) ) {
 
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root 
+		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
 		cd /srv/www/wordpress-develop/
 		npm install &>/dev/null
