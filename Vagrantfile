@@ -97,6 +97,13 @@ Vagrant.configure("2") do |config|
   # This directory is used to maintain default database scripts as well as backed
   # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/", "/srv/database"
+
+  # If the mysql_upgrade_info file from a previous persistent database mapping is detected,
+  # we'll continue to map that directory as /var/lib/mysql inside the virtual machine. Once
+  # this file is changed or removed, this mapping will no longer occur. A db_backup command
+  # is now available inside the virtual machine to backup all databases for future use. This
+  # command is automatically issued on halt, suspend, and destroy if the vagrant-triggers
+  # plugin is installed.
   if File.exists?(File.join(vagrant_dir,'database/data/mysql_upgrade_info')) then
     if vagrant_version >= "1.3.0"
       config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
@@ -173,7 +180,9 @@ Vagrant.configure("2") do |config|
   # state changes like `vagrant up`, `vagrant halt`, `vagrant suspend`, and `vagrant destroy`
   #
   # These scripts are run on the host machine, so we use `vagrant ssh` to tunnel back
-  # into the VM and execute things.
+  # into the VM and execute things. By default, each of these scripts calls db_backup
+  # to create backups of all current databases. This can be overridden with custom
+  # scripting. See the individual files in config/homebin/ for details.
   if defined? VagrantPlugins::Triggers
     config.trigger.before :halt, :stdout => true do
       run "vagrant ssh -c 'vagrant_halt'"
