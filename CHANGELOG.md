@@ -1,6 +1,10 @@
 # Varying Vagrant Vagrants Changelog
 
 ## 1.2-working
+* **Possible Breaking:*** By default, the `/var/lib/mysql` directory is no longer mapped to a local location.
+	* Database data is no longer persistent locally for reuse after a `vagrant destroy`.
+	* Database data continues to exist on the virtual machine through a `vagrant halt` and `vagrant suspend`.
+	* A default `db_backup` script is provided that creates local backups of each database on halt, suspend, and destroy if the vagrant-triggers plugin is installed.
 * WordPress: Add `develop_git` to convert the default SVN checkout to Git.
 * PHP: Update to PHP 5.5.x
 * PHP: Remove php-apc and apc.ini. Enable built in opcache.
