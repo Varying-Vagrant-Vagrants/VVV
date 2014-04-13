@@ -10,5 +10,5 @@
 if [[ -f /home/vagrant/bin/vagrant_destroy_custom ]]; then
 	vagrant_destroy_custom
 else
-	# tasks
+	db_backup
 fi

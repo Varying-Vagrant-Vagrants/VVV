@@ -10,5 +10,5 @@
 if [[ -f /home/vagrant/bin/vagrant_halt_custom ]]; then
 	vagrant_halt_custom
 else
-	# tasks
+	db_backup
 fi
