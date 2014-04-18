@@ -414,9 +414,13 @@ if [[ $ping_result == *bytes?from* ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
 		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
 	else
-		echo -e "\nUpdating PHP_CodeSniffer (phpcs)..."
 		cd /srv/www/phpcs
-		git pull --rebase origin master
+		if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
+			echo -e "\nUpdating PHP_CodeSniffer (phpcs)..."
+			git pull --no-edit origin master
+		else
+			echo -e "\nSkipped updating PHP_CodeSniffer since not on master branch"
+		fi
 	fi
 
 	# Sniffs WordPress Coding Standards
@@ -424,9 +428,13 @@ if [[ $ping_result == *bytes?from* ]]; then
 		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
 		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
-		echo -e "\nUpdating PHP_CodeSniffer..."
 		cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
-		git pull --rebase origin master
+		if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
+			echo -e "\nUpdating PHP_CodeSniffer WordPress Coding Standards..."
+			git pull --no-edit origin master
+		else
+			echo -e "\nSkipped updating PHPCS WordPress Coding Standards since not on master branch"
+		fi
 	fi
 
 	# Install and configure the latest stable version of WordPress
