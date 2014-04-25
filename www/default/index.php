@@ -92,11 +92,18 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 				if ( is_file( $file.'/vvv-hosts' ) ) {
 					$sites [] = array(
 						'folder' => $file,
-						'hosts' => file_get_contents( $file.'/vvv-hosts' )
+						'hosts' => file_get_contents( $file.'/vvv-hosts' ),
+						'type' => 'local'
 					);
 				}
 			}
 		}
+		$sites [] = array(
+			'type' => 'url',
+			'url' => 'https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Add-New-Domain',
+			'title' => '<span class="glyphicon glyphicon-plus"></span> Add a New Site',
+			'description' => 'Learn how to add a new site to your VVV installation'
+		);
 
 		$columns = array();
 		$columns[] = array_splice( $sites, 0, count( $sites )/2 );
@@ -111,22 +118,33 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 			<div class="col-lg-6">
 				<?php
 				foreach ( $c as $install ) {
-					$links = array();
-					echo '<h4>'.str_replace('../', '', $install['folder'] ).'</h4>';
-					echo '<p>';
-					$sites = explode( "\n",$install['hosts']);
-					foreach ( $sites as $site ) {
-						$site = trim( $site );
-						// filter out comments
-						$hashpos = strpos( $site, '#' );
-						if ( $hashpos !== false) {
-							$site = substr( $site, 0, $hashpos );
+
+					$title = 'Site';
+					$content = '<p>Description</p>';
+					if ( $install['type'] == 'local' ) {
+						$title = str_replace('../', '', $install['folder'] );
+						$content = '';
+						$sites = explode( "\n",$install['hosts']);
+						foreach ( $sites as $site ) {
+							$site = trim( $site );
+							// filter out comments
+							$hashpos = strpos( $site, '#' );
+							if ( $hashpos !== false) {
+								$site = substr( $site, 0, $hashpos );
+							}
+							if ( !empty( $site ) ) {
+								$links[] = '<a href="http://'.$site.'">'.$site.'</a>';
+							}
 						}
-						if ( !empty( $site ) ) {
-							$links[] = '<a href="http://'.$site.'">'.$site.'</a>';
-						}
+						$content.= implode( ', ', $links );
+					} else {
+						$title = '<a href="'.$install['url'].'" target="_blank">'.$install['title'].'</a>';
+						$content = '<p>'.$install['description'].'</p>';
 					}
-					echo implode( ', ', $links );
+					$links = array();
+					echo '<h4>'.$title.'</h4>';
+					echo '<p>';
+					echo $content;
 					echo '</p>';
 				}
 				?>
