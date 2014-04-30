@@ -114,6 +114,11 @@ for pkg in "${apt_package_check_list[@]}"; do
 	fi
 done
 
+# There is a naming conflict with the node package (Amateur Packet Radio Node
+# Program), and the nodejs binary has been renamed from node to nodejs. We need
+# to symlink to put it back.
+ln -s /usr/bin/nodejs /usr/bin/node
+
 # MySQL
 #
 # Use debconf-set-selections to specify the default password for the root MySQL
