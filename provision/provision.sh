@@ -443,6 +443,15 @@ PHP
 		wp core upgrade --allow-root 
 	fi
 
+	# Test to see if an svn upgrade is needed
+	svn_test=$( svn status -u /srv/www/wordpress-develop/ 2>&1 );
+	if [[ $svn_test == *"svn upgrade"* ]]; then
+		# If the wordpress-develop svn repo needed an upgrade, they probably all need it
+		for repo in $(find /srv/www -maxdepth 5 -type d -name '.svn'); do
+			svn upgrade "${repo/%\.svn/}"
+		done
+	fi;
+
 	# Checkout, install and configure WordPress trunk via core.svn
 	if [[ ! -d /srv/www/wordpress-trunk ]]; then
 		echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
