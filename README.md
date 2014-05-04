@@ -54,10 +54,10 @@ Immediate goals for VVV include:
 ### The First Vagrant Up
 
 1. Start with any operating system.
-1. Install [VirtualBox 4.2.x](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2) or [VirtualBox 4.3.6](https://www.virtualbox.org/wiki/Downloads)
-    * Major portions of VirtualBox were rewritten for 4.3, and it's possible that there are still bugs to be shaken out. VVV is completely compatible with earlier versions of VirtualBox, so 4.2.22 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
+1. Install [VirtualBox 4.3.10](https://www.virtualbox.org/wiki/Downloads)
+    * VVV is completely compatible with earlier versions of VirtualBox, so 4.2.22 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
     * VVV itself leans in the 4.3.x direction in the master branch to stay ahead of the curve.
-1. Install [Vagrant 1.4.3](http://www.vagrantup.com/downloads.html)
+1. Install [Vagrant 1.5.4](http://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
     * ***Note:*** If VirtualBox 4.3.x is installed, Vagrant 1.3.5 or later is required.
@@ -86,7 +86,7 @@ Fancy, yeah?
 
 ### What Did That Do?
 
-The first time you run `vagrant up`, a packaged box containing a basic virtual machine is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an installation of Ubuntu 12.04 and is about 280MB.
+The first time you run `vagrant up`, a packaged box containing a basic virtual machine is downloaded to your local machine and cached for future use. The file used by Varying Vagrant Vagrants contains an installation of Ubuntu 14.04 and is about 332MB.
 
 After this box is downloaded, it begins to boot as a sandboxed virtual machine using VirtualBox. Once booted, it runs the provisioning script included with VVV. This initiates the download and installation of around 100MB of packages on the new virtual machine.
 
@@ -143,7 +143,7 @@ All WordPress admin usernames and passwords for WordPress installations included
 
 A bunch of stuff!
 
-1. [Ubuntu](http://www.ubuntu.com/) 12.04 LTS (Precise Pangolin)
+1. [Ubuntu](http://www.ubuntu.com/) 14.04 LTS (Trusty Tahr)
 1. [WordPress Develop](http://develop.svn.wordpress.org/trunk/)
 1. [WordPress Stable](http://wordpress.org/)
 1. [WordPress Trunk](http://core.svn.wordpress.org/trunk/)
@@ -158,7 +158,7 @@ A bunch of stuff!
 1. [PHPUnit](http://pear.phpunit.de/) 4.0.x
 1. [ack-grep](http://beyondgrep.com/) 2.04
 1. [git](http://git-scm.com/) 1.9.x
-1. [subversion](http://subversion.apache.org/) 1.7.9
+1. [subversion](http://subversion.apache.org/) 1.8.x
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
