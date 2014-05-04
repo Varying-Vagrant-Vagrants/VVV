@@ -148,7 +148,7 @@ A bunch of stuff!
 1. [WordPress Stable](http://wordpress.org/)
 1. [WordPress Trunk](http://core.svn.wordpress.org/trunk/)
 1. [WP-CLI](http://wp-cli.org/)
-1. [nginx](http://nginx.org/) 1.4.x
+1. [nginx](http://nginx.org/) 1.6.x
 1. [mysql](http://www.mysql.com/) 5.5.x
 1. [php-fpm](http://php-fpm.org/) 5.5.x
 1. [memcached](http://memcached.org/) 1.4.13
