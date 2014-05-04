@@ -93,6 +93,7 @@ apt_package_check_list=(
 
 	# nodejs for use by grunt
 	g++
+	npm
 	nodejs
 )
 
@@ -112,6 +113,11 @@ for pkg in "${apt_package_check_list[@]}"; do
 		apt_package_install_list+=($pkg)
 	fi
 done
+
+# There is a naming conflict with the node package (Amateur Packet Radio Node
+# Program), and the nodejs binary has been renamed from node to nodejs. We need
+# to symlink to put it back.
+ln -s /usr/bin/nodejs /usr/bin/node
 
 # MySQL
 #
@@ -143,26 +149,6 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# Before running `apt-get update`, we should add the public keys for
 		# the packages that we are installing from non standard sources via
 		# our appended apt source.list
-
-		# Nginx.org nginx key ABF5BD827BD9BF62
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
-		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
-
-		# Launchpad Subversion key EAA903E3A2F4C039
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key EAA903E3A2F4C039
-		gpg -q -a --export EAA903E3A2F4C039 | apt-key add -
-
-		# Launchpad PHP key 4F4EA0AAE5267A6C
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key 4F4EA0AAE5267A6C
-		gpg -q -a --export 4F4EA0AAE5267A6C | apt-key add -
-
-		# Launchpad git key A1715D88E1DF1F24
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key A1715D88E1DF1F24
-		gpg -q -a --export A1715D88E1DF1F24 | apt-key add -
-
-		# Launchpad nodejs key C7917B12
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
-		gpg -q -a --export  C7917B12  | apt-key add -
 
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."
@@ -456,6 +442,15 @@ PHP
 		cd /srv/www/wordpress-default
 		wp core upgrade --allow-root 
 	fi
+
+	# Test to see if an svn upgrade is needed
+	svn_test=$( svn status -u /srv/www/wordpress-develop/ 2>&1 );
+	if [[ $svn_test == *"svn upgrade"* ]]; then
+		# If the wordpress-develop svn repo needed an upgrade, they probably all need it
+		for repo in $(find /srv/www -maxdepth 5 -type d -name '.svn'); do
+			svn upgrade "${repo/%\.svn/}"
+		done
+	fi;
 
 	# Checkout, install and configure WordPress trunk via core.svn
 	if [[ ! -d /srv/www/wordpress-trunk ]]; then
