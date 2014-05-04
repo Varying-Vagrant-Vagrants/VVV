@@ -153,7 +153,7 @@ A bunch of stuff!
 1. [php-fpm](http://php-fpm.org/) 5.5.x
 1. [memcached](http://memcached.org/) 1.4.13
 1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8/) 3.0.8
-1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.3/) 2.2.3
+1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.5/) 2.2.5
 1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.2/) 3.1.2
 1. [PHPUnit](http://pear.phpunit.de/) 4.0.x
 1. [ack-grep](http://beyondgrep.com/) 2.04
