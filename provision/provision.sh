@@ -50,7 +50,6 @@ apt_package_check_list=(
 	# Extra PHP modules that we find useful
 	php5-memcache
 	php5-imagick
-	php5-xdebug
 	php5-mcrypt
 	php5-mysql
 	php5-imap
@@ -165,6 +164,13 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# Clean up apt caches
 		apt-get clean
 	fi
+
+	# xdebug
+	#
+	# XDebug 2.2.3 is provided with the Ubuntu install by default. The PECL
+	# installation allows us to use a later version. Not specifying a version
+	# will load the latest stable.
+	pecl install xdebug
 
 	# ack-grep
 	#
