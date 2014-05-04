@@ -1,12 +1,15 @@
 # Varying Vagrant Vagrants Changelog
 
 ## 1.2-working
-* **Possible Breaking:*** By default, database files are no longer mapped to a local location.
+* ***Possible Breaking:*** By default, database files are no longer mapped to a local location.
 	* A full `vagrant destroy` and the removal of MySQL data from `{vvv-dir}/database/data/` is recommended.
 	* If database files already exist from an earlier vesion of VVV, data will continue to be mapped locally until removed.
 	* Database data will continue to exist on the virtual machine through `vagrant halt` and `vagrant suspend`.
 	* Database data will no longer exist on the virtual machine after `vagrant destroy`.
 	* A `db_backup` script is provided by default that creates local backups of each database on halt, suspend, and destroy if the vagrant-triggers plugin is installed.
+* ***Possible Breaking:*** Ubuntu has been upgraded from 12.04 LTS to 14.04 LTS. We have also moved from 32bit to 64bit.
+	* A full `vagrant destroy` is recommended for best results.
+	* A new box will be downloaded for the base virtual machine. If you'd like to free space, remove the old box with `vagrant box remove precise32`. Running `vagrant box list` will show you all base VMs on your local machine.
 * WordPress: Add `develop_git` to convert the default SVN checkout to Git.
 * PHP: Update to PHP 5.5.x
 * PHP: Remove php-apc and apc.ini. Enable built in opcache.

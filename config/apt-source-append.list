@@ -1,2 +1,6 @@
 # Additional sources will be added here to help control the
 # versions of various packages that are installed
+
+# Provides Nginx stable
+deb http://nginx.org/packages/ubuntu/ trusty nginx
+deb-src http://nginx.org/packages/ubuntu/ trusty nginx

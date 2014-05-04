@@ -150,6 +150,10 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# the packages that we are installing from non standard sources via
 		# our appended apt source.list
 
+		# Nginx.org nginx key ABF5BD827BD9BF62
+		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
+		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
+
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."
 		apt-get update --assume-yes
