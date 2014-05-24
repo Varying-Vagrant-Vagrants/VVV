@@ -264,13 +264,17 @@ cp /srv/config/php5-fpm-config/php5-fpm.conf /etc/php5/fpm/php5-fpm.conf
 cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
 cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
 cp /srv/config/php5-fpm-config/opcache.ini /etc/php5/fpm/conf.d/opcache.ini
-cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
+cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/mods-available/xdebug.ini
+
+# Find the path to Xdebug and prepend it to xdebug.ini
+XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
+sed -i "1izend_extension=\"$XDEBUG_PATH\"" /etc/php5/mods-available/xdebug.ini
 
 echo " * /srv/config/php5-fpm-config/php5-fpm.conf     -> /etc/php5/fpm/php5-fpm.conf"
 echo " * /srv/config/php5-fpm-config/www.conf          -> /etc/php5/fpm/pool.d/www.conf"
 echo " * /srv/config/php5-fpm-config/php-custom.ini    -> /etc/php5/fpm/conf.d/php-custom.ini"
 echo " * /srv/config/php5-fpm-config/opcache.ini       -> /etc/php5/fpm/conf.d/opcache.ini"
-echo " * /srv/config/php5-fpm-config/xdebug.ini        -> /etc/php5/fpm/conf.d/xdebug.ini"
+echo " * /srv/config/php5-fpm-config/xdebug.ini        -> /etc/php5/mods-available/xdebug.ini"
 
 # Copy memcached configuration from local
 cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
