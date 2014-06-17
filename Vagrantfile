@@ -175,6 +175,9 @@ Vagrant.configure("2") do |config|
     config.vm.provision :shell, :path => File.join( "provision", "provision-post.sh" )
   end
 
+  # Always start MySQL on boot, even when not running the full provisioner
+  config.vm.provision :shell, inline: "sudo service mysql start", run: "always"
+
   # Vagrant Triggers
   #
   # If the vagrant-triggers plugin is installed, we can run various scripts on Vagrant
