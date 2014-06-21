@@ -30,6 +30,9 @@ Vagrant.configure("2") do |config|
   # to your host computer, it is cached for future use under the specified box name.
   config.vm.box = "ubuntu/trusty64"
 
+  # Ignore the test that checks if the box is up to date.
+  config.vm.box_check_update = false
+
   config.vm.hostname = "vvv"
 
   # Local Machine Hosts
