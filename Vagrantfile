@@ -30,8 +30,24 @@ Vagrant.configure("2") do |config|
   # to your host computer, it is cached for future use under the specified box name.
   config.vm.box = "ubuntu/trusty64"
 
-  # Ignore the test that checks if the box is up to date.
-  config.vm.box_check_update = false
+  # Test connection
+  require "net/http"
+  require "uri"
+
+  begin   
+    uri = URI.parse("https://vagrantcloud.com/")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    data = http.get(uri.request_uri) 
+  rescue  
+    # Ignore the update check if no connection
+    config.vm.box_check_update = false 
+  end  
+
+  # Enable update check if connection is available
+  if data.to_s.include? 'HTTPOK' 
+    config.vm.box_check_update = true 
+  end
 
   config.vm.hostname = "vvv"
 
