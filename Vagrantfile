@@ -179,7 +179,7 @@ Vagrant.configure("2") do |config|
   # (run: "always" support added in 1.6.0)
   if vagrant_version >= "1.6.0"
     config.vm.provision :shell, inline: "sudo service mysql start", run: "always"
-  fi
+  end
 
   # Vagrant Triggers
   #
