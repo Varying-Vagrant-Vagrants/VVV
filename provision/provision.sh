@@ -293,6 +293,7 @@ if [[ ! -d /home/vagrant/bin ]]; then
 	mkdir /home/vagrant/bin
 fi
 rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
+sudo sed -i 's/\r//' /home/vagrant/bin/*
 sudo cp /home/vagrant/bin/* /usr/bin/
 
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
