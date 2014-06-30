@@ -293,8 +293,12 @@ if [[ ! -d /home/vagrant/bin ]]; then
 	mkdir /home/vagrant/bin
 fi
 rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
+
+# Make sure that line endings are UNIX
 sudo sed -i 's/\r//' /home/vagrant/bin/*
-sudo cp /home/vagrant/bin/* /usr/bin/
+sudo sed -i 's/\r//' /home/vagrant/.bash_profile
+sudo sed -i 's/\r//' /home/vagrant/.bash_aliases
+sudo sed -i 's/\r//' /home/vagrant/.vimrc
 
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
 echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
