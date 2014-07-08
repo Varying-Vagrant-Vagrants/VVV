@@ -294,6 +294,13 @@ if [[ ! -d /home/vagrant/bin ]]; then
 fi
 rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
 
+dos2unix /home/vagrant/.bash_profile
+dos2unix /home/vagrant/.bash_aliases
+dos2unix /home/vagrant/.vimrc
+dos2unix /home/vagrant/.subversion/servers
+dos2unix /home/vagrant/bin/*
+
+
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
 echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
 echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
