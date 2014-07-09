@@ -7,6 +7,15 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
+ip_host=192.168.50.1
+while getopts ":h:" opt; do
+    case "$opt" in
+        h)
+            ip_host="$OPTARG" ;;
+    esac
+done
+echo 'We have the ip host: $ip_host'
+
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
 start_seconds="$(date +%s)"
@@ -183,11 +192,15 @@ if [[ $ping_result == *bytes?from* ]]; then
 		curl -s http://beyondgrep.com/ack-2.04-single-file > /usr/bin/ack && chmod +x /usr/bin/ack
 	fi
 
+    # turn off the xdebug module
+    php5dismod xdebug
+    service php5-fpm restart
+
 	# COMPOSER
 	#
 	# Install or Update Composer based on current state. Updates are direct from
 	# master branch on GitHub repository.
-	if [[ -n "$(composer --version | grep -q 'Composer version')" ]]; then
+    if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
 		echo "Updating Composer..."
 		COMPOSER_HOME=/usr/local/src/composer composer self-update
 		COMPOSER_HOME=/usr/local/src/composer composer global update
@@ -244,16 +257,22 @@ echo -e "\nSetup configuration files..."
 
 # Used to to ensure proper services are started on `vagrant up`
 cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
+dos2unix /etc/init/vvv-start.conf
 
 echo " * /srv/config/init/vvv-start.conf               -> /etc/init/vvv-start.conf"
 
 # Copy nginx configuration from local
 cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf
 cp /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
+
+dos2unix /etc/nginx/nginx.conf
+dos2unix /etc/nginx/nginx-wp-common.conf
+
 if [[ ! -d /etc/nginx/custom-sites ]]; then
 	mkdir /etc/nginx/custom-sites/
 fi
 rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
+dos2unix /etc/nginx/custom-sites/*
 
 echo " * /srv/config/nginx-config/nginx.conf           -> /etc/nginx/nginx.conf"
 echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
@@ -265,6 +284,12 @@ cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
 cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
 cp /srv/config/php5-fpm-config/opcache.ini /etc/php5/fpm/conf.d/opcache.ini
 cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/mods-available/xdebug.ini
+
+dos2unix /etc/php5/fpm/php5-fpm.conf
+dos2unix /etc/php5/fpm/pool.d/www.conf
+dos2unix /etc/php5/fpm/conf.d/php-custom.ini
+dos2unix /etc/php5/fpm/conf.d/opcache.ini
+dos2unix /etc/php5/mods-available/xdebug.ini
 
 # Find the path to Xdebug and prepend it to xdebug.ini
 XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
@@ -278,6 +303,7 @@ echo " * /srv/config/php5-fpm-config/xdebug.ini        -> /etc/php5/mods-availab
 
 # Copy memcached configuration from local
 cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
+dos2unix /etc/memcached.conf
 
 echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 
@@ -285,27 +311,31 @@ echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 cp /srv/config/bash_profile /home/vagrant/.bash_profile
 cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
 cp /srv/config/vimrc /home/vagrant/.vimrc
-if [[ ! -d /home/vagrant/.subversion ]]; then
-	mkdir /home/vagrant/.subversion
-fi
-cp /srv/config/subversion-servers /home/vagrant/.subversion/servers
-if [[ ! -d /home/vagrant/bin ]]; then
-	mkdir /home/vagrant/bin
-fi
-rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
 
 dos2unix /home/vagrant/.bash_profile
 dos2unix /home/vagrant/.bash_aliases
 dos2unix /home/vagrant/.vimrc
-dos2unix /home/vagrant/.subversion/servers
-dos2unix /home/vagrant/bin/*
 
+if [[ ! -d /home/vagrant/.subversion ]]; then
+	mkdir /home/vagrant/.subversion
+fi
+
+cp /srv/config/subversion-servers /home/vagrant/.subversion/servers
+dos2unix /home/vagrant/.subversion/servers
+
+if [[ ! -d /home/vagrant/bin ]]; then
+	mkdir /home/vagrant/bin
+fi
+rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
+dos2unix /home/vagrant/bin/*
 
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
 echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
 echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
 echo " * /srv/config/subversion-servers                -> /home/vagrant/.subversion/servers"
 echo " * /srv/config/homebin                           -> /home/vagrant/bin"
+
+
 
 # RESTART SERVICES
 #
@@ -326,6 +356,9 @@ if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
 	# Copy mysql configuration from local
 	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf
 	cp /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf
+
+	dos2unix /etc/mysql/my.cnf
+	dos2unix /home/vagrant/.my.cnf
 
 	echo " * /srv/config/mysql-config/my.cnf               -> /etc/mysql/my.cnf"
 	echo " * /srv/config/mysql-config/root-my.cnf          -> /home/vagrant/.my.cnf"
@@ -511,6 +544,8 @@ define( 'WP_DEBUG', true );
 PHP
 		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
+		dos2unix /srv/www/wordpress-develop/wp-tests-config.php
+
 		cd /srv/www/wordpress-develop/
 		npm install &>/dev/null
 	else
@@ -546,6 +581,7 @@ PHP
 		echo "PHPMyAdmin already installed."
 	fi
 	cp /srv/config/phpmyadmin-config/config.inc.php /srv/www/default/database-admin/
+	dos2unix /srv/www/default/database-admin/config.inc.php
 else
 	echo -e "\nNo network available, skipping network installations"
 fi
@@ -614,3 +650,9 @@ else
 	echo "No external network available. Package installation and maintenance skipped."
 fi
 echo "For further setup instructions, visit http://vvv.dev"
+
+
+echo "xdebug.remote_host=\"$ip_host\"" >> /etc/php5/mods-available/xdebug.ini
+
+sudo php5enmod xdebug
+sudo service php5-fpm restart
