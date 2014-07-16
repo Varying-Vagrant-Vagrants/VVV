@@ -527,23 +527,26 @@ PHP
 
 	# Checkout, install and configure WordPress trunk via core.svn
 
-	if [[ ! -e /srv/www/wordpress-trunk/.svn ]]; then
+	if [[ ! -e /srv/www/wordpress-trunk/wp/.svn ]]; then
 	    echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
-		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
+		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk/wp
+		cp /srv/www/wordpress-trunk/wp/index.php /srv/www/wordpress-trunk/
+		sed -i 's/wp-blog-header.php/wp\/wp-blog-header.php/g' /srv/www/wordpress-trunk/index.php
+		cp -R /srv/www/wordpress-trunk/wp/wp-content/themes /srv/www/wordpress-trunk/wp-content/
     else
         echo "Updating WordPress trunk..."
-		cd /srv/www/wordpress-trunk
+		cd /srv/www/wordpress-trunk/wp
 		svn cleanup
 		svn up --ignore-externals
 		svn cleanup
 	fi
 
-	if [[ ! -f /srv/www/wordpress-trunk/wp-config.php ]]; then
+	if [[ ! -f /srv/www/wordpress-trunk/wp/wp-config.php ]]; then
 		echo "Configuring WordPress trunk..."
-		wp core config --path="/srv/www/wordpress-trunk" --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --path="/srv/www/wordpress-trunk/wp" --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --path="/srv/www/wordpress-trunk" --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --path="/srv/www/wordpress-trunk/wp" --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	fi
 
 	# Checkout, install and configure WordPress trunk via develop.svn
