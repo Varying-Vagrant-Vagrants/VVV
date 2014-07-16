@@ -162,6 +162,10 @@ if [[ $ping_result == *bytes?from* ]]; then
 		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
 		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
 
+        # Subversion 1.8 for ubuntu ios image
+        sudo sh -c 'echo "deb http://opensource.wandisco.com/ubuntu precise svn18" >> /etc/apt/sources.list.d/subversion18.list'
+        sudo wget -q http://opensource.wandisco.com/wandisco-debian.gpg -O- | sudo apt-key add -
+
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."
 		apt-get update --assume-yes
@@ -192,7 +196,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 		curl -s http://beyondgrep.com/ack-2.04-single-file > /usr/bin/ack && chmod +x /usr/bin/ack
 	fi
 
-    # turn off the xdebug module
+    # Turn off the xdebug module if it was turned on from a previous provision
     php5dismod xdebug
     service php5-fpm restart
 
@@ -524,7 +528,9 @@ PHP
 	else
 		echo "Updating WordPress trunk..."
 		cd /srv/www/wordpress-trunk
+		svn cleanup
 		svn up --ignore-externals
+		svn cleanup
 	fi
 
 	# Checkout, install and configure WordPress trunk via develop.svn
@@ -552,7 +558,9 @@ PHP
 		echo "Updating WordPress develop..."
 		cd /srv/www/wordpress-develop/
 		if [[ -e .svn ]]; then
+		    svn cleanup
 			svn up
+			svn cleanup
 		else
 			if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
 				git pull --no-edit git://develop.git.wordpress.org/ master
@@ -651,8 +659,9 @@ else
 fi
 echo "For further setup instructions, visit http://vvv.dev"
 
-
+# Append the remote host to the xdebug ini file
 echo "xdebug.remote_host=\"$ip_host\"" >> /etc/php5/mods-available/xdebug.ini
 
+# Start the xdebug module when provision is finished
 sudo php5enmod xdebug
 sudo service php5-fpm restart
