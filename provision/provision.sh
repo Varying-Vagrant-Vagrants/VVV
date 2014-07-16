@@ -7,6 +7,15 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
+ip_host=192.168.50.1
+while getopts ":h:" opt; do
+    case "$opt" in
+        h)
+            ip_host="$OPTARG" ;;
+    esac
+done
+echo 'We have the ip host: $ip_host'
+
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
 start_seconds="$(date +%s)"
@@ -116,7 +125,9 @@ done
 # There is a naming conflict with the node package (Amateur Packet Radio Node
 # Program), and the nodejs binary has been renamed from node to nodejs. We need
 # to symlink to put it back.
-ln -s /usr/bin/nodejs /usr/bin/node
+if [ ! -L /usr/bin/node ]; then
+    ln -s /usr/bin/nodejs /usr/bin/node
+fi
 
 # MySQL
 #
@@ -153,6 +164,10 @@ if [[ $ping_result == *bytes?from* ]]; then
 		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
 		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
 
+        # Subversion 1.8 for ubuntu ios image
+        sudo sh -c 'echo "deb http://opensource.wandisco.com/ubuntu precise svn18" >> /etc/apt/sources.list.d/subversion18.list'
+        sudo wget -q http://opensource.wandisco.com/wandisco-debian.gpg -O- | sudo apt-key add -
+
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."
 		apt-get update --assume-yes
@@ -183,11 +198,15 @@ if [[ $ping_result == *bytes?from* ]]; then
 		curl -s http://beyondgrep.com/ack-2.04-single-file > /usr/bin/ack && chmod +x /usr/bin/ack
 	fi
 
+    # Turn off the xdebug module if it was turned on from a previous provision
+    php5dismod xdebug
+    service php5-fpm restart
+
 	# COMPOSER
 	#
 	# Install or Update Composer based on current state. Updates are direct from
 	# master branch on GitHub repository.
-	if [[ -n "$(composer --version | grep -q 'Composer version')" ]]; then
+    if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
 		echo "Updating Composer..."
 		COMPOSER_HOME=/usr/local/src/composer composer self-update
 		COMPOSER_HOME=/usr/local/src/composer composer global update
@@ -244,16 +263,22 @@ echo -e "\nSetup configuration files..."
 
 # Used to to ensure proper services are started on `vagrant up`
 cp /srv/config/init/vvv-start.conf /etc/init/vvv-start.conf
+dos2unix /etc/init/vvv-start.conf
 
 echo " * /srv/config/init/vvv-start.conf               -> /etc/init/vvv-start.conf"
 
 # Copy nginx configuration from local
 cp /srv/config/nginx-config/nginx.conf /etc/nginx/nginx.conf
 cp /srv/config/nginx-config/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
+
+dos2unix /etc/nginx/nginx.conf
+dos2unix /etc/nginx/nginx-wp-common.conf
+
 if [[ ! -d /etc/nginx/custom-sites ]]; then
 	mkdir /etc/nginx/custom-sites/
 fi
 rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
+dos2unix /etc/nginx/custom-sites/*
 
 echo " * /srv/config/nginx-config/nginx.conf           -> /etc/nginx/nginx.conf"
 echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
@@ -265,6 +290,12 @@ cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
 cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
 cp /srv/config/php5-fpm-config/opcache.ini /etc/php5/fpm/conf.d/opcache.ini
 cp /srv/config/php5-fpm-config/xdebug.ini /etc/php5/mods-available/xdebug.ini
+
+dos2unix /etc/php5/fpm/php5-fpm.conf
+dos2unix /etc/php5/fpm/pool.d/www.conf
+dos2unix /etc/php5/fpm/conf.d/php-custom.ini
+dos2unix /etc/php5/fpm/conf.d/opcache.ini
+dos2unix /etc/php5/mods-available/xdebug.ini
 
 # Find the path to Xdebug and prepend it to xdebug.ini
 XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
@@ -278,6 +309,7 @@ echo " * /srv/config/php5-fpm-config/xdebug.ini        -> /etc/php5/mods-availab
 
 # Copy memcached configuration from local
 cp /srv/config/memcached-config/memcached.conf /etc/memcached.conf
+dos2unix /etc/memcached.conf
 
 echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 
@@ -285,20 +317,31 @@ echo " * /srv/config/memcached-config/memcached.conf   -> /etc/memcached.conf"
 cp /srv/config/bash_profile /home/vagrant/.bash_profile
 cp /srv/config/bash_aliases /home/vagrant/.bash_aliases
 cp /srv/config/vimrc /home/vagrant/.vimrc
+
+dos2unix /home/vagrant/.bash_profile
+dos2unix /home/vagrant/.bash_aliases
+dos2unix /home/vagrant/.vimrc
+
 if [[ ! -d /home/vagrant/.subversion ]]; then
 	mkdir /home/vagrant/.subversion
 fi
+
 cp /srv/config/subversion-servers /home/vagrant/.subversion/servers
+dos2unix /home/vagrant/.subversion/servers
+
 if [[ ! -d /home/vagrant/bin ]]; then
 	mkdir /home/vagrant/bin
 fi
 rsync -rvzh --delete /srv/config/homebin/ /home/vagrant/bin/
+dos2unix /home/vagrant/bin/*
 
 echo " * /srv/config/bash_profile                      -> /home/vagrant/.bash_profile"
 echo " * /srv/config/bash_aliases                      -> /home/vagrant/.bash_aliases"
 echo " * /srv/config/vimrc                             -> /home/vagrant/.vimrc"
 echo " * /srv/config/subversion-servers                -> /home/vagrant/.subversion/servers"
 echo " * /srv/config/homebin                           -> /home/vagrant/bin"
+
+
 
 # RESTART SERVICES
 #
@@ -319,6 +362,9 @@ if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
 	# Copy mysql configuration from local
 	cp /srv/config/mysql-config/my.cnf /etc/mysql/my.cnf
 	cp /srv/config/mysql-config/root-my.cnf /home/vagrant/.my.cnf
+
+	dos2unix /etc/mysql/my.cnf
+	dos2unix /home/vagrant/.my.cnf
 
 	echo " * /srv/config/mysql-config/my.cnf               -> /etc/mysql/my.cnf"
 	echo " * /srv/config/mysql-config/root-my.cnf          -> /home/vagrant/.my.cnf"
@@ -364,17 +410,17 @@ fi
 
 if [[ $ping_result == *bytes?from* ]]; then
 	# WP-CLI Install
-	if [[ ! -d /srv/www/wp-cli ]]; then
+	if [[ ! -e /srv/www/wp-cli/.git ]]; then
 		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
 		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
-		composer install
 	else
 		echo -e "\nUpdating wp-cli..."
 		cd /srv/www/wp-cli
 		git pull --rebase origin master
-		composer update
 	fi
+	composer install
+
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
@@ -393,7 +439,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# Checkout Opcache Status to provide a dashboard for viewing statistics
 	# about PHP's built in opcache.
-	if [[ ! -d /srv/www/default/opcache-status ]]; then
+	if [[ ! -e /srv/www/default/opcache-status/.git ]]; then
 		echo -e "\nDownloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
 		cd /srv/www/default
 		git clone https://github.com/rlerdorf/opcache-status.git opcache-status
@@ -405,7 +451,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# Webgrind install (for viewing callgrind/cachegrind files produced by
 	# xdebug profiler)
-	if [[ ! -d /srv/www/default/webgrind ]]; then
+	if [[ ! -e /srv/www/default/webgrind/.git ]]; then
 		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
 		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
 	else
@@ -415,7 +461,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 	fi
 
 	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
-	if [[ ! -d /srv/www/phpcs ]]; then
+	if [[ ! -e /srv/www/phpcs/.git ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
 		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
 	else
@@ -429,7 +475,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 	fi
 
 	# Sniffs WordPress Coding Standards
-	if [[ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]]; then
+	if [[ ! -e /srv/www/phpcs/CodeSniffer/Standards/WordPress/.git ]]; then
 		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
 		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
@@ -442,24 +488,32 @@ if [[ $ping_result == *bytes?from* ]]; then
 		fi
 	fi
 
-	# Install and configure the latest stable version of WordPress
-	if [[ ! -d /srv/www/wordpress-default ]]; then
+	# Install the latest stable version of WordPress
+	if [[ ! -d /srv/www/wordpress-default/wp-admin ]]; then
 		echo "Downloading WordPress Stable, see http://wordpress.org/"
 		cd /srv/www/
 		curl -O http://wordpress.org/latest.tar.gz
 		tar -xvf latest.tar.gz
-		mv wordpress wordpress-default
+
+		if [[ -d /srv/www/wordpress-default ]]; then
+		    mv -f wordpress/* wordpress-default/
+		else
+		    mv wordpress wordpress-default
+		fi
+
 		rm latest.tar.gz
-		cd /srv/www/wordpress-default
+    fi
+
+    # Configure WordPress
+    if [[ ! -f /srv/www/wordpress-default/wp-config.php ]]; then
 		echo "Configuring WordPress Stable..."
-		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --path="/srv/www/wordpress-default" --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --path="/srv/www/wordpress-default" --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		echo "Updating WordPress Stable..."
-		cd /srv/www/wordpress-default
-		wp core upgrade
+		wp core upgrade --path="/srv/www/wordpress-default"
 	fi
 
 	# Test to see if an svn upgrade is needed
@@ -472,28 +526,44 @@ PHP
 	fi;
 
 	# Checkout, install and configure WordPress trunk via core.svn
-	if [[ ! -d /srv/www/wordpress-trunk ]]; then
-		echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
-		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
-		cd /srv/www/wordpress-trunk
+
+	if [[ ! -e /srv/www/wordpress-trunk/wp/.svn ]]; then
+	    echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
+		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk/wp
+		cp /srv/www/wordpress-trunk/wp/index.php /srv/www/wordpress-trunk/
+		sed -i 's/wp-blog-header.php/wp\/wp-blog-header.php/g' /srv/www/wordpress-trunk/index.php
+		cp -R /srv/www/wordpress-trunk/wp/wp-content/themes /srv/www/wordpress-trunk/wp-content/
+    else
+        echo "Updating WordPress trunk..."
+		cd /srv/www/wordpress-trunk/wp
+		svn cleanup
+		svn up --ignore-externals
+		svn cleanup
+	fi
+
+	if [[ ! -f /srv/www/wordpress-trunk/wp/wp-config.php ]]; then
 		echo "Configuring WordPress trunk..."
-		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --path="/srv/www/wordpress-trunk/wp" --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
-		echo "Updating WordPress trunk..."
-		cd /srv/www/wordpress-trunk
-		svn up --ignore-externals
+		wp core install --path="/srv/www/wordpress-trunk/wp" --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	fi
 
 	# Checkout, install and configure WordPress trunk via develop.svn
-	if [[ ! -d /srv/www/wordpress-develop ]]; then
-		echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
-		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
-		cd /srv/www/wordpress-develop/src/
+	if [[ ! -e /srv/www/wordpress-develop/.svn ]]; then
+        echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
+		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop/
+    else
+        echo "Updating WordPress develop..."
+		cd /srv/www/wordpress-develop/
+		svn cleanup
+		svn up
+		svn cleanup
+	fi
+
+	if [[ ! -f /srv/www/wordpress-develop/wp-tests-config.php ]]; then
 		echo "Configuring WordPress develop..."
-		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --path="/srv/www/wordpress-develop/src/" --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 // Allow (src|build).wordpress-develop.dev to share the same database
 if ( 'build' == basename( dirname( __FILE__) ) ) {
 	define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
@@ -502,24 +572,12 @@ if ( 'build' == basename( dirname( __FILE__) ) ) {
 
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --path="/srv/www/wordpress-develop/src/" --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
-		cd /srv/www/wordpress-develop/
-		npm install &>/dev/null
-	else
-		echo "Updating WordPress develop..."
-		cd /srv/www/wordpress-develop/
-		if [[ -e .svn ]]; then
-			svn up
-		else
-			if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-				git pull --no-edit git://develop.git.wordpress.org/ master
-			else
-				echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
-			fi
-		fi
-		npm install &>/dev/null
+		dos2unix /srv/www/wordpress-develop/wp-tests-config.php
 	fi
+    cd /srv/www/wordpress-develop/
+    npm install &>/dev/null
 
 	if [[ ! -d /srv/www/wordpress-develop/build ]]; then
 		echo "Initializing grunt in WordPress develop... This may take a few moments."
@@ -539,6 +597,7 @@ PHP
 		echo "PHPMyAdmin already installed."
 	fi
 	cp /srv/config/phpmyadmin-config/config.inc.php /srv/www/default/database-admin/
+	dos2unix /srv/www/default/database-admin/config.inc.php
 else
 	echo -e "\nNo network available, skipping network installations"
 fi
@@ -607,3 +666,10 @@ else
 	echo "No external network available. Package installation and maintenance skipped."
 fi
 echo "For further setup instructions, visit http://vvv.dev"
+
+# Append the remote host to the xdebug ini file
+echo "xdebug.remote_host=\"$ip_host\"" >> /etc/php5/mods-available/xdebug.ini
+
+# Start the xdebug module when provision is finished
+sudo php5enmod xdebug
+sudo service php5-fpm restart
