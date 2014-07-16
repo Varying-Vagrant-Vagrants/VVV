@@ -552,7 +552,7 @@ PHP
 	# Checkout, install and configure WordPress trunk via develop.svn
 	if [[ ! -e /srv/www/wordpress-develop/.svn ]]; then
         echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
-		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
+		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop/
     else
         echo "Updating WordPress develop..."
 		cd /srv/www/wordpress-develop/
@@ -561,7 +561,7 @@ PHP
 		svn cleanup
 	fi
 
-	if [[ ! -f /srv/www/wordpress-develop/wp-config.php ]]; then
+	if [[ ! -f /srv/www/wordpress-develop/wp-tests-config.php ]]; then
 		echo "Configuring WordPress develop..."
 		wp core config --path="/srv/www/wordpress-develop/src/" --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 // Allow (src|build).wordpress-develop.dev to share the same database
