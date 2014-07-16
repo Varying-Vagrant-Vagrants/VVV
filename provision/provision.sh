@@ -125,7 +125,9 @@ done
 # There is a naming conflict with the node package (Amateur Packet Radio Node
 # Program), and the nodejs binary has been renamed from node to nodejs. We need
 # to symlink to put it back.
-ln -s /usr/bin/nodejs /usr/bin/node
+if [ ! -L /usr/bin/node ]; then
+    ln -s /usr/bin/nodejs /usr/bin/node
+fi
 
 # MySQL
 #
@@ -408,17 +410,17 @@ fi
 
 if [[ $ping_result == *bytes?from* ]]; then
 	# WP-CLI Install
-	if [[ ! -d /srv/www/wp-cli ]]; then
+	if [[ ! -e /srv/www/wp-cli/.git ]]; then
 		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
 		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
-		composer install
 	else
 		echo -e "\nUpdating wp-cli..."
 		cd /srv/www/wp-cli
 		git pull --rebase origin master
-		composer update
 	fi
+	composer install
+
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
@@ -437,7 +439,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# Checkout Opcache Status to provide a dashboard for viewing statistics
 	# about PHP's built in opcache.
-	if [[ ! -d /srv/www/default/opcache-status ]]; then
+	if [[ ! -e /srv/www/default/opcache-status/.git ]]; then
 		echo -e "\nDownloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
 		cd /srv/www/default
 		git clone https://github.com/rlerdorf/opcache-status.git opcache-status
@@ -449,7 +451,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# Webgrind install (for viewing callgrind/cachegrind files produced by
 	# xdebug profiler)
-	if [[ ! -d /srv/www/default/webgrind ]]; then
+	if [[ ! -e /srv/www/default/webgrind/.git ]]; then
 		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
 		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
 	else
@@ -459,7 +461,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 	fi
 
 	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
-	if [[ ! -d /srv/www/phpcs ]]; then
+	if [[ ! -e /srv/www/phpcs/.git ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
 		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
 	else
@@ -473,7 +475,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 	fi
 
 	# Sniffs WordPress Coding Standards
-	if [[ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]]; then
+	if [[ ! -e /srv/www/phpcs/CodeSniffer/Standards/WordPress/.git ]]; then
 		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
 		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
@@ -486,24 +488,32 @@ if [[ $ping_result == *bytes?from* ]]; then
 		fi
 	fi
 
-	# Install and configure the latest stable version of WordPress
-	if [[ ! -d /srv/www/wordpress-default ]]; then
+	# Install the latest stable version of WordPress
+	if [[ ! -d /srv/www/wordpress-default/wp-admin ]]; then
 		echo "Downloading WordPress Stable, see http://wordpress.org/"
 		cd /srv/www/
 		curl -O http://wordpress.org/latest.tar.gz
 		tar -xvf latest.tar.gz
-		mv wordpress wordpress-default
+
+		if [[ -d /srv/www/wordpress-default ]]; then
+		    mv -f wordpress/* wordpress-default/
+		else
+		    mv wordpress wordpress-default
+		fi
+
 		rm latest.tar.gz
-		cd /srv/www/wordpress-default
+    fi
+
+    # Configure WordPress
+    if [[ ! -f /srv/www/wordpress-default/wp-config.php ]]; then
 		echo "Configuring WordPress Stable..."
-		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --path="/srv/www/wordpress-default" --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --path="/srv/www/wordpress-default" --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		echo "Updating WordPress Stable..."
-		cd /srv/www/wordpress-default
-		wp core upgrade
+		wp core upgrade --path="/srv/www/wordpress-default"
 	fi
 
 	# Test to see if an svn upgrade is needed
@@ -516,30 +526,41 @@ PHP
 	fi;
 
 	# Checkout, install and configure WordPress trunk via core.svn
-	if [[ ! -d /srv/www/wordpress-trunk ]]; then
-		echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
+
+	if [[ ! -e /srv/www/wordpress-trunk/.svn ]]; then
+	    echo "Checking out WordPress trunk from core.svn, see http://core.svn.wordpress.org/trunk"
 		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
-		cd /srv/www/wordpress-trunk
-		echo "Configuring WordPress trunk..."
-		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-define( 'WP_DEBUG', true );
-PHP
-		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
-		echo "Updating WordPress trunk..."
+    else
+        echo "Updating WordPress trunk..."
 		cd /srv/www/wordpress-trunk
 		svn cleanup
 		svn up --ignore-externals
 		svn cleanup
 	fi
 
+	if [[ ! -f /srv/www/wordpress-trunk/wp-config.php ]]; then
+		echo "Configuring WordPress trunk..."
+		wp core config --path="/srv/www/wordpress-trunk" --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+define( 'WP_DEBUG', true );
+PHP
+		wp core install --path="/srv/www/wordpress-trunk" --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	fi
+
 	# Checkout, install and configure WordPress trunk via develop.svn
-	if [[ ! -d /srv/www/wordpress-develop ]]; then
-		echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
+	if [[ ! -e /srv/www/wordpress-develop/.svn ]]; then
+        echo "Checking out WordPress trunk from develop.svn, see http://develop.svn.wordpress.org/trunk"
 		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
-		cd /srv/www/wordpress-develop/src/
+    else
+        echo "Updating WordPress develop..."
+		cd /srv/www/wordpress-develop/
+		svn cleanup
+		svn up
+		svn cleanup
+	fi
+
+	if [[ ! -f /srv/www/wordpress-develop/wp-config.php ]]; then
 		echo "Configuring WordPress develop..."
-		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+		wp core config --path="/srv/www/wordpress-develop/src/" --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 // Allow (src|build).wordpress-develop.dev to share the same database
 if ( 'build' == basename( dirname( __FILE__) ) ) {
 	define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
@@ -548,28 +569,12 @@ if ( 'build' == basename( dirname( __FILE__) ) ) {
 
 define( 'WP_DEBUG', true );
 PHP
-		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+		wp core install --path="/srv/www/wordpress-develop/src/" --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
 		dos2unix /srv/www/wordpress-develop/wp-tests-config.php
-
-		cd /srv/www/wordpress-develop/
-		npm install &>/dev/null
-	else
-		echo "Updating WordPress develop..."
-		cd /srv/www/wordpress-develop/
-		if [[ -e .svn ]]; then
-		    svn cleanup
-			svn up
-			svn cleanup
-		else
-			if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-				git pull --no-edit git://develop.git.wordpress.org/ master
-			else
-				echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
-			fi
-		fi
-		npm install &>/dev/null
 	fi
+    cd /srv/www/wordpress-develop/
+    npm install &>/dev/null
 
 	if [[ ! -d /srv/www/wordpress-develop/build ]]; then
 		echo "Initializing grunt in WordPress develop... This may take a few moments."
