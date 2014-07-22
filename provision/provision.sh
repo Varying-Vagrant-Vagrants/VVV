@@ -92,7 +92,6 @@ apt_package_check_list=(
 
 	# nodejs for use by grunt
 	g++
-	npm
 	nodejs
 )
 
@@ -112,11 +111,6 @@ for pkg in "${apt_package_check_list[@]}"; do
 		apt_package_install_list+=($pkg)
 	fi
 done
-
-# There is a naming conflict with the node package (Amateur Packet Radio Node
-# Program), and the nodejs binary has been renamed from node to nodejs. We need
-# to symlink to put it back.
-ln -s /usr/bin/nodejs /usr/bin/node
 
 # MySQL
 #
@@ -152,6 +146,10 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# Nginx.org nginx key ABF5BD827BD9BF62
 		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
 		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
+
+		# Launchpad nodejs key C7917B12
+		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
+		gpg -q -a --export  C7917B12  | apt-key add -
 
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."

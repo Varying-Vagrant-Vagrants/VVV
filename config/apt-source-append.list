@@ -4,3 +4,7 @@
 # Provides Nginx stable
 deb http://nginx.org/packages/ubuntu/ trusty nginx
 deb-src http://nginx.org/packages/ubuntu/ trusty nginx
+
+# Provides Node.js
+deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main
+deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main
