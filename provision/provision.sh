@@ -163,6 +163,9 @@ if [[ $ping_result == *bytes?from* ]]; then
 		apt-get clean
 	fi
 
+	# Make sure we have the latest npm version
+	npm install -g npm
+
 	# xdebug
 	#
 	# XDebug 2.2.3 is provided with the Ubuntu install by default. The PECL
