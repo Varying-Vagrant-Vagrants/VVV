@@ -21,3 +21,13 @@ It may make sense that a feature branch is created so that several contributors 
 ## Milestones and Labels
 
 Some loose organization has grown around milestones and labels. We'll often have the next two versions listed for selection as a milestone. Things like bugs, enhancements, docs, etc... are listed as labels.
+
+## Code Style
+
+### Bash Scripting
+
+For any shell scripting that we do in Bash — see `provision.sh` — we try to follow the style provided in Google's [Shell Style Guide](http://google-styleguide.googlecode.com/svn/trunk/shell.xml).
+
+### PHP
+
+For any PHP, we try to follow the WordPress core [code standards](http://make.wordpress.org/core/handbook/coding-standards/).
