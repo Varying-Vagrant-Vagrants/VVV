@@ -93,6 +93,12 @@ apt_package_check_list=(
 	# nodejs for use by grunt
 	g++
 	nodejs
+
+	# There is a naming conflict with the node package (Amateur Packet
+	# Radio Node Program), and the nodejs binary has been renamed from node
+	# to nodejs.  We need to install the nodejs-legacy package to put it
+	# back.
+	nodejs-legacy
 )
 
 echo "Check for apt packages to install..."
