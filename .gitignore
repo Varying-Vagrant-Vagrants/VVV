@@ -31,6 +31,9 @@
 # No need to share our mysql data with each other
 /database/data/*
 
+# Log files should be ignored.
+/log/*.log
+
 # No need to share our individual sites with each other
 /www/*
 
