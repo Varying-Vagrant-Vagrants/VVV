@@ -125,7 +125,7 @@ Vagrant.configure("2") do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder "log/", "/srv/log"
+  config.vm.synced_folder "log/", "/srv/log", :owner => "www-data"
 
   # /srv/www/
   #
