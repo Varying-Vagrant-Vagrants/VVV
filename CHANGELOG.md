@@ -20,6 +20,7 @@
 * phpMyAdmin: Update to 4.1.14
 * WP-Cli: Add support for autocomplete.
 * VVV Dashboard: Add [Opcache Status](https://github.com/rlerdorf/opcache-status) for opcache monitoring.
+* Bash: Allow for a custom `bash_prompt` file in `config/`
 
 ## 1.1
 * Transition to [Varying Vagrant Vagrants organization](https://github.com/Varying-Vagrant-Vagrants).
