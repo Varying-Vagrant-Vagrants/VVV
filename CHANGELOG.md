@@ -21,6 +21,8 @@
 * WP-Cli: Add support for autocomplete.
 * VVV Dashboard: Add [Opcache Status](https://github.com/rlerdorf/opcache-status) for opcache monitoring.
 * Bash: Allow for a custom `bash_prompt` file in `config/`
+* NodeJS: Use recommended PPAs to install
+* NodeJS: Self update NPM during provisioning
 
 ## 1.1
 * Transition to [Varying Vagrant Vagrants organization](https://github.com/Varying-Vagrant-Vagrants).
