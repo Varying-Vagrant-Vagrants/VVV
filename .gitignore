@@ -25,6 +25,9 @@
 # Ignore anything in the 'custom' directory in config
 /config/custom/*
 
+# Ignore a custom bash_prompt if it exists
+/config/bash_prompt
+
 # No need to share our mysql data with each other
 /database/data/*
 
