@@ -38,9 +38,7 @@ One of great strengths of VVV's Vagrant powered solution is the local filesystem
 
 #### VVV as a Scaffold
 
-Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts.
-
-Feel free to check this project out and then change everything to make it your own.
+Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts. Check this project out and use it as a base to learn about server provisioning or change everything to make it your own.
 
 ### The Future of Varying Vagrant Vagrants
 
