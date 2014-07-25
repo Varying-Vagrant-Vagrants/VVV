@@ -29,7 +29,7 @@ VVV requires recent versions of both Vagrant and VirtualBox to be installed.
 
 #### VVV as a MAMP/XAMPP Replacement
 
-VVV is ready to use. Download or clone VVV and then type `vagrant up` to automatically build a virtualized Ubuntu server on your computer containing everything needed to develop a WordPress theme or plugin.
+Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagrant up` to automatically build a virtualized Ubuntu server on your computer containing everything needed to develop a WordPress theme or plugin.
 
 Multiple projects can be developed at once in the same environment.
 
