@@ -27,10 +27,10 @@ VVV is ready to use. Download or clone VVV and then type `vagrant up` to automat
 
 Multiple projects can be developed at once in the same environment.
 
-* Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes.
-* Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop plugins.
-* Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `/srv/www/`.
-* Use the `wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
+* Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop themes.
+* Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop plugins.
+* Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `www/`.
+* Use the `www/wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
 
 #### Shared Filesystem
 
