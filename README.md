@@ -34,7 +34,7 @@ Multiple projects can be developed at once in the same environment.
 
 #### Shared Filesystem
 
-One of great strengths of VVV's Vagrant powered solution is the local filesystem being shared with the virtualized server. `vagrant-local`'s `config`, `database` and `www` directories are shared with the virtualized server. This allows you to work, for example, in vagrant-local/www/wordpress-default in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/svr/www/`, you'll immediately see those changes in your local system.
+One of great strengths of VVV's Vagrant powered solution is the local filesystem being shared with the virtualized server. VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server. This allows you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/svr/www/`, you'll immediately see those changes in your local file system.
 
 #### VVV as a Scaffold
 
