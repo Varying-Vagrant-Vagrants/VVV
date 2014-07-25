@@ -46,19 +46,6 @@ Entirely different server configurations can be created by modifying the files i
 
 One of great strengths of VVV's Vagrant powered solution is the local filesystem being shared with the virtualized server. VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server. This allows you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/svr/www/`, you'll immediately see those changes in your local file system.
 
-### The Future of Varying Vagrant Vagrants
-
-Immediate goals for VVV include:
-
-* Continue to work towards a stable state of software and configuration included in the default provisioning.
-* Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
-
-## Getting Started
-
-### What is Vagrant?
-
-
-
 ### The First Vagrant Up
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
@@ -194,6 +181,13 @@ A bunch of stuff!
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
+
+### The Future of Varying Vagrant Vagrants
+
+Immediate goals for VVV include:
+
+* Continue to work towards a stable state of software and configuration included in the default provisioning.
+* Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
 
 ### History
 
