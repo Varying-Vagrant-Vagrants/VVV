@@ -116,6 +116,12 @@ Now that you're up and running, start poking around and modifying things.
 
 The network configuration picks an IP of 192.168.50.4. It could cause conflicts on your existing network if you *are* on a 192.168.50.x subnet already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
 
+VVV relies on the stability of both Vagrant and Virtualbox. These caveats are common to Vagrant environments and are worth noting:
+* If the directory VVV is inside of is moved once provisioned (`vagrant-local`), it may break.
+    * If `vagrant destroy` is used before moving, this should be fine.
+* If Virtualbox is uninstalled, VVV will break.
+* If Vagrant is uninstalled, VVV will break.
+
 ### Credentials and Such
 
 All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
@@ -182,14 +188,6 @@ A bunch of stuff!
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
-
-### Common Caveats
-
-These are common to Vagrant environments and worth noting:
-* If the directory VVV is inside of is moved once provisioned, it may break.
-    * If `vagrant destroy` is used before moving, this should be fine.
-* If Virtualbox is uninstalled, VVV will break.
-* If Vagrant is uninstalled, VVV will break.
 
 ### History
 
