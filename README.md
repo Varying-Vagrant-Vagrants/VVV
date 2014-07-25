@@ -21,6 +21,12 @@ The default WordPress configurations provided by VVV create an environment ideal
 
 ### How to Use Varying Vagrant Vagrants
 
+#### Software Requirements
+
+VVV requires recent versions of both Vagrant and VirtualBox to be installed.
+
+[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](http://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
+
 #### VVV as a MAMP/XAMPP Replacement
 
 VVV is ready to use. Download or clone VVV and then type `vagrant up` to automatically build a virtualized Ubuntu server on your computer containing everything needed to develop a WordPress theme or plugin.
@@ -51,7 +57,7 @@ Immediate goals for VVV include:
 
 ### What is Vagrant?
 
-[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](http://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
+
 
 ### The First Vagrant Up
 
