@@ -38,13 +38,13 @@ Multiple projects can be developed at once in the same environment.
 * Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `www/`.
 * Use the `www/wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
 
+VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server.
+
+These shared directories allow you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/svr/www/`, you'll immediately see those changes in your local file system.
+
 #### VVV as a Scaffold
 
 Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts. Check this project out and use it as a base to learn about server provisioning or change everything to make it your own.
-
-#### Shared Filesystem
-
-One of great strengths of VVV's Vagrant powered solution is the local filesystem being shared with the virtualized server. VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server. This allows you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/svr/www/`, you'll immediately see those changes in your local file system.
 
 ### The First Vagrant Up
 
