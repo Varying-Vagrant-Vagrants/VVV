@@ -184,7 +184,7 @@ Vagrant.configure("2") do |config|
   # Always start MySQL on boot, even when not running the full provisioner
   # (run: "always" support added in 1.6.0)
   if vagrant_version >= "1.6.0"
-    config.vm.provision :shell, inline: "sudo service mysql start", run: "always"
+    config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
   end
 
   # Vagrant Triggers
