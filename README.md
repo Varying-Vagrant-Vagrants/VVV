@@ -13,54 +13,46 @@ VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blo
 
 ### The Purpose of Varying Vagrant Vagrants
 
-The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable way for developers to begin working in a development environment that matches a production environment as closely as possible.
+The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable development environment that matches a typical production environment.
 
-The default server configuration provisioned by VVV is intended to match a common configuration for working with high traffic WordPress sites.
+The default server configuration provisioned by VVV matches a common configuration for working with high traffic WordPress sites.
 
-The default WordPress configurations provided by VVV are intended to create an environment ideal for developing themes and plugins as well as for contributing to WordPress core.
+The default WordPress configurations provided by VVV create an environment ideal for developing themes and plugins as well as for [contributing to WordPress core](http://make.wordpress.org/core/).
 
 ### How to Use Varying Vagrant Vagrants
 
+#### Software Requirements
+
+VVV requires recent versions of both Vagrant and VirtualBox to be installed.
+
+[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](http://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
+
 #### VVV as a MAMP/XAMPP Replacement
 
-VVV is ready to use as is. Download or clone VVV and then type `vagrant up` to automatically build a sandboxed Ubuntu server on your computer containing everything needed to contribute to WordPress core or develop a WordPress theme or plugin.
+Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagrant up` to automatically build a virtualized Ubuntu server on your computer containing everything needed to develop a WordPress theme or plugin. See our section on [The First Vagrant Up](#the-first-vagrant-up) for detailed instructions.
 
 Multiple projects can be developed at once in the same environment.
 
-* Use the `wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
-* Use `wp-content/themes` in either the `wordpress-default` or `wordpress-trunk` directories to develop multiple themes.
-* Use `wp-content/plugins` in either the `wordpress-default` or `wordpress-trunk` directories to develop plugins.
-* Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `/srv/www/`.
+* Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop themes.
+* Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop plugins.
+* Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `www/`.
+* Use the `www/wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
+
+VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server.
+
+These shared directories allow you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/svr/www/`, you'll immediately see those changes in your local file system.
 
 #### VVV as a Scaffold
 
-Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts.
-
-It is not necessary to track the changes made to the main repository. Feel free to check this project out and then change everything to make it your own.
-
-### The Future of Varying Vagrant Vagrants
-
-Immediate goals for VVV include:
-
-* Continue to work towards a stable state of software and configuration included in the default provisioning.
-* Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
-
-## Getting Started
-
-### What is Vagrant?
-
-[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](http://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine that is sandboxed away from your local environment.
+Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts. Check this project out and use it as a base to learn about server provisioning or change everything to make it your own.
 
 ### The First Vagrant Up
 
-1. Start with any operating system.
-1. Install [VirtualBox 4.3.10](https://www.virtualbox.org/wiki/Downloads)
-    * VVV is completely compatible with earlier versions of VirtualBox, so 4.2.22 or earlier would be just fine. Do note that Vagrant had specific issues with 4.2.16. Going as far back as 4.2.10 will likely be of no issue.
-    * VVV itself leans in the 4.3.x direction in the master branch to stay ahead of the curve.
-1. Install [Vagrant 1.5.4](http://www.vagrantup.com/downloads.html)
+1. Start with any local operating system such as Mac OS X, Linux, or Windows.
+1. Install [VirtualBox 4.3.x](https://www.virtualbox.org/wiki/Downloads)
+1. Install [Vagrant 1.6.x](http://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
-    * ***Note:*** If VirtualBox 4.3.x is installed, Vagrant 1.3.5 or later is required.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
     * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the provisioned VVV domains in your browser.
     * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
@@ -69,9 +61,9 @@ Immediate goals for VVV include:
     * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/Varying-Vagrant-Vagrants/VVV.git vagrant-local`
-    * OR download and extract the repository master [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/master.zip)
-    * OR grab a [stable release](https://github.com/varying-vagrant-vagrants/vvv/releases) if you'd like some extra comfort.
-1. Change into the new directory with `cd vagrant-local`
+    * OR download and extract the repository master [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/master.zip) to a `vagrant-local` directory on your computer.
+    * OR download and extract a [stable release](https://github.com/varying-vagrant-vagrants/vvv/releases) zip file if you'd like some extra comfort.
+1. In a command prompt, change into the new directory with `cd vagrant-local`
 1. Start the Vagrant environment with `vagrant up`
     * Be patient as the magic happens. This could take a while on the first run as your local machine downloads the required files.
     * Watch as the script ends, as an administrator or `su` ***password may be required*** to properly modify the hosts file on your local machine.
@@ -112,7 +104,13 @@ Now that you're up and running, start poking around and modifying things.
 
 #### Caveats
 
-The network configuration picks an IP of 192.168.50.4. This works if you are *not* on the 192.168.50.x sub domain, it could cause conflicts on your existing network if you *are* on a 192.168.50.x sub domain already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
+The network configuration picks an IP of 192.168.50.4. It could cause conflicts on your existing network if you *are* on a 192.168.50.x subnet already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
+
+VVV relies on the stability of both Vagrant and Virtualbox. These caveats are common to Vagrant environments and are worth noting:
+* If the directory VVV is inside of is moved once provisioned (`vagrant-local`), it may break.
+    * If `vagrant destroy` is used before moving, this should be fine.
+* If Virtualbox is uninstalled, VVV will break.
+* If Vagrant is uninstalled, VVV will break.
 
 ### Credentials and Such
 
@@ -121,14 +119,20 @@ All database usernames and passwords for WordPress installations included by def
 All WordPress admin usernames and passwords for WordPress installations included by default are `admin` and `password`.
 
 #### WordPress Stable
+* LOCAL PATH: vagrant-local/www/wordpress-default
+* VM PATH: /srv/www/wordpress-default
 * URL: `http://local.wordpress.dev`
 * DB Name: `wordpress_default`
 
 #### WordPress Trunk
+* LOCAL PATH: vagrant-local/www/wordpress-trunk
+* VM PATH: /srv/www/wordpress-trunk
 * URL: `http://local.wordpress-trunk.dev`
 * DB Name: `wordpress_trunk`
 
 #### WordPress Develop
+* LOCAL PATH: vagrant-local/www/wordpress-develop
+* VM PATH: /srv/www/wordpress-develop
 * /src URL: `http://src.wordpress-develop.dev`
 * /build URL: `http://build.wordpress-develop.dev`
 * DB Name: `wordpress_develop`
@@ -175,13 +179,12 @@ A bunch of stuff!
 * The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
-### Common Caveats
+### The Future of Varying Vagrant Vagrants
 
-These are common to Vagrant environments and worth noting:
-* If the directory VVV is inside of is moved once provisioned, it may break.
-    * If `vagrant destroy` is used before moving, this should be fine.
-* If Virtualbox is uninstalled, VVV will break.
-* If Vagrant is uninstalled, VVV will break.
+Immediate goals for VVV include:
+
+* Continue to work towards a stable state of software and configuration included in the default provisioning.
+* Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
 
 ### History
 
