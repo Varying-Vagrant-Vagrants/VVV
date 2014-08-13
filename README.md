@@ -40,7 +40,7 @@ Multiple projects can be developed at once in the same environment.
 
 VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server.
 
-These shared directories allow you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/svr/www/`, you'll immediately see those changes in your local file system.
+These shared directories allow you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/srv/www/`, you'll immediately see those changes in your local file system.
 
 #### VVV as a Scaffold
 
