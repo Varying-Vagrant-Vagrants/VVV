@@ -48,7 +48,12 @@ Vagrant.configure("2") do |config|
     paths = Dir[File.join(vagrant_dir, 'www', '**', 'vvv-hosts')]
 
     # Parse the vvv-hosts files in each of the found paths.
-    hosts = paths.map { |path| File.readlines(path).grep(/\A[^#]/).map(&:chomp) }.flatten.uniq
+    hosts = paths.map do |path|
+      # Read line from file and remove line breaks
+      lines = File.readlines(path).map(&:chomp)
+      # Filter out comments starting with "#"
+      lines.grep(/\A[^#]/)
+    end.flatten.uniq # Remove duplicate entries
 
     # Pass the hosts to the hostsupdater plugin so it can perform it's magic.
     config.hostsupdater.aliases = hosts
