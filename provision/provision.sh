@@ -448,6 +448,8 @@ if [[ $ping_result == *bytes?from* ]]; then
 			echo -e "\nSkipped updating PHPCS WordPress Coding Standards since not on master branch"
 		fi
 	fi
+	# Install the standards in PHPCS
+	phpcs --config-set installed_paths /srv/www/phpcs/CodeSniffer/Standards/WordPress/
 
 	# Install and configure the latest stable version of WordPress
 	if [[ ! -d /srv/www/wordpress-default ]]; then
