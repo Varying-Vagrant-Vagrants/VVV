@@ -449,7 +449,8 @@ if [[ $ping_result == *bytes?from* ]]; then
 		fi
 	fi
 	# Install the standards in PHPCS
-	phpcs --config-set installed_paths /srv/www/phpcs/CodeSniffer/Standards/WordPress/
+	/srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
+	/srv/www/phpcs/scripts/phpcs -i
 
 	# Install and configure the latest stable version of WordPress
 	if [[ ! -d /srv/www/wordpress-default ]]; then
