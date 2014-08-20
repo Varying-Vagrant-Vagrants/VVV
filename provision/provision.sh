@@ -437,7 +437,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# Sniffs WordPress Coding Standards
 	if [[ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]]; then
-		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
+		echo -e "\nDownloading WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
 		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
 		cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
