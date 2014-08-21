@@ -35,3 +35,6 @@ eval "$(grunt --completion=bash)"
 
 # add autocomplete for wp-cli
 . /srv/www/wp-cli/utils/wp-completion.bash
+
+# PHPCS path
+export PATH="$PATH:/srv/www/phpcs/scripts/"

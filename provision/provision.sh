@@ -437,7 +437,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# Sniffs WordPress Coding Standards
 	if [[ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]]; then
-		echo -e "\nDownloading WordPress-Coding-Standards, snifs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
+		echo -e "\nDownloading WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
 		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
 		cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
@@ -448,6 +448,9 @@ if [[ $ping_result == *bytes?from* ]]; then
 			echo -e "\nSkipped updating PHPCS WordPress Coding Standards since not on master branch"
 		fi
 	fi
+	# Install the standards in PHPCS
+	/srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
+	/srv/www/phpcs/scripts/phpcs -i
 
 	# Install and configure the latest stable version of WordPress
 	if [[ ! -d /srv/www/wordpress-default ]]; then
