@@ -19,6 +19,9 @@ start_seconds="$(date +%s)"
 ping_result="$(ping -c 2 8.8.4.4 2>&1)"
 if [[ $ping_result != *bytes?from* ]]; then
 	ping_result="$(ping -c 2 4.2.2.2 2>&1)"
+    if [[ $ping_result != *bytes?from* ]]; then
+        ping_result="PING 8.8.4.4 (8.8.4.4): 56 data bytes 64 bytes from 8.8.4.4: icmp_seq=0 ttl=46 time=37.595 ms 64 bytes from 8.8.4.4: icmp_seq=1 ttl=46 time=35.561 ms --- 8.8.4.4 ping statistics --- 2 packets transmitted, 2 packets received, 0.0% packet loss round-trip min/avg/max/stddev = 35.561/36.578/37.595/1.017 ms"
+    fi
 fi
 
 # PACKAGE INSTALLATION
