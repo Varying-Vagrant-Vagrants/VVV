@@ -33,9 +33,8 @@ if [[ $ping_result != *bytes?from* ]]; then
             "Darwin" ) dgw=`netstat -nr | grep default | awk {'print $2'}` ;;
             # MINGW32* )  ?
         esac
-        echo $dgw
         ping_result="$(ping -c 2 $dgw 2>&1)"
-        echo $ping_result
+        
         if [[ $ping_result != *bytes?from* ]]; then
             # Windows CJK users will inevitably come down here.
             # Can you abandon VVV? Too good to miss!
