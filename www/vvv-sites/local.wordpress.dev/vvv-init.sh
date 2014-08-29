@@ -6,6 +6,10 @@ mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS wordpress_defaul
 mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_default.* TO wp@localhost IDENTIFIED BY 'wp';"
 echo -e "\n DB operations done.\n\n"
 
+# Nginx Logs
+touch /srv/log/wordpress-default/error.log
+touch /srv/log/wordpress-default/access.log
+
 # Install and configure the latest stable version of WordPress
 if [[ ! -d /srv/www/wordpress-default ]]; then
 	echo "Downloading WordPress Stable, see http://wordpress.org/"
