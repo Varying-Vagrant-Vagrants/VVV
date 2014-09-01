@@ -198,10 +198,10 @@ if [[ $ping_result == *bytes?from* ]]; then
 		chmod +x composer.phar
 		mv composer.phar /usr/local/bin/composer
 
-		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:4.0.*
+		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:4.2.*
 		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/php-invoker:1.1.*
-		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update mockery/mockery:0.8.*
-		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update d11wtq/boris:v1.0.2
+		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update mockery/mockery:0.9.*
+		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update d11wtq/boris:v1.0.8
 		COMPOSER_HOME=/usr/local/src/composer composer -q global config bin-dir /usr/local/bin
 		COMPOSER_HOME=/usr/local/src/composer composer global update
 	fi
