@@ -578,12 +578,6 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
 done
 
-# RESTART SERVICES AGAIN
-#
-# Make sure the services we expect to be running are running.
-echo -e "\nRestart Nginx..."
-service nginx restart
-
 # Parse any vvv-hosts file located in www/ or subdirectories of www/
 # for domains to be added to the virtual machine's host file so that it is
 # self aware.
