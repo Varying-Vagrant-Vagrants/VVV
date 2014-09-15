@@ -142,13 +142,16 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# Before running `apt-get update`, we should add the public keys for
 		# the packages that we are installing from non standard sources via
 		# our appended apt source.list
-
+	
 		# Nginx.org nginx key ABF5BD827BD9BF62
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
+		# switching to apt-key so that we can use port 80 to get through a restrictive proxy
+		# gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
+		apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key ABF5BD827BD9BF62
 		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
 
 		# Launchpad nodejs key C7917B12
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
+		# gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
+		apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C7917B12
 		gpg -q -a --export  C7917B12  | apt-key add -
 
 		# update all of the package references before installing anything
