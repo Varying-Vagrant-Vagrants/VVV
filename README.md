@@ -1,6 +1,6 @@
 # Varying Vagrant Vagrants
 
-Varying Vagrant Vagrants is an evolving [Vagrant](http://vagrantup.com) configuration focused on [WordPress](http://wordpress.org) development.
+Varying Vagrant Vagrants is an open source [Vagrant](http://vagrantup.com) configuration focused on [WordPress](http://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
 
 VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
@@ -186,7 +186,11 @@ Immediate goals for VVV include:
 * Continue to work towards a stable state of software and configuration included in the default provisioning.
 * Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
 
-### History
+## Copyright / License
+
+VVV is copyright (c) 2014, the contributors of the VVV project under the [MIT License](https://github.com/varying-vagrant-vagrants/vvv/blog/master/LICENSE].
+
+## History
 
 VVV has come a long way since it was first [launched as Varying Vagrant Vagrants](http://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/) in December of 2012. Initially introduced as an exploration of workflow for immediate project needs at [10up](http://10up.com), VVV caught speed quickly as more and more of the team was introduced. During an internal [10up developer summit](http://10up.com/blog/10up-2013-developer-summit/) in March of 2013, Vagrant as a tool was a highlight and more developers made the conversion.
 
