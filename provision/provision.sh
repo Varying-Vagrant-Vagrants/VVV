@@ -144,12 +144,12 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# our appended apt source.list
 
 		# Nginx.org nginx key ABF5BD827BD9BF62
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
-		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
+		gpg -q --no-tty --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-key ABF5BD827BD9BF62 >/dev/null 2>&1
+		gpg -q --no-tty --batch -a --export ABF5BD827BD9BF62 | apt-key add -
 
 		# Launchpad nodejs key C7917B12
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
-		gpg -q -a --export  C7917B12  | apt-key add -
+		gpg -q --no-tty --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C7917B12 >/dev/null 2>&1
+		gpg -q --no-tty --batch -a --export  C7917B12  | apt-key add -
 
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."
