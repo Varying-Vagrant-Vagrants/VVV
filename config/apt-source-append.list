@@ -1,9 +1,9 @@
 # Additional sources will be added here to help control the
 # versions of various packages that are installed
 
-# Provides Nginx stable
-deb http://nginx.org/packages/ubuntu/ trusty nginx
-deb-src http://nginx.org/packages/ubuntu/ trusty nginx
+# Provides Nginx mainline
+deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
+deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 
 # Provides Node.js
 deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main
