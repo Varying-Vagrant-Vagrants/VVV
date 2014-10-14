@@ -33,7 +33,7 @@ do mysqldump -uroot "$dbname" > /srv/database/backups/"$dbname".sql && echo "Dat
 
 		# mysqldump -uroot "$dbname" > /srv/www/"$dbnamenew"/"$dbname".sql 
 		mysqldump -uroot "$dbname" > /srv/www/"$dbname"/"$dbname".sql 
-		echo -e "${green}Database for $dbnamenew backed up to site folder...${endColor}"
+		echo -e "${green}Database for $dbname backed up to site folder...${endColor}"
 		echo # blank line for formatting
 
 	else
