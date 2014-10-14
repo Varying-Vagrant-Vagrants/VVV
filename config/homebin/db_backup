@@ -1,5 +1,10 @@
 #!/bin/bash
 #
+# Define some color variables for formatting success & errors
+green='\e[0;32m'
+red='\e[1;31m'
+endColor='\e[0m'
+#
 # Create individual SQL files for each database. These files
 # are imported automatically during an initial provision if
 # the databases exist per the import-sql.sh process.
@@ -9,4 +14,35 @@ grep -v -F "performance_schema" | \
 grep -v -F "mysql" | \
 grep -v -F "test" | \
 grep -v -F "Database" | \
-while read dbname; do mysqldump -uroot "$dbname" > /srv/database/backups/"$dbname".sql && echo "Database $dbname backed up..."; done
+while read dbname;
+
+do mysqldump -uroot "$dbname" > /srv/database/backups/"$dbname".sql && echo "Database $dbname backed up...";
+
+	# Begin creating backup to local site folder so 
+	# databases can easily be included in version control.
+
+	# Uncomment line 26 to rename default wordpress 
+	# folder paths to match their respective folders.
+	# dbname=${dbname/_/-}; 
+
+	DIRECTORY="/srv/www/$dbname/"
+
+	# if default directory exists from ./vvv site generator
+	# place a second backup in that folder.
+	if [ -d "$DIRECTORY" ]; then
+
+		# mysqldump -uroot "$dbname" > /srv/www/"$dbnamenew"/"$dbname".sql 
+		mysqldump -uroot "$dbname" > /srv/www/"$dbname"/"$dbname".sql 
+		echo -e "${green}Database for $dbnamenew backed up to site folder...${endColor}"
+		echo # blank line for formatting
+
+	else
+
+		# if default folder doesn't exist, skip this
+		# install and show a notice.
+		echo -e "${red}Unxepected directory. Site folder database backup skipped. Consider a manual backup for $dbname${endColor}"
+		echo # blank line for formatting
+
+	fi
+
+done
