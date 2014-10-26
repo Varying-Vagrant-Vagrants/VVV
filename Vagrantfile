@@ -128,7 +128,7 @@ Vagrant.configure("2") do |config|
     # those are specific to Virtualbox. The folder is therefore overridden with one that
     # uses corresponding Parallels mount options.
     config.vm.provider :parallels do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "share" ]
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
     end
   end
 
@@ -161,7 +161,7 @@ Vagrant.configure("2") do |config|
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
-    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => [ "share" ]
+    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
   end
 
   # Customfile - POSSIBLY UNSTABLE
