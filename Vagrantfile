@@ -207,4 +207,12 @@ Vagrant.configure("2") do |config|
       run "vagrant ssh -c 'vagrant_destroy'"
     end
   end
+
+  if ENV["VVV_DEBUG"] === 'serverspec' then
+    if Vagrant.has_plugin?("vagrant-serverspec")
+      config.vm.provision :serverspec do |spec|
+        spec.pattern = 'spec/default/*_spec.rb'
+      end
+    end
+  end
 end
