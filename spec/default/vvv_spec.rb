@@ -53,8 +53,8 @@ wps = %w{
   build.wordpress-develop.dev
 }
 wps.each do |wp|
-  describe command("wget -q #{Shellwords.shellescape(wp)} -O - | head -100 | grep generator") do
-    it { should return_stdout /<meta name="generator" content="WordPress .*"/i }
+  describe command("wget -q http://#{Shellwords.shellescape(wp)}/ -O - | head -100 | grep generator") do
+    its(:stdout) { should match /<meta name="generator" content="WordPress .*"/i }
   end
 end
 
