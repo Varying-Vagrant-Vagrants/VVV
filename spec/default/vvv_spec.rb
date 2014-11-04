@@ -47,13 +47,13 @@ end
 
 # All WordPresses should be running
 wps = %w{
-  local.wordpress.dev
-  local.wordpress-trunk.dev
-  src.wordpress-develop.dev
-  build.wordpress-develop.dev
+  http://local.wordpress.dev/
+  http://local.wordpress-trunk.dev/
+  http://src.wordpress-develop.dev/
+  http://build.wordpress-develop.dev/
 }
 wps.each do |wp|
-  describe command("wget -q http://#{Shellwords.shellescape(wp)}/ -O - | head -100 | grep generator") do
+  describe command("wget -q #{Shellwords.shellescape(wp)} -O - | head -100 | grep generator") do
     its(:stdout) { should match /<meta name="generator" content="WordPress .*"/i }
   end
 end
