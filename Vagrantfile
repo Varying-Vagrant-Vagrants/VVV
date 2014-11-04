@@ -207,5 +207,4 @@ Vagrant.configure("2") do |config|
       run "vagrant ssh -c 'vagrant_destroy'"
     end
   end
-
 end
