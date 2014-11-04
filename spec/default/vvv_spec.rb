@@ -52,6 +52,7 @@ wps = %w{
   http://src.wordpress-develop.dev/
   http://build.wordpress-develop.dev/
 }
+
 wps.each do |wp|
   describe command("wget -q #{Shellwords.shellescape(wp)} -O - | head -100 | grep generator") do
     its(:stdout) { should match /<meta name="generator" content="WordPress .*"/i }
@@ -74,5 +75,25 @@ commands.each do |cmd|
   describe command(cmd) do
     let(:disable_sudo) { true } # It should be vagrant user
     its(:exit_status) { should eq 0 }
+  end
+end
+
+
+# Other Web Apps should be running
+
+apps = {
+    'http://vvv.dev/' => /<title>Varying Vagrant Vagrants Dashboard<\/title>/,
+    'http://vvv.dev/database-admin/' => /<title>phpMyAdmin<\/title>/,
+    'http://vvv.dev/memcached-admin/' => /<title>phpMemcachedAdmin .*<\/title>/,
+    'http://vvv.dev/opcache-status/opcache.php' => /<title>PHP .* with OpCache .*<\/title>/,
+    'http://vvv.dev/memcached-admin/' => /<title>phpMemcachedAdmin .*<\/title>/,
+    'http://vvv.dev/memcached-admin/' => /<title>phpMemcachedAdmin .*<\/title>/,
+    'http://vvv.dev/webgrind/' => /<title>webgrind<\/title>/,
+    'http://vvv.dev/phpinfo/' => /<title>phpinfo\(\)<\/title>/,
+}
+
+apps.each do |url, content|
+  describe command("wget -q #{Shellwords.shellescape(url)} -O - | grep '<title>'") do
+    its(:stdout) { should match content }
   end
 end
