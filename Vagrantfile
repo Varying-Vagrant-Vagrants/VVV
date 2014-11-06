@@ -68,6 +68,7 @@ Vagrant.configure("2") do |config|
 
     # Pass the final hosts array to the hostsupdate plugin so it can perform magic.
     config.hostsupdater.aliases = hosts
+    config.hostsupdater.remove_on_suspend = true
 
   end
 
