@@ -192,7 +192,6 @@ if [[ $ping_result == *bytes?from* ]]; then
 		curl -sS https://getcomposer.org/installer | php
 		chmod +x composer.phar
 		mv composer.phar /usr/local/bin/composer
-		COMPOSER_HOME=/usr/local/src/composer composer -q global config bin-dir /usr/local/bin
 	fi
 
 	# Update both Composer and any global packages. Updates to Composer are direct from
