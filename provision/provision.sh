@@ -258,6 +258,7 @@ rsync -rvzh --delete /srv/config/nginx-config/sites/ /etc/nginx/custom-sites/
 
 echo " * /srv/config/nginx-config/nginx.conf           -> /etc/nginx/nginx.conf"
 echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-common.conf"
+echo " * /srv/config/nginx-config/nginx-drupal-common.conf -> /etc/nginx/nginx-drupal-common.conf"
 echo " * /srv/config/nginx-config/sites/               -> /etc/nginx/custom-sites"
 
 # Copy php-fpm configuration from local
@@ -580,6 +581,11 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 	DIR="$(dirname $SITE_CONFIG_FILE)"
 	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
 done
+
+# Install Terminus 
+git clone git@github.com:pantheon-systems/cli.git /usr/local/terminus
+chmod -R +x /usr/local/terminus/scripts/ 
+/usr/local/terminus/scripts/build.sh && cp /usr/local/terminus/builds/terminus /usr/bin/terminus && chmod +x /usr/bin/terminus
 
 # RESTART SERVICES AGAIN
 #
