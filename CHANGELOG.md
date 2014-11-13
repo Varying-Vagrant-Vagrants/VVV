@@ -10,6 +10,7 @@
 * ***Possible Breaking:*** Ubuntu has been upgraded from 12.04 LTS to 14.04 LTS. We have also moved from 32bit to 64bit.
 	* A full `vagrant destroy` is recommended for best results.
 	* A new box will be downloaded for the base virtual machine. If you'd like to free space, remove the old box with `vagrant box remove precise32`. Running `vagrant box list` will show you all base VMs on your local machine.
+	* With a new operating system comes a new RSA key. If you are connecting via SSH through an application that relies on your machines `known_hosts` file, you will need to clear the old key for 192.168.50.4. [See #365](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/365)
 * WordPress: Add `develop_git` to convert the default SVN checkout to Git.
 * PHP: Update to PHP 5.5.x
 * PHP: Remove php-apc and apc.ini. Enable built in opcache.
