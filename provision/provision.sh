@@ -225,14 +225,14 @@ if [[ $ping_result == *bytes?from* ]]; then
 		npm install -g grunt-sass &>/dev/null
 		npm install -g grunt-cssjanus &>/dev/null
 	fi
-	
-	# graphviz
+
+	# Graphviz
 	#
-	# Set up a symlink between the graphviz path defined in the default Webgrind
-	# config and the apt-get install path
-	echo "Adding graphviz symlink for Webgrind"
+	# Set up a symlink between the Graphviz path defined in the default Webgrind
+	# config and actual path.
+	echo "Adding graphviz symlink for Webgrind..."
 	ln -sf /usr/bin/dot /usr/local/bin/dot
-	
+
 else
 	echo -e "\nNo network connection available, skipping package installation"
 fi
