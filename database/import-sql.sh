@@ -29,7 +29,7 @@ if [ $sql_count != 0 ]
 then
 	for file in $( ls *.sql )
 	do
-	pre_dot=${file%%.*}
+	pre_dot=${file%%.sql}
 	mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
 	db_exist=`mysql -u root -proot --skip-column-names -e "$mysql_cmd"`
 	if [ "$?" != "0" ]
