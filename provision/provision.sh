@@ -145,13 +145,14 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# the packages that we are installing from non standard sources via
 		# our appended apt source.list
 
-		# Nginx.org nginx key ABF5BD827BD9BF62
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
-		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
+		# Retrieve the Nginx signing key from nginx.org
+		echo "Applying Nginx signing key..."
+		wget --quiet http://nginx.org/keys/nginx_signing.key -O- | apt-key add -
 
-		# Launchpad nodejs key C7917B12
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
-		gpg -q -a --export  C7917B12  | apt-key add -
+		# Apply the nodejs assigning key
+		echo "Applying nodejs signing key..."
+		apt-key adv --quiet --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C7917B12 2>&1 | grep "gpg:"
+		apt-key export C7917B12 | apt-key add -
 
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."
