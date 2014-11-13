@@ -81,10 +81,16 @@ Vagrant.configure("2") do |config|
   # If you are running more than one VM through VirtualBox, different subnets should be used
   # for those as well. This includes other Vagrant boxes.
   config.vm.network :private_network, ip: "192.168.50.4"
-  
-  # if you need to have an external IP, you need to uncomment this line and update the ip and bridge adapter name
-  # you can get both of IP class and the adapter name by running `vboxmanage list bridgedifs` into a a terminal (on host system)
-  # config.vm.network :public_network, :bridge => 'Realtek PCIe GBE Family Controller #2', ip: "192.168.1.82"
+
+  # External IP Address (example)
+  #
+  # To enable outside access to the virtual machine, a line similar to the following is
+  # required. Look for the IP address and adapter name in VirtualBox or by running
+  # `vboxmanage list bridgedifs` in a terminal on the host system. The common adapter name
+  # in OSX is `en0: Wi-Fi (AirPort)`. You will likely find a variety similar to the example
+  # below on Windows hosts.
+  #
+  # config.vm.network :public_network, :bridge => 'Realtek PCIe GBE Family Controller #2', ip: '192.168.1.82'
 
   # Drive mapping
   #
