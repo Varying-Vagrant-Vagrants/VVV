@@ -146,6 +146,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# our appended apt source.list
 
 		# Retrieve the Nginx signing key from nginx.org
+		echo "Applying Nginx signing key..."
 		wget --quiet http://nginx.org/keys/nginx_signing.key -O- | apt-key add -
 
 		# Launchpad nodejs key C7917B12
