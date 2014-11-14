@@ -48,8 +48,14 @@ Vagrant.configure("2") do |config|
 
     # Capture the paths to all vvv-hosts files under the www/ directory.
     paths = []
-    Dir.glob(vagrant_dir + '/www/**/vvv-hosts').each do |path|
-      paths << path
+    if Dir.exists?(vagrant_dir + '/site-www')
+        Dir.glob(vagrant_dir + '/site-www/**/vvv-hosts').each do |path|
+          paths << path
+        end
+    else
+        Dir.glob(vagrant_dir + '/www/**/vvv-hosts').each do |path|
+          paths << path
+        end
     end
 
     # Parse through the vvv-hosts files in each of the found paths and put the hosts

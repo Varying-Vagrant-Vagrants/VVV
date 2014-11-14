@@ -19,6 +19,11 @@
 /config/homebin/vagrant_suspend_custom
 /config/homebin/vagrant_destroy_custom
 
+# Ignore custom directories.
+/site-config
+/site-database
+/site-www
+
 # No need to share individual site configs with each other
 /config/nginx-config/sites/*.conf
 
