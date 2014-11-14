@@ -11,6 +11,21 @@
 # end of this script.
 start_seconds="$(date +%s)"
 
+if [ -e /vagrant/site-config ]; then
+	echo "rsyncing site-config to config..."
+	/usr/bin/rsync -avz /vagrant/site-config/ /srv/config/
+fi
+
+if [ -e /vagrant/site-database ]; then
+	echo "rsyncing site-database to database..."
+	/usr/bin/rsync -avz /vagrant/site-database/ /srv/database/
+fi
+
+if [ -e /vagrant/site-www ]; then
+	echo "rsyncing site-www to www..."
+	/usr/bin/rsync -avz /vagrant/site-www/ /srv/www/
+fi
+
 # Network Detection
 #
 # Make an HTTP request to google.com to determine if outside access is available
