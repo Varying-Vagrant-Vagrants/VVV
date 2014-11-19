@@ -81,6 +81,7 @@ Vagrant.configure("2") do |config|
   # If you are running more than one VM through VirtualBox, different subnets should be used
   # for those as well. This includes other Vagrant boxes.
   config.vm.network :private_network, ip: "192.168.50.4"
+  config.vm.network :forwarded_port, guest: 80, host: 8484
 
   # Drive mapping
   #
