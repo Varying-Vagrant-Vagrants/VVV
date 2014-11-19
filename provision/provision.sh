@@ -11,14 +11,17 @@
 # end of this script.
 start_seconds="$(date +%s)"
 
-# Capture a basic ping result to Google's primary DNS server to determine if
-# outside access is available to us. If this does not reply after 2 attempts,
-# we try one of Level3's DNS servers as well. If neither IP replies to a ping,
-# then we'll skip a few things further in provisioning rather than creating a
-# bunch of errors.
-ping_result="$(ping -c 2 8.8.4.4 2>&1)"
-if [[ $ping_result != *bytes?from* ]]; then
-	ping_result="$(ping -c 2 4.2.2.2 2>&1)"
+# Network Detection
+#
+# Make an HTTP request to google.com to determine if outside access is available
+# to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
+# skip a few things further in provisioning rather than create a bunch of errors.
+if [[ "$(wget --tries=3 --timeout=5 --spider http://google.com 2>&1 | grep 'connected')" ]]; then
+	echo "Network connection detected..."
+	ping_result="Connected"
+else
+	echo "Network connection not detected. Unable to reach google.com..."
+	ping_result="Not Connected"
 fi
 
 # PACKAGE INSTALLATION
@@ -128,12 +131,14 @@ echo mysql-server mysql-server/root_password_again password root | debconf-set-s
 # able to send mail, even with postfix installed.
 echo postfix postfix/main_mailer_type select Internet Site | debconf-set-selections
 echo postfix postfix/mailname string vvv | debconf-set-selections
+# Disable ipv6 as some ISPs/mail servers have problems with it
+echo "inet_protocols = ipv4" >> /etc/postfix/main.cf
 
 # Provide our custom apt sources before running `apt-get update`
 ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
 echo "Linked custom apt sources"
 
-if [[ $ping_result == *bytes?from* ]]; then
+if [[ $ping_result == "Connected" ]]; then
 	# If there are any packages to be installed in the apt_package_list array,
 	# then we'll run `apt-get update` and then `apt-get install` to proceed.
 	if [[ ${#apt_package_install_list[@]} = 0 ]]; then
@@ -143,13 +148,14 @@ if [[ $ping_result == *bytes?from* ]]; then
 		# the packages that we are installing from non standard sources via
 		# our appended apt source.list
 
-		# Nginx.org nginx key ABF5BD827BD9BF62
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key ABF5BD827BD9BF62
-		gpg -q -a --export ABF5BD827BD9BF62 | apt-key add -
+		# Retrieve the Nginx signing key from nginx.org
+		echo "Applying Nginx signing key..."
+		wget --quiet http://nginx.org/keys/nginx_signing.key -O- | apt-key add -
 
-		# Launchpad nodejs key C7917B12
-		gpg -q --keyserver keyserver.ubuntu.com --recv-key C7917B12
-		gpg -q -a --export  C7917B12  | apt-key add -
+		# Apply the nodejs assigning key
+		echo "Applying nodejs signing key..."
+		apt-key adv --quiet --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C7917B12 2>&1 | grep "gpg:"
+		apt-key export C7917B12 | apt-key add -
 
 		# update all of the package references before installing anything
 		echo "Running apt-get update..."
@@ -186,19 +192,20 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 	# COMPOSER
 	#
-	# Install or Update Composer based on current state. Updates are direct from
-	# master branch on GitHub repository.
-	if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
-		echo "Updating Composer..."
-		COMPOSER_HOME=/usr/local/src/composer composer self-update
-		COMPOSER_HOME=/usr/local/src/composer composer global update
-	else
+	# Install Composer if it is not yet available.
+	if [[ ! -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
 		echo "Installing Composer..."
 		curl -sS https://getcomposer.org/installer | php
 		chmod +x composer.phar
 		mv composer.phar /usr/local/bin/composer
+	fi
 
-		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:4.2.*
+	# Update both Composer and any global packages. Updates to Composer are direct from
+	# the master branch on its GitHub repository.
+	if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
+		echo "Updating Composer..."
+		COMPOSER_HOME=/usr/local/src/composer composer self-update
+		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:4.3.*
 		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/php-invoker:1.1.*
 		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update mockery/mockery:0.9.*
 		COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update d11wtq/boris:v1.0.8
@@ -221,6 +228,14 @@ if [[ $ping_result == *bytes?from* ]]; then
 		npm install -g grunt-sass &>/dev/null
 		npm install -g grunt-cssjanus &>/dev/null
 	fi
+
+	# Graphviz
+	#
+	# Set up a symlink between the Graphviz path defined in the default Webgrind
+	# config and actual path.
+	echo "Adding graphviz symlink for Webgrind..."
+	ln -sf /usr/bin/dot /usr/local/bin/dot
+
 else
 	echo -e "\nNo network connection available, skipping package installation"
 fi
@@ -369,7 +384,7 @@ if (( $EUID == 0 )); then
     wp() { sudo -EH -u vagrant -- wp "$@"; }
 fi
 
-if [[ $ping_result == *bytes?from* ]]; then
+if [[ $ping_result == "Connected" ]]; then
 	# WP-CLI Install
 	if [[ ! -d /srv/www/wp-cli ]]; then
 		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
@@ -539,11 +554,11 @@ PHP
 
 	# Download phpMyAdmin
 	if [[ ! -d /srv/www/default/database-admin ]]; then
-		echo "Downloading phpMyAdmin 4.1.14..."
+		echo "Downloading phpMyAdmin 4.2.11..."
 		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.1.14/phpMyAdmin-4.1.14-all-languages.tar.gz/download'
+		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.11/phpMyAdmin-4.2.11-all-languages.tar.gz/download'
 		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.1.14-all-languages database-admin
+		mv phpMyAdmin-4.2.11-all-languages database-admin
 		rm phpmyadmin.tar.gz
 	else
 		echo "PHPMyAdmin already installed."
@@ -611,7 +626,7 @@ done
 end_seconds="$(date +%s)"
 echo "-----------------------------"
 echo "Provisioning complete in "$(expr $end_seconds - $start_seconds)" seconds"
-if [[ $ping_result == *bytes?from* ]]; then
+if [[ $ping_result == "Connected" ]]; then
 	echo "External network connection established, packages up to date."
 else
 	echo "No external network available. Package installation and maintenance skipped."
