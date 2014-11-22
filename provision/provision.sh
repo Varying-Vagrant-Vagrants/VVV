@@ -480,6 +480,7 @@ if [[ $ping_result == "Connected" ]]; then
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
+		echo "Installing WordPress Stable..."
 		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		echo "Updating WordPress Stable..."
@@ -505,6 +506,7 @@ PHP
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
+		echo "Installing WordPress trunk..."
 		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		echo "Updating WordPress trunk..."
@@ -527,9 +529,11 @@ if ( 'build' == basename( dirname( __FILE__) ) ) {
 
 define( 'WP_DEBUG', true );
 PHP
+		echo "Installing WordPress develop..."
 		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
 		cd /srv/www/wordpress-develop/
+		echo "Running npm install for the first time, this may take several minutes..."
 		npm install &>/dev/null
 	else
 		echo "Updating WordPress develop..."
@@ -543,6 +547,7 @@ PHP
 				echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
 			fi
 		fi
+		echo "Updating npm packages..."
 		npm install &>/dev/null
 	fi
 
