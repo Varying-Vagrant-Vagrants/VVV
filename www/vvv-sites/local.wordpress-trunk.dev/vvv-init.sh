@@ -7,6 +7,7 @@ mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_trunk.* TO w
 echo -e "\n DB operations done.\n\n"
 
 # Nginx Logs
+mkdir /srv/log/wordpress-trunk
 touch /srv/log/wordpress-trunk/error.log
 touch /srv/log/wordpress-trunk/access.log
 
