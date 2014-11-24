@@ -27,9 +27,11 @@ define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
 
 define( 'WP_DEBUG', true );
 PHP
+	echo "Installing WordPress develop..."
 	wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root
 	cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
 	cd /srv/www/wordpress-develop/
+	echo "Running npm install for the first time, this may take several minutes..."
 	npm install &>/dev/null
 else
 	echo "Updating WordPress develop..."
@@ -43,6 +45,7 @@ else
 			echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
 		fi
 	fi
+	echo "Updating npm packages..."
 	npm install &>/dev/null
 fi
 

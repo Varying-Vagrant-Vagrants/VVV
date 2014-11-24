@@ -23,6 +23,7 @@ if [[ ! -d /srv/www/wordpress-default ]]; then
 	wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php --allow-root <<PHP
 define( 'WP_DEBUG', true );
 PHP
+	echo "Installing WordPress Stable..."
 	wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root
 else
 	echo "Updating WordPress Stable..."

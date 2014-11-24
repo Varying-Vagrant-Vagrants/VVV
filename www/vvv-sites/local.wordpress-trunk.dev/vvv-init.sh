@@ -19,6 +19,7 @@ if [[ ! -d /srv/www/wordpress-trunk ]]; then
 	wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php --allow-root <<PHP
 define( 'WP_DEBUG', true );
 PHP
+	echo "Installing WordPress trunk..."
 	wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --allow-root
 else
 	echo "Updating WordPress trunk..."
