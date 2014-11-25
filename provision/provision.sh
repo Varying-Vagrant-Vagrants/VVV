@@ -331,6 +331,9 @@ service memcached restart
 
 # Disable PHP Xdebug module by default
 php5dismod xdebug
+
+# Enable PHP mcrypt module by default
+php5enmod mcrypt
 service php5-fpm restart
 
 # If MySQL is installed, go through the various imports and service tasks.
