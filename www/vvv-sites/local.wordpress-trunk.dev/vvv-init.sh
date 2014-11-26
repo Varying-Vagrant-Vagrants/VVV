@@ -7,9 +7,11 @@ mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_trunk.* TO w
 echo -e "\n DB operations done.\n\n"
 
 # Nginx Logs
-mkdir /srv/log/wordpress-trunk
-touch /srv/log/wordpress-trunk/error.log
-touch /srv/log/wordpress-trunk/access.log
+if [[ ! -d /srv/log/wordpress-trunk ]]; then
+	mkdir /srv/log/wordpress-trunk
+	touch /srv/log/wordpress-trunk/error.log
+	touch /srv/log/wordpress-trunk/access.log
+fi
 
 # Checkout, install and configure WordPress trunk via core.svn
 if [[ ! -d /srv/www/wordpress-trunk ]]; then

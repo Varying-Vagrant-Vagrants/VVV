@@ -9,9 +9,11 @@ mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_unit_tests.*
 echo -e "\n DB operations done.\n\n"
 
 # Nginx Logs
-mkdir /srv/log/wordpress-develop
-touch /srv/log/wordpress-develop/error.log
-touch /srv/log/wordpress-develop/access.log
+if [[ ! -d /srv/log/wordpress-develop ]]; then
+	mkdir /srv/log/wordpress-develop
+	touch /srv/log/wordpress-develop/error.log
+	touch /srv/log/wordpress-develop/access.log
+fi
 
 # Checkout, install and configure WordPress trunk via develop.svn
 if [[ ! -d /srv/www/wordpress-develop ]]; then
