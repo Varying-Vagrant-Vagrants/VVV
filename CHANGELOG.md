@@ -1,6 +1,7 @@
 # Varying Vagrant Vagrants Changelog
 
 ## 1.2-working
+* VVV is now [MIT Licensed](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/LICENSE).
 * ***Possible Breaking:*** By default, database files are no longer mapped to a local location.
 	* A full `vagrant destroy` and the removal of MySQL data from `{vvv-dir}/database/data/` is recommended.
 	* If database files already exist from an earlier vesion of VVV, data will continue to be mapped locally until removed.
@@ -19,13 +20,14 @@
 * PHP: Start tracking custom opcache.ini file.
 * PHP: Update to PHPUnit 4.0.x
 * PHP: Install XDebug PECL extension directly, rather than via apt.
-* phpMyAdmin: Update to 4.1.14
+* phpMyAdmin: Update to 4.2.13.1
 * WP-Cli: Add support for autocomplete.
 * VVV Dashboard: Add [Opcache Status](https://github.com/rlerdorf/opcache-status) for opcache monitoring.
 * Bash: Allow for a custom `bash_prompt` file in `config/`
 * NodeJS: Use recommended PPAs to install
 * NodeJS: Self update NPM during provisioning
 * Logs: Map a shared directory for logs, start storing `php_errors.log`
+* Nginx: Install using the mainline repository, currently 1.7.x.
 
 ## 1.1
 * Transition to [Varying Vagrant Vagrants organization](https://github.com/Varying-Vagrant-Vagrants).

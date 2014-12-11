@@ -58,8 +58,9 @@ Entirely different server configurations can be created by modifying the files i
     * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the provisioned VVV domains in your browser.
     * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
 1. Install the [vagrant-triggers](https://github.com/emyl/vagrant-triggers) plugin with `vagrant plugin install vagrant-triggers`
-    * Note: This step is not a requirement. It does allow for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
+    * Note: This step is not a requirement. When installed, it allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
     * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
+    * If vagrant-triggers is not installed, VVV will not provide automated database backups.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/Varying-Vagrant-Vagrants/VVV.git vagrant-local`
     * OR download and extract the repository master [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/master.zip) to a `vagrant-local` directory on your computer.
@@ -112,6 +113,8 @@ VVV relies on the stability of both Vagrant and Virtualbox. These caveats are co
     * If `vagrant destroy` is used before moving, this should be fine.
 * If Virtualbox is uninstalled, VVV will break.
 * If Vagrant is uninstalled, VVV will break.
+
+The default memory allotment for the VVV virtual machine is 1024MB. If you would like to raise or lower this value to better match your system requirements, a [guide to changing memory size](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Customising-your-Vagrant's-attributes-and-parameters) is in the wiki.
 
 ### Credentials and Such
 
@@ -179,6 +182,14 @@ A bunch of stuff!
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
+
+### Helfpul Extensions
+
+Supporting init scripts during provisioning allows for some great extensions of VVV core.
+
+* [VVV Site Wizard](https://github.com/aliso/vvv-site-wizard) "automates setting up new WordPress sites in Varying Vagrant Vagrants."
+* [HHVVVM](https://github.com/johnjamesjacoby/hhvvvm) is an HHVM configuration for VVV.
+* The [WordPress Meta Environment](https://github.com/iandunn/wordpress-meta-environment) is a "collection of scripts that provision the official WordPress.org websites into a Varying Vagrant Vagrants installation."
 
 ### The Future of Varying Vagrant Vagrants
 
