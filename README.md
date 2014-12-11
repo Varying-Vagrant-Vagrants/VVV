@@ -113,6 +113,8 @@ VVV relies on the stability of both Vagrant and Virtualbox. These caveats are co
 * If Virtualbox is uninstalled, VVV will break.
 * If Vagrant is uninstalled, VVV will break.
 
+The default memory allotment for the VVV virtual machine is 1024MB. If you would like to raise or lower this value to better match your system requirements, a [guide to changing memory size](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Customising-your-Vagrant's-attributes-and-parameters) is in the wiki.
+
 ### Credentials and Such
 
 All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
