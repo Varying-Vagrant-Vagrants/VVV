@@ -395,7 +395,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# WP-CLI Install
 	if [[ ! -d /srv/www/wp-cli ]]; then
 		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
-		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
+		git clone https://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
 		composer install
 	else
@@ -436,7 +436,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# xdebug profiler)
 	if [[ ! -d /srv/www/default/webgrind ]]; then
 		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
-		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
+		git clone https://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
 	else
 		echo -e "\nUpdating webgrind..."
 		cd /srv/www/default/webgrind
