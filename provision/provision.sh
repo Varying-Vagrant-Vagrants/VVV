@@ -446,7 +446,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
 	if [[ ! -d /srv/www/phpcs ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
-		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
+		git clone -b master https://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
 	else
 		cd /srv/www/phpcs
 		if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
@@ -460,7 +460,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# Sniffs WordPress Coding Standards
 	if [[ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]]; then
 		echo -e "\nDownloading WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
-		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
+		git clone -b master https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
 		cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
 		if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
