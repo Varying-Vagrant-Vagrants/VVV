@@ -60,6 +60,7 @@ Entirely different server configurations can be created by modifying the files i
 1. Install the [vagrant-triggers](https://github.com/emyl/vagrant-triggers) plugin with `vagrant plugin install vagrant-triggers`
     * Note: This step is not a requirement. It does allow for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
     * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
+    * If you are using the [VVV-Site-Wizard](https://github.com/aliso/vvv-site-wizard), this will also create a database backup to your projects folder within the `/www/` directory so you can easily version control your database along with your project files. To take advanatage of this feature without using the site wizard, your project folder and database should have the same name. Eg. `{vvv}/www/fooproject/` and `fooproject.sql`.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/Varying-Vagrant-Vagrants/VVV.git vagrant-local`
     * OR download and extract the repository master [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/master.zip) to a `vagrant-local` directory on your computer.
