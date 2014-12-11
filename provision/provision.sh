@@ -82,6 +82,9 @@ apt_package_check_list=(
 	colordiff
 	postfix
 
+	# ntp service to keep clock current
+	ntp
+
 	# Req'd for i18n tools
 	gettext
 
