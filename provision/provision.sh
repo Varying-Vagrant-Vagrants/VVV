@@ -82,6 +82,9 @@ apt_package_check_list=(
 	colordiff
 	postfix
 
+	# ntp service to keep clock current
+	ntp
+
 	# Req'd for i18n tools
 	gettext
 
@@ -331,6 +334,10 @@ service memcached restart
 
 # Disable PHP Xdebug module by default
 php5dismod xdebug
+
+# Enable PHP mcrypt module by default
+php5enmod mcrypt
+
 service php5-fpm restart
 
 # If MySQL is installed, go through the various imports and service tasks.
@@ -388,7 +395,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# WP-CLI Install
 	if [[ ! -d /srv/www/wp-cli ]]; then
 		echo -e "\nDownloading wp-cli, see http://wp-cli.org"
-		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
+		git clone https://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
 		cd /srv/www/wp-cli
 		composer install
 	else
@@ -429,7 +436,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# xdebug profiler)
 	if [[ ! -d /srv/www/default/webgrind ]]; then
 		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
-		git clone git://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
+		git clone https://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
 	else
 		echo -e "\nUpdating webgrind..."
 		cd /srv/www/default/webgrind
@@ -439,7 +446,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
 	if [[ ! -d /srv/www/phpcs ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
-		git clone git://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
+		git clone -b master https://github.com/squizlabs/PHP_CodeSniffer.git /srv/www/phpcs
 	else
 		cd /srv/www/phpcs
 		if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
@@ -453,7 +460,7 @@ if [[ $ping_result == "Connected" ]]; then
 	# Sniffs WordPress Coding Standards
 	if [[ ! -d /srv/www/phpcs/CodeSniffer/Standards/WordPress ]]; then
 		echo -e "\nDownloading WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
-		git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
+		git clone -b master https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /srv/www/phpcs/CodeSniffer/Standards/WordPress
 	else
 		cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
 		if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
@@ -480,6 +487,7 @@ if [[ $ping_result == "Connected" ]]; then
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
+		echo "Installing WordPress Stable..."
 		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		echo "Updating WordPress Stable..."
@@ -505,6 +513,7 @@ PHP
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 PHP
+		echo "Installing WordPress trunk..."
 		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	else
 		echo "Updating WordPress trunk..."
@@ -527,9 +536,11 @@ if ( 'build' == basename( dirname( __FILE__) ) ) {
 
 define( 'WP_DEBUG', true );
 PHP
+		echo "Installing WordPress develop..."
 		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
 		cd /srv/www/wordpress-develop/
+		echo "Running npm install for the first time, this may take several minutes..."
 		npm install &>/dev/null
 	else
 		echo "Updating WordPress develop..."
@@ -543,6 +554,7 @@ PHP
 				echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
 			fi
 		fi
+		echo "Updating npm packages..."
 		npm install &>/dev/null
 	fi
 
@@ -554,11 +566,11 @@ PHP
 
 	# Download phpMyAdmin
 	if [[ ! -d /srv/www/default/database-admin ]]; then
-		echo "Downloading phpMyAdmin 4.2.11..."
+		echo "Downloading phpMyAdmin 4.2.13.1..."
 		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.11/phpMyAdmin-4.2.11-all-languages.tar.gz/download'
+		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.13.1/phpMyAdmin-4.2.13.1-all-languages.tar.gz/download'
 		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.2.11-all-languages database-admin
+		mv phpMyAdmin-4.2.13.1-all-languages database-admin
 		rm phpmyadmin.tar.gz
 	else
 		echo "PHPMyAdmin already installed."
@@ -595,12 +607,6 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 	DIR="$(dirname $SITE_CONFIG_FILE)"
 	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
 done
-
-# RESTART SERVICES AGAIN
-#
-# Make sure the services we expect to be running are running.
-echo -e "\nRestart Nginx..."
-service nginx restart
 
 # Parse any vvv-hosts file located in www/ or subdirectories of www/
 # for domains to be added to the virtual machine's host file so that it is
