@@ -18,8 +18,8 @@ Vagrant.configure("2") do |config|
 
   # Forward Agent
   #
-  # Enable agent forwarding on vagrant ssh commands. This allows you to use identities
-  # established on the host machine inside the guest. See the manual for ssh-add
+  # Enable agent forwarding on vagrant ssh commands. This allows you to use ssh keys
+  # on your host machine inside the guest. See the manual for `ssh-add`.
   config.ssh.forward_agent = true
 
   # Default Ubuntu Box
