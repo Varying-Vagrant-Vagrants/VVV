@@ -247,7 +247,7 @@ fi
 if [[ ! -e /etc/nginx/server.key ]]; then
 	echo "Generate Nginx server private key..."
 	vvvgenrsa="$(openssl genrsa -out /etc/nginx/server.key 2048 2>&1)"
-	echo $vvvgenrsa
+	echo "$vvvgenrsa"
 fi
 if [[ ! -e /etc/nginx/server.csr ]]; then
 	echo "Generate Certificate Signing Request (CSR)..."
@@ -256,7 +256,7 @@ fi
 if [[ ! -e /etc/nginx/server.crt ]]; then
 	echo "Sign the certificate using the above private key and CSR..."
 	vvvsigncert="$(openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt 2>&1)"
-	echo $vvvsigncert
+	echo "$vvvsigncert"
 fi
 
 echo -e "\nSetup configuration files..."
@@ -590,7 +590,7 @@ find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-init.sh'); do
 	DIR="$(dirname $SITE_CONFIG_FILE)"
 	(
-		cd $DIR
+		cd "$DIR"
 		source vvv-init.sh
 	)
 done
@@ -600,12 +600,12 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 	DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
 	DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
 	DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
-	DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< $SITE_CONFIG_FILE | cut -c1-32).conf"
+	DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< "$SITE_CONFIG_FILE" | cut -c1-32).conf"
 	# We allow the replacement of the {vvv_path_to_folder} token with
 	# whatever you want, allowing flexible placement of the site folder
 	# while still having an Nginx config which works.
 	DIR="$(dirname $SITE_CONFIG_FILE)"
-	sed "s#{vvv_path_to_folder}#$DIR#" $SITE_CONFIG_FILE > /etc/nginx/custom-sites/$DEST_CONFIG_FILE
+	sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > /etc/nginx/custom-sites/"$DEST_CONFIG_FILE"
 done
 
 # Parse any vvv-hosts file located in www/ or subdirectories of www/
@@ -626,7 +626,7 @@ while read hostfile; do
 				echo " * Added $line from $hostfile"
 			fi
 		fi
-	done < $hostfile
+	done < "$hostfile"
 done
 
 end_seconds="$(date +%s)"
