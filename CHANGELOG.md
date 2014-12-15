@@ -1,10 +1,10 @@
 # Varying Vagrant Vagrants Changelog
 
-## 1.2-working
+## 1.2.0
 * VVV is now [MIT Licensed](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/LICENSE).
 * ***Possible Breaking:*** By default, database files are no longer mapped to a local location.
 	* A full `vagrant destroy` and the removal of MySQL data from `{vvv-dir}/database/data/` is recommended.
-	* If database files already exist from an earlier vesion of VVV, data will continue to be mapped locally until removed.
+	* If database files already exist from an earlier version of VVV, data will continue to be mapped locally until removed.
 	* Database data will continue to exist on the virtual machine through `vagrant halt` and `vagrant suspend`.
 	* Database data will no longer exist on the virtual machine after `vagrant destroy`.
 	* A `db_backup` script is provided by default that creates local backups of each database on halt, suspend, and destroy if the vagrant-triggers plugin is installed.
