@@ -542,6 +542,8 @@ PHP
 		cd /srv/www/wordpress-develop/
 		echo "Running npm install for the first time, this may take several minutes..."
 		npm install &>/dev/null
+		echo "Running grunt for the first time, this may take a minute..."
+		grunt
 	else
 		echo "Updating WordPress develop..."
 		cd /srv/www/wordpress-develop/
@@ -556,11 +558,7 @@ PHP
 		fi
 		echo "Updating npm packages..."
 		npm install &>/dev/null
-	fi
-
-	if [[ ! -d /srv/www/wordpress-develop/build ]]; then
-		echo "Initializing grunt in WordPress develop... This may take a few moments."
-		cd /srv/www/wordpress-develop/
+		echo "Updating WordPress develop /build folder with grunt... This may take a minute."
 		grunt
 	fi
 
