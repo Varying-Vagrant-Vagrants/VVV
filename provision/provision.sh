@@ -518,7 +518,7 @@ PHP
 	else
 		echo "Updating WordPress trunk..."
 		cd /srv/www/wordpress-trunk
-		svn up --ignore-externals
+		svn up
 	fi
 
 	# Checkout, install and configure WordPress trunk via develop.svn
