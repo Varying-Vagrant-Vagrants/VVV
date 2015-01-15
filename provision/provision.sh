@@ -386,9 +386,11 @@ else
 	echo -e "\nMySQL is not installed. No databases imported."
 fi
 
-# Run wp-cli as vagrant user
+# Run wp-cli, tar, and npm as `vagrant` user instead of `root`
 if (( $EUID == 0 )); then
     wp() { sudo -EH -u vagrant -- wp "$@"; }
+    tar() { sudo -EH -u vagrant -- tar "$@"; }
+    npm() { sudo -EH -u vagrant -- npm "$@"; }
 fi
 
 if [[ $ping_result == "Connected" ]]; then
