@@ -1,6 +1,11 @@
 # Varying Vagrant Vagrants Changelog
 
-## 1.2.0
+## In Progress
+
+* ***New:*** Add support for Parallels as a provider. (#479)
+* MySQL: Enable `innodb_file_per_table`. (#537)
+
+## 1.2.0 (December 14, 2014)
 * VVV is now [MIT Licensed](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/LICENSE).
 * ***Possible Breaking:*** By default, database files are no longer mapped to a local location.
 	* A full `vagrant destroy` and the removal of MySQL data from `{vvv-dir}/database/data/` is recommended.
