@@ -189,6 +189,7 @@ A bunch of stuff!
 Supporting init scripts during provisioning allows for some great extensions of VVV core.
 
 * [VVV Site Wizard](https://github.com/aliso/vvv-site-wizard) "automates setting up new WordPress sites in Varying Vagrant Vagrants."
+* [Variable VV](https://github.com/bradp/vv) automates setting up new sites, setting up deployments, and more.
 * [HHVVVM](https://github.com/johnjamesjacoby/hhvvvm) is an HHVM configuration for VVV.
 * The [WordPress Meta Environment](https://github.com/iandunn/wordpress-meta-environment) is a "collection of scripts that provision the official WordPress.org websites into a Varying Vagrant Vagrants installation."
 
