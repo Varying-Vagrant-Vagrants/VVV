@@ -583,7 +583,7 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
 done
 
 # Install Terminus 
-git clone git@github.com:pantheon-systems/cli.git /usr/local/terminus
+[ ! -d /usr/local/terminus ] && git clone https://github.com/pantheon-systems/cli.git /usr/local/terminus
 chmod -R +x /usr/local/terminus/scripts/ 
 /usr/local/terminus/scripts/build.sh && cp /usr/local/terminus/builds/terminus /usr/bin/terminus && chmod +x /usr/bin/terminus
 
