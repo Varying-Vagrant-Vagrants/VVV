@@ -409,42 +409,6 @@ if [[ $ping_result == "Connected" ]]; then
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
-	# Download and extract phpMemcachedAdmin to provide a dashboard view and
-	# admin interface to the goings on of memcached when running
-	if [[ ! -d /srv/www/default/memcached-admin ]]; then
-		echo -e "\nDownloading phpMemcachedAdmin, see https://code.google.com/p/phpmemcacheadmin/"
-		cd /srv/www/default
-		wget -q -O phpmemcachedadmin.tar.gz 'https://phpmemcacheadmin.googlecode.com/files/phpMemcachedAdmin-1.2.2-r262.tar.gz'
-		mkdir memcached-admin
-		tar -xf phpmemcachedadmin.tar.gz --directory memcached-admin
-		rm phpmemcachedadmin.tar.gz
-	else
-		echo "phpMemcachedAdmin already installed."
-	fi
-
-	# Checkout Opcache Status to provide a dashboard for viewing statistics
-	# about PHP's built in opcache.
-	if [[ ! -d /srv/www/default/opcache-status ]]; then
-		echo -e "\nDownloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
-		cd /srv/www/default
-		git clone https://github.com/rlerdorf/opcache-status.git opcache-status
-	else
-		echo -e "\nUpdating Opcache Status"
-		cd /srv/www/default/opcache-status
-		git pull --rebase origin master
-	fi
-
-	# Webgrind install (for viewing callgrind/cachegrind files produced by
-	# xdebug profiler)
-	if [[ ! -d /srv/www/default/webgrind ]]; then
-		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
-		git clone https://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
-	else
-		echo -e "\nUpdating webgrind..."
-		cd /srv/www/default/webgrind
-		git pull --rebase origin master
-	fi
-
 	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
 	if [[ ! -d /srv/www/phpcs ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
@@ -491,7 +455,7 @@ define( 'WP_DEBUG', true );
 PHP
 		echo "Installing WordPress Stable..."
 		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
+else
 		echo "Updating WordPress Stable..."
 		cd /srv/www/wordpress-default
 		wp core upgrade
@@ -565,19 +529,6 @@ PHP
 		cd /srv/www/wordpress-develop/
 		grunt
 	fi
-
-	# Download phpMyAdmin
-	if [[ ! -d /srv/www/default/database-admin ]]; then
-		echo "Downloading phpMyAdmin 4.2.13.1..."
-		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.13.1/phpMyAdmin-4.2.13.1-all-languages.tar.gz/download'
-		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.2.13.1-all-languages database-admin
-		rm phpmyadmin.tar.gz
-	else
-		echo "PHPMyAdmin already installed."
-	fi
-	cp /srv/config/phpmyadmin-config/config.inc.php /srv/www/default/database-admin/
 else
 	echo -e "\nNo network available, skipping network installations"
 fi

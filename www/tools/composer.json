@@ -1,0 +1,52 @@
+{
+  "name": "Varying-Vagrant-Vagrants/VVV",
+  "description": "Varying Vagrant Vagrants is an evolving Vagrant configuration focused on WordPress development",
+  "version": "0.0.1",
+  "type": "project",
+  "homepage": "https://github.com/Varying-Vagrant-Vagrants/VVV",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Varying-Vagrant-Vagrants Team",
+      "homepage": "https://github.com/Varying-Vagrant-Vagrants/VVV/graphs/contributors"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
+  },
+  "repositories": {
+    "webgrind": {
+      "type": "package",
+      "package": {
+        "name": "jokkedk/webgrind",
+        "version": "master",
+        "dist": {
+          "url": "https://github.com/jokkedk/webgrind/archive/master.zip",
+          "type": "zip"
+        }
+      }
+    },
+    "phpmemcacheadmin": {
+      "type": "package",
+      "package": {
+        "name": "phpmemcacheadmin/phpmemcacheadmin",
+        "version": "1.2.2",
+        "dist": {
+          "url": "http://phpmemcacheadmin.googlecode.com/files/phpMemcachedAdmin-1.2.2-r262.zip",
+          "type": "zip"
+        }
+      }
+    },
+    "phpmyadmin": {
+      "type": "vcs",
+      "url": "https://github.com/wp-cloud/wpc-phpmyadmin"
+    }
+  },
+  "require": {
+    "potsky/pimp-my-log": "~1.7",
+    "rlerdorf/opcache-status": "dev-master",
+    "jokkedk/webgrind": "dev-master",
+    "phpmemcacheadmin/phpmemcacheadmin": "1.2.2",
+    "phpmyadmin/phpmyadmin": "*"
+  }
+}
