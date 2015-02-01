@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
 
   # Configuration options for the VirtualBox provider.
   config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", 1024]
+    v.customize ["modifyvm", :id, "--memory", 512]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
   end
@@ -87,6 +87,7 @@ Vagrant.configure("2") do |config|
   # Vagrant machines, different subnets should be used for each.
   #
   config.vm.network :private_network, ip: "192.168.50.4"
+  config.vm.network :forwarded_port, guest: 80, host: 8484
 
   # Public Network (disabled)
   #
