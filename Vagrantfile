@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
     v.memory = 1024
   end
 
-  # Forward Agent
+  # SSH Agent Forwarding
   #
   # Enable agent forwarding on vagrant ssh commands. This allows you to use ssh keys
   # on your host machine inside the guest. See the manual for `ssh-add`.
