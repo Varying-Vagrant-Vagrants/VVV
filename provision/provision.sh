@@ -172,8 +172,11 @@ if [[ $ping_result == "Connected" ]]; then
 		apt-get clean
 	fi
 
-	# Make sure we have the latest npm version
+	# npm
+	#
+	# Make sure we have the latest npm version and the update checker module
 	npm install -g npm
+	npm install -g npm-check-updates
 
 	# xdebug
 	#
