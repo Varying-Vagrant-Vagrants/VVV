@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
-  # Configurations options for the VirtualBox provider.
+  # Configuration options for the VirtualBox provider.
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 1024]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
