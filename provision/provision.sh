@@ -487,6 +487,12 @@ if [[ $ping_result == "Connected" ]]; then
 		cd /srv/www/wordpress-default
 		echo "Configuring WordPress Stable..."
 		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+// Match any requests made via xip.io.
+if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
+	define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
+	define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
+}
+
 define( 'WP_DEBUG', true );
 PHP
 		echo "Installing WordPress Stable..."
@@ -513,6 +519,12 @@ PHP
 		cd /srv/www/wordpress-trunk
 		echo "Configuring WordPress trunk..."
 		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+// Match any requests made via xip.io.
+if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress-trunk.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
+	define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
+	define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
+}
+
 define( 'WP_DEBUG', true );
 PHP
 		echo "Installing WordPress trunk..."
@@ -530,8 +542,12 @@ PHP
 		cd /srv/www/wordpress-develop/src/
 		echo "Configuring WordPress develop..."
 		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Allow (src|build).wordpress-develop.dev to share the same database
-if ( 'build' == basename( dirname( __FILE__) ) ) {
+// Match any requests made via xip.io.
+if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(src|build)(.wordpress-develop.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
+	define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
+	define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
+} else if ( 'build' === basename( dirname( __FILE__ ) ) ) {
+	// Allow (src|build).wordpress-develop.dev to share the same Database
 	define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
 	define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
 }
