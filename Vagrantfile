@@ -83,15 +83,16 @@ Vagrant.configure("2") do |config|
   # for those as well. This includes other Vagrant boxes.
   config.vm.network :private_network, ip: "192.168.50.4"
 
-  # External IP Address (example)
+  # Public Network (disabled)
   #
-  # To enable outside access to the virtual machine, a line similar to the following is
-  # required. Look for the IP address and adapter name in VirtualBox or by running
-  # `vboxmanage list bridgedifs` in a terminal on the host system. The common adapter name
-  # in OSX is `en0: Wi-Fi (AirPort)`. You will likely find a variety similar to the example
-  # below on Windows hosts.
+  # Using a public network rather than the default private network configuration will allow
+  # access to the guest machine from other devices on the network. By default, enabling this
+  # line will cause the guest machine to use DHCP to determine its IP address. You will also
+  # be prompted to choose a network interface to bridge with during `vagrant up`.
   #
-  # config.vm.network :public_network, :bridge => 'Realtek PCIe GBE Family Controller #2', ip: '192.168.1.82'
+  # Please see VVV documentation for additional details.
+  #
+  # config.vm.network :public_network
 
   # Port Forwarding (disabled)
   #
