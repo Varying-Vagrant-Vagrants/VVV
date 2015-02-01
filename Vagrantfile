@@ -9,14 +9,14 @@ Vagrant.configure("2") do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
-  # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
+  # Configurations options for the VirtualBox provider.
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 1024]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
   end
 
-  # Configuration options for the Parallels Provider
+  # Configuration options for the Parallels provider.
   config.vm.provider :parallels do |v|
     v.update_guest_tools = true
     v.optimize_power_consumption = false
