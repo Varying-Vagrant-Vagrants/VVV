@@ -9,21 +9,21 @@ Vagrant.configure("2") do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
-  # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
+  # Configuration options for the VirtualBox provider.
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 1024]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
   end
 
-  # Configuration options for the Parallels Provider
+  # Configuration options for the Parallels provider.
   config.vm.provider :parallels do |v|
     v.update_guest_tools = true
     v.optimize_power_consumption = false
     v.memory = 1024
   end
 
-  # Forward Agent
+  # SSH Agent Forwarding
   #
   # Enable agent forwarding on vagrant ssh commands. This allows you to use ssh keys
   # on your host machine inside the guest. See the manual for `ssh-add`.
@@ -72,26 +72,45 @@ Vagrant.configure("2") do |config|
     config.hostsupdater.remove_on_suspend = true
   end
 
-  # Default Box IP Address
+  # Private Network (default)
   #
-  # This is the IP address that your host will communicate to the guest through. In the
-  # case of the default `192.168.50.4` that we've provided, VirtualBox will setup another
-  # network adapter on your host machine with the IP `192.168.50.1` as a gateway.
+  # A private network is created by default. This is the IP address through which your
+  # host machine will communicate to the guest. In this default configuration, the virtual
+  # machine will have an IP address of 192.168.50.4 and a virtual network adapter will be
+  # created on your host machine with the IP of 192.168.50.1 as a gateway.
   #
-  # If you are already on a network using the 192.168.50.x subnet, this should be changed.
-  # If you are running more than one VM through VirtualBox, different subnets should be used
-  # for those as well. This includes other Vagrant boxes.
+  # Access to the guest machine is only available to your local host. To provide access to
+  # other devices, a public network should be configured or port forwarding enabled.
+  #
+  # Note: If your existing network is using the 192.168.50.x subnet, this default IP address
+  # should be changed. If more than one VM is running through VirtualBox, including other
+  # Vagrant machines, different subnets should be used for each.
+  #
   config.vm.network :private_network, ip: "192.168.50.4"
 
-  # External IP Address (example)
+  # Public Network (disabled)
   #
-  # To enable outside access to the virtual machine, a line similar to the following is
-  # required. Look for the IP address and adapter name in VirtualBox or by running
-  # `vboxmanage list bridgedifs` in a terminal on the host system. The common adapter name
-  # in OSX is `en0: Wi-Fi (AirPort)`. You will likely find a variety similar to the example
-  # below on Windows hosts.
+  # Using a public network rather than the default private network configuration will allow
+  # access to the guest machine from other devices on the network. By default, enabling this
+  # line will cause the guest machine to use DHCP to determine its IP address. You will also
+  # be prompted to choose a network interface to bridge with during `vagrant up`.
   #
-  # config.vm.network :public_network, :bridge => 'Realtek PCIe GBE Family Controller #2', ip: '192.168.1.82'
+  # Please see VVV and Vagrant documentation for additional details.
+  #
+  # config.vm.network :public_network
+
+  # Port Forwarding (disabled)
+  #
+  # This network configuration works alongside any other network configuration in Vagrantfile
+  # and forwards any requests to port 8080 on the local host machine to port 80 in the guest.
+  #
+  # Port forwarding is a first step to allowing access to outside networks, though additional
+  # configuration will likely be necessary on our host machine or router so that outside
+  # requests will be forwarded from 80 -> 8080 -> 80.
+  #
+  # Please see VVV and Vagrant documentation for additional details.
+  #
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
 
   # Drive mapping
   #
