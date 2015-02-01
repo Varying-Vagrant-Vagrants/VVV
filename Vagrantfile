@@ -74,10 +74,10 @@ Vagrant.configure("2") do |config|
 
   # Private Network (default)
   #
-  # A private network is created by default in VVV. This is the IP address through which your
+  # A private network is created by default. This is the IP address through which your
   # host machine will communicate to the guest. In this default configuration, the virtual
-  # machine will have an IP address of `192.168.50.4` and a virtual network adapter will be
-  # created on your host machine with the IP of `192.168.50.1` as a gateway.
+  # machine will have an IP address of 192.168.50.4 and a virtual network adapter will be
+  # created on your host machine with the IP of 192.168.50.1 as a gateway.
   #
   # Access to the guest machine is only available to your local host. To provide access to
   # other devices, a public network should be configured or port forwarding enabled.
@@ -95,7 +95,7 @@ Vagrant.configure("2") do |config|
   # line will cause the guest machine to use DHCP to determine its IP address. You will also
   # be prompted to choose a network interface to bridge with during `vagrant up`.
   #
-  # Please see VVV documentation for additional details.
+  # Please see VVV and Vagrant documentation for additional details.
   #
   # config.vm.network :public_network
 
@@ -108,7 +108,7 @@ Vagrant.configure("2") do |config|
   # configuration will likely be necessary on our host machine or router so that outside
   # requests will be forwarded from 80 -> 8080 -> 80.
   #
-  # Please see VVV documentation for additional details.
+  # Please see VVV and Vagrant documentation for additional details.
   #
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
