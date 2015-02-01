@@ -93,15 +93,17 @@ Vagrant.configure("2") do |config|
   #
   # config.vm.network :public_network, :bridge => 'Realtek PCIe GBE Family Controller #2', ip: '192.168.1.82'
 
-  # Use Host Machine IP Address
+  # Port Forwarding (disabled)
   #
-  # This network configuration allows the guest to communicate on the host machine's
-  # local IP address on port 8080, e.g. http://localhost/:8080.
-  # Vagrant does require the # host port to be greater than 1024, however
-  # from the command line on the host machine you can port forward traffic from 80 to 8080
-  # $ echo "rdr pass on lo0 inet proto tcp from any to any port 80 -> 127.0.0.1 port 8080" | sudo pfctl -ef -
-  # when done this port forwarding can be removed with
-  # $ sudo pfctl -F all -f /etc/pf.conf
+  # This network configuration works alongside any other network configuration in Vagrantfile
+  # and forwards any requests to port 8080 on the local host machine to port 80 in the guest.
+  #
+  # Port forwarding is a first step to allowing access to outside networks, though additional
+  # configuration will likely be necessary on our host machine or router so that outside
+  # requests will be forwarded from 80 -> 8080 -> 80.
+  #
+  # Please see VVV documentation for additional details.
+  #
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
   # Drive mapping
