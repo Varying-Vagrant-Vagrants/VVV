@@ -210,6 +210,12 @@ if [[ $ping_result == "Connected" ]]; then
 		mv composer.phar /usr/local/bin/composer
 	fi
 
+	if [[ -f /vagrant/provision/github.token ]]; then
+		ghtoken=`cat /vagrant/provision/github.token`
+		composer config --global github-oauth.github.com $ghtoken
+		echo "Your personal GitHub token is set for Composer."
+	fi
+
 	# Update both Composer and any global packages. Updates to Composer are direct from
 	# the master branch on its GitHub repository.
 	if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
