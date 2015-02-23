@@ -477,6 +477,7 @@ if [[ $ping_result == "Connected" ]]; then
 	fi
 	# Install the standards in PHPCS
 	/srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
+	/srv/www/phpcs/scripts/phpcs --config-set default_standard WordPress-Core
 	/srv/www/phpcs/scripts/phpcs -i
 
 	# Install and configure the latest stable version of WordPress
