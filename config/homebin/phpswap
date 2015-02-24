@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+# Allow users to easily switch between PHP versions using PHPbrew
+
+if [ $# -ne 1 ]; then
+ echo "Error:  Missing php version"
+ echo "Usage:  phpswap PHP_VERSION"
+ exit 1
+fi
+
+if ! [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+	echo "Please enter a proper php version number"
+	exit 1
+fi
+
+PHP_VER=$1
+
+BREW_USE=`phpbrew use $PHP_VER`
+if [[ $BREW_USE == *"not exists"* ]]; then
+	# We need to install the 
+	echo "PHP version $PHP_VER not installed. Installing..."
+	phpbrew update
+	VERSION_INSTALL=`phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +imagick +pdo +gd +json +readline +fpm`
+	if [[ $VERSION_INSTALL == *"not found"* ]]; then
+		echo "PHP Version $PHP_VER not found. Exiting."
+		exit 1
+	fi
+	# Yay, it was a valid version. Lets see if it installed/compiled correctly
+	if [ "$?" != "0" ]; then
+		echo "Install/compilation failed for php version $PHP_VER"
+		exit 1
+	fi
+
+	# Switch the PHP version
+	phpbrew use $PHP_VER
+	# Install extensions
+	phpbrew ext install APC
+	phpbrew ext install memcache
+	phpbrew ext install xdebug stable
+
+	# Make the config changes
+	PHPBREW_INSTALL=/opt/phpbrew/php/php-$PHP_VER
+	PHPBREW_EXT=$PHPBREW_INSTALL/lib/php/extensions/
+	PHPBREW_EXT_SUBDIR=`ls $PHPBREW_INSTALL`
+	if [[ -f $PHPBREW_INSTALL/etc/php.ini ]]; then
+		# set mysql to be listening on the right socket
+		sed -i '/\.default_socket/s/$/\/var\/run\/mysqld\/mysqld.sock/' $PHPBREW_INSTALL/etc/php.ini
+		# set the correct php extensions directory
+		sed -ire 's@(extension_dir =)[^=]*$@\1 "'$PHPBREW_EXT/$PHPBREW_EXT_SUBDIR'"@' $PHPBREW_INSTALL/etc/php.ini
+	fi
+	if [[ -f $PHPBREW_INSTALL/etc/php-fpm.conf ]]; then
+		# set php-fpm to be listening on the right socket
+		sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
+	fi
+fi
+
+# Switch the PHP version
+phpbrew use $PHP_VER
+# Enable extensions (excluding xdebug)
+phpbrew ext enable APC
+phpbrew ext enable memcache
+
+echo "Restarting fpm so the changes take effect"
+# Restart phpbrew's fpm
+phpbrew fpm stop; phpbrew fpm start
+echo "PHP version swapped to $PHP_VER"

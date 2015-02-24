@@ -47,6 +47,27 @@ apt_package_check_list=(
   php-pear
   php5-gd
 
+  # PHPBrew
+  build-essential
+  libxslt1-dev
+  re2c
+  libxml2
+  libxml2-dev
+  bison
+  libicu-dev
+  libbz2-dev
+  libreadline-dev
+  libfreetype6
+  libfreetype6-dev
+  libpng12-0
+  libssl-dev
+  libmhash-dev
+  libmcrypt-dev
+  libmhash2
+  libmcrypt4
+  libmagickwand-dev
+  libmagickcore-dev
+
   # nginx is installed as the default web server
   nginx
 
@@ -240,6 +261,29 @@ tools_install() {
   # installation allows us to use a later version. Not specifying a version
   # will load the latest stable.
   pecl install xdebug
+
+  # Install phpbrew and make available systemwide
+  if [[ -f /usr/bin/phpbrew ]]; then
+    echo "phpbrew already installed"
+  else
+    echo "Installing phpbrew"
+    curl -s -L https://github.com/phpbrew/phpbrew/raw/master/phpbrew > /usr/bin/phpbrew && chmod +x /usr/bin/phpbrew && chown vagrant: /usr/bin/phpbrew
+    export PHPBREW_ROOT=/opt/phpbrew; export PHPBREW_HOME=/opt/phpbrew
+    mkdir $PHPBREW_ROOT
+    # Install so available to the whole system
+    phpbrew init
+    PHPBREW_EXP="export PHPBREW_ROOT=$PHPBREW_ROOT"
+    PHPBREW_HME="export PHPBREW_HOME=$PHPBREW_HOME"
+    if [ ! -f $PHPBREW_ROOT/init ]; then touch $PHPBREW_ROOT/init; fi
+    grep -q "$PHPBREW_EXP" $PHPBREW_ROOT/init || echo "$PHPBREW_EXP" >> $PHPBREW_ROOT/init
+    grep -q "$PHPBREW_HME" $PHPBREW_ROOT/init || echo "$PHPBREW_HME" >> $PHPBREW_ROOT/init
+    PHPBREW_BASHRC="source $PHPBREW_ROOT/bashrc"
+    grep -q "$PHPBREW_BASHRC" ~/.bashrc || echo "$PHPBREW_BASHRC" >> ~/.bashrc
+    echo "$PHPBREW_EXP
+$PHPBREW_HME
+source $PHPBREW_ROOT/bashrc" > /etc/profile.d/phpbrew.sh
+    chown -R vagrant: /opt/phpbrew
+  fi
 
   # ack-grep
   #
