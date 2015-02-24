@@ -60,6 +60,24 @@ apt_package_check_list=(
 	php-pear
 	php5-gd
 
+	# PHPBrew
+	build-essential
+	libxslt1-dev
+	re2c
+	libxml2
+	libxml2-dev
+	bison
+	libbz2-dev
+	libreadline-dev
+	libfreetype6
+	libfreetype6-dev
+	libpng12-0
+	libssl-dev
+	libmhash-dev
+	libmcrypt-dev
+	libmhash2
+	libmcrypt4
+
 	# nginx is installed as the default web server
 	nginx
 
@@ -178,12 +196,46 @@ if [[ $ping_result == "Connected" ]]; then
 	npm install -g npm
 	npm install -g npm-check-updates
 
-	# xdebug
+	# phpbrew
 	#
-	# XDebug 2.2.3 is provided with the Ubuntu install by default. The PECL
-	# installation allows us to use a later version. Not specifying a version
-	# will load the latest stable.
-	pecl install xdebug
+	# Install phpbrew and make available systewide
+	if [[ -f /usr/bin/phpbrew ]]; then
+		echo "phpbrew already installed"
+	else
+		echo "Installing phpbrew"
+		curl -s -L https://github.com/phpbrew/phpbrew/raw/master/phpbrew > /usr/bin/phpbrew && chmod +x /usr/bin/phpbrew
+		# Install so available to the whole system
+		phpbrew init
+		PHPBREW_EXP="export PHPBREW_ROOT=/opt/phpbrew"
+		grep -q "$PHPBREW_EXP" ~/.phpbrew/init || echo "$PHPBREW_EXP" >> ~/.phpbrew/init
+		PHPBREW_BASHRC="source ~/.phpbrew/bashrc"
+		grep -q "$PHPBREW_BASHRC" ~/.bashrc || echo "$PHPBREW_BASHRC" >> ~/.bashrc
+		echo "$PHPBREW_EXP
+source /opt/phpbrew/bashrc" > /etc/profile.d/phpbrew
+		# Install PHP 5.3.29
+		PHP_VER=5.3.29
+		phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +imagick +pdo +gd +json +readline +fpm
+		phpbrew switch $PHP_VER
+		phpbrew ext install APC
+		phpbrew ext install memcache
+		# Make the config changes
+		PHPBREW_INSTALL=/opt/phpbrew/php/php-$PHP_VER
+		PHPBREW_EXT=$PHPBREW_INSTALL/lib/php/extensions/
+		PHPBREW_EXT_SUBDIR=`ls $PHPBREW_INSTALL`
+		if [[ -f $PHPBREW_INSTALL/etc/php.ini ]]; then
+			# set mysql to be listening on the right socket
+			sed -i '/\.default_socket/s/$/\/var\/run\/mysqld\/mysqld.sock/' $PHPBREW_INSTALL/etc/php.ini
+			# set the correct php extensions directory
+			sed -ire 's@(extension_dir =)[^=]*$@\1 "'$PHPBREW_EXT/$PHPBREW_EXT_SUBDIR'"@' $PHPBREW_INSTALL/etc/php.ini
+		fi
+		if [[ -f $PHPBREW_INSTALL/etc/php-fpm.conf ]]; then
+			# set php-fpm to be listening on the right socket
+			sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
+		fi
+
+		# Restart phpbrew's fpm
+		phpbrew fpm stop; phpbrew fpm start
+	fi
 
 	# ack-grep
 	#
