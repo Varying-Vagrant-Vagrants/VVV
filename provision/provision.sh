@@ -67,6 +67,7 @@ apt_package_check_list=(
 	libxml2
 	libxml2-dev
 	bison
+	libicu-dev
 	libbz2-dev
 	libreadline-dev
 	libfreetype6
@@ -204,22 +205,33 @@ if [[ $ping_result == "Connected" ]]; then
 	else
 		echo "Installing phpbrew"
 		curl -s -L https://github.com/phpbrew/phpbrew/raw/master/phpbrew > /usr/bin/phpbrew && chmod +x /usr/bin/phpbrew
+		export PHPBREW_ROOT=/opt/phpbrew
+		export PHPBREW_HOME=/opt/phpbrew
+		mkdir $PHPBREW_ROOT
 		# Install so available to the whole system
 		phpbrew init
-		PHPBREW_EXP="export PHPBREW_ROOT=/opt/phpbrew"
-		grep -q "$PHPBREW_EXP" ~/.phpbrew/init || echo "$PHPBREW_EXP" >> ~/.phpbrew/init
-		PHPBREW_BASHRC="source ~/.phpbrew/bashrc"
+		sudo mv ~/.phpbrew $PHPBREW_ROOT
+		PHPBREW_EXP="export PHPBREW_ROOT=$PHPBREW_ROOT"
+		PHPBREW_HME="export PHPBREW_HOME=$PHPBREW_HOME"
+		if [ ! -d $PHPBREW_ROOT/init ]; then touch $PHPBREW_ROOT/init; fi
+		grep -q "$PHPBREW_EXP" $PHPBREW_ROOT/init || echo "$PHPBREW_EXP" >> $PHPBREW_ROOT/init
+		grep -q "$PHPBREW_HME" $PHPBREW_ROOT/init || echo "$PHPBREW_HME" >> $PHPBREW_ROOTinit
+		PHPBREW_BASHRC="source $PHPBREW_ROOT/bashrc"
 		grep -q "$PHPBREW_BASHRC" ~/.bashrc || echo "$PHPBREW_BASHRC" >> ~/.bashrc
 		echo "$PHPBREW_EXP
-source /opt/phpbrew/bashrc" > /etc/profile.d/phpbrew
+$PHPBREW_HME
+source $PHPBREW_ROOT/bashrc" > /etc/profile.d/phpbrew.sh
 		# Install PHP 5.3.29
 		PHP_VER=5.3.29
-		phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +imagick +pdo +gd +json +readline +fpm
+		phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +pdo +gd +json +readline +fpm
+		echo "Switching to PHP Version $PHP_VER"
 		phpbrew switch $PHP_VER
 		phpbrew ext install APC
 		phpbrew ext install memcache
+		phpbrew ext install imagick
+		phpbrew ext install xdebug stable
 		# Make the config changes
-		PHPBREW_INSTALL=/opt/phpbrew/php/php-$PHP_VER
+		PHPBREW_INSTALL=$PHPBREW_ROOT/php/php-$PHP_VER
 		PHPBREW_EXT=$PHPBREW_INSTALL/lib/php/extensions/
 		PHPBREW_EXT_SUBDIR=`ls $PHPBREW_INSTALL`
 		if [[ -f $PHPBREW_INSTALL/etc/php.ini ]]; then
@@ -232,6 +244,7 @@ source /opt/phpbrew/bashrc" > /etc/profile.d/phpbrew
 			# set php-fpm to be listening on the right socket
 			sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
 		fi
+		sudo chown -R root: $PHPBREW_ROOT
 
 		# Restart phpbrew's fpm
 		phpbrew fpm stop; phpbrew fpm start

@@ -41,4 +41,5 @@ export PATH="$PATH:/srv/www/phpcs/scripts/"
 
 # PHPBrew Exports
 export PHPBREW_ROOT=/opt/phpbrew
-source /opt/phpbrew/bashrc
+export PHPBREW_HOME=/opt/phpbrew
+source $PHPBREW_ROOT/bashrc
