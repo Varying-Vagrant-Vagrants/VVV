@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Allow users to easily switch between PHP versions using PHPbrew
+# Allow users to easily switch between PHP versions using PHPBrew
 
 if [ $# -ne 1 ]; then
  echo "Error:  Missing php version"
@@ -8,6 +8,13 @@ if [ $# -ne 1 ]; then
  exit 1
 fi
 
+# Allow users to turn PHPBrew off
+if [[ $1 == "system" ]]; then
+	phpbrew off
+	sudo service php-fpm restart
+fi
+
+# Check for version number
 if ! [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 	echo "Please enter a proper php version number"
 	exit 1
@@ -20,7 +27,7 @@ if [[ $BREW_USE == *"not exists"* ]]; then
 	# We need to install the 
 	echo "PHP version $PHP_VER not installed. Installing..."
 	phpbrew update
-	VERSION_INSTALL=`phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +imagick +pdo +gd +json +readline +fpm`
+	VERSION_INSTALL=`phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +pdo +gd +json +readline +fpm`
 	if [[ $VERSION_INSTALL == *"not found"* ]]; then
 		echo "PHP Version $PHP_VER not found. Exiting."
 		exit 1
@@ -31,12 +38,16 @@ if [[ $BREW_USE == *"not exists"* ]]; then
 		exit 1
 	fi
 
+	# Make sure Ubuntu's php-fpm is stopped
+	sudo service php-fpm stop
+
 	# Switch the PHP version
 	phpbrew use $PHP_VER
 	# Install extensions
 	phpbrew ext install APC
 	phpbrew ext install memcache
 	phpbrew ext install xdebug stable
+	phpbrew ext install imagick 
 
 	# Make the config changes
 	PHPBREW_INSTALL=/opt/phpbrew/php/php-$PHP_VER
@@ -52,6 +63,7 @@ if [[ $BREW_USE == *"not exists"* ]]; then
 		# set php-fpm to be listening on the right socket
 		sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
 	fi
+	sudo chown -R root: /opt/phpbrew
 fi
 
 # Switch the PHP version
@@ -60,7 +72,8 @@ phpbrew use $PHP_VER
 phpbrew ext enable APC
 phpbrew ext enable memcache
 
-echo "Restarting fpm so the changes take effect"
 # Restart phpbrew's fpm
+echo "Restarting fpm so the changes take effect"
 phpbrew fpm stop; phpbrew fpm start
+
 echo "PHP version swapped to $PHP_VER"
