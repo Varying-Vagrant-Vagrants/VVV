@@ -453,6 +453,9 @@ if [[ $ping_result == "Connected" ]]; then
 		composer update --prefer-dist --no-autoloader
 	fi
 
+	# Copy phpMyAdmin config
+	cp /srv/config/phpmyadmin-config/config.inc.php /srv/www/default/vendor/phpmyadmin/phpmyadmin/
+
 	# Install and configure the latest stable version of WordPress
 	if [[ ! -d /srv/www/wordpress-default ]]; then
 		echo "Downloading WordPress Stable, see http://wordpress.org/"
@@ -469,7 +472,7 @@ if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress.)\d{1,3}\
 	define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
 	define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
 }
-	
+
 define( 'WP_DEBUG', true );
 PHP
 		echo "Installing WordPress Stable..."
