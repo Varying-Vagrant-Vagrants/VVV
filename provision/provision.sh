@@ -412,42 +412,6 @@ if [[ $ping_result == "Connected" ]]; then
 	# Link `wp` to the `/usr/local/bin` directory
 	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
 
-	# Download and extract phpMemcachedAdmin to provide a dashboard view and
-	# admin interface to the goings on of memcached when running
-	if [[ ! -d /srv/www/default/memcached-admin ]]; then
-		echo -e "\nDownloading phpMemcachedAdmin, see https://code.google.com/p/phpmemcacheadmin/"
-		cd /srv/www/default
-		wget -q -O phpmemcachedadmin.tar.gz 'https://phpmemcacheadmin.googlecode.com/files/phpMemcachedAdmin-1.2.2-r262.tar.gz'
-		mkdir memcached-admin
-		tar -xf phpmemcachedadmin.tar.gz --directory memcached-admin
-		rm phpmemcachedadmin.tar.gz
-	else
-		echo "phpMemcachedAdmin already installed."
-	fi
-
-	# Checkout Opcache Status to provide a dashboard for viewing statistics
-	# about PHP's built in opcache.
-	if [[ ! -d /srv/www/default/opcache-status ]]; then
-		echo -e "\nDownloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
-		cd /srv/www/default
-		git clone https://github.com/rlerdorf/opcache-status.git opcache-status
-	else
-		echo -e "\nUpdating Opcache Status"
-		cd /srv/www/default/opcache-status
-		git pull --rebase origin master
-	fi
-
-	# Webgrind install (for viewing callgrind/cachegrind files produced by
-	# xdebug profiler)
-	if [[ ! -d /srv/www/default/webgrind ]]; then
-		echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
-		git clone https://github.com/jokkedk/webgrind.git /srv/www/default/webgrind
-	else
-		echo -e "\nUpdating webgrind..."
-		cd /srv/www/default/webgrind
-		git pull --rebase origin master
-	fi
-
 	# PHP_CodeSniffer (for running WordPress-Coding-Standards)
 	if [[ ! -d /srv/www/phpcs ]]; then
 		echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
@@ -475,129 +439,21 @@ if [[ $ping_result == "Connected" ]]; then
 			echo -e "\nSkipped updating PHPCS WordPress Coding Standards since not on master branch"
 		fi
 	fi
+
 	# Install the standards in PHPCS
 	/srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
 	/srv/www/phpcs/scripts/phpcs --config-set default_standard WordPress-Core
 	/srv/www/phpcs/scripts/phpcs -i
 
-	# Install and configure the latest stable version of WordPress
-	if [[ ! -d /srv/www/wordpress-default ]]; then
-		echo "Downloading WordPress Stable, see http://wordpress.org/"
-		cd /srv/www/
-		curl -L -O https://wordpress.org/latest.tar.gz
-		tar -xvf latest.tar.gz
-		mv wordpress wordpress-default
-		rm latest.tar.gz
-		cd /srv/www/wordpress-default
-		echo "Configuring WordPress Stable..."
-		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-	define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-	define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-		echo "Installing WordPress Stable..."
-		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	# Provision tools
+	cd /srv/www/default
+	if [[ ! -f /srv/www/default/composer.lock ]]; then
+		composer install --prefer-dist --no-autoloader
 	else
-		echo "Updating WordPress Stable..."
-		cd /srv/www/wordpress-default
-		wp core upgrade
+		composer update --prefer-dist --no-autoloader
 	fi
 
-	# Test to see if an svn upgrade is needed
-	svn_test=$( svn status -u /srv/www/wordpress-develop/ 2>&1 );
-	if [[ $svn_test == *"svn upgrade"* ]]; then
-		# If the wordpress-develop svn repo needed an upgrade, they probably all need it
-		for repo in $(find /srv/www -maxdepth 5 -type d -name '.svn'); do
-			svn upgrade "${repo/%\.svn/}"
-		done
-	fi;
-
-	# Checkout, install and configure WordPress trunk via core.svn
-	if [[ ! -d /srv/www/wordpress-trunk ]]; then
-		echo "Checking out WordPress trunk from core.svn, see https://core.svn.wordpress.org/trunk"
-		svn checkout https://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
-		cd /srv/www/wordpress-trunk
-		echo "Configuring WordPress trunk..."
-		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress-trunk.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-	define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-	define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-		echo "Installing WordPress trunk..."
-		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
-		echo "Updating WordPress trunk..."
-		cd /srv/www/wordpress-trunk
-		svn up
-	fi
-
-	# Checkout, install and configure WordPress trunk via develop.svn
-	if [[ ! -d /srv/www/wordpress-develop ]]; then
-		echo "Checking out WordPress trunk from develop.svn, see https://develop.svn.wordpress.org/trunk"
-		svn checkout https://develop.svn.wordpress.org/trunk/ /srv/www/wordpress-develop
-		cd /srv/www/wordpress-develop/src/
-		echo "Configuring WordPress develop..."
-		wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(src|build)(.wordpress-develop.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-	define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-	define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-} else if ( 'build' === basename( dirname( __FILE__ ) ) ) {
-	// Allow (src|build).wordpress-develop.dev to share the same Database
-	define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
-	define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-		echo "Installing WordPress develop..."
-		wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-		cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
-		cd /srv/www/wordpress-develop/
-		echo "Running npm install for the first time, this may take several minutes..."
-		npm install &>/dev/null
-	else
-		echo "Updating WordPress develop..."
-		cd /srv/www/wordpress-develop/
-		if [[ -e .svn ]]; then
-			svn up
-		else
-			if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-				git pull --no-edit git://develop.git.wordpress.org/ master
-			else
-				echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
-			fi
-		fi
-		echo "Updating npm packages..."
-		npm install &>/dev/null
-	fi
-
-	if [[ ! -d /srv/www/wordpress-develop/build ]]; then
-		echo "Initializing grunt in WordPress develop... This may take a few moments."
-		cd /srv/www/wordpress-develop/
-		grunt
-	fi
-
-	# Download phpMyAdmin
-	if [[ ! -d /srv/www/default/database-admin ]]; then
-		echo "Downloading phpMyAdmin 4.2.13.1..."
-		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.13.1/phpMyAdmin-4.2.13.1-all-languages.tar.gz/download'
-		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.2.13.1-all-languages database-admin
-		rm phpmyadmin.tar.gz
-	else
-		echo "PHPMyAdmin already installed."
-	fi
-	cp /srv/config/phpmyadmin-config/config.inc.php /srv/www/default/database-admin/
+	
 else
 	echo -e "\nNo network available, skipping network installations"
 fi
