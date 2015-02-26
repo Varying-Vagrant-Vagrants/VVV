@@ -8,38 +8,56 @@ if [ $# -ne 1 ]; then
  exit 1
 fi
 
+# Source the necessary files
+export PHPBREW_ROOT=/opt/phpbrew
+export PHPBREW_HOME=/opt/phpbrew
+. /opt/phpbrew/bashrc
+
 # Allow users to turn PHPBrew off
 if [[ $1 == "system" ]]; then
 	phpbrew off
-	sudo service php-fpm restart
+	sudo service php5-fpm restart
+	echo "$(tput setaf 6)PHP switched back to system version. PHPBrew is off.$(tput sgr 0)"
+	exit 0
 fi
 
 # Check for version number
 if ! [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-	echo "Please enter a proper php version number"
+	echo "$(tput setaf 1)Please enter a proper php version number$(tput sgr 0)"
 	exit 1
 fi
 
 PHP_VER=$1
+BREW_USE=`phpbrew use $PHP_VER | tr -cd [:print:]`
+BREW_VERSION_AVAIL=`phpbrew list | grep $PHP_VER | wc -l`
 
-BREW_USE=`phpbrew use $PHP_VER`
-if [[ $BREW_USE == *"not exists"* ]]; then
-	# We need to install the 
-	echo "PHP version $PHP_VER not installed. Installing..."
+# Check for faulty phpbrew config
+if [[ $BREW_USE == *"should not see this"* ]]; then
+	echo "$(tput setaf 1)ERROR: PHPBrew misconfigured$(tput sgr 0)"
+	echo "$BREW_USE"
+	exit 1
+fi
+
+# Make sure the version exists on the local system
+if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
+	# We need to install the new phpversion
 	phpbrew update
-	VERSION_INSTALL=`phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +pdo +gd +json +readline +fpm`
+	echo "$(tput setaf 6)PHP version $PHP_VER not installed. Building from source/installing... [this may take a few mintues]$(tput sgr 0)"
+	VERSION_INSTALL=$(phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +pdo +gd +json +readline +fpm | tee /dev/tty)
+
+	# Make sure the version was found within PHPBrew
 	if [[ $VERSION_INSTALL == *"not found"* ]]; then
-		echo "PHP Version $PHP_VER not found. Exiting."
+		echo "$(tput setaf 1)PHP Version $PHP_VER not found. Exiting.$(tput sgr 0)"
 		exit 1
 	fi
 	# Yay, it was a valid version. Lets see if it installed/compiled correctly
 	if [ "$?" != "0" ]; then
-		echo "Install/compilation failed for php version $PHP_VER"
+		echo "$(tput setaf 1)Install/compilation failed for php version $PHP_VER$(tput sgr 0)"
 		exit 1
 	fi
 
 	# Make sure Ubuntu's php-fpm is stopped
-	sudo service php-fpm stop
+	sudo service php5-fpm stop
 
 	# Switch the PHP version
 	phpbrew use $PHP_VER
@@ -51,29 +69,39 @@ if [[ $BREW_USE == *"not exists"* ]]; then
 
 	# Make the config changes
 	PHPBREW_INSTALL=/opt/phpbrew/php/php-$PHP_VER
-	PHPBREW_EXT=$PHPBREW_INSTALL/lib/php/extensions/
-	PHPBREW_EXT_SUBDIR=`ls $PHPBREW_INSTALL`
+	PHPBREW_EXT=$PHPBREW_INSTALL/lib/php/extensions
+	PHPBREW_EXT_SUBDIR=`ls $PHPBREW_EXT`
 	if [[ -f $PHPBREW_INSTALL/etc/php.ini ]]; then
 		# set mysql to be listening on the right socket
 		sed -i '/\.default_socket/s/$/\/var\/run\/mysqld\/mysqld.sock/' $PHPBREW_INSTALL/etc/php.ini
 		# set the correct php extensions directory
-		sed -ire 's@(extension_dir =)[^=]*$@\1 "'$PHPBREW_EXT/$PHPBREW_EXT_SUBDIR'"@' $PHPBREW_INSTALL/etc/php.ini
+		sed -ire 's@(extension_dir =)[^=]*$@\1 "'$PHPBREW_EXT/$PHPBREW_EXT_SUBDIR'"@' -e "/; extension_dir = \"\/opt\/phpbrew/s/^; //" $PHPBREW_INSTALL/etc/php.ini
 	fi
 	if [[ -f $PHPBREW_INSTALL/etc/php-fpm.conf ]]; then
 		# set php-fpm to be listening on the right socket
 		sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
 	fi
-	sudo chown -R root: /opt/phpbrew
+
+	sudo chown -R vagrant: /opt/phpbrew
+else
+	echo "$(tput setaf 6)PHPBrew version $PHP_VER already installed. Swapping versions.$(tput sgr 0)"
 fi
 
-# Switch the PHP version
-phpbrew use $PHP_VER
+# Make sure the system php-fpm is stopped
+sudo service php5-fpm stop > /dev/null 2>&1
+#PHP_FMP_SOCK=`ss -pl | grep php5-fpm.sock | awk '{print $6}'`
+
 # Enable extensions (excluding xdebug)
 phpbrew ext enable APC
 phpbrew ext enable memcache
 
 # Restart phpbrew's fpm
 echo "Restarting fpm so the changes take effect"
-phpbrew fpm stop; phpbrew fpm start
+phpbrew fpm stop
+BREW_FPM_START=$(phpbrew fpm start | tee /dev/tty)
 
-echo "PHP version swapped to $PHP_VER"
+if ! [[ $BREW_FPM_START == *"failed"* ]]; then
+	echo "$(tput setaf 2)PHP version swapped to $PHP_VER$(tput sgr 0)"
+else
+	echo "$(tput setaf 1)ERROR: There was a problem switching PHP versions$(tput sgr 0)"
+fi

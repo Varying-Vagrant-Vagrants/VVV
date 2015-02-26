@@ -204,50 +204,22 @@ if [[ $ping_result == "Connected" ]]; then
 		echo "phpbrew already installed"
 	else
 		echo "Installing phpbrew"
-		curl -s -L https://github.com/phpbrew/phpbrew/raw/master/phpbrew > /usr/bin/phpbrew && chmod +x /usr/bin/phpbrew
-		export PHPBREW_ROOT=/opt/phpbrew
-		export PHPBREW_HOME=/opt/phpbrew
+		curl -s -L https://github.com/phpbrew/phpbrew/raw/master/phpbrew > /usr/bin/phpbrew && chmod +x /usr/bin/phpbrew && chown vagrant: /usr/bin/phpbrew
+		export PHPBREW_ROOT=/opt/phpbrew; export PHPBREW_HOME=/opt/phpbrew
 		mkdir $PHPBREW_ROOT
 		# Install so available to the whole system
 		phpbrew init
-		sudo mv ~/.phpbrew $PHPBREW_ROOT
 		PHPBREW_EXP="export PHPBREW_ROOT=$PHPBREW_ROOT"
 		PHPBREW_HME="export PHPBREW_HOME=$PHPBREW_HOME"
-		if [ ! -d $PHPBREW_ROOT/init ]; then touch $PHPBREW_ROOT/init; fi
+		if [ ! -f $PHPBREW_ROOT/init ]; then touch $PHPBREW_ROOT/init; fi
 		grep -q "$PHPBREW_EXP" $PHPBREW_ROOT/init || echo "$PHPBREW_EXP" >> $PHPBREW_ROOT/init
-		grep -q "$PHPBREW_HME" $PHPBREW_ROOT/init || echo "$PHPBREW_HME" >> $PHPBREW_ROOTinit
+		grep -q "$PHPBREW_HME" $PHPBREW_ROOT/init || echo "$PHPBREW_HME" >> $PHPBREW_ROOT/init
 		PHPBREW_BASHRC="source $PHPBREW_ROOT/bashrc"
 		grep -q "$PHPBREW_BASHRC" ~/.bashrc || echo "$PHPBREW_BASHRC" >> ~/.bashrc
 		echo "$PHPBREW_EXP
 $PHPBREW_HME
 source $PHPBREW_ROOT/bashrc" > /etc/profile.d/phpbrew.sh
-		# Install PHP 5.3.29
-		PHP_VER=5.3.29
-		phpbrew install $PHP_VER +default +openssl +cgi +mb +mcrypt +mysql +pdo +gd +json +readline +fpm
-		echo "Switching to PHP Version $PHP_VER"
-		phpbrew switch $PHP_VER
-		phpbrew ext install APC
-		phpbrew ext install memcache
-		phpbrew ext install imagick
-		phpbrew ext install xdebug stable
-		# Make the config changes
-		PHPBREW_INSTALL=$PHPBREW_ROOT/php/php-$PHP_VER
-		PHPBREW_EXT=$PHPBREW_INSTALL/lib/php/extensions/
-		PHPBREW_EXT_SUBDIR=`ls $PHPBREW_INSTALL`
-		if [[ -f $PHPBREW_INSTALL/etc/php.ini ]]; then
-			# set mysql to be listening on the right socket
-			sed -i '/\.default_socket/s/$/\/var\/run\/mysqld\/mysqld.sock/' $PHPBREW_INSTALL/etc/php.ini
-			# set the correct php extensions directory
-			sed -ire 's@(extension_dir =)[^=]*$@\1 "'$PHPBREW_EXT/$PHPBREW_EXT_SUBDIR'"@' $PHPBREW_INSTALL/etc/php.ini
-		fi
-		if [[ -f $PHPBREW_INSTALL/etc/php-fpm.conf ]]; then
-			# set php-fpm to be listening on the right socket
-			sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
-		fi
-		sudo chown -R root: $PHPBREW_ROOT
-
-		# Restart phpbrew's fpm
-		phpbrew fpm stop; phpbrew fpm start
+		chown -R vagrant: /opt/phpbrew
 	fi
 
 	# ack-grep
