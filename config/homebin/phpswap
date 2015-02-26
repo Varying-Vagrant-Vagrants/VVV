@@ -13,10 +13,24 @@ export PHPBREW_ROOT=/opt/phpbrew
 export PHPBREW_HOME=/opt/phpbrew
 . /opt/phpbrew/bashrc
 
+function brew_fpm_off {
+	# Unfortunately it looks the the built in PHPBrew runner doesn't work with sudo so
+	# we'll have to mimick the functionality
+	PHPFPM_INUSE=`phpbrew list | sed -e "/\* /s/^\* php-//"`
+	PHPFPM_PIDFILE=${PHPBREW_ROOT}/php/php-${PHPFPM_INUSE}/var/run/php-fpm.pid
+	if [[ -e ${PHPFPM_PIDFILE} ]] ; then
+		echo "Stopping phpbrew's php-fpm..."
+		sudo kill $(cat ${PHPFPM_PIDFILE})
+		sudo rm -f ${PHPFPM_PIDFILE}
+	fi
+}
+
 # Allow users to turn PHPBrew off
 if [[ $1 == "system" ]]; then
+	brew_fpm_off
 	phpbrew off
-	sudo service php5-fpm restart
+	sudo service php5-fpm stop > /dev/null 2>&1
+	sudo service php5-fpm start
 	echo "$(tput setaf 6)PHP switched back to system version. PHPBrew is off.$(tput sgr 0)"
 	exit 0
 fi
@@ -37,6 +51,19 @@ if [[ $BREW_USE == *"should not see this"* ]]; then
 	echo "$BREW_USE"
 	exit 1
 fi
+
+function brew_fpm_on {
+	# Unfortunately it looks the the built in PHPBrew runner doesn't work with sudo so
+	# we'll have to mimick the functionality
+	PHPFPM_BIN=${PHPBREW_ROOT}/php/php-${PHP_VER}/sbin/php-fpm
+	PHPFPM_PIDFILE=${PHPBREW_ROOT}/php/php-${PHP_VER}/var/run/php-fpm.pid
+	sudo ${PHPFPM_BIN} --php-ini ${PHPBREW_ROOT}/php/php-${PHP_VER}/etc/php.ini \
+		--fpm-config ${PHPBREW_ROOT}/php/php-${PHP_VER}/etc/php-fpm.conf \
+		--pid ${PHPFPM_PIDFILE}
+	if [[ $? != "0" ]] ; then
+		echo "php-fpm start failed."
+	fi
+}
 
 # Make sure the version exists on the local system
 if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
@@ -80,6 +107,9 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 	if [[ -f $PHPBREW_INSTALL/etc/php-fpm.conf ]]; then
 		# set php-fpm to be listening on the right socket
 		sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
+		# set the user and group to correctly run
+		sed -ire 's@(user =)[^=]*$@\1 "www-data"@' $PHPBREW_INSTALL/etc/php-fpm.conf
+		sed -ire 's@(group =)[^=]*$@\1 "vagrant"@' $PHPBREW_INSTALL/etc/php-fpm.conf
 	fi
 
 	sudo chown -R vagrant: /opt/phpbrew
@@ -97,8 +127,8 @@ phpbrew ext enable memcache
 
 # Restart phpbrew's fpm
 echo "Restarting fpm so the changes take effect"
-phpbrew fpm stop
-BREW_FPM_START=$(phpbrew fpm start | tee /dev/tty)
+brew_fpm_off
+BREW_FPM_START=$(brew_fpm_on | tee /dev/tty)
 
 if ! [[ $BREW_FPM_START == *"failed"* ]]; then
 	echo "$(tput setaf 2)PHP version swapped to $PHP_VER$(tput sgr 0)"
