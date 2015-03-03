@@ -16,12 +16,14 @@ export PHPBREW_HOME=/opt/phpbrew
 function brew_fpm_off {
 	# Unfortunately it looks the the built in PHPBrew runner doesn't work with sudo so
 	# we'll have to mimick the functionality
-	PHPFPM_INUSE=`phpbrew list | sed -e "/\* /s/^\* php-//"`
-	PHPFPM_PIDFILE=${PHPBREW_ROOT}/php/php-${PHPFPM_INUSE}/var/run/php-fpm.pid
-	if [[ -e ${PHPFPM_PIDFILE} ]] ; then
-		echo "Stopping phpbrew's php-fpm..."
-		sudo kill $(cat ${PHPFPM_PIDFILE})
-		sudo rm -f ${PHPFPM_PIDFILE}
+	PHPFPM_INUSE=`phpbrew list | sed -e "/\* /s/^\* php-//" | tr -d '[:space:]'`
+	if [[ $PHPFPM_INUSE =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+		PHPFPM_PIDFILE=${PHPBREW_ROOT}/php/php-${PHPFPM_INUSE}/var/run/php-fpm.pid
+		if [[ -e ${PHPFPM_PIDFILE} ]] ; then
+			echo "Stopping phpbrew's php-fpm..."
+			sudo kill $(cat ${PHPFPM_PIDFILE})
+			sudo rm -f ${PHPFPM_PIDFILE}
+		fi
 	fi
 }
 
