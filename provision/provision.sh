@@ -78,6 +78,8 @@ apt_package_check_list=(
 	libmcrypt-dev
 	libmhash2
 	libmcrypt4
+	libmagickwand-dev
+	libmagickcore-dev
 
 	# nginx is installed as the default web server
 	nginx
