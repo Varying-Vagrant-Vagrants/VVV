@@ -95,6 +95,7 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 	phpbrew ext install imagick 
 
 	# Make the config changes
+	echo "$(tput setaf 6)Configuring the new version for VVV$(tput sgr 0)"
 	PHPBREW_INSTALL=/opt/phpbrew/php/php-$PHP_VER
 	PHPBREW_EXT=$PHPBREW_INSTALL/lib/php/extensions
 	PHPBREW_EXT_SUBDIR=`ls $PHPBREW_EXT`
@@ -102,19 +103,26 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 		# set mysql to be listening on the right socket
 		sed -i '/\.default_socket/s/$/\/var\/run\/mysqld\/mysqld.sock/' $PHPBREW_INSTALL/etc/php.ini
 		# set the correct php extensions directory
-		sed -ire 's@(extension_dir =)[^=]*$@\1 "'$PHPBREW_EXT/$PHPBREW_EXT_SUBDIR'"@' -e "/; extension_dir = \"\/opt\/phpbrew/s/^; //" $PHPBREW_INSTALL/etc/php.ini
+		sed -i -r -e 's@(extension_dir =)[^=]*$@\1 "'$PHPBREW_EXT/$PHPBREW_EXT_SUBDIR'"@' $PHPBREW_INSTALL/etc/php.ini
+		sed -i -e "/; extension_dir = \"\/opt\/phpbrew/s/^; //" $PHPBREW_INSTALL/etc/php.ini
 	fi
 	if [[ -f $PHPBREW_INSTALL/etc/php-fpm.conf ]]; then
 		# set php-fpm to be listening on the right socket
 		sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.conf
 		# set the user and group to correctly run
-		sed -ire 's@(user =)[^=]*$@\1 "www-data"@' $PHPBREW_INSTALL/etc/php-fpm.conf
-		sed -ire 's@(group =)[^=]*$@\1 "vagrant"@' $PHPBREW_INSTALL/etc/php-fpm.conf
+		sed -i 's@\(user = \).*@\1 www-data@' $PHPBREW_INSTALL/etc/php-fpm.conf
+		sed -i 's@\(group = \).*@\1 vagrant@' $PHPBREW_INSTALL/etc/php-fpm.conf
+		# and set the socket listener to correct user/group
+		sed -i 's@\(owner = \).*@\1 www-data@' $PHPBREW_INSTALL/etc/php-fpm.conf
+		# uncomment the listen owner, group, and mode
+		sed -i -r "/;\s?listen\.(owner|group|mode)/s/^;//" $PHPBREW_INSTALL/etc/php-fpm.conf
 	fi
 
+	phpbrew use $PHP_VER
 	sudo chown -R vagrant: /opt/phpbrew
 else
 	echo "$(tput setaf 6)PHPBrew version $PHP_VER already installed. Swapping versions.$(tput sgr 0)"
+	phpbrew use $PHP_VER
 fi
 
 # Make sure the system php-fpm is stopped
