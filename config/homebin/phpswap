@@ -13,10 +13,27 @@ export PHPBREW_ROOT=/opt/phpbrew
 export PHPBREW_HOME=/opt/phpbrew
 . /opt/phpbrew/bashrc
 
+export PHPFPM_INUSE=`phpbrew list | sed -n -e "/\* /s/^\* php-//p" | tr -d '[:space:]'`
+
+function brew_fpm_on {
+	# Unfortunately it looks the the built in PHPBrew runner doesn't work with sudo so
+	# we'll have to mimick the functionality
+	BREW_FPM_VER=$1
+	if [[ $BREW_FPM_VER =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		PHPFPM_BIN=${PHPBREW_ROOT}/php/php-${BREW_FPM_VER}/sbin/php-fpm
+		PHPFPM_PIDFILE=${PHPBREW_ROOT}/php/php-${BREW_FPM_VER}/var/run/php-fpm.pid
+		sudo ${PHPFPM_BIN} --php-ini ${PHPBREW_ROOT}/php/php-${BREW_FPM_VER}/etc/php.ini \
+			--fpm-config ${PHPBREW_ROOT}/php/php-${BREW_FPM_VER}/etc/php-fpm.conf \
+			--pid ${PHPFPM_PIDFILE}
+		if [[ $? != "0" ]] ; then
+			echo "php-fpm start failed."
+		fi
+	fi
+}
+
 function brew_fpm_off {
 	# Unfortunately it looks the the built in PHPBrew runner doesn't work with sudo so
 	# we'll have to mimick the functionality
-	PHPFPM_INUSE=`phpbrew list | sed -e "/\* /s/^\* php-//" | tr -d '[:space:]'`
 	if [[ $PHPFPM_INUSE =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
 		PHPFPM_PIDFILE=${PHPBREW_ROOT}/php/php-${PHPFPM_INUSE}/var/run/php-fpm.pid
 		if [[ -e ${PHPFPM_PIDFILE} ]] ; then
@@ -27,6 +44,11 @@ function brew_fpm_off {
 	fi
 }
 
+function brew_fpm_restart {
+	brew_fpm_off
+	brew_fpm_on $PHPFPM_INUSE
+}
+
 # Allow users to turn PHPBrew off
 if [[ $1 == "system" ]]; then
 	brew_fpm_off
@@ -34,6 +56,13 @@ if [[ $1 == "system" ]]; then
 	sudo service php5-fpm stop > /dev/null 2>&1
 	sudo service php5-fpm start
 	echo "$(tput setaf 6)PHP switched back to system version. PHPBrew is off.$(tput sgr 0)"
+	exit 0
+fi
+
+# Allow users to easily restart PHPBrew's FPM
+if [[ $1 == "fpm-restart" ]]; then
+	brew_fpm_restart
+	echo "$(tput setaf 6)PHPBrew's FPM restarted.$(tput sgr 0)"
 	exit 0
 fi
 
@@ -53,19 +82,6 @@ if [[ $BREW_USE == *"should not see this"* ]]; then
 	echo "$BREW_USE"
 	exit 1
 fi
-
-function brew_fpm_on {
-	# Unfortunately it looks the the built in PHPBrew runner doesn't work with sudo so
-	# we'll have to mimick the functionality
-	PHPFPM_BIN=${PHPBREW_ROOT}/php/php-${PHP_VER}/sbin/php-fpm
-	PHPFPM_PIDFILE=${PHPBREW_ROOT}/php/php-${PHP_VER}/var/run/php-fpm.pid
-	sudo ${PHPFPM_BIN} --php-ini ${PHPBREW_ROOT}/php/php-${PHP_VER}/etc/php.ini \
-		--fpm-config ${PHPBREW_ROOT}/php/php-${PHP_VER}/etc/php-fpm.conf \
-		--pid ${PHPFPM_PIDFILE}
-	if [[ $? != "0" ]] ; then
-		echo "php-fpm start failed."
-	fi
-}
 
 # Make sure the version exists on the local system
 if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
@@ -120,8 +136,8 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 		sed -i -r "/;\s?listen\.(owner|group|mode)/s/^;//" $PHPBREW_INSTALL/etc/php-fpm.conf
 	fi
 
-	phpbrew use $PHP_VER
 	sudo chown -R vagrant: /opt/phpbrew
+	phpbrew use $PHP_VER
 else
 	echo "$(tput setaf 6)PHPBrew version $PHP_VER already installed. Swapping versions.$(tput sgr 0)"
 	phpbrew use $PHP_VER
@@ -138,7 +154,7 @@ phpbrew ext enable memcache
 # Restart phpbrew's fpm
 echo "Restarting fpm so the changes take effect"
 brew_fpm_off
-BREW_FPM_START=$(brew_fpm_on | tee /dev/tty)
+BREW_FPM_START=$(brew_fpm_on $PHP_VER | tee /dev/tty)
 
 if ! [[ $BREW_FPM_START == *"failed"* ]]; then
 	echo "$(tput setaf 2)PHP version swapped to $PHP_VER$(tput sgr 0)"
