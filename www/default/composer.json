@@ -36,16 +36,12 @@
           "type": "zip"
         }
       }
-    },
-    "phpmyadmin": {
-      "type": "git",
-      "url": "https://github.com/wp-cloud/wpc-phpmyadmin"
     }
   },
   "require": {
     "rlerdorf/opcache-status": "dev-master",
     "jokkedk/webgrind": "dev-master",
     "phpmemcacheadmin/phpmemcacheadmin": "1.2.2",
-    "phpmyadmin/phpmyadmin": "*"
+    "wp-cloud/phpmyadmin": "*"
   }
 }
