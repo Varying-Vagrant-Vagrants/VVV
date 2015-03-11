@@ -2,9 +2,9 @@
 #
 # Allow users to easily switch between PHP versions using PHPBrew
 
-if [ $# -ne 1 ]; then
+if [[ $# -lt 1 || $# -gt 2 ]]; then
  echo "Error:  Missing php version"
- echo "Usage:  phpswap PHP_VERSION"
+ echo "Usage:  phpswap [-s] PHP_VERSION"
  exit 1
 fi
 
@@ -66,6 +66,15 @@ if [[ $1 == "fpm-restart" ]]; then
 	exit 0
 fi
 
+# Check if -s was passed so we know if we're going to 'use' or 'switch'
+SWAP_TYPE=use
+while getopts 's' flag; do
+  case "${flag}" in
+    s) SWAP_TYPE=switch; shift;;
+    *) echo "Usage:  phpswap [-s] PHP_VERSION"; exit 1;;
+  esac
+done
+
 # Check for version number
 if ! [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 	echo "$(tput setaf 1)Please enter a proper php version number$(tput sgr 0)"
@@ -73,7 +82,7 @@ if ! [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 PHP_VER=$1
-BREW_USE=`phpbrew use $PHP_VER | tr -cd [:print:]`
+BREW_USE=`phpbrew $SWAP_TYPE $PHP_VER | tr -cd [:print:]`
 BREW_VERSION_AVAIL=`phpbrew list | grep $PHP_VER | wc -l`
 
 # Check for faulty phpbrew config
@@ -106,7 +115,7 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 	sudo service php5-fpm stop
 
 	# Switch the PHP version
-	phpbrew use $PHP_VER
+	phpbrew $SWAP_TYPE $PHP_VER
 	# Install extensions
 	phpbrew ext install memcache
 	phpbrew ext install imagick
@@ -142,7 +151,7 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 	sudo chown -R vagrant: /opt/phpbrew
 else
 	echo "$(tput setaf 6)PHPBrew version $PHP_VER already installed. Swapping versions.$(tput sgr 0)"
-	phpbrew use $PHP_VER
+	phpbrew $SWAP_TYPE $PHP_VER
 fi
 
 # Make sure the system php-fpm is stopped
