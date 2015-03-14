@@ -601,7 +601,7 @@ PHP
 
 	# If custom phpMyAdmin config exists, copy that file over.
 	if [[ -f /srv/config/phpmyadmin-config/config.inc.custom.php ]]; then
-		cp /srv/config/phpmyadmin-config/config.inc.custom.php /srv/www/default/database-admin/
+		cp -f /srv/config/phpmyadmin-config/config.inc.custom.php /srv/www/default/database-admin/
 	else
 		# Else, remove the file from the vm.
 		rm /srv/www/default/database-admin/config.inc.custom.php
