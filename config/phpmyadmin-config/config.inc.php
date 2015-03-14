@@ -62,11 +62,6 @@ $cfg['Servers'][$i]['AllowNoPassword'] = false;
 // $cfg['Servers'][$i]['auth_swekey_config'] = '/etc/swekey-pma.conf';
 
 /*
- * VVV - Include custom configuration file, if exists.
- */
-include('config.inc.custom.php');
-
-/*
  * End of servers configuration
  */
 
@@ -145,3 +140,8 @@ $cfg['SaveDir'] = '';
  */
 
 $cfg['AllowUserDropDatabase'] = true;
+
+/*
+ * VVV - Include custom configuration file, if exists.
+ */
+include('config.inc.custom.php');
