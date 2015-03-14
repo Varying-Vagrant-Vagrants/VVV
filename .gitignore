@@ -22,6 +22,9 @@
 # No need to share individual site configs with each other
 /config/nginx-config/sites/*.conf
 
+# No need to share custom phpMyAdmin config with each other
+/config/phpmyadmin-config/config.inc.custom.php
+
 # Ignore anything in the 'custom' directory in config
 /config/custom/*
 
