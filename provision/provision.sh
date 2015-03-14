@@ -659,6 +659,7 @@ PHP
 		echo "PHPMyAdmin already installed."
 	fi
 	cp /srv/config/phpmyadmin-config/config.inc.php /srv/www/default/database-admin/
+	cp /srv/config/phpmyadmin-config/config.inc.custom.php /srv/www/default/database-admin/
 else
 	echo -e "\nNo network available, skipping network installations"
 fi
