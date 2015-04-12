@@ -1,6 +1,6 @@
 # Varying Vagrant Vagrants
 
-Varying Vagrant Vagrants is an open source [Vagrant](http://vagrantup.com) configuration focused on [WordPress](http://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
+Varying Vagrant Vagrants is an open source [Vagrant](http://vagrantup.com) configuration focused on [WordPress](https://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
 
 VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
@@ -19,7 +19,7 @@ The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable
 
 The default server configuration provisioned by VVV matches a common configuration for working with high traffic WordPress sites.
 
-The default WordPress configurations provided by VVV create an environment ideal for developing themes and plugins as well as for [contributing to WordPress core](http://make.wordpress.org/core/).
+The default WordPress configurations provided by VVV create an environment ideal for developing themes and plugins as well as for [contributing to WordPress core](https://make.wordpress.org/core/).
 
 ### How to Use Varying Vagrant Vagrants
 
@@ -27,7 +27,7 @@ The default WordPress configurations provided by VVV create an environment ideal
 
 VVV requires recent versions of both Vagrant and VirtualBox to be installed.
 
-[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](http://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
+[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](https://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
 
 #### VVV as a MAMP/XAMPP Replacement
 
@@ -38,7 +38,7 @@ Multiple projects can be developed at once in the same environment.
 * Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop themes.
 * Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop plugins.
 * Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `www/`.
-* Use the `www/wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
+* Use the `www/wordpress-develop` directory to participate in [WordPress core](https://core.trac.wordpress.org) development.
 
 VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server.
 
@@ -153,21 +153,21 @@ All WordPress admin usernames and passwords for WordPress installations included
 A bunch of stuff!
 
 1. [Ubuntu](http://www.ubuntu.com/) 14.04 LTS (Trusty Tahr)
-1. [WordPress Develop](http://develop.svn.wordpress.org/trunk/)
-1. [WordPress Stable](http://wordpress.org/)
-1. [WordPress Trunk](http://core.svn.wordpress.org/trunk/)
+1. [WordPress Develop](https://develop.svn.wordpress.org/trunk/)
+1. [WordPress Stable](https://wordpress.org/)
+1. [WordPress Trunk](https://core.svn.wordpress.org/trunk/)
 1. [WP-CLI](http://wp-cli.org/)
 1. [nginx](http://nginx.org/) 1.6.x
-1. [mysql](http://www.mysql.com/) 5.5.x
+1. [mysql](https://www.mysql.com/) 5.5.x
 1. [php-fpm](http://php-fpm.org/) 5.5.x
 1. [memcached](http://memcached.org/) 1.4.13
-1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8/) 3.0.8
-1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.5/) 2.2.5
-1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.2/) 3.1.2
-1. [PHPUnit](http://pear.phpunit.de/) 4.0.x
+1. PHP [memcache extension](https://pecl.php.net/package/memcache/3.0.8/) 3.0.8
+1. PHP [xdebug extension](https://pecl.php.net/package/xdebug/2.2.5/) 2.2.5
+1. PHP [imagick extension](https://pecl.php.net/package/imagick/3.1.2/) 3.1.2
+1. [PHPUnit](https://phpunit.de/) 4.0.x
 1. [ack-grep](http://beyondgrep.com/) 2.04
 1. [git](http://git-scm.com/) 1.9.x
-1. [subversion](http://subversion.apache.org/) 1.8.x
+1. [subversion](https://subversion.apache.org/) 1.8.x
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
@@ -175,7 +175,7 @@ A bunch of stuff!
 1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.1.14 (multi-language)
 1. [Opcache Status](https://github.com/rlerdorf/opcache-status)
 1. [Webgrind](https://github.com/jokkedk/webgrind)
-1. [NodeJs](http://nodejs.org/) Current Stable Version
+1. [NodeJs](https://nodejs.org/) Current Stable Version
 1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
 
 ### Need Help?
@@ -206,8 +206,8 @@ VVV is copyright (c) 2014, the contributors of the VVV project under the [MIT Li
 
 ## History
 
-VVV has come a long way since it was first [launched as Varying Vagrant Vagrants](http://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/) in December of 2012. Initially introduced as an exploration of workflow for immediate project needs at [10up](http://10up.com), VVV caught speed quickly as more and more of the team was introduced. During an internal [10up developer summit](http://10up.com/blog/10up-2013-developer-summit/) in March of 2013, Vagrant as a tool was a highlight and more developers made the conversion.
+VVV has come a long way since it was first [launched as Varying Vagrant Vagrants](https://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/) in December of 2012. Initially introduced as an exploration of workflow for immediate project needs at [10up](http://10up.com), VVV caught speed quickly as more and more of the team was introduced. During an internal [10up developer summit](http://10up.com/blog/10up-2013-developer-summit/) in March of 2013, Vagrant as a tool was a highlight and more developers made the conversion.
 
-In April of 2013, we made a [call to the WordPress community](http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/) to try to encourage the addition of Vagrant to everyday life. These efforts continued with talks at [WordCamp Chicago](http://wordpress.tv/2013/12/31/jeremy-felt-hi-wordpress-meet-vagrant-2/), [WordCamp Vancouver](http://wordpress.tv/2013/10/19/jeremy-felt-hi-wordpress-meet-vagrant/), and WordCamp Denver.
+In April of 2013, we made a [call to the WordPress community](https://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/) to try to encourage the addition of Vagrant to everyday life. These efforts continued with talks at [WordCamp Chicago](https://wordpress.tv/2013/12/31/jeremy-felt-hi-wordpress-meet-vagrant-2/), [WordCamp Vancouver](https://wordpress.tv/2013/10/19/jeremy-felt-hi-wordpress-meet-vagrant/), and WordCamp Denver.
 
-In January of 2014, [10up](http://10up.com) made the decision to [spin VVV off](http://10up.com/blog/varying-vagrant-vagrants-future/) into its own organization to better align with the community that has grown around the project over time. This transition opens doors for what [Varying Vagrant Vagrants, the organization](http://jeremyfelt.com/code/2014/01/27/varying-vagrant-vagrants-organization/) can accomplish as an ongoing project.
+In January of 2014, [10up](http://10up.com) made the decision to [spin VVV off](http://10up.com/blog/varying-vagrant-vagrants-future/) into its own organization to better align with the community that has grown around the project over time. This transition opens doors for what [Varying Vagrant Vagrants, the organization](https://jeremyfelt.com/code/2014/01/27/varying-vagrant-vagrants-organization/) can accomplish as an ongoing project.
