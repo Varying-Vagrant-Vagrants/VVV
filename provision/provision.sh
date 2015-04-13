@@ -445,17 +445,6 @@ if [[ $ping_result == "Connected" ]]; then
 	/srv/www/phpcs/scripts/phpcs --config-set default_standard WordPress-Core
 	/srv/www/phpcs/scripts/phpcs -i
 
-	# Provision tools
-	cd /srv/www/default
-	if [[ ! -f /srv/www/default/composer.lock ]]; then
-		composer install --prefer-dist --no-autoloader
-	else
-		composer update --prefer-dist --no-autoloader
-	fi
-
-	# Copy phpMyAdmin config
-	cp /srv/config/phpmyadmin-config/config.inc.php /srv/www/default/vendor/phpmyadmin/phpmyadmin/
-
 	# Install and configure the latest stable version of WordPress
 	if [[ ! -d /srv/www/wordpress-default ]]; then
 		echo "Downloading WordPress Stable, see http://wordpress.org/"
