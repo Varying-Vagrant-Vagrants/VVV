@@ -23,6 +23,12 @@ Vagrant.configure("2") do |config|
     v.memory = 1024
   end
 
+  # Configuration options for the VMware Fusion provider.
+  config.vm.provider :vmware_fusion do |v|
+    v.vmx["memsize"] = "1024"
+    v.vmx["numvcpus"] = "2"
+  end
+
   # SSH Agent Forwarding
   #
   # Enable agent forwarding on vagrant ssh commands. This allows you to use ssh keys
@@ -39,6 +45,11 @@ Vagrant.configure("2") do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
     override.vm.box = "parallels/ubuntu-14.04"
+  end
+
+  # The VMware Fusion Provider uses a different naming scheme.
+  config.vm.provider :vmware_fusion do |v, override|
+    override.vm.box = "netsensia/ubuntu-trusty64"
   end
 
   config.vm.hostname = "vvv"
