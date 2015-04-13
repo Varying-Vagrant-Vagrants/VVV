@@ -18,9 +18,11 @@ Comment on any GitHub issue, open or closed. The only guidelines here are to be 
 
 Submit a pull request at any time, whether an issue has been created or not. It may be helpful to discuss your goals in an issue first, though many things can best be shown with code.
 
-We do ask that the pull request be submitted against the current **master** branch. Every effort is made to make the pull request as stable as possible before merging it in, so we aren't too worried. A list of stable releases is maintained as we go and can be used by anyone concerned by ongoing development.
+We do ask that the pull request be submitted against the current **develop** branch, which is the default on the VVV repository. Every effort is made to make the pull request as stable as possible before merging it in.
 
 It may make sense that a feature branch is created so that several contributors can work together. In this case, it is possible that write access to the VVV repository will be given liberally. You may be asked to submit your pull request against a feature branch so that it can be merged and worked on with others before going in to master.
+
+The master branch can be considered stable and a list of stable releases is maintained as we go and can be used by anyone concerned by ongoing development.
 
 ## Milestones and Labels
 
