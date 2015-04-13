@@ -56,3 +56,4 @@
 /www/default/*
 !/www/default/index.php
 !/www/default/composer.json
+!/www/default/vvv-init.sh
