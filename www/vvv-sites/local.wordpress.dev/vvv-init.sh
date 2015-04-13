@@ -9,9 +9,10 @@ echo -e "\n DB operations done.\n\n"
 # Nginx Logs
 if [[ ! -d /srv/log/wordpress-default ]]; then
 	mkdir /srv/log/wordpress-default
-	touch /srv/log/wordpress-default/error.log
-	touch /srv/log/wordpress-default/access.log
 fi
+
+touch /srv/log/wordpress-default/error.log
+touch /srv/log/wordpress-default/access.log
 
 # Install and configure the latest stable version of WordPress
 if [[ ! -d /srv/www/wordpress-default ]]; then

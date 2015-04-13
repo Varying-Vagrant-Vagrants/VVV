@@ -11,9 +11,10 @@ echo -e "\n DB operations done.\n\n"
 # Nginx Logs
 if [[ ! -d /srv/log/wordpress-develop ]]; then
 	mkdir /srv/log/wordpress-develop
-	touch /srv/log/wordpress-develop/error.log
-	touch /srv/log/wordpress-develop/access.log
 fi
+
+touch /srv/log/wordpress-develop/error.log
+touch /srv/log/wordpress-develop/access.log
 
 # Checkout, install and configure WordPress trunk via develop.svn
 if [[ ! -d /srv/www/wordpress-develop ]]; then
