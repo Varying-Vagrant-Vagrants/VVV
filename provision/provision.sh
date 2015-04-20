@@ -463,7 +463,7 @@ if [[ $ping_result == "Connected" ]]; then
 		fi
 	fi
 	# Install the standards in PHPCS
-	sudo /srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
+	sudo /srv/www/phpcs/scripts/phpcs --config-set installed_paths /srv/www/phpcs-wordpress/
 	sudo /srv/www/phpcs/scripts/phpcs --config-set default_standard WordPress-Core
 	sudo /srv/www/phpcs/scripts/phpcs -i
 
