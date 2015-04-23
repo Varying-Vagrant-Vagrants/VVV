@@ -7,12 +7,12 @@ mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON wordpress_default.* TO
 echo -e "\n DB operations done.\n\n"
 
 # Nginx Logs
-if [[ ! -d /srv/log/wordpress-default ]]; then
-	mkdir /srv/log/wordpress-default
+if [[ ! -d /srv/log/local.wordpress.dev ]]; then
+	mkdir /srv/log/local.wordpress.dev
 fi
 
-touch /srv/log/wordpress-default/error.log
-touch /srv/log/wordpress-default/access.log
+touch /srv/log/local.wordpress.dev/error.log
+touch /srv/log/local.wordpress.dev/access.log
 
 # Install and configure the latest stable version of WordPress
 if [[ ! -d /srv/www/wordpress-default ]]; then
