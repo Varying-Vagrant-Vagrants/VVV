@@ -172,7 +172,7 @@ A bunch of stuff!
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/)
-1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.1.14 (multi-language)
+1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.2.13.1 (multi-language)
 1. [Opcache Status](https://github.com/rlerdorf/opcache-status)
 1. [Webgrind](https://github.com/jokkedk/webgrind)
 1. [NodeJs](https://nodejs.org/) Current Stable Version
