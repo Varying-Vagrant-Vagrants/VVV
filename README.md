@@ -51,8 +51,8 @@ Entirely different server configurations can be created by modifying the files i
 ### The First Vagrant Up
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
-1. Install [VirtualBox 4.3.x](https://www.virtualbox.org/wiki/Downloads)
-1. Install [Vagrant 1.6.x](http://www.vagrantup.com/downloads.html)
+1. Install [VirtualBox v4.3 or later](https://www.virtualbox.org/wiki/Downloads)
+1. Install [Vagrant v1.6 or later](http://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
