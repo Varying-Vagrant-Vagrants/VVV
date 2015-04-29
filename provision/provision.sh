@@ -201,7 +201,7 @@ if [[ $ping_result == "Connected" ]]; then
 
 	# phpbrew
 	#
-	# Install phpbrew and make available systewide
+	# Install phpbrew and make available systemwide
 	if [[ -f /usr/bin/phpbrew ]]; then
 		echo "phpbrew already installed"
 	else
