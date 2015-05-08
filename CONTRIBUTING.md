@@ -4,7 +4,7 @@ Contributions to the VVV project are more than welcome.
 
 ## License
 
-By contributing code to the [VVV project](https://github.com/varying-vagrant-vagrants/vvv/), you agree to license your contribution under the [MIT License](https://github.com/varying-vagrant-vagrants/vvv/blog/master/LICENSE).
+By contributing code to the [VVV project](https://github.com/varying-vagrant-vagrants/vvv/), you agree to license your contribution under the [MIT License](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
 
 ## Issues
 
