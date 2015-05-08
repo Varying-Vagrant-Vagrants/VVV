@@ -4,7 +4,7 @@ Contributions to the VVV project are more than welcome.
 
 ## License
 
-By contributing code to the [VVV project](https://github.com/varying-vagrant-vagrants/vvv/), you agree to license your contribution under the [MIT License](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
+By contributing code to the [VVV project](https://github.com/varying-vagrant-vagrants/vvv/), you agree to license your contribution under the [MIT License](LICENSE).
 
 ## Issues
 
@@ -36,4 +36,4 @@ For any shell scripting that we do in Bash — see `provision.sh` — we try to 
 
 ### PHP
 
-For any PHP, we try to follow the WordPress core [code standards](http://make.wordpress.org/core/handbook/coding-standards/).
+For any PHP, we try to follow the WordPress core [code standards](https://make.wordpress.org/core/handbook/coding-standards/).
