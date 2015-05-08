@@ -36,4 +36,4 @@ For any shell scripting that we do in Bash — see `provision.sh` — we try to 
 
 ### PHP
 
-For any PHP, we try to follow the WordPress core [code standards](http://make.wordpress.org/core/handbook/coding-standards/).
+For any PHP, we try to follow the WordPress core [code standards](https://make.wordpress.org/core/handbook/coding-standards/).
