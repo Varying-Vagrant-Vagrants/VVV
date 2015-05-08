@@ -8,7 +8,7 @@ By contributing code to the [VVV project](https://github.com/varying-vagrant-vag
 
 ## Issues
 
-Open a GitHub issue for anything. We've covered quite a bit of ground through the first year, so it would be helfpul to search for related topics first. That said, don't worry if you find yourself opening something that sounds like it could be obvious. There is no such thing.
+Open a GitHub issue for anything. We've covered quite a bit of ground through the first year, so it would be helpful to search for related topics first. That said, don't worry if you find yourself opening something that sounds like it could be obvious. There is no such thing.
 
 ## Comments
 
