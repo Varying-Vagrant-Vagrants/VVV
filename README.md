@@ -156,18 +156,18 @@ A bunch of stuff!
 1. [WordPress Develop](https://develop.svn.wordpress.org/trunk/)
 1. [WordPress Stable](https://wordpress.org/)
 1. [WordPress Trunk](https://core.svn.wordpress.org/trunk/)
-1. [WP-CLI](http://wp-cli.org/)
-1. [nginx](http://nginx.org/) 1.6.x
+1. [WP-CLI](http://wp-cli.org/) (master branch)
+1. [nginx](http://nginx.org/) ([mainline](http://nginx.com/blog/nginx-1-6-1-7-released/) version)
 1. [mysql](https://www.mysql.com/) 5.5.x
 1. [php-fpm](http://php-fpm.org/) 5.5.x
-1. [memcached](http://memcached.org/) 1.4.13
-1. PHP [memcache extension](https://pecl.php.net/package/memcache/3.0.8/) 3.0.8
-1. PHP [xdebug extension](https://pecl.php.net/package/xdebug/2.2.5/) 2.2.5
-1. PHP [imagick extension](https://pecl.php.net/package/imagick/3.1.2/) 3.1.2
-1. [PHPUnit](https://phpunit.de/) 4.0.x
-1. [ack-grep](http://beyondgrep.com/) 2.04
-1. [git](http://git-scm.com/) 1.9.x
-1. [subversion](https://subversion.apache.org/) 1.8.x
+1. [memcached](http://memcached.org/)
+1. PHP [memcache extension](https://pecl.php.net/package/memcache)
+1. PHP [xdebug extension](https://pecl.php.net/package/xdebug/)
+1. PHP [imagick extension](https://pecl.php.net/package/imagick/)
+1. [PHPUnit](https://phpunit.de/)
+1. [ack-grep](http://beyondgrep.com/)
+1. [git](http://git-scm.com/)
+1. [subversion](https://subversion.apache.org/)
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
@@ -175,8 +175,8 @@ A bunch of stuff!
 1. [phpMyAdmin](http://www.phpmyadmin.net/) (multi-language)
 1. [Opcache Status](https://github.com/rlerdorf/opcache-status)
 1. [Webgrind](https://github.com/jokkedk/webgrind)
-1. [NodeJs](https://nodejs.org/) Current Stable Version
-1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
+1. [NodeJs](https://nodejs.org/)
+1. [grunt-cli](https://github.com/gruntjs/grunt-cli)
 1. [Mailcatcher](http://mailcatcher.me/)
 
 ### Need Help?
