@@ -1,6 +1,6 @@
 # Varying Vagrant Vagrants
 
-Varying Vagrant Vagrants is an open source [Vagrant](http://vagrantup.com) configuration focused on [WordPress](https://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
+Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) configuration focused on [WordPress](https://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
 
 VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
@@ -27,7 +27,7 @@ The default WordPress configurations provided by VVV create an environment ideal
 
 VVV requires recent versions of both Vagrant and VirtualBox to be installed.
 
-[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](https://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
+[Vagrant](https://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](https://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
 
 #### VVV as a MAMP/XAMPP Replacement
 
@@ -52,7 +52,7 @@ Entirely different server configurations can be created by modifying the files i
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
 1. Install [VirtualBox 4.3.x](https://www.virtualbox.org/wiki/Downloads)
-1. Install [Vagrant 1.6.x](http://www.vagrantup.com/downloads.html)
+1. Install [Vagrant 1.7.x](https://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
