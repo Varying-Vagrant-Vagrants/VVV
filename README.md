@@ -185,7 +185,7 @@ A bunch of stuff!
 * The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
-### Helfpul Extensions
+### Helpful Extensions
 
 Supporting init scripts during provisioning allows for some great extensions of VVV core.
 
