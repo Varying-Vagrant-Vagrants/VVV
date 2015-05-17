@@ -186,6 +186,11 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
   end
 
+  config.vm.provision "fix-no-tty", type: "shell" do |s|
+    s.privileged = false
+    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+  end
+
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
