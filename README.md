@@ -203,7 +203,7 @@ Immediate goals for VVV include:
 
 ## Copyright / License
 
-VVV is copyright (c) 2014, the contributors of the VVV project under the [MIT License](https://github.com/varying-vagrant-vagrants/vvv/blog/master/LICENSE).
+VVV is copyright (c) 2014-2015, the contributors of the VVV project under the [MIT License](LICENSE).
 
 ## History
 
