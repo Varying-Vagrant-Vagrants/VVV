@@ -17,8 +17,11 @@ fi
 
 # Download files
 cd $DESTDIR
+mkdir -p bower_components/jquery/dist src/js
 wget https://raw.githubusercontent.com/topdown/VVV-Dashboard/master/index.php --output-document=index.php --progress=bar:force
 wget https://raw.githubusercontent.com/topdown/VVV-Dashboard/master/style.css --output-document=style.css --progress=bar:force
+wget https://raw.githubusercontent.com/topdown/VVV-Dashboard/master/bower_components/jquery/dist/jquery.min.js --output-document=bower_components/jquery/dist/jquery.min.js --progress=bar:force
+wget https://raw.githubusercontent.com/topdown/VVV-Dashboard/master/src/js/scripts.js --output-document=src/js/scripts.js --progress=bar:force
 
 # Prepend 'dashboard-custom.php' loading if present
 sed -i '1i <?php\
