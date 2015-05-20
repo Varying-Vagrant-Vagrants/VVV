@@ -54,7 +54,7 @@ wps = %w{
 }
 
 wps.each do |wp|
-  describe command("wget -q #{Shellwords.shellescape(wp)} -O - | head -100 | grep generator") do
+  describe command("wget -q #{Shellwords.shellescape(wp)} -O - | grep generator") do
     its(:stdout) { should match /<meta name="generator" content="WordPress .*"/i }
   end
 end
