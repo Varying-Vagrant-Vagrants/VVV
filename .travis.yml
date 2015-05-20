@@ -1,0 +1,10 @@
+language: ruby
+install: bundle install --path vendor/bundle
+cache:
+  directories: vendor/bundle
+
+before_script:
+    - sudo bash provision/provision.sh
+    - bundle install --path vendor/bundle
+
+script: bundle exec rake spec
