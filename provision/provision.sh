@@ -261,12 +261,6 @@ echo " * /srv/config/nginx-config/nginx-wp-common.conf -> /etc/nginx/nginx-wp-co
 echo " * /srv/config/nginx-config/sites/               -> /etc/nginx/custom-sites"
 
 # Copy php-fpm configuration from local
-if [[ ! -d /etc/php5/fpm/conf.d ]]; then
-	mkdir -p /etc/php5/fpm/conf.d
-fi
-if [[ ! -d //etc/php5/fpm/pool.d ]]; then
-	mkdir -p /etc/php5/fpm/pool.d
-fi
 cp /srv/config/php5-fpm-config/php5-fpm.conf /etc/php5/fpm/php5-fpm.conf
 cp /srv/config/php5-fpm-config/www.conf /etc/php5/fpm/pool.d/www.conf
 cp /srv/config/php5-fpm-config/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
