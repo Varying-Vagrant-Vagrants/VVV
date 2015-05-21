@@ -4,6 +4,7 @@ require 'shellwords'
 
 # All hosts entries should be resolvable
 hosts = %w{
+  vvv.dev
   local.wordpress.dev
   local.wordpress-trunk.dev
   src.wordpress-develop.dev
