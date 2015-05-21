@@ -17,4 +17,4 @@ before_script:
     - sudo mkdir /srv/www && sudo mount --bind `pwd`/www /srv/www
     - sudo bash provision/provision.sh
 
-script: bundle exec rake spec
+script: TARGET=localhost bundle exec rake spec
