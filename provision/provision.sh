@@ -157,7 +157,7 @@ if [[ $ping_result == *bytes?from* ]]; then
 
 		# install required packages
 		echo "Installing apt-get packages..."
-		apt-get install --assume-yes ${apt_package_install_list[@]}
+		apt-get install --force-yes ${apt_package_install_list[@]}
 
 		# Clean up apt caches
 		apt-get clean
