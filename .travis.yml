@@ -2,6 +2,13 @@ language: ruby
 install: bundle install --path vendor/bundle
 cache:
   directories: vendor/bundle
+addons:
+  hosts:
+    - vvv.dev
+    - local.wordpress.dev
+    - local.wordpress-trunk.dev
+    - src.wordpress-develop.dev
+    - build.wordpress-develop.dev
 
 before_script:
     - sudo bash provision/provision.sh
