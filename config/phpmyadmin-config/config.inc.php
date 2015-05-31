@@ -140,3 +140,5 @@ $cfg['SaveDir'] = '';
  */
 
 $cfg['AllowUserDropDatabase'] = true;
+
+$cfg['CheckConfigurationPermissions'] = false;
