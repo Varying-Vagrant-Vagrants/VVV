@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
   # Configuration options for the VirtualBox provider.
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 1024]
-    v.customize ["modifyvm", :id, "--cpus", 2]
+    v.customize ["modifyvm", :id, "--cpus", 1]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
   end
@@ -22,13 +22,13 @@ Vagrant.configure("2") do |config|
     v.update_guest_tools = true
     v.optimize_power_consumption = false
     v.memory = 1024
-    v.cpus = 2
+    v.cpus = 1
   end
 
   # Configuration options for the VMware Fusion provider.
   config.vm.provider :vmware_fusion do |v|
     v.vmx["memsize"] = "1024"
-    v.vmx["numvcpus"] = "2"
+    v.vmx["numvcpus"] = "1"
   end
 
   # SSH Agent Forwarding
