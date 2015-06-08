@@ -51,6 +51,11 @@ Vagrant.configure("2") do |config|
   config.vm.provider :vmware_fusion do |v, override|
     override.vm.box = "netsensia/ubuntu-trusty64"
   end
+  
+  # VMWare Workstation can use the same package as Fusion
+  config.vm.provider :vmware_workstation do |v, override|
+    override.vm.box = "netsensia/ubuntu-trusty64"
+  end
 
   config.vm.hostname = "vvv"
 
