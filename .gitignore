@@ -55,3 +55,6 @@
 # And a few of our web directories are important to share.
 /www/default/*
 !/www/default/index.php
+
+# Ignore the logfile which might have been created in the root directory on installation
+npm-debug.log
