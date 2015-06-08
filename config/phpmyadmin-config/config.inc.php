@@ -140,3 +140,8 @@ $cfg['SaveDir'] = '';
  */
 
 $cfg['AllowUserDropDatabase'] = true;
+
+/*
+ * VVV - Include custom configuration file, if exists.
+ */
+include('config.inc.custom.php');
