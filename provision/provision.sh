@@ -367,9 +367,6 @@ if [[ -n "${mailcatcher_version}" ]]; then
 else
 	echo " * Mailcatcher [not installed]"
 	/usr/bin/env rvm default@mailcatcher --create do gem install mailcatcher --no-rdoc --no-ri
-
-
-	/usr/bin/env rvm default@mailcatcher --create do gem install mailcatcher --no-rdoc --no-ri
 	/usr/bin/env rvm wrapper default@mailcatcher --no-prefix mailcatcher catchmail
 	# /usr/bin/env rvm default@mailcatcher do gem install i18n -v 0.6.11
 	# /usr/bin/env rvm default@mailcatcher do gem uninstall i18n -Ix --version '>0.6.11'
