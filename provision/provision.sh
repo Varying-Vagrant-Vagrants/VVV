@@ -380,7 +380,6 @@ fi
 if [[ -f /etc/php5/mods-available/mailcatcher.ini ]]; then
 	echo " *" Mailcatcher php5 fpm already configured.
 else
-	# cp /srv/config/php5-fpm-config/mailcatcher.ini  /etc/php5/fpm/conf.d/mailcatcher.ini
 	cp /srv/config/php5-fpm-config/mailcatcher.ini /etc/php5/mods-available/mailcatcher.ini
 	echo " * Copied /srv/config/php5-fpm-config/mailcatcher.ini    to /etc/php5/mods-available/mailcatcher.ini"
 fi
