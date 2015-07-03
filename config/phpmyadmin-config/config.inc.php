@@ -142,3 +142,10 @@ $cfg['SaveDir'] = '';
 $cfg['AllowUserDropDatabase'] = true;
 
 $cfg['CheckConfigurationPermissions'] = false;
+
+/*
+ * Include a custom configuration file for phpMyAdmin if it exists locally.
+ */
+if ( file_exists( 'config.inc.custom.php' ) ) {
+	include( 'config.inc.custom.php' );
+}
