@@ -1,9 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-dir = Dir.pwd
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
-vagrant_name = File.basename(dir)
 
 Vagrant.configure("2") do |config|
 
@@ -21,7 +19,10 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--cpus", 1]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    v.name = vagrant_name
+
+    # Set the box name in VirtualBox to match the working directory.
+    vvv_pwd = Dir.pwd
+    v.name = File.basename(vvv_pwd)
   end
 
   # Configuration options for the Parallels provider.
