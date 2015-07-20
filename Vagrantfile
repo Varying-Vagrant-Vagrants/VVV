@@ -9,10 +9,6 @@ Vagrant.configure("2") do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
-  # Give vm a name
-  config.vm.define vagrant_name do |v|
-  end
-
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 1024]
