@@ -2,3 +2,5 @@
 sudo php5enmod xdebug
 sudo service php5-fpm restart
 
+# Fixes issue #621
+sudo chmod 666 /tmp/xdebug-remote.log
