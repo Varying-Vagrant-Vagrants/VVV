@@ -410,6 +410,10 @@ php5enmod mailcatcher
 
 service php5-fpm restart
 
+# Add the vagrant user to the www-data group so that it has better access
+# to PHP and Nginx related files.
+usermod -a -G www-data vagrant
+
 # If MySQL is installed, go through the various imports and service tasks.
 exists_mysql="$(service mysql status)"
 if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
