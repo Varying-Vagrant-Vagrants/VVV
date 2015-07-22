@@ -195,6 +195,7 @@ Supporting init scripts during provisioning allows for some great extensions of 
 * [Variable VVV](https://github.com/bradp/vv) automates setting up new sites, setting up deployments, and more.
 * [HHVVVM](https://github.com/johnjamesjacoby/hhvvvm) is an HHVM configuration for VVV.
 * The [WordPress Meta Environment](https://github.com/iandunn/wordpress-meta-environment) is a "collection of scripts that provision the official WordPress.org websites into a Varying Vagrant Vagrants installation."
+* [Theme Juice CLI](https://github.com/ezekg/theme-juice-cli) automates spinning up new sites, manages build tools and dependencies, and handles deployments to multiple stages. Supports vanilla VVV and most forks e.g. [VVV-Apache](https://github.com/ericmann/vvv-apache).
 
 #### Custom Dashboards
 
