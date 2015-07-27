@@ -99,6 +99,10 @@ apt_package_check_list=(
 	# nodejs for use by grunt
 	g++
 	nodejs
+
+	#Mailcatcher requirement
+	libsqlite3-dev
+
 )
 
 echo "Check for apt packages to install..."
@@ -206,6 +210,12 @@ if [[ $ping_result == "Connected" ]]; then
 		mv composer.phar /usr/local/bin/composer
 	fi
 
+	if [[ -f /vagrant/provision/github.token ]]; then
+		ghtoken=`cat /vagrant/provision/github.token`
+		composer config --global github-oauth.github.com $ghtoken
+		echo "Your personal GitHub token is set for Composer."
+	fi
+
 	# Update both Composer and any global packages. Updates to Composer are direct from
 	# the master branch on its GitHub repository.
 	if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
@@ -229,11 +239,13 @@ if [[ $ping_result == "Connected" ]]; then
 		npm update -g grunt-cli &>/dev/null
 		npm update -g grunt-sass &>/dev/null
 		npm update -g grunt-cssjanus &>/dev/null
+		npm update -g grunt-rtlcss &>/dev/null
 	else
 		echo "Installing Grunt CLI"
 		npm install -g grunt-cli &>/dev/null
 		npm install -g grunt-sass &>/dev/null
 		npm install -g grunt-cssjanus &>/dev/null
+		npm install -g grunt-rtlcss &>/dev/null
 	fi
 
 	# Graphviz
@@ -329,12 +341,64 @@ if [[ -f /srv/config/bash_prompt ]]; then
 	echo " * Copied /srv/config/bash_prompt                       to /home/vagrant/.bash_prompt"
 fi
 
+# Mailcatcher
+# 
+# Installs mailcatcher using RVM. RVM allows us to install the
+# current version of ruby and all mailcatcher dependencies reliably.
+rvm_version="$(/usr/bin/env rvm --silent --version 2>&1 | grep 'rvm ' | cut -d " " -f 2)"
+if [[ -n "${rvm_version}" ]]; then
+
+	pkg="RVM"
+	space_count="$(expr 20 - "${#pkg}")" #11
+	pack_space_count="$(expr 30 - "${#rvm_version}")"
+	real_space="$(expr ${space_count} + ${pack_space_count} + ${#rvm_version})"
+	printf " * $pkg %${real_space}.${#rvm_version}s ${rvm_version}\n"
+else
+	# RVM key D39DC0E3
+	# Signatures introduced in 1.26.0
+	gpg -q --no-tty --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D39DC0E3
+	gpg -q --no-tty --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys BF04FF17
+	
+	printf " * RVM [not installed]\n Installing from source"
+	curl --silent -L https://get.rvm.io | sudo bash -s stable --ruby
+	source /usr/local/rvm/scripts/rvm
+fi
+
+mailcatcher_version="$(/usr/bin/env mailcatcher --version 2>&1 | grep 'mailcatcher ' | cut -d " " -f 2)"
+if [[ -n "${mailcatcher_version}" ]]; then
+	pkg="Mailcatcher"
+	space_count="$(expr 20 - "${#pkg}")" #11
+	pack_space_count="$(expr 30 - "${#mailcatcher_version}")"
+	real_space="$(expr ${space_count} + ${pack_space_count} + ${#mailcatcher_version})"
+	printf " * $pkg %${real_space}.${#mailcatcher_version}s ${mailcatcher_version}\n"
+else
+	echo " * Mailcatcher [not installed]"
+	/usr/bin/env rvm default@mailcatcher --create do gem install mailcatcher --no-rdoc --no-ri
+	/usr/bin/env rvm wrapper default@mailcatcher --no-prefix mailcatcher catchmail
+fi
+
+if [[ -f /etc/init/mailcatcher.conf ]]; then
+	echo " *" Mailcatcher upstart already configured.
+else
+	cp /srv/config/init/mailcatcher.conf  /etc/init/mailcatcher.conf
+	echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"	
+fi
+
+if [[ -f /etc/php5/mods-available/mailcatcher.ini ]]; then
+	echo " *" Mailcatcher php5 fpm already configured.
+else
+	cp /srv/config/php5-fpm-config/mailcatcher.ini /etc/php5/mods-available/mailcatcher.ini
+	echo " * Copied /srv/config/php5-fpm-config/mailcatcher.ini    to /etc/php5/mods-available/mailcatcher.ini"
+fi
+
+
 # RESTART SERVICES
 #
 # Make sure the services we expect to be running are running.
 echo -e "\nRestart services..."
 service nginx restart
 service memcached restart
+service mailcatcher restart
 
 # Disable PHP Xdebug module by default
 php5dismod xdebug
@@ -342,7 +406,14 @@ php5dismod xdebug
 # Enable PHP mcrypt module by default
 php5enmod mcrypt
 
+# Enable PHP mailcatcher sendmail settings by default
+php5enmod mailcatcher
+
 service php5-fpm restart
+
+# Add the vagrant user to the www-data group so that it has better access
+# to PHP and Nginx related files.
+usermod -a -G www-data vagrant
 
 # If MySQL is installed, go through the various imports and service tasks.
 exists_mysql="$(service mysql status)"
@@ -416,11 +487,11 @@ if [[ $ping_result == "Connected" ]]; then
 	# Download and extract phpMemcachedAdmin to provide a dashboard view and
 	# admin interface to the goings on of memcached when running
 	if [[ ! -d /srv/www/default/memcached-admin ]]; then
-		echo -e "\nDownloading phpMemcachedAdmin, see https://code.google.com/p/phpmemcacheadmin/"
+		echo -e "\nDownloading phpMemcachedAdmin, see https://github.com/wp-cloud/phpmemcacheadmin"
 		cd /srv/www/default
-		wget -q -O phpmemcachedadmin.tar.gz 'https://phpmemcacheadmin.googlecode.com/files/phpMemcachedAdmin-1.2.2-r262.tar.gz'
-		mkdir memcached-admin
-		tar -xf phpmemcachedadmin.tar.gz --directory memcached-admin
+		wget -q -O phpmemcachedadmin.tar.gz 'https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.2.1.tar.gz'
+		tar -xf phpmemcachedadmin.tar.gz
+		mv phpmemcacheadmin* memcached-admin
 		rm phpmemcachedadmin.tar.gz
 	else
 		echo "phpMemcachedAdmin already installed."
@@ -575,11 +646,11 @@ PHP
 
 	# Download phpMyAdmin
 	if [[ ! -d /srv/www/default/database-admin ]]; then
-		echo "Downloading phpMyAdmin 4.2.13.1..."
+		echo "Downloading phpMyAdmin..."
 		cd /srv/www/default
-		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.13.1/phpMyAdmin-4.2.13.1-all-languages.tar.gz/download'
+		wget -q -O phpmyadmin.tar.gz 'https://files.phpmyadmin.net/phpMyAdmin/4.4.10/phpMyAdmin-4.4.10-all-languages.tar.gz'
 		tar -xf phpmyadmin.tar.gz
-		mv phpMyAdmin-4.2.13.1-all-languages database-admin
+		mv phpMyAdmin-4.4.10-all-languages database-admin
 		rm phpmyadmin.tar.gz
 	else
 		echo "PHPMyAdmin already installed."
