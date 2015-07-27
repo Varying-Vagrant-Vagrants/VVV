@@ -9,11 +9,16 @@ Vagrant.configure("2") do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
-  # Configuration options for the VirtualBox provider.
+  # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 1024]
+    v.customize ["modifyvm", :id, "--cpus", 1]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+
+    # Set the box name in VirtualBox to match the working directory.
+    vvv_pwd = Dir.pwd
+    v.name = File.basename(vvv_pwd)
   end
 
   # Configuration options for the Parallels provider.
@@ -21,6 +26,13 @@ Vagrant.configure("2") do |config|
     v.update_guest_tools = true
     v.optimize_power_consumption = false
     v.memory = 1024
+    v.cpus = 1
+  end
+
+  # Configuration options for the VMware Fusion provider.
+  config.vm.provider :vmware_fusion do |v|
+    v.vmx["memsize"] = "1024"
+    v.vmx["numvcpus"] = "1"
   end
 
   # SSH Agent Forwarding
@@ -39,6 +51,16 @@ Vagrant.configure("2") do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
     override.vm.box = "parallels/ubuntu-14.04"
+  end
+
+  # The VMware Fusion Provider uses a different naming scheme.
+  config.vm.provider :vmware_fusion do |v, override|
+    override.vm.box = "netsensia/ubuntu-trusty64"
+  end
+  
+  # VMWare Workstation can use the same package as Fusion
+  config.vm.provider :vmware_workstation do |v, override|
+    override.vm.box = "netsensia/ubuntu-trusty64"
   end
 
   config.vm.hostname = "vvv"
@@ -173,6 +195,11 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
   else
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
+  end
+
+  config.vm.provision "fix-no-tty", type: "shell" do |s|
+    s.privileged = false
+    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
   end
 
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as

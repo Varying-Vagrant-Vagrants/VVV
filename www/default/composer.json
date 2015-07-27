@@ -1,0 +1,36 @@
+{
+  "name": "Varying-Vagrant-Vagrants/VVV",
+  "description": "Varying Vagrant Vagrants is an evolving Vagrant configuration focused on WordPress development",
+  "version": "0.0.1",
+  "type": "project",
+  "homepage": "https://github.com/Varying-Vagrant-Vagrants/VVV",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Varying-Vagrant-Vagrants Team",
+      "homepage": "https://github.com/Varying-Vagrant-Vagrants/VVV/graphs/contributors"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
+  },
+  "repositories": {
+    "webgrind": {
+      "type": "package",
+      "package": {
+        "name": "jokkedk/webgrind",
+        "version": "master",
+        "dist": {
+          "url": "https://github.com/jokkedk/webgrind/archive/master.zip",
+          "type": "zip"
+        }
+      }
+    }
+  },
+  "require": {
+    "rlerdorf/opcache-status": "dev-master",
+    "jokkedk/webgrind": "dev-master",
+    "wp-cloud/phpmemcacheadmin": "*",
+    "wp-cloud/phpmyadmin": "*"
+  }
+}

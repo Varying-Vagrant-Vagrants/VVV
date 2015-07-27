@@ -55,4 +55,8 @@
 
 # And a few of our web directories are important to share.
 /www/default/*
-!/www/default/index.php
+
+# But not the custom phpMyAdmin config in the database-admin directory.
+/www/default/database-admin/config.inc.custom.php!/www/default/index.php
+!/www/default/composer.json
+!/www/default/vvv-init.sh
