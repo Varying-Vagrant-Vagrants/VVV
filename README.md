@@ -1,13 +1,13 @@
 # Varying Vagrant Vagrants
 
-Varying Vagrant Vagrants is an open source [Vagrant](http://vagrantup.com) configuration focused on [WordPress](http://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
+Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) configuration focused on [WordPress](https://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
 
 VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
 * **Version**: 1.x.x-working
 * **Latest Stable**: [1.2.0](https://github.com/varying-vagrant-vagrants/vvv/tree/1.2.0)
 * **Web**: [http://varyingvagrantvagrants.org/](http://varyingvagrantvagrants.org/)
-* **Contributors**: [@jeremyfelt](https://github.com/jeremyfelt), [@carldanley](https://github.com/carldanley), [@ericmann](https://github.com/ericmann), [@lkwdwrd](https://github.com/lkwdwrd), [@TheLastCicada](https://github.com/TheLastCicada), [@tddewey](https://github.com/tddewey), [@johnpbloch](https://github.com/johnpbloch), [@kadamwhite](https://github.com/kadamwhite), [@scribu](https://github.com/scribu), [@danielbachhuber](https://github.com/danielbachhuber), [@tollmanz](https://github.com/tollmanz), [@mbijon](https://github.com/mbijon), [@markjaquith](https://github.com/markjaquith), [@curtismchale](https://github.com/curtismchale), [@Mamaduka](https://github.com/mamaduka), [@lgedeon](https://github.com/lgedeon), [@pmgarman](https://github.com/pmgarman), [@westonruter](https://github.com/westonruter), [@petemall](https://github.com/petemall), [@cmmarslender](https://github.com/cmmarslender), [@mintindeed](https://github.com/mintindeed), [@mboynes](https://github.com/mboynes), [@aaronjorbin](https://github.com/aaronjorbin), [@tobiasbg](https://github.com/tobiasbg), [@simonwheatley](https://github.com/simonwheatley), [@ocean90](https://github.com/ocean90), [@lvnilesh](https://github.com/lvnilesh), [@alexw23](https://github.com/alexw23), [@zamoose](https://github.com/zamoose), [@leewillis77](https://github.com/leewillis77), [@imichaeli](https://github.com/imichaeli), [@andrezrv](https://github.com/andrezrv), [@cadwell](https://github.com/cadwell), [@cfoellmann](https://github.com/cfoellmann), [@westi](https://github.com/westi), [@ryanduff](https://github.com/ryanduff), [@selinerdominik](https://github.com/selinerdominik), [@ericandrewlewis](https://github.com/ericandrewlewis), [@vDevices](https://github.com/vDevices), [@sunnyratilal](https://github.com/sunnyratilal), [@enejb](https://github.com/enejb), [@salcode](https://github.com/salcode), [@mattbanks](https://github.com/mattbanks), [@aaroncampbell](https://github.com/aaroncampbell), [@tnorthcutt](https://github.com/tnorthcutt), [@neilpie](https://github.com/neilpie), [@francescolaffi](https://github.com/francescolaffi), [@itsananderson](https://github.com/itsananderson), [@foolswis](https://github.com/foolswis), [@lloydde](https://github.com/lloydde), [@jmbarlow](https://github.com/jmbarlow), [@nacin](https://github.com/nacin), [@thewebists](https://github.com/thewebists), [@iparr](https://github.com/iparr), [@chrishepner](https://github.com/chrishepner), [@miya0001](https://github.com/miya0001), [@iamntz](https://github.com/iamntz), [@mirmillo](https://github.com/mirmillo), [@garyjones](https://github.com/garyjones), [@teraphy](https://github.com/teraphy), [@DrewAPicture](https://github.com/DrewAPicture), [@jjeaton](https://github.com/jjeaton), [@ntwb](https://github.com/ntwb), [@bradp](https://github.com/bradp), [@jb510](https://github.com/jb510)
+* **Contributors**: [@jeremyfelt](https://github.com/jeremyfelt), [@carldanley](https://github.com/carldanley), [@ericmann](https://github.com/ericmann), [@lkwdwrd](https://github.com/lkwdwrd), [@TheLastCicada](https://github.com/TheLastCicada), [@tddewey](https://github.com/tddewey), [@johnpbloch](https://github.com/johnpbloch), [@kadamwhite](https://github.com/kadamwhite), [@scribu](https://github.com/scribu), [@danielbachhuber](https://github.com/danielbachhuber), [@tollmanz](https://github.com/tollmanz), [@mbijon](https://github.com/mbijon), [@markjaquith](https://github.com/markjaquith), [@curtismchale](https://github.com/curtismchale), [@Mamaduka](https://github.com/mamaduka), [@lgedeon](https://github.com/lgedeon), [@pmgarman](https://github.com/pmgarman), [@westonruter](https://github.com/westonruter), [@petemall](https://github.com/petemall), [@cmmarslender](https://github.com/cmmarslender), [@mintindeed](https://github.com/mintindeed), [@mboynes](https://github.com/mboynes), [@aaronjorbin](https://github.com/aaronjorbin), [@tobiasbg](https://github.com/tobiasbg), [@simonwheatley](https://github.com/simonwheatley), [@ocean90](https://github.com/ocean90), [@lvnilesh](https://github.com/lvnilesh), [@alexw23](https://github.com/alexw23), [@zamoose](https://github.com/zamoose), [@leewillis77](https://github.com/leewillis77), [@imichaeli](https://github.com/imichaeli), [@andrezrv](https://github.com/andrezrv), [@cadwell](https://github.com/cadwell), [@cfoellmann](https://github.com/cfoellmann), [@westi](https://github.com/westi), [@ryanduff](https://github.com/ryanduff), [@selinerdominik](https://github.com/selinerdominik), [@ericandrewlewis](https://github.com/ericandrewlewis), [@vDevices](https://github.com/vDevices), [@sunnyratilal](https://github.com/sunnyratilal), [@enejb](https://github.com/enejb), [@salcode](https://github.com/salcode), [@mattbanks](https://github.com/mattbanks), [@aaroncampbell](https://github.com/aaroncampbell), [@tnorthcutt](https://github.com/tnorthcutt), [@neilpie](https://github.com/neilpie), [@francescolaffi](https://github.com/francescolaffi), [@itsananderson](https://github.com/itsananderson), [@foolswis](https://github.com/foolswis), [@lloydde](https://github.com/lloydde), [@jmbarlow](https://github.com/jmbarlow), [@nacin](https://github.com/nacin), [@thewebists](https://github.com/thewebists), [@iparr](https://github.com/iparr), [@chrishepner](https://github.com/chrishepner), [@miya0001](https://github.com/miya0001), [@iamntz](https://github.com/iamntz), [@mirmillo](https://github.com/mirmillo), [@garyjones](https://github.com/garyjones), [@teraphy](https://github.com/teraphy), [@DrewAPicture](https://github.com/DrewAPicture), [@jjeaton](https://github.com/jjeaton), [@ntwb](https://github.com/ntwb), [@bradp](https://github.com/bradp), [@jb510](https://github.com/jb510), [@pbearne](https://github.com/pbearne), [@robneu](https://github.com/robneu), [@hubdotcom](https://github.com/hubdotcom), [@michaelbeil](https://github.com/michaelbeil), [@EHLOVader](https://github.com/EHLOVader), [@HongPong](https://github.com/HongPong), [@twisty7867](https://github.com/twisty7867), [@khromov](https://github.com/khromov), [@amchoukir](https://github.com/amchoukir), [@grantnorwood](https://github.com/grantnorwood)
 
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/CONTRIBUTING.md). Thanks!
 
@@ -19,7 +19,7 @@ The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable
 
 The default server configuration provisioned by VVV matches a common configuration for working with high traffic WordPress sites.
 
-The default WordPress configurations provided by VVV create an environment ideal for developing themes and plugins as well as for [contributing to WordPress core](http://make.wordpress.org/core/).
+The default WordPress configurations provided by VVV create an environment ideal for developing themes and plugins as well as for [contributing to WordPress core](https://make.wordpress.org/core/).
 
 ### How to Use Varying Vagrant Vagrants
 
@@ -27,7 +27,7 @@ The default WordPress configurations provided by VVV create an environment ideal
 
 VVV requires recent versions of both Vagrant and VirtualBox to be installed.
 
-[Vagrant](http://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](http://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
+[Vagrant](https://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](https://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
 
 #### VVV as a MAMP/XAMPP Replacement
 
@@ -38,7 +38,7 @@ Multiple projects can be developed at once in the same environment.
 * Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop themes.
 * Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop plugins.
 * Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `www/`.
-* Use the `www/wordpress-develop` directory to participate in [WordPress core](http://core.trac.wordpress.org) development.
+* Use the `www/wordpress-develop` directory to participate in [WordPress core](https://make.wordpress.org/core) development.
 
 VVV's `config`, `database`, `log` and `www` directories are shared with the virtualized server.
 
@@ -52,7 +52,7 @@ Entirely different server configurations can be created by modifying the files i
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
 1. Install [VirtualBox 4.3.x](https://www.virtualbox.org/wiki/Downloads)
-1. Install [Vagrant 1.6.x](http://www.vagrantup.com/downloads.html)
+1. Install [Vagrant 1.7.x](https://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
 1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
@@ -117,6 +117,8 @@ VVV relies on the stability of both Vagrant and Virtualbox. These caveats are co
 
 The default memory allotment for the VVV virtual machine is 1024MB. If you would like to raise or lower this value to better match your system requirements, a [guide to changing memory size](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Customising-your-Vagrant's-attributes-and-parameters) is in the wiki.
 
+Since version 1.2.0, VVV has used a 64bit version of Ubuntu. Some older CPUs (such as the popular *Intel Core 2 Duo* series) do not support this. Changing the line `config.vm.box = "ubuntu/trusty64"` to `"ubuntu/trusty32"` in the `Vagrantfile` before `vagrant up` will provision a 32bit version of Ubuntu that will work on older hardware.
+
 ### Credentials and Such
 
 All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
@@ -153,30 +155,31 @@ All WordPress admin usernames and passwords for WordPress installations included
 A bunch of stuff!
 
 1. [Ubuntu](http://www.ubuntu.com/) 14.04 LTS (Trusty Tahr)
-1. [WordPress Develop](http://develop.svn.wordpress.org/trunk/)
-1. [WordPress Stable](http://wordpress.org/)
-1. [WordPress Trunk](http://core.svn.wordpress.org/trunk/)
-1. [WP-CLI](http://wp-cli.org/)
-1. [nginx](http://nginx.org/) 1.6.x
-1. [mysql](http://www.mysql.com/) 5.5.x
+1. [WordPress Develop](https://develop.svn.wordpress.org/trunk/)
+1. [WordPress Stable](https://wordpress.org/)
+1. [WordPress Trunk](https://core.svn.wordpress.org/trunk/)
+1. [WP-CLI](http://wp-cli.org/) (master branch)
+1. [nginx](http://nginx.org/) ([mainline](http://nginx.com/blog/nginx-1-6-1-7-released/) version)
+1. [mysql](https://www.mysql.com/) 5.5.x
 1. [php-fpm](http://php-fpm.org/) 5.5.x
-1. [memcached](http://memcached.org/) 1.4.13
-1. PHP [memcache extension](http://pecl.php.net/package/memcache/3.0.8/) 3.0.8
-1. PHP [xdebug extension](http://pecl.php.net/package/xdebug/2.2.5/) 2.2.5
-1. PHP [imagick extension](http://pecl.php.net/package/imagick/3.1.2/) 3.1.2
-1. [PHPUnit](http://pear.phpunit.de/) 4.0.x
-1. [ack-grep](http://beyondgrep.com/) 2.04
-1. [git](http://git-scm.com/) 1.9.x
-1. [subversion](http://subversion.apache.org/) 1.8.x
+1. [memcached](http://memcached.org/)
+1. PHP [memcache extension](https://pecl.php.net/package/memcache)
+1. PHP [xdebug extension](https://pecl.php.net/package/xdebug/)
+1. PHP [imagick extension](https://pecl.php.net/package/imagick/)
+1. [PHPUnit](https://phpunit.de/)
+1. [ack-grep](http://beyondgrep.com/)
+1. [git](http://git-scm.com/)
+1. [subversion](https://subversion.apache.org/)
 1. [ngrep](http://ngrep.sourceforge.net/usage.html)
 1. [dos2unix](http://dos2unix.sourceforge.net/)
 1. [Composer](https://github.com/composer/composer)
 1. [phpMemcachedAdmin](https://code.google.com/p/phpmemcacheadmin/)
-1. [phpMyAdmin](http://www.phpmyadmin.net/) 4.1.14 (multi-language)
+1. [phpMyAdmin](http://www.phpmyadmin.net/) (multi-language)
 1. [Opcache Status](https://github.com/rlerdorf/opcache-status)
 1. [Webgrind](https://github.com/jokkedk/webgrind)
-1. [NodeJs](http://nodejs.org/) Current Stable Version
-1. [grunt-cli](https://github.com/gruntjs/grunt-cli) Current Stable Version
+1. [NodeJs](https://nodejs.org/)
+1. [grunt-cli](https://github.com/gruntjs/grunt-cli)
+1. [Mailcatcher](http://mailcatcher.me/)
 
 ### Need Help?
 
@@ -184,7 +187,7 @@ A bunch of stuff!
 * The [WordPress and Vagrant Mailing list](https://groups.google.com/forum/#!forum/wordpress-and-vagrant) is a great place to get started for any related topics.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
-### Helfpul Extensions
+### Helpful Extensions
 
 Supporting init scripts during provisioning allows for some great extensions of VVV core.
 
@@ -192,6 +195,14 @@ Supporting init scripts during provisioning allows for some great extensions of 
 * [Variable VVV](https://github.com/bradp/vv) automates setting up new sites, setting up deployments, and more.
 * [HHVVVM](https://github.com/johnjamesjacoby/hhvvvm) is an HHVM configuration for VVV.
 * The [WordPress Meta Environment](https://github.com/iandunn/wordpress-meta-environment) is a "collection of scripts that provision the official WordPress.org websites into a Varying Vagrant Vagrants installation."
+
+#### Custom Dashboards
+
+The dashboard provided by VVV allows for easy replacement by looking for a `www/default/dashboard-custom.php` file. The community has built several great dashboards that may be more useful than the bare info provided by default:
+
+* @topdown's [VVV Dashboard](https://github.com/topdown/VVV-Dashboard)
+* @leogopal's [VVV Dashboard](https://github.com/leogopal/VVV-Dashboard)
+* @stevenkword's [VVV Dashboard Custom](https://github.com/stevenkword/vvv-dashboard-custom)
 
 ### The Future of Varying Vagrant Vagrants
 
@@ -202,12 +213,12 @@ Immediate goals for VVV include:
 
 ## Copyright / License
 
-VVV is copyright (c) 2014, the contributors of the VVV project under the [MIT License](https://github.com/varying-vagrant-vagrants/vvv/blog/master/LICENSE).
+VVV is copyright (c) 2014-2015, the contributors of the VVV project under the [MIT License](LICENSE).
 
 ## History
 
-VVV has come a long way since it was first [launched as Varying Vagrant Vagrants](http://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/) in December of 2012. Initially introduced as an exploration of workflow for immediate project needs at [10up](http://10up.com), VVV caught speed quickly as more and more of the team was introduced. During an internal [10up developer summit](http://10up.com/blog/10up-2013-developer-summit/) in March of 2013, Vagrant as a tool was a highlight and more developers made the conversion.
+VVV has come a long way since it was first [launched as Varying Vagrant Vagrants](https://jeremyfelt.com/code/2012/12/11/varying-vagrant-vagrants/) in December of 2012. Initially introduced as an exploration of workflow for immediate project needs at [10up](http://10up.com), VVV caught speed quickly as more and more of the team was introduced. During an internal [10up developer summit](http://10up.com/blog/10up-2013-developer-summit/) in March of 2013, Vagrant as a tool was a highlight and more developers made the conversion.
 
-In April of 2013, we made a [call to the WordPress community](http://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/) to try to encourage the addition of Vagrant to everyday life. These efforts continued with talks at [WordCamp Chicago](http://wordpress.tv/2013/12/31/jeremy-felt-hi-wordpress-meet-vagrant-2/), [WordCamp Vancouver](http://wordpress.tv/2013/10/19/jeremy-felt-hi-wordpress-meet-vagrant/), and WordCamp Denver.
+In April of 2013, we made a [call to the WordPress community](https://jeremyfelt.com/code/2013/04/08/hi-wordpress-meet-vagrant/) to try to encourage the addition of Vagrant to everyday life. These efforts continued with talks at [WordCamp Chicago](https://wordpress.tv/2013/12/31/jeremy-felt-hi-wordpress-meet-vagrant-2/), [WordCamp Vancouver](https://wordpress.tv/2013/10/19/jeremy-felt-hi-wordpress-meet-vagrant/), and WordCamp Denver.
 
-In January of 2014, [10up](http://10up.com) made the decision to [spin VVV off](http://10up.com/blog/varying-vagrant-vagrants-future/) into its own organization to better align with the community that has grown around the project over time. This transition opens doors for what [Varying Vagrant Vagrants, the organization](http://jeremyfelt.com/code/2014/01/27/varying-vagrant-vagrants-organization/) can accomplish as an ongoing project.
+In January of 2014, [10up](http://10up.com) made the decision to [spin VVV off](http://10up.com/blog/varying-vagrant-vagrants-future/) into its own organization to better align with the community that has grown around the project over time. This transition opens doors for what [Varying Vagrant Vagrants, the organization](https://jeremyfelt.com/code/2014/01/27/varying-vagrant-vagrants-organization/) can accomplish as an ongoing project.
