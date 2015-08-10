@@ -38,3 +38,8 @@ eval "$(grunt --completion=bash)"
 
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
+
+# PHPBrew Exports
+export PHPBREW_ROOT=/opt/phpbrew
+export PHPBREW_HOME=/opt/phpbrew
+. /opt/phpbrew/bashrc
