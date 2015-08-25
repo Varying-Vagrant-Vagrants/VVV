@@ -15,11 +15,9 @@ VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blo
 
 ### The Purpose of Varying Vagrant Vagrants
 
-The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable development environment that matches a typical production environment.
+The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable development environment with a server configuration common for high traffic WordPress sites.
 
-The default server configuration provisioned by VVV matches a common configuration for working with high traffic WordPress sites.
-
-The default WordPress configurations provided by VVV create an environment ideal for developing themes and plugins as well as for [contributing to WordPress core](https://make.wordpress.org/core/).
+VVV is ideal for developing themes and plugins as well as for [contributing to WordPress core](https://make.wordpress.org/core/).
 
 ### How to Use Varying Vagrant Vagrants
 
