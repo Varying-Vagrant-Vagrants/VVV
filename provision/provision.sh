@@ -258,19 +258,19 @@ else
 	echo -e "\nNo network connection available, skipping package installation"
 fi
 
-# Configuration for nginx
+# Create an SSL key and certificate for HTTPS support.
 if [[ ! -e /etc/nginx/server.key ]]; then
 	echo "Generate Nginx server private key..."
 	vvvgenrsa="$(openssl genrsa -out /etc/nginx/server.key 2048 2>&1)"
 	echo "$vvvgenrsa"
 fi
-if [[ ! -e /etc/nginx/server.csr ]]; then
-	echo "Generate Certificate Signing Request (CSR)..."
-	openssl req -new -batch -key /etc/nginx/server.key -out /etc/nginx/server.csr
-fi
 if [[ ! -e /etc/nginx/server.crt ]]; then
-	echo "Sign the certificate using the above private key and CSR..."
-	vvvsigncert="$(openssl x509 -req -days 365 -in /etc/nginx/server.csr -signkey /etc/nginx/server.key -out /etc/nginx/server.crt 2>&1)"
+	echo "Sign the certificate using the above private key..."
+	vvvsigncert="$(openssl req -new -x509 \
+            -key /etc/nginx/server.key \
+            -out /etc/nginx/server.crt \
+            -days 3650 \
+            -subj /CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.wordpress-trunk.dev 2>&1)"
 	echo "$vvvsigncert"
 fi
 
