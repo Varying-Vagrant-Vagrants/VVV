@@ -223,7 +223,7 @@ Vagrant.configure("2") do |config|
   # The Hyper-V Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. Furthermore, the normal shared folders need to be
   # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
-  # override the www folder with one options that make it Hyper-V compatible.
+  # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["file_mode=0775","dir_mode=0775","forceuid","noperm","nobrl"]
     # Change all the folder to use SMB instead of Virtual Box shares
