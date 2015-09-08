@@ -341,7 +341,7 @@ if [[ -f /srv/config/bash_prompt ]]; then
 fi
 
 # Mailcatcher
-# 
+#
 # Installs mailcatcher using RVM. RVM allows us to install the
 # current version of ruby and all mailcatcher dependencies reliably.
 rvm_version="$(/usr/bin/env rvm --silent --version 2>&1 | grep 'rvm ' | cut -d " " -f 2)"
@@ -357,7 +357,7 @@ else
 	# Signatures introduced in 1.26.0
 	gpg -q --no-tty --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D39DC0E3
 	gpg -q --no-tty --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys BF04FF17
-	
+
 	printf " * RVM [not installed]\n Installing from source"
 	curl --silent -L https://get.rvm.io | sudo bash -s stable --ruby
 	source /usr/local/rvm/scripts/rvm
@@ -380,7 +380,7 @@ if [[ -f /etc/init/mailcatcher.conf ]]; then
 	echo " *" Mailcatcher upstart already configured.
 else
 	cp /srv/config/init/mailcatcher.conf  /etc/init/mailcatcher.conf
-	echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"	
+	echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
 fi
 
 if [[ -f /etc/php5/mods-available/mailcatcher.ini ]]; then
@@ -464,7 +464,7 @@ fi
 if (( $EUID == 0 )); then
     wp() { sudo -EH -u vagrant -- wp "$@"; }
     tar() { sudo -EH -u vagrant -- tar "$@"; }
-    npm() { sudo -EH -u vagrant -- npm "$@"; }
+    npm() { sudo -EH -u vagrant -- npm --no-bin-links "$@"; }
 fi
 
 if [[ $ping_result == "Connected" ]]; then
