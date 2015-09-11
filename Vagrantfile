@@ -225,7 +225,7 @@ Vagrant.configure("2") do |config|
   # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
   # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
-    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["file_mode=0775","dir_mode=0775","forceuid","noperm","nobrl"]
+    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["file_mode=0775","dir_mode=0775","forceuid","noperm","nobrl","mfsymlinks"]
     # Change all the folder to use SMB instead of Virtual Box shares
     config.vm.synced_folders.each do |id, options|
       if ! options[:type]

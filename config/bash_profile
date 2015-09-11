@@ -38,23 +38,3 @@ eval "$(grunt --completion=bash)"
 
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
-
-#Fix local NPM installs for windows
-function npm {
-  # by defaukt, no bin links please
-  local bin_links="--no-bin-links "
-
-  # Search through args to see if global flag was passed.
-  for var in "$@"
-  do
-    if [[ "$var" == "-g" ]]
-      then
-      # this is a global command, allow bin links
-      bin_links=""
-      break
-    fi
-  done
-
-  # Conditionally run npm with --no-bin-links if no global flag was passed.
-  sudo -EH -u vagrant -- npm "$bin_links$@"
-}
