@@ -35,6 +35,12 @@ Vagrant.configure("2") do |config|
     v.vmx["numvcpus"] = "1"
   end
 
+  # Configuration options for Hyper-V provider.
+  config.vm.provider :hyperv do |v, override|
+    v.memory = 1024
+    v.cpus = 1
+  end
+
   # SSH Agent Forwarding
   #
   # Enable agent forwarding on vagrant ssh commands. This allows you to use ssh keys
@@ -57,10 +63,15 @@ Vagrant.configure("2") do |config|
   config.vm.provider :vmware_fusion do |v, override|
     override.vm.box = "netsensia/ubuntu-trusty64"
   end
-  
+
   # VMWare Workstation can use the same package as Fusion
   config.vm.provider :vmware_workstation do |v, override|
     override.vm.box = "netsensia/ubuntu-trusty64"
+  end
+
+  # Hyper-V uses a different base box.
+  config.vm.provider :hyperv do |v, override|
+    override.vm.box = "ericmann/trusty64"
   end
 
   config.vm.hostname = "vvv"
@@ -207,6 +218,20 @@ Vagrant.configure("2") do |config|
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
+  end
+
+  # The Hyper-V Provider does not understand "dmode"/"fmode" in the "mount_options" as
+  # those are specific to Virtualbox. Furthermore, the normal shared folders need to be
+  # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
+  # override the www folder with options that make it Hyper-V compatible.
+  config.vm.provider :hyperv do |v, override|
+    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+    # Change all the folder to use SMB instead of Virtual Box shares
+    config.vm.synced_folders.each do |id, options|
+      if ! options[:type]
+        options[:type] = "smb"
+      end
+    end
   end
 
   # Customfile - POSSIBLY UNSTABLE
