@@ -52,6 +52,7 @@
 
 # And we provide our default host names in a dat file.
 !/www/vvv-hosts
+!/www/vvv-sites/
 
 # And a few of our web directories are important to share.
 /www/default/*
