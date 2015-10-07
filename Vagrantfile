@@ -227,7 +227,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider :hyperv do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
     # Change all the folder to use SMB instead of Virtual Box shares
-    config.vm.synced_folders.each do |id, options|
+    override.vm.synced_folders.each do |id, options|
       if ! options[:type]
         options[:type] = "smb"
       end
