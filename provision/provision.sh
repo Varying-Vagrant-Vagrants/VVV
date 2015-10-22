@@ -348,17 +348,26 @@ phpfpm_setup() {
   cp "/srv/config/php5-fpm-config/php5-fpm.conf" "/etc/php5/fpm/php5-fpm.conf"
   cp "/srv/config/php5-fpm-config/www.conf" "/etc/php5/fpm/pool.d/www.conf"
   cp "/srv/config/php5-fpm-config/php-custom.ini" "/etc/php5/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php5-fpm-config/opcache.ini" "/etc/php5/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php5-fpm-config/opcache.ini" "/etc/php5/mods-available/opcache.ini"
   cp "/srv/config/php5-fpm-config/xdebug.ini" "/etc/php5/mods-available/xdebug.ini"
 
   # Find the path to Xdebug and prepend it to xdebug.ini
   XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
   sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php5/mods-available/xdebug.ini"
 
+  # Find the path to Xdebug and prepend it to xdebug.ini
+  OPCACHE_PATH=$( find /usr -name 'opcache.so' | head -1 )
+  sed -i "1izend_extension=\"$OPCACHE_PATH\"" "/etc/php5/mods-available/opcache.ini"
+
+  # Remove the old opcache.ini to avoid conflicts
+  if [[ -f "/etc/php5/fpm/conf.d/opcache.ini" ]]; then
+    rm /etc/php5/fpm/conf.d/opcache.ini
+  fi
+
   echo " * Copied /srv/config/php5-fpm-config/php5-fpm.conf     to /etc/php5/fpm/php5-fpm.conf"
   echo " * Copied /srv/config/php5-fpm-config/www.conf          to /etc/php5/fpm/pool.d/www.conf"
   echo " * Copied /srv/config/php5-fpm-config/php-custom.ini    to /etc/php5/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php5-fpm-config/opcache.ini       to /etc/php5/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php5-fpm-config/opcache.ini       to /etc/php5/mods-available/opcache.ini"
   echo " * Copied /srv/config/php5-fpm-config/xdebug.ini        to /etc/php5/mods-available/xdebug.ini"
 
   # Copy memcached configuration from local
@@ -478,6 +487,9 @@ services_restart() {
   service nginx restart
   service memcached restart
   service mailcatcher restart
+
+  # Enable Zend OPCache module by default
+  php5enmod opcache
 
   # Disable PHP Xdebug module by default
   php5dismod xdebug

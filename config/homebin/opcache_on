@@ -1,0 +1,3 @@
+#!/bin/bash
+sudo php5enmod opcache
+sudo service php5-fpm restart
