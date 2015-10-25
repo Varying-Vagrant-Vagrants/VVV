@@ -202,6 +202,14 @@ The dashboard provided by VVV allows for easy replacement by looking for a `www/
 * @leogopal's [VVV Dashboard](https://github.com/leogopal/VVV-Dashboard)
 * @stevenkword's [VVV Dashboard Custom](https://github.com/stevenkword/vvv-dashboard-custom)
 
+#### Use Git instead of Subversion
+
+By default, VVV provisions WordPress into `/www/wordpress-develop/` from the [WordPress Subversion repository](https://core.svn.wordpress.org/).
+
+If you prefer to use Git, there is a [bundled script](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/config/homebin/develop_git) that converts to using the [Git mirror](http://develop.git.wordpress.org).
+
+To use, it run `$ develop_git` from `VVV/` or any nested directory.
+
 ### The Future of Varying Vagrant Vagrants
 
 Immediate goals for VVV include:
