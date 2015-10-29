@@ -208,7 +208,7 @@ By default, VVV provisions WordPress into `/www/wordpress-develop/` from the [Wo
 
 If you prefer to use Git, there is a [bundled script](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/config/homebin/develop_git) that converts to using the [Git mirror](http://develop.git.wordpress.org).
 
-To use, it run `$ develop_git` from `VVV/` or any nested directory.
+To use, it run `develop_git` from inside of the Vagrant: Use `vagrant ssh`, then run `develop_git`. Alternatively, do this in one line with: `vagrant ssh -c /srv/config/homebin/develop_git`.
 
 ### The Future of Varying Vagrant Vagrants
 
