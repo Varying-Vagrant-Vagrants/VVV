@@ -210,9 +210,9 @@ package_install() {
     echo "Applying Nginx signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
-    # Apply the nodejs assigning key
-    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key C7917B12 2>&1 | grep "gpg:"
-    apt-key export C7917B12 | apt-key add -
+    # Retrieve the NodeJS signing key from nodesource.com
+    echo "Applying NodeSource NodeJS signing key..."
+    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
