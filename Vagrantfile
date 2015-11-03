@@ -121,6 +121,10 @@ Vagrant.configure("2") do |config|
   #
   config.vm.network :private_network, id: "vvv_primary" ip: "192.168.50.4"
 
+  config.vm.provider :hyperv do |v, override|
+    override.vm.network :private_network, id: "vvv_primary" ip: nil
+  end
+
   # Public Network (disabled)
   #
   # Using a public network rather than the default private network configuration will allow
