@@ -16,6 +16,7 @@
 /provision/github.token
 
 # Ignore custom trigger scripts in config/homebin.
+/config/homebin/vagrant_up_custom
 /config/homebin/vagrant_halt_custom
 /config/homebin/vagrant_suspend_custom
 /config/homebin/vagrant_destroy_custom
