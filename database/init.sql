@@ -12,4 +12,4 @@ GRANT ALL PRIVILEGES ON `wordpress_unit_tests`.* TO 'wp'@'localhost' IDENTIFIED 
 
 # Create an external user with privileges on all databases in mysql so
 # that a connection can be made from the local machine without an SSH tunnel
-GRANT ALL PRIVILEGES ON *.* TO 'external'@'192.168.50.4' IDENTIFIED BY 'external';
+GRANT ALL PRIVILEGES ON *.* TO 'external'@'192.168.50.1' IDENTIFIED BY 'external';
