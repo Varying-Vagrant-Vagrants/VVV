@@ -26,7 +26,11 @@ define( 'WP_DEBUG', true );
 define( 'DB_NAME', 'wordpress_unit_tests' );
 define( 'DB_USER', 'wp' );
 define( 'DB_PASSWORD', 'wp' );
-define( 'DB_HOST', 'localhost' );
+if ( file_exists( '/vagrant' ) ) {
+	define( 'DB_HOST', 'localhost' );
+} else {
+	define( 'DB_HOST', '192.168.50.4' );
+}
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
