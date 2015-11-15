@@ -202,13 +202,13 @@ The dashboard provided by VVV allows for easy replacement by looking for a `www/
 * @leogopal's [VVV Dashboard](https://github.com/leogopal/VVV-Dashboard)
 * @stevenkword's [VVV Dashboard Custom](https://github.com/stevenkword/vvv-dashboard-custom)
 
-#### Use Git instead of Subversion
+#### Use Git instead of Subversion for WordPress core development
 
-By default, VVV provisions WordPress into `/www/wordpress-develop/` from the [WordPress Subversion repository](https://core.svn.wordpress.org/).
+By default, VVV provisions WordPress into `/www/wordpress-develop/` from the [WordPress Subversion repository](https://develop.svn.wordpress.org/).
 
-If you prefer to use Git, there is a [bundled script](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/config/homebin/develop_git) that converts to using the [Git mirror](http://develop.git.wordpress.org).
+If you prefer to use Git, there is a [bundled script](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/config/homebin/develop_git) that converts to using the [Git mirror](https://develop.git.wordpress.org).
 
-To use, it run `develop_git` from inside of the Vagrant: Use `vagrant ssh`, then run `develop_git`. Alternatively, do this in one line with: `vagrant ssh -c /srv/config/homebin/develop_git`.
+To enable Git for core development, use `vagrant ssh` to access the virtual machine and then run `develop_git`. Alternatively, do this in one line with: `vagrant ssh -c /srv/config/homebin/develop_git`.
 
 ### The Future of Varying Vagrant Vagrants
 
