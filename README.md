@@ -51,6 +51,7 @@ Entirely different server configurations can be created by modifying the files i
 ### The First Vagrant Up
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
+    * For Windows 8 or higher it is recommended that you run the cmd window as Administrator
 1. Install [VirtualBox 5.0.x](https://www.virtualbox.org/wiki/Downloads)
 1. Install [Vagrant 1.8.x](https://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
