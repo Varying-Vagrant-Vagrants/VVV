@@ -199,6 +199,12 @@ package_install() {
   ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
   echo "Linked custom apt sources"
 
+  if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
+      # Retrieve the NodeJS signing key from nodesource.com
+      echo "Applying NodeSource NodeJS signing key..."
+	  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+  fi
+
   if [[ ${#apt_package_install_list[@]} = 0 ]]; then
     echo -e "No apt packages to install.\n"
   else
@@ -209,10 +215,6 @@ package_install() {
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
-
-    # Retrieve the NodeJS signing key from nodesource.com
-    echo "Applying NodeSource NodeJS signing key..."
-    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
