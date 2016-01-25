@@ -89,8 +89,12 @@ Vagrant.configure("2") do |config|
   # Other domains can be automatically added by including a vvv-hosts file containing
   # individual domains separated by whitespace in subdirectories of www/.
   if defined?(VagrantPlugins::Ghost)
+  # Collect the host names of installed sites.
+  #
+  # @return array An array of host names found in config files.
+  def get_vvv_hosts
     # Recursively fetch the paths to all vvv-hosts files under the www/ directory.
-    paths = Dir[File.join(vagrant_dir, 'www', '**', 'vvv-hosts')]
+    paths = Dir[File.join("#vagrant_dir", 'www', '**', 'vvv-hosts')]
 
     # Parse the found vvv-hosts files for host names.
     hosts = paths.map do |path|
@@ -100,8 +104,8 @@ Vagrant.configure("2") do |config|
       lines.grep(/\A[^#]/)
     end.flatten.uniq # Remove duplicate entries
 
-    # Pass the found host names to the Ghost plugin so it can perform magic.
-    config.ghost.hosts = hosts
+    return hosts
+  end
   end
 
   # Private Network (default)
