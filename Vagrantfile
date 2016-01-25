@@ -106,6 +106,13 @@ Vagrant.configure("2") do |config|
 
     return hosts
   end
+
+  if defined?(VagrantPlugins::Ghost)
+    # Pass the found host names to the Ghost plugin.
+    config.ghost.hosts = get_vvv_hosts
+  elsif defined?(VagrantPlugins::HostsUpdater)
+    config.hostsupdater.aliases = get_vvv_hosts
+    config.hostsupdater.remove_on_suspend = true
   end
 
   # Private Network (default)
