@@ -34,7 +34,7 @@
 /database/data/*
 
 # Log files should be ignored.
-/log/*.log
+/log/**/*.log
 
 # No need to share our individual sites with each other
 /www/*
