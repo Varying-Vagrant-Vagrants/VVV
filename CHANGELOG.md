@@ -1,10 +1,33 @@
 # Varying Vagrant Vagrants Changelog
 
-## In Progress
+## 1.3.0 (TBD)
 
-* ***New:*** Add support for Parallels as a provider. (#479)
-* MySQL: Enable `innodb_file_per_table`. (#537)
-* WordPress: SVN repositories configured in VVV provisioning are now set to HTTPS. Existing repositories configured to HTTP will not automatically update during provisioning unless they are first relocated to HTTPS. The `svn relocate` command can be used for this. See [#561](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/561) for more information.
+### Features
+* Add support for Parallels as a provider. See [#479](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/479).
+* Add support for Hyper-V as a provider. See [#742](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/742).
+* Add support for VMWare Fusion as a provider. See [#587](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/587).
+* Add support for VMWare Workstation as a provider. See [656](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/656).
+* Add MailCatcher to default provisioning. See [#632](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/632).
+
+## Bug fixes and enhancements
+* Composer: Set a custom GitHub token for Composer if it exists. See [#575](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/575).
+* Docs: Update inline `Vagrantfile` documentation to better explain various network configurations.
+* MySQL: Enable `innodb_file_per_table`. See [#537](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/537).
+* npm: Add `npm-check-updates` during provisioning to help manage `package.json` inside the VM. See [#484](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/484).
+* PHP: Bump max upload size in PHP and Nginx to 1024MB to support developing on the Internet in the year 2016. See [#599](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/599).
+* PHPCS: Set default code standards for PHPCS to WordPress-Core. See [#574](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/574).
+* phpMyAdmin: Allow for a custom phpMyAdmin configuration file. See [#688](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/688).
+* PHPUnit: Update PHPUnit to 4.3.8. A future update of VVV should include PHP 5.6.x or PHP 7 and allow us to update PHPUnit to 5.x. See [#808](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/808).
+* PHPUnit: Allow PHPUnit to run tests from the local machine while using the WordPress unit tests database in the virtual machine. See [#785](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/785).
+* PHPUnit: Set the `WP_CORE_DIR` path so PHPUnit tests are run against WordPress trunk. See [#783](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/783).
+* Provision: Rewrite `provision.sh` to be more modular. This improves readability and may one day aid in testability. See [#659](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/659).
+* Vagrant: Set the default box name to that of the working directory to allow for multiple instances of VVV without conflict. See [#706](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/706).
+* Vagrant: Allow for a custom trigger, `vagrant_up` to fire during `vagrant up` and `vagrant reload`. See [#778](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/778).
+* Vagrant: Make it easier and more forward-compatible to modify the virtual machine's IP address. See [#781](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/781).
+* Vagrant: Clarify default setting of 1 CPU when creating the virtual machine. See [#625](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/625/).
+* WordPress: Provide better support for testing with xip.io by accounting for these requests in `wp-config.php`. See [#559](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/559).
+* WordPress: SVN repositories configured in VVV provisioning are now set to HTTPS. Existing repositories configured to HTTP will not automatically update during provisioning unless they are first relocated to HTTPS. The `svn relocate` command can be used for this. See [#561](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/561).
+* WP-CLI: Add an external configuration for WP-CLI so that a locally installed copy can be used outside of the VM. See [#564](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/564).
 
 ## 1.2.0 (December 14, 2014)
 * VVV is now [MIT Licensed](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/LICENSE).
