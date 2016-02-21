@@ -9,11 +9,16 @@ Vagrant.configure("2") do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
-  # Configuration options for the VirtualBox provider.
+  # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 1024]
+    v.customize ["modifyvm", :id, "--cpus", 1]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+
+    # Set the box name in VirtualBox to match the working directory.
+    vvv_pwd = Dir.pwd
+    v.name = File.basename(vvv_pwd)
   end
 
   # Configuration options for the Parallels provider.
@@ -21,6 +26,19 @@ Vagrant.configure("2") do |config|
     v.update_guest_tools = true
     v.optimize_power_consumption = false
     v.memory = 1024
+    v.cpus = 1
+  end
+
+  # Configuration options for the VMware Fusion provider.
+  config.vm.provider :vmware_fusion do |v|
+    v.vmx["memsize"] = "1024"
+    v.vmx["numvcpus"] = "1"
+  end
+
+  # Configuration options for Hyper-V provider.
+  config.vm.provider :hyperv do |v, override|
+    v.memory = 1024
+    v.cpus = 1
   end
 
   # SSH Agent Forwarding
@@ -39,6 +57,21 @@ Vagrant.configure("2") do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
     override.vm.box = "parallels/ubuntu-14.04"
+  end
+
+  # The VMware Fusion Provider uses a different naming scheme.
+  config.vm.provider :vmware_fusion do |v, override|
+    override.vm.box = "netsensia/ubuntu-trusty64"
+  end
+
+  # VMWare Workstation can use the same package as Fusion
+  config.vm.provider :vmware_workstation do |v, override|
+    override.vm.box = "netsensia/ubuntu-trusty64"
+  end
+
+  # Hyper-V uses a different base box.
+  config.vm.provider :hyperv do |v, override|
+    override.vm.box = "ericmann/trusty64"
   end
 
   config.vm.hostname = "vvv"
@@ -86,7 +119,11 @@ Vagrant.configure("2") do |config|
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
-  config.vm.network :private_network, ip: "192.168.50.4"
+  config.vm.network :private_network, id: "vvv_primary", ip: "192.168.50.4"
+
+  config.vm.provider :hyperv do |v, override|
+    override.vm.network :private_network, id: "vvv_primary", ip: nil
+  end
 
   # Public Network (disabled)
   #
@@ -175,11 +212,30 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
   end
 
+  config.vm.provision "fix-no-tty", type: "shell" do |s|
+    s.privileged = false
+    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+  end
+
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
+  end
+
+  # The Hyper-V Provider does not understand "dmode"/"fmode" in the "mount_options" as
+  # those are specific to Virtualbox. Furthermore, the normal shared folders need to be
+  # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
+  # override the www folder with options that make it Hyper-V compatible.
+  config.vm.provider :hyperv do |v, override|
+    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+    # Change all the folder to use SMB instead of Virtual Box shares
+    override.vm.synced_folders.each do |id, options|
+      if ! options[:type]
+        options[:type] = "smb"
+      end
+    end
   end
 
   # Customfile - POSSIBLY UNSTABLE
@@ -242,6 +298,15 @@ Vagrant.configure("2") do |config|
   # to create backups of all current databases. This can be overridden with custom
   # scripting. See the individual files in config/homebin/ for details.
   if defined? VagrantPlugins::Triggers
+    config.trigger.after :up, :stdout => true do
+      run "vagrant ssh -c 'vagrant_up'"
+    end
+    config.trigger.before :reload, :stdout => true do
+      run "vagrant ssh -c 'vagrant_halt'"
+    end
+    config.trigger.after :reload, :stdout => true do
+      run "vagrant ssh -c 'vagrant_up'"
+    end
     config.trigger.before :halt, :stdout => true do
       run "vagrant ssh -c 'vagrant_halt'"
     end

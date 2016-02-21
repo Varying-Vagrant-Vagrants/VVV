@@ -4,11 +4,11 @@ Contributions to the VVV project are more than welcome.
 
 ## License
 
-By contributing code to the [VVV project](https://github.com/varying-vagrant-vagrants/vvv/), you agree to license your contribution under the [MIT License](https://github.com/varying-vagrant-vagrants/vvv/blog/master/LICENSE).
+By contributing code to the [VVV project](https://github.com/varying-vagrant-vagrants/vvv/), you agree to license your contribution under the [MIT License](LICENSE).
 
 ## Issues
 
-Open a GitHub issue for anything. We've covered quite a bit of ground through the first year, so it would be helfpul to search for related topics first. That said, don't worry if you find yourself opening something that sounds like it could be obvious. There is no such thing.
+Open a GitHub issue for anything. We've covered quite a bit of ground through the first year, so it would be helpful to search for related topics first. That said, don't worry if you find yourself opening something that sounds like it could be obvious. There is no such thing.
 
 ## Comments
 
@@ -18,9 +18,11 @@ Comment on any GitHub issue, open or closed. The only guidelines here are to be 
 
 Submit a pull request at any time, whether an issue has been created or not. It may be helpful to discuss your goals in an issue first, though many things can best be shown with code.
 
-We do ask that the pull request be submitted against the current **master** branch. Every effort is made to make the pull request as stable as possible before merging it in, so we aren't too worried. A list of stable releases is maintained as we go and can be used by anyone concerned by ongoing development.
+We do ask that the pull request be submitted against the current **develop** branch, which is the default on the VVV repository. Every effort is made to make the pull request as stable as possible before merging it in.
 
 It may make sense that a feature branch is created so that several contributors can work together. In this case, it is possible that write access to the VVV repository will be given liberally. You may be asked to submit your pull request against a feature branch so that it can be merged and worked on with others before going in to master.
+
+The master branch can be considered stable and a list of stable releases is maintained as we go and can be used by anyone concerned by ongoing development.
 
 ## Milestones and Labels
 
@@ -34,4 +36,4 @@ For any shell scripting that we do in Bash — see `provision.sh` — we try to 
 
 ### PHP
 
-For any PHP, we try to follow the WordPress core [code standards](http://make.wordpress.org/core/handbook/coding-standards/).
+For any PHP, we try to follow the WordPress core [code standards](https://make.wordpress.org/core/handbook/coding-standards/).
