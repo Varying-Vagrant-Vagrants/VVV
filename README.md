@@ -64,7 +64,7 @@ Entirely different server configurations can be created by modifying the files i
     * If vagrant-triggers is not installed, VVV will not provide automated database backups.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/Varying-Vagrant-Vagrants/VVV.git vagrant-local`
-    * OR download and extract the repository master [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/master.zip) to a `vagrant-local` directory on your computer.
+    * OR download and extract the repository `develop` branch [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/develop.zip) to a `vagrant-local` directory on your computer.
     * OR download and extract a [stable release](https://github.com/varying-vagrant-vagrants/vvv/releases) zip file if you'd like some extra comfort.
 1. In a command prompt, change into the new directory with `cd vagrant-local`
 1. Start the Vagrant environment with `vagrant up`
