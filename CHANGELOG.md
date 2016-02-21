@@ -4,6 +4,7 @@
 
 * ***New:*** Add support for Parallels as a provider. (#479)
 * MySQL: Enable `innodb_file_per_table`. (#537)
+* WordPress: SVN repositories configured in VVV provisioning are now set to HTTPS. Existing repositories configured to HTTP will not automatically update during provisioning unless they are first relocated to HTTPS. The `svn relocate` command can be used for this. See [#561](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/561) for more information.
 
 ## 1.2.0 (December 14, 2014)
 * VVV is now [MIT Licensed](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/LICENSE).
