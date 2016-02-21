@@ -211,10 +211,9 @@ If you prefer to use Git, there is a [bundled script](https://github.com/Varying
 
 To enable Git for core development, use `vagrant ssh` to access the virtual machine and then run `develop_git`. Alternatively, do this in one line with: `vagrant ssh -c /srv/config/homebin/develop_git`.
 
-### The Future of Varying Vagrant Vagrants
+### Varying Vagrant Vagrants Objectives
 
-Immediate goals for VVV include:
-
+* Provide an approachable development environment with a modern server configuration.
 * Continue to work towards a stable state of software and configuration included in the default provisioning.
 * Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
 
