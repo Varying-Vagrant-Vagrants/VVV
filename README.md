@@ -219,7 +219,7 @@ To enable Git for core development, use `vagrant ssh` to access the virtual mach
 
 ## Copyright / License
 
-VVV is copyright (c) 2014-2015, the contributors of the VVV project under the [MIT License](LICENSE).
+VVV is copyright (c) 2014-2016, the contributors of the VVV project under the [MIT License](LICENSE).
 
 ## History
 
