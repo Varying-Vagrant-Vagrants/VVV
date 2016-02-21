@@ -1,6 +1,6 @@
 # Varying Vagrant Vagrants Changelog
 
-## 1.3.0 (TBD)
+## 1.3.0 (February 21, 2016)
 
 ### Features
 * Add support for Parallels as a provider. See [#479](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/479).
