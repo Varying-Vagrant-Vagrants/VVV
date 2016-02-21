@@ -9,7 +9,7 @@
 * Add support for VMWare Workstation as a provider. See [656](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/656).
 * Add MailCatcher to default provisioning. See [#632](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/632).
 
-## Bug fixes and enhancements
+### Bug fixes and enhancements
 * Composer: Set a custom GitHub token for Composer if it exists. See [#575](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/575).
 * Docs: Update inline `Vagrantfile` documentation to better explain various network configurations.
 * MySQL: Enable `innodb_file_per_table`. See [#537](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/537).
