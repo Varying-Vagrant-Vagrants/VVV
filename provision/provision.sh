@@ -216,11 +216,11 @@ package_install() {
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
-    apt-get update -y
+    apt-get -y update
 
     # Install required packages
     echo "Installing apt-get packages..."
-    apt-get install -y ${apt_package_install_list[@]}
+    apt-get -y install ${apt_package_install_list[@]}
 
     # Clean up apt caches
     apt-get clean
