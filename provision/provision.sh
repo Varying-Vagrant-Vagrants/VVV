@@ -226,6 +226,10 @@ package_install() {
     echo "Installing apt-get packages..."
     apt-get install -y ${apt_package_install_list[@]}
 
+    # Remove unnecessary packages
+    echo "Removing unnecessary packages..."
+    apt-get autoremove -y
+
     # Clean up apt caches
     apt-get clean
   fi
