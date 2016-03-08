@@ -27,25 +27,25 @@ apt_package_check_list=(
 
   # PHP5
   #
-  # Our base packages for php5. As long as php5-fpm and php5-cli are
-  # installed, there is no need to install the general php5 package, which
+  # Our base packages for php7.0. As long as php7.0-fpm and php7.0-cli are
+  # installed, there is no need to install the general php7.0 package, which
   # can sometimes install apache as a requirement.
-  php5-fpm
-  php5-cli
+  php7.0-fpm
+  php7.0-cli
 
   # Common and dev packages for php
-  php5-common
-  php5-dev
+  php7.0-common
+  php7.0-dev
 
   # Extra PHP modules that we find useful
-  php5-memcache
-  php5-imagick
-  php5-mcrypt
-  php5-mysql
-  php5-imap
-  php5-curl
+  php-memcache
+  php-imagick
+  php7.0-mcrypt
+  php7.0-mysql
+  php7.0-imap
+  php7.0-curl
   php-pear
-  php5-gd
+  php7.0-gd
 
   # nginx is installed as the default web server
   nginx
@@ -210,9 +210,13 @@ package_install() {
     echo "Applying Nginx signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
-    # Apply the nodejs assigning key
+    # Apply the nodejs signing key
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key C7917B12 2>&1 | grep "gpg:"
     apt-key export C7917B12 | apt-key add -
+
+    # Apply the PHP signing key
+    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
+    apt-key export E5267A6C | apt-key add -
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
@@ -236,7 +240,7 @@ tools_install() {
 
   # xdebug
   #
-  # XDebug 2.2.3 is provided with the Ubuntu install by default. The PECL
+  # XDebug 2.4.0 is provided with the Ubuntu install by default. The PECL
   # installation allows us to use a later version. Not specifying a version
   # will load the latest stable.
   pecl install xdebug
