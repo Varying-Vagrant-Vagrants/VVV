@@ -488,15 +488,15 @@ services_restart() {
   service mailcatcher restart
 
   # Disable PHP Xdebug module by default
-  php5dismod xdebug
+  phpdismod xdebug
 
   # Enable PHP mcrypt module by default
-  php5enmod mcrypt
+  phpenmod mcrypt
 
   # Enable PHP mailcatcher sendmail settings by default
-  php5enmod mailcatcher
+  phpenmod mailcatcher
 
-  service php5-fpm restart
+  service php7.0-fpm restart
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
