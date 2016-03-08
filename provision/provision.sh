@@ -40,6 +40,7 @@ apt_package_check_list=(
   # Extra PHP modules that we find useful
   php-memcache
   php-imagick
+  php7.0-mbstring
   php7.0-mcrypt
   php7.0-mysql
   php7.0-imap
