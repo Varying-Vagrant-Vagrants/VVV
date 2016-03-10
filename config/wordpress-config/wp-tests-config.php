@@ -23,14 +23,22 @@ define( 'WP_DEBUG', true );
 // These tests will DROP ALL TABLES in the database with the prefix named below.
 // DO NOT use a production database or one that is shared with something else.
 
-define( 'DB_NAME', 'wordpress_unit_tests' );
-define( 'DB_USER', 'wp' );
-define( 'DB_PASSWORD', 'wp' );
-if ( file_exists( '/vagrant' ) ) {
+if ( getenv( 'WP_TESTS_DB_HOST' ) ) {
+	define( 'DB_HOST', getenv( 'WP_TESTS_DB_HOST' ) );
+} else if ( file_exists( '/vagrant' ) ) {
 	define( 'DB_HOST', 'localhost' );
 } else {
 	define( 'DB_HOST', '192.168.50.4' );
 }
+define( 'DB_NAME', getenv( 'WP_TESTS_DB_NAME' ) ?: 'wordpress_unit_tests' );
+if ( getenv( 'WP_TESTS_DB_USER' ) ) {
+	define( 'DB_USER', getenv( 'WP_TESTS_DB_USER' ) );
+	define( 'DB_PASSWORD', getenv( 'WP_TESTS_DB_PASSWORD' ) );
+} else {
+	define( 'DB_USER', 'wp' );
+	define( 'DB_PASSWORD', 'wp' );
+}
+
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
