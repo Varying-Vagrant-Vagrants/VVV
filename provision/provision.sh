@@ -152,6 +152,14 @@ profile_setup() {
   fi
 }
 
+not_installed() {
+   if [ "$(dpkg -s ${1} 2>&1 | grep 'Version:')" ]; then
+      [ -n "$(apt-cache policy ${1} | grep 'Installed: (none)')" ] && return 0 || return 1
+   else
+      return 0
+   fi
+}
+
 package_check() {
   # Loop through each of our packages that should be installed on the system. If
   # not yet installed, it should be added to the array of packages to install.
@@ -159,7 +167,7 @@ package_check() {
   local package_version
 
   for pkg in "${apt_package_check_list[@]}"; do
-    if [[ -n "$(apt-cache policy ${pkg} | grep 'Installed: (none)')" ]]; then
+    if not_installed "${pkg}"; then
       echo " *" $pkg [not installed]
       apt_package_install_list+=($pkg)
     else
