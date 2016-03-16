@@ -746,6 +746,11 @@ custom_vvv(){
     # while still having an Nginx config which works.
     DIR="$(dirname "$SITE_CONFIG_FILE")"
     sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+
+    # Resolve relative paths since not supported in Nginx root.
+    while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"; do
+      sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+    done
   done
 
   # Parse any vvv-hosts file located in www/ or subdirectories of www/
