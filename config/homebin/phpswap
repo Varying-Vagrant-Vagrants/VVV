@@ -116,9 +116,15 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 
 	# Switch the PHP version
 	phpbrew $SWAP_TYPE $PHP_VER
+
 	# Install extensions
-	phpbrew ext install memcache
-	phpbrew ext install imagick
+	if [[ $PHP_VER == "7."* ]]; then
+		phpbrew ext install opcache
+		phpbrew ext install imagick
+	else
+		phpbrew ext install memcache
+		phpbrew ext install imagick
+	fi
 
 	# Xdebug is special because the 2.3 branch drops support for PHP 5.2/5.3
 	[[ $PHP_VER == "5.2"* || $PHP_VER == "5.3"* ]] && { XDEBUG_VER=2.2.7; true; } || XDEBUG_VER=stable
@@ -147,6 +153,23 @@ if [[ $BREW_USE == *"not exists"* || $BREW_VERSION_AVAIL == 0 ]]; then
 		# uncomment the listen owner, group, and mode
 		sed -i -r "/;\s?listen\.(owner|group|mode)/s/^;//" $PHPBREW_INSTALL/etc/php-fpm.conf
 	fi
+	# PHP 7+ has a different config file setup
+	if [[ -f $PHPBREW_INSTALL/etc/php-fpm.d/www.conf.default ]]; then
+	    if [[ ! -f $PHPBREW_INSTALL/etc/php-fpm.d/www.conf ]]; then
+			cp $PHPBREW_INSTALL/etc/php-fpm.d/www.conf.default $PHPBREW_INSTALL/etc/php-fpm.d/www.conf
+	    fi
+	fi
+	if [[ -f $PHPBREW_INSTALL/etc/php-fpm.d/www.conf ]]; then
+		# set php-fpm to be listening on the right socket
+		sed -i 's@127.0.0.1:9000@/var/run/php5-fpm\.sock@g' $PHPBREW_INSTALL/etc/php-fpm.d/www.conf
+		# set the user and group to correctly run
+		sed -i 's@\(user = \).*@\1 www-data@' $PHPBREW_INSTALL/etc/php-fpm.d/www.conf
+		sed -i 's@\(group = \).*@\1 vagrant@' $PHPBREW_INSTALL/etc/php-fpm.d/www.conf
+		# and set the socket listener to correct user/group
+		sed -i 's@\(owner = \).*@\1 www-data@' $PHPBREW_INSTALL/etc/php-fpm.d/www.conf
+		# uncomment the listen owner, group, and mode
+		sed -i -r "/;\s?listen\.(owner|group|mode)/s/^;//" $PHPBREW_INSTALL/etc/php-fpm.d/www.conf
+	fi
 
 	sudo chown -R vagrant: /opt/phpbrew
 else
@@ -158,8 +181,10 @@ fi
 sudo service php5-fpm stop > /dev/null 2>&1
 #PHP_FMP_SOCK=`ss -pl | grep php5-fpm.sock | awk '{print $6}'`
 
-# Enable extensions (excluding xdebug)
-phpbrew ext enable memcache
+if [[ ! $PHP_VER == "7."* ]]; then
+	# Enable extensions (excluding xdebug)
+	phpbrew ext enable memcache
+fi
 
 # Restart phpbrew's fpm
 echo "Restarting fpm so the changes take effect"
