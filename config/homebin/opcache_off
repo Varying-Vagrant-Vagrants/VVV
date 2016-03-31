@@ -1,0 +1,3 @@
+#!/bin/bash
+sudo php5dismod opcache
+sudo service php5-fpm restart
