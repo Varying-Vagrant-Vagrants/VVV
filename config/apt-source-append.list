@@ -6,5 +6,5 @@ deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 
 # Provides Node.js
-deb https://deb.nodesource.com/node_0.12 trusty main
-deb-src https://deb.nodesource.com/node_0.12 trusty main
+deb https://deb.nodesource.com/node_4.x trusty main
+deb-src https://deb.nodesource.com/node_4.x trusty main
