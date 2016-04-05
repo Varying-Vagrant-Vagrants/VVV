@@ -228,6 +228,21 @@ package_install() {
 }
 
 tools_install() {
+  # nvm
+  if [[ ! -d "/srv/config/nvm" ]]; then
+    echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
+    git clone "https://github.com/creationix/nvm.git" "/srv/config/nvm"
+    cd /srv/config/nvm
+    git checkout `git describe --abbrev=0 --tags`
+  else
+    echo -e "\nUpdating nvm..."
+    cd /srv/config/nvm
+    git pull origin master
+    git checkout `git describe --abbrev=0 --tags`
+  fi
+  # Activate nvm
+  source /srv/config/nvm/nvm.sh
+
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
