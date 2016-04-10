@@ -362,21 +362,21 @@ nginx_setup() {
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php7-fpm-config/php7-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
-  cp "/srv/config/php7-fpm-config/www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
-  cp "/srv/config/php7-fpm-config/php-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php7-fpm-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php7-fpm-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/php7-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
+  cp "/srv/config/php-config/www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
+  cp "/srv/config/php-config/php-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
 
   # Find the path to Xdebug and prepend it to xdebug.ini
   XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
   sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php/7.0/mods-available/xdebug.ini"
 
-  echo " * Copied /srv/config/php7-fpm-config/php7-fpm.conf     to /etc/php/7.0/fpm/php-fpm.conf"
-  echo " * Copied /srv/config/php7-fpm-config/www.conf          to /etc/php/7.0/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php7-fpm-config/php-custom.ini    to /etc/php/7.0/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php7-fpm-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php7-fpm-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/php7-fpm.conf     to /etc/php/7.0/fpm/php-fpm.conf"
+  echo " * Copied /srv/config/php-config/www.conf          to /etc/php/7.0/fpm/pool.d/www.conf"
+  echo " * Copied /srv/config/php-config/php-custom.ini    to /etc/php/7.0/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
@@ -482,8 +482,8 @@ mailcatcher_setup() {
   if [[ -f "/etc/php/7.0/mods-available/mailcatcher.ini" ]]; then
     echo " *" Mailcatcher php7 fpm already configured.
   else
-    cp "/srv/config/php7-fpm-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php7-fpm-config/mailcatcher.ini    to /etc/php/7.0/mods-available/mailcatcher.ini"
+    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.0/mods-available/mailcatcher.ini"
   fi
 }
 
