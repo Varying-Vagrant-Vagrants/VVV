@@ -27,25 +27,26 @@ apt_package_check_list=(
 
   # PHP5
   #
-  # Our base packages for php5. As long as php5-fpm and php5-cli are
-  # installed, there is no need to install the general php5 package, which
+  # Our base packages for php7.0. As long as php7.0-fpm and php7.0-cli are
+  # installed, there is no need to install the general php7.0 package, which
   # can sometimes install apache as a requirement.
-  php5-fpm
-  php5-cli
+  php7.0-fpm
+  php7.0-cli
 
   # Common and dev packages for php
-  php5-common
-  php5-dev
+  php7.0-common
+  php7.0-dev
 
   # Extra PHP modules that we find useful
-  php5-memcache
-  php5-imagick
-  php5-mcrypt
-  php5-mysql
-  php5-imap
-  php5-curl
+  php-memcache
+  php-imagick
+  php7.0-mbstring
+  php7.0-mcrypt
+  php7.0-mysql
+  php7.0-imap
+  php7.0-curl
   php-pear
-  php5-gd
+  php7.0-gd
 
   # nginx is installed as the default web server
   nginx
@@ -218,9 +219,13 @@ package_install() {
     echo "Applying Nginx signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
-    # Apply the nodejs assigning key
+    # Apply the nodejs signing key
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key C7917B12 2>&1 | grep "gpg:"
     apt-key export C7917B12 | apt-key add -
+
+    # Apply the PHP signing key
+    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
+    apt-key export E5267A6C | apt-key add -
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
@@ -229,6 +234,10 @@ package_install() {
     # Install required packages
     echo "Installing apt-get packages..."
     apt-get -y install ${apt_package_install_list[@]}
+
+    # Remove unnecessary packages
+    echo "Removing unnecessary packages..."
+    apt-get autoremove -y
 
     # Clean up apt caches
     apt-get clean
@@ -244,7 +253,7 @@ tools_install() {
 
   # xdebug
   #
-  # XDebug 2.2.3 is provided with the Ubuntu install by default. The PECL
+  # XDebug 2.4.0 is provided with the Ubuntu install by default. The PECL
   # installation allows us to use a later version. Not specifying a version
   # will load the latest stable.
   pecl install xdebug
@@ -353,21 +362,21 @@ nginx_setup() {
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php5-fpm-config/php5-fpm.conf" "/etc/php5/fpm/php5-fpm.conf"
-  cp "/srv/config/php5-fpm-config/www.conf" "/etc/php5/fpm/pool.d/www.conf"
-  cp "/srv/config/php5-fpm-config/php-custom.ini" "/etc/php5/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php5-fpm-config/opcache.ini" "/etc/php5/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php5-fpm-config/xdebug.ini" "/etc/php5/mods-available/xdebug.ini"
+  cp "/srv/config/php7-fpm-config/php7-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
+  cp "/srv/config/php7-fpm-config/www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
+  cp "/srv/config/php7-fpm-config/php-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php7-fpm-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php7-fpm-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
 
   # Find the path to Xdebug and prepend it to xdebug.ini
   XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
-  sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php5/mods-available/xdebug.ini"
+  sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php/7.0/mods-available/xdebug.ini"
 
-  echo " * Copied /srv/config/php5-fpm-config/php5-fpm.conf     to /etc/php5/fpm/php5-fpm.conf"
-  echo " * Copied /srv/config/php5-fpm-config/www.conf          to /etc/php5/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php5-fpm-config/php-custom.ini    to /etc/php5/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php5-fpm-config/opcache.ini       to /etc/php5/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php5-fpm-config/xdebug.ini        to /etc/php5/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php7-fpm-config/php7-fpm.conf     to /etc/php/7.0/fpm/php-fpm.conf"
+  echo " * Copied /srv/config/php7-fpm-config/www.conf          to /etc/php/7.0/fpm/pool.d/www.conf"
+  echo " * Copied /srv/config/php7-fpm-config/php-custom.ini    to /etc/php/7.0/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php7-fpm-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php7-fpm-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
@@ -470,11 +479,11 @@ mailcatcher_setup() {
     echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
   fi
 
-  if [[ -f "/etc/php5/mods-available/mailcatcher.ini" ]]; then
-    echo " *" Mailcatcher php5 fpm already configured.
+  if [[ -f "/etc/php/7.0/mods-available/mailcatcher.ini" ]]; then
+    echo " *" Mailcatcher php7 fpm already configured.
   else
-    cp "/srv/config/php5-fpm-config/mailcatcher.ini" "/etc/php5/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php5-fpm-config/mailcatcher.ini    to /etc/php5/mods-available/mailcatcher.ini"
+    cp "/srv/config/php7-fpm-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php7-fpm-config/mailcatcher.ini    to /etc/php/7.0/mods-available/mailcatcher.ini"
   fi
 }
 
@@ -488,15 +497,15 @@ services_restart() {
   service mailcatcher restart
 
   # Disable PHP Xdebug module by default
-  php5dismod xdebug
+  phpdismod xdebug
 
   # Enable PHP mcrypt module by default
-  php5enmod mcrypt
+  phpenmod mcrypt
 
   # Enable PHP mailcatcher sendmail settings by default
-  php5enmod mailcatcher
+  phpenmod mailcatcher
 
-  service php5-fpm restart
+  service php7.0-fpm restart
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.

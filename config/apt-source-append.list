@@ -8,3 +8,7 @@ deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 # Provides Node.js
 deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main
 deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main
+
+# Provides PHP7
+deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
