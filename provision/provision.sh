@@ -251,12 +251,32 @@ tools_install() {
   npm install -g npm
   npm install -g npm-check-updates
 
-  # xdebug
+  # Xdebug
   #
-  # XDebug 2.4.0 is provided with the Ubuntu install by default. The PECL
-  # installation allows us to use a later version. Not specifying a version
-  # will load the latest stable.
-  pecl install xdebug
+  # The version of Xdebug 2.4.0 that is available for our Ubuntu installation
+  # is not compatible with PHP 7.0. We instead retrieve the source package and
+  # go through the manual installation steps.
+  if [[ -f /usr/lib/php/20151012/xdebug.so ]]; then
+      echo "Xdebug already installed"
+  else
+      echo "Installing Xdebug"
+      # Download and extract Xdebug.
+      curl -L -O --silent https://xdebug.org/files/xdebug-2.4.0.tgz
+      tar -xf xdebug-2.4.0.tgz
+      cd xdebug-2.4.0
+      # Create a build environment for Xdebug based on our PHP configuration.
+      phpize
+      # Complete configuration of the Xdebug build.
+      ./configure -q
+      # Build the Xdebug module for use with PHP.
+      make -s > /dev/null
+      # Install the module.
+      cp modules/xdebug.so /usr/lib/php/20151012/xdebug.so
+      # Clean up.
+      cd ..
+      rm -rf xdebug-2.4.0*
+      echo "Xdebug installed"
+  fi
 
   # ack-grep
   #
@@ -369,7 +389,7 @@ phpfpm_setup() {
   cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
 
   # Find the path to Xdebug and prepend it to xdebug.ini
-  XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
+  XDEBUG_PATH=$( find /usr/lib/php/ -name 'xdebug.so' | head -1 )
   sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php/7.0/mods-available/xdebug.ini"
 
   echo " * Copied /srv/config/php-config/php7-fpm.conf     to /etc/php/7.0/fpm/php-fpm.conf"
