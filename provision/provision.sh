@@ -47,6 +47,8 @@ apt_package_check_list=(
   php7.0-curl
   php-pear
   php7.0-gd
+  libssh2-php
+  libssh2-1-dev
 
   # nginx is installed as the default web server
   nginx
