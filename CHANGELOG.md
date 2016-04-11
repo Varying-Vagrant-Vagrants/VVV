@@ -1,5 +1,15 @@
 # Varying Vagrant Vagrants Changelog
 
+## 1.x.x (TBD)
+
+### Bug fixes and Enhancements
+
+* PHP 7.0.x has now replaced PHP 5.5.x. See [#844](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/844).
+* Xdebug 2.4.0 is now built from source to provide PHP 7.0.x support. See [#869](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/869).
+* Improve the package installation check to avoid false positives. See [#840](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/840).
+* Allow WordPress core unit test database configuration to be supplied with environment variables. See [#846](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/846).
+* Allow `vvv-nginx.conf` to be located in a project's subdirectory. See [#852](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/852).
+
 ## 1.3.0 (February 21, 2016)
 
 ### Features
