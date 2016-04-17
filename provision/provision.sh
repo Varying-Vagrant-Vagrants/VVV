@@ -155,7 +155,7 @@ profile_setup() {
 
 not_installed() {
   dpkg -s "$1" 2>&1 | grep -q 'Version:'
-  if [ "$?" -eq 0 ]; then
+  if [[ "$?" -eq 0 ]]; then
     apt-cache policy "$1" | grep 'Installed: (none)'
     return "$?"
   else
