@@ -27,25 +27,26 @@ apt_package_check_list=(
 
   # PHP5
   #
-  # Our base packages for php5. As long as php5-fpm and php5-cli are
-  # installed, there is no need to install the general php5 package, which
+  # Our base packages for php7.0. As long as php7.0-fpm and php7.0-cli are
+  # installed, there is no need to install the general php7.0 package, which
   # can sometimes install apache as a requirement.
-  php5-fpm
-  php5-cli
+  php7.0-fpm
+  php7.0-cli
 
   # Common and dev packages for php
-  php5-common
-  php5-dev
+  php7.0-common
+  php7.0-dev
 
   # Extra PHP modules that we find useful
-  php5-memcache
-  php5-imagick
-  php5-mcrypt
-  php5-mysql
-  php5-imap
-  php5-curl
+  php-memcache
+  php-imagick
+  php7.0-mbstring
+  php7.0-mcrypt
+  php7.0-mysql
+  php7.0-imap
+  php7.0-curl
   php-pear
-  php5-gd
+  php7.0-gd
 
   # nginx is installed as the default web server
   nginx
@@ -152,6 +153,14 @@ profile_setup() {
   fi
 }
 
+not_installed() {
+   if [[ "$(dpkg -s ${1} 2>&1 | grep 'Version:')" ]]; then
+      [[ -n "$(apt-cache policy ${1} | grep 'Installed: (none)')" ]] && return 0 || return 1
+   else
+      return 0
+   fi
+}
+
 package_check() {
   # Loop through each of our packages that should be installed on the system. If
   # not yet installed, it should be added to the array of packages to install.
@@ -159,15 +168,15 @@ package_check() {
   local package_version
 
   for pkg in "${apt_package_check_list[@]}"; do
-    package_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
-    if [[ -n "${package_version}" ]]; then
+    if not_installed "${pkg}"; then
+      echo " *" $pkg [not installed]
+      apt_package_install_list+=($pkg)
+    else
+      package_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
       space_count="$(expr 20 - "${#pkg}")" #11
       pack_space_count="$(expr 30 - "${#package_version}")"
       real_space="$(expr ${space_count} + ${pack_space_count} + ${#package_version})"
       printf " * $pkg %${real_space}.${#package_version}s ${package_version}\n"
-    else
-      echo " *" $pkg [not installed]
-      apt_package_install_list+=($pkg)
     fi
   done
 }
@@ -216,13 +225,21 @@ package_install() {
     echo "Applying Nginx signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
+    # Apply the PHP signing key
+    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
+    apt-key export E5267A6C | apt-key add -
+
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
-    apt-get update -y
+    apt-get -y update
 
     # Install required packages
     echo "Installing apt-get packages..."
-    apt-get install -y ${apt_package_install_list[@]}
+    apt-get -y install ${apt_package_install_list[@]}
+
+    # Remove unnecessary packages
+    echo "Removing unnecessary packages..."
+    apt-get autoremove -y
 
     # Clean up apt caches
     apt-get clean
@@ -236,12 +253,32 @@ tools_install() {
   npm install -g npm
   npm install -g npm-check-updates
 
-  # xdebug
+  # Xdebug
   #
-  # XDebug 2.2.3 is provided with the Ubuntu install by default. The PECL
-  # installation allows us to use a later version. Not specifying a version
-  # will load the latest stable.
-  pecl install xdebug
+  # The version of Xdebug 2.4.0 that is available for our Ubuntu installation
+  # is not compatible with PHP 7.0. We instead retrieve the source package and
+  # go through the manual installation steps.
+  if [[ -f /usr/lib/php/20151012/xdebug.so ]]; then
+      echo "Xdebug already installed"
+  else
+      echo "Installing Xdebug"
+      # Download and extract Xdebug.
+      curl -L -O --silent https://xdebug.org/files/xdebug-2.4.0.tgz
+      tar -xf xdebug-2.4.0.tgz
+      cd xdebug-2.4.0
+      # Create a build environment for Xdebug based on our PHP configuration.
+      phpize
+      # Complete configuration of the Xdebug build.
+      ./configure -q
+      # Build the Xdebug module for use with PHP.
+      make -s > /dev/null
+      # Install the module.
+      cp modules/xdebug.so /usr/lib/php/20151012/xdebug.so
+      # Clean up.
+      cd ..
+      rm -rf xdebug-2.4.0*
+      echo "Xdebug installed"
+  fi
 
   # ack-grep
   #
@@ -275,7 +312,7 @@ tools_install() {
   if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
     COMPOSER_HOME=/usr/local/src/composer composer self-update
-    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:4.3.*
+    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:4.8.*
     COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/php-invoker:1.1.*
     COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update mockery/mockery:0.9.*
     COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update d11wtq/boris:v1.0.8
@@ -347,21 +384,21 @@ nginx_setup() {
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php5-fpm-config/php5-fpm.conf" "/etc/php5/fpm/php5-fpm.conf"
-  cp "/srv/config/php5-fpm-config/www.conf" "/etc/php5/fpm/pool.d/www.conf"
-  cp "/srv/config/php5-fpm-config/php-custom.ini" "/etc/php5/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php5-fpm-config/opcache.ini" "/etc/php5/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php5-fpm-config/xdebug.ini" "/etc/php5/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/php7-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
+  cp "/srv/config/php-config/www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
+  cp "/srv/config/php-config/php-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
 
   # Find the path to Xdebug and prepend it to xdebug.ini
-  XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
-  sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php5/mods-available/xdebug.ini"
+  XDEBUG_PATH=$( find /usr/lib/php/ -name 'xdebug.so' | head -1 )
+  sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php/7.0/mods-available/xdebug.ini"
 
-  echo " * Copied /srv/config/php5-fpm-config/php5-fpm.conf     to /etc/php5/fpm/php5-fpm.conf"
-  echo " * Copied /srv/config/php5-fpm-config/www.conf          to /etc/php5/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php5-fpm-config/php-custom.ini    to /etc/php5/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php5-fpm-config/opcache.ini       to /etc/php5/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php5-fpm-config/xdebug.ini        to /etc/php5/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/php7-fpm.conf     to /etc/php/7.0/fpm/php-fpm.conf"
+  echo " * Copied /srv/config/php-config/www.conf          to /etc/php/7.0/fpm/pool.d/www.conf"
+  echo " * Copied /srv/config/php-config/php-custom.ini    to /etc/php/7.0/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
@@ -464,11 +501,11 @@ mailcatcher_setup() {
     echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
   fi
 
-  if [[ -f "/etc/php5/mods-available/mailcatcher.ini" ]]; then
-    echo " *" Mailcatcher php5 fpm already configured.
+  if [[ -f "/etc/php/7.0/mods-available/mailcatcher.ini" ]]; then
+    echo " *" Mailcatcher php7 fpm already configured.
   else
-    cp "/srv/config/php5-fpm-config/mailcatcher.ini" "/etc/php5/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php5-fpm-config/mailcatcher.ini    to /etc/php5/mods-available/mailcatcher.ini"
+    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.0/mods-available/mailcatcher.ini"
   fi
 }
 
@@ -482,15 +519,15 @@ services_restart() {
   service mailcatcher restart
 
   # Disable PHP Xdebug module by default
-  php5dismod xdebug
+  phpdismod xdebug
 
   # Enable PHP mcrypt module by default
-  php5enmod mcrypt
+  phpenmod mcrypt
 
   # Enable PHP mailcatcher sendmail settings by default
-  php5enmod mailcatcher
+  phpenmod mailcatcher
 
-  service php5-fpm restart
+  service php7.0-fpm restart
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
@@ -547,8 +584,8 @@ webgrind_install() {
   # Webgrind install (for viewing callgrind/cachegrind files produced by
   # xdebug profiler)
   if [[ ! -d "/srv/www/default/webgrind" ]]; then
-    echo -e "\nDownloading webgrind, see https://github.com/jokkedk/webgrind"
-    git clone "https://github.com/jokkedk/webgrind.git" "/srv/www/default/webgrind"
+    echo -e "\nDownloading webgrind, see https://github.com/michaelschiller/webgrind.git"
+    git clone "https://github.com/michaelschiller/webgrind.git" "/srv/www/default/webgrind"
   else
     echo -e "\nUpdating webgrind..."
     cd /srv/www/default/webgrind
@@ -596,9 +633,9 @@ phpmyadmin_setup() {
   if [[ ! -d /srv/www/default/database-admin ]]; then
     echo "Downloading phpMyAdmin..."
     cd /srv/www/default
-    wget -q -O phpmyadmin.tar.gz "https://files.phpmyadmin.net/phpMyAdmin/4.4.10/phpMyAdmin-4.4.10-all-languages.tar.gz"
+    wget -q -O phpmyadmin.tar.gz "https://files.phpmyadmin.net/phpMyAdmin/4.6.0/phpMyAdmin-4.6.0-all-languages.tar.gz"
     tar -xf phpmyadmin.tar.gz
-    mv phpMyAdmin-4.4.10-all-languages database-admin
+    mv phpMyAdmin-4.6.0-all-languages database-admin
     rm phpmyadmin.tar.gz
   else
     echo "PHPMyAdmin already installed."
@@ -729,7 +766,7 @@ custom_vvv(){
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
   # Look for site setup scripts
-  for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-init.sh'); do
+  find /srv/www -maxdepth 5 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
     DIR="$(dirname "$SITE_CONFIG_FILE")"
     (
     cd "$DIR"
@@ -748,6 +785,11 @@ custom_vvv(){
     # while still having an Nginx config which works.
     DIR="$(dirname "$SITE_CONFIG_FILE")"
     sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+
+    # Resolve relative paths since not supported in Nginx root.
+    while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"; do
+      sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+    done
   done
 
   # Parse any vvv-hosts file located in www/ or subdirectories of www/

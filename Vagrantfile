@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
   # Configuration options for the Parallels provider.
   config.vm.provider :parallels do |v|
     v.update_guest_tools = true
-    v.optimize_power_consumption = false
+    v.customize ["set", :id, "--longer-battery-life", "off"]
     v.memory = 1024
     v.cpus = 1
   end
@@ -119,7 +119,11 @@ Vagrant.configure("2") do |config|
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
-  config.vm.network :private_network, ip: "192.168.50.4"
+  config.vm.network :private_network, id: "vvv_primary", ip: "192.168.50.4"
+
+  config.vm.provider :hyperv do |v, override|
+    override.vm.network :private_network, id: "vvv_primary", ip: nil
+  end
 
   # Public Network (disabled)
   #
@@ -294,6 +298,15 @@ Vagrant.configure("2") do |config|
   # to create backups of all current databases. This can be overridden with custom
   # scripting. See the individual files in config/homebin/ for details.
   if defined? VagrantPlugins::Triggers
+    config.trigger.after :up, :stdout => true do
+      run "vagrant ssh -c 'vagrant_up'"
+    end
+    config.trigger.before :reload, :stdout => true do
+      run "vagrant ssh -c 'vagrant_halt'"
+    end
+    config.trigger.after :reload, :stdout => true do
+      run "vagrant ssh -c 'vagrant_up'"
+    end
     config.trigger.before :halt, :stdout => true do
       run "vagrant ssh -c 'vagrant_halt'"
     end

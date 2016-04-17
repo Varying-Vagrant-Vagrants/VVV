@@ -1,4 +1,4 @@
 #!/bin/bash
-sudo php5enmod xdebug
-sudo service php5-fpm restart
+sudo phpenmod xdebug
+sudo service php7.0-fpm restart
 

@@ -1,4 +1,4 @@
 #!/bin/bash
-sudo php5dismod xdebug
-sudo service php5-fpm restart
+sudo phpdismod xdebug
+sudo service php7.0-fpm restart
 
