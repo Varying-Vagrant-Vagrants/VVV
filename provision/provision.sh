@@ -605,6 +605,9 @@ php_codesniff() {
       echo -e "\nSkipped updating PHP_CodeSniffer since not on master branch"
     fi
   fi
+  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
+  ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
+  ln -sf "/srv/www/phpcs/scripts/phpcs" "/usr/local/bin/phpcs"
 
   # Sniffs WordPress Coding Standards
   if [[ ! -d "/srv/www/phpcs/CodeSniffer/Standards/WordPress" ]]; then
