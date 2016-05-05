@@ -12,3 +12,6 @@ deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main
 # Provides PHP7
 deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
 deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+
+# Provides Docker
+deb https://apt.dockerproject.org/repo ubuntu-trusty main
