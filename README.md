@@ -180,6 +180,29 @@ A bunch of stuff!
 1. [NodeJs](https://nodejs.org/)
 1. [grunt-cli](https://github.com/gruntjs/grunt-cli)
 1. [Mailcatcher](http://mailcatcher.me/)
+1. [Docker](https://www.docker.com/)
+
+### Dockerized PHP
+
+VVV ships with PHP built-in by default and, with no changes from you, will use that stock version of PHP just fine. But in case you need to test your code with _other_ versions of PHP, we've also added Docker-wrapped installations of all the recent major versions as well:
+* 5.3
+* 5.4
+* 5.5
+* 5.6
+* 7.0 - this is installed normally as well
+
+If you want your site to use a specific PHP backend (read: version), then add `set $default_backend phpXX;` to the `server` block of that site's Nginx config file. The XX in this string stands for the version number you want to use (i.e. 5.3 would be `php53`, 5.5 would be `php55`, 7.0 would be `php70`). Your site will now use _that_ version of PHP by default!
+
+#### Cookie Control
+
+We've also set up a tricky Nginx cookie map so you can swap the back-end powering a site dynamically. Click and drag the following bookmarklet links to your browser's toolbar, and you can click them to dynamically change which version of PHP will deliver the site:
+
+* <a href="javascript:(function() {document.cookie='env='+''+';path=/;';})()">PHP</a> - Resets you back to stock PHP
+* <a href="javascript:(function() {document.cookie='env='+'53'+';path=/;';})()">PHP53</a>
+* <a href="javascript:(function() {document.cookie='env='+'54'+';path=/;';})()">PHP54</a>
+* <a href="javascript:(function() {document.cookie='env='+'55'+';path=/;';})()">PHP55</a>
+* <a href="javascript:(function() {document.cookie='env='+'56'+';path=/;';})()">PHP56</a>
+* <a href="javascript:(function() {document.cookie='env='+'70'+';path=/;';})()">PHP70</a>
 
 ### Need Help?
 
