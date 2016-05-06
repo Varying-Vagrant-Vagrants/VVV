@@ -202,6 +202,7 @@ The dashboard provided by VVV allows for easy replacement by looking for a `www/
 * @topdown's [VVV Dashboard](https://github.com/topdown/VVV-Dashboard)
 * @leogopal's [VVV Dashboard](https://github.com/leogopal/VVV-Dashboard)
 * @stevenkword's [VVV Dashboard Custom](https://github.com/stevenkword/vvv-dashboard-custom)
+* @goblindegook's [VVV Material Dashboard](https://github.com/goblindegook/vvv-material-dashboard)
 
 #### Use Git instead of Subversion for WordPress core development
 
