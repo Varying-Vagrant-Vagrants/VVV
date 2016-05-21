@@ -13,10 +13,10 @@ VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blo
 
 ## Table of Content ##
 * [Overview](#overview)
-* [Installation](https://github.com/rene-hermenau/VVV#installation)
-* [Credentials](https://github.com/rene-hermenau/VVV#credentials)
-* [Extensions](https://github.com/rene-hermenau/VVV#extensions)
-* [Copyright & License](https://github.com/rene-hermenau/VVV#copyright)
+* [Installation](#installation)
+* [Credentials](#credentials)
+* [Extensions](#extensions)
+* [Copyright & License](#copyright)
 
 ## [Overview](#overview)
 
