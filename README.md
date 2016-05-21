@@ -19,7 +19,7 @@ VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blo
 [Extensions]()
 [History]()
 
-## Overview
+## [Overview](#overview)
 
 ### The Purpose of Varying Vagrant Vagrants
 
@@ -56,7 +56,7 @@ These shared directories allow you to work, for example, in `vagrant-local/www/w
 
 Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts. Check this project out and use it as a base to learn about server provisioning or change everything to make it your own.
 
-### The First Vagrant Up
+### [Installation - The First Vagrant Up](#installation)
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
 1. Install [VirtualBox 5.0.x](https://www.virtualbox.org/wiki/Downloads)
