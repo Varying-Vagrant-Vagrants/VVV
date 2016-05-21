@@ -12,7 +12,7 @@ VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blo
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/CONTRIBUTING.md). Thanks!
 
 ## Table of Content ##
-* [Overview](https://github.com/rene-hermenau/VVV#overview)
+* [Overview](#overview)
 * [Installation](https://github.com/rene-hermenau/VVV#installation)
 * [Credentials](https://github.com/rene-hermenau/VVV#credentials)
 * [Extensions](https://github.com/rene-hermenau/VVV#extensions)
