@@ -119,11 +119,22 @@ The default memory allotment for the VVV virtual machine is 1024MB. If you would
 
 Since version 1.2.0, VVV has used a 64bit version of Ubuntu. Some older CPUs (such as the popular *Intel Core 2 Duo* series) do not support this. Changing the line `config.vm.box = "ubuntu/trusty64"` to `"ubuntu/trusty32"` in the `Vagrantfile` before `vagrant up` will provision a 32bit version of Ubuntu that will work on older hardware.
 
-### Credentials [Credentials](#credentials)
+### [Credentials](#credentials)
 
-All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
+All database usernames and passwords for WordPress installations included by default are: 
 
-All WordPress admin usernames and passwords for WordPress installations included by default are `admin` and `password`.
+__User:__ `wp`  
+__Password:__ `wp`
+
+All WordPress admin usernames and passwords for WordPress installations included by default are:
+
+__User:__ `admin`  
+__Password:__ `password`
+
+#### MySQL Root
+* __User:__ `root`
+* __Pass:__ `root`
+* See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 #### WordPress Stable
 * LOCAL PATH: vagrant-local/www/wordpress-default
@@ -145,10 +156,6 @@ All WordPress admin usernames and passwords for WordPress installations included
 * DB Name: `wordpress_develop`
 * DB Name: `wordpress_unit_tests`
 
-#### MySQL Root
-* User: `root`
-* Pass: `root`
-* See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 ### What do you get?
 
