@@ -131,10 +131,12 @@ All WordPress admin usernames and passwords for WordPress installations included
 __User:__ `admin`  
 __Password:__ `password`
 
-#### MySQL Root
-* __User:__ `root`
-* __Pass:__ `root`
-* See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
+MySQL Root:
+
+__User:__ `root`
+__Pass:__ `root`
+
+See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 #### WordPress Stable
 * LOCAL PATH: vagrant-local/www/wordpress-default
