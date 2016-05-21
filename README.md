@@ -119,7 +119,7 @@ The default memory allotment for the VVV virtual machine is 1024MB. If you would
 
 Since version 1.2.0, VVV has used a 64bit version of Ubuntu. Some older CPUs (such as the popular *Intel Core 2 Duo* series) do not support this. Changing the line `config.vm.box = "ubuntu/trusty64"` to `"ubuntu/trusty32"` in the `Vagrantfile` before `vagrant up` will provision a 32bit version of Ubuntu that will work on older hardware.
 
-### Credentials
+### Credentials [Credentials](#credentials)
 
 All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
 
