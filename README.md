@@ -13,10 +13,10 @@ VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blo
 
 ## Table of Content ##
 * [Overview](#overview)
-* [Installation](#installation)
+* [Installation](#installation---the-first-vagrant-up)
 * [Credentials](#credentials)
-* [Extensions](#extensions)
-* [Copyright](#copyright)
+* [Extension](helpful-extensions)
+* [Copyright](#copyright-license)
 
 ## [Overview](#overview)
 
