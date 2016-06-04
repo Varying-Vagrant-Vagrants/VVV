@@ -25,7 +25,7 @@ apt_package_install_list=()
 # status before adding them to the apt_package_install_list array.
 apt_package_check_list=(
 
-  # PHP5
+  # PHP7
   #
   # Our base packages for php7.0. As long as php7.0-fpm and php7.0-cli are
   # installed, there is no need to install the general php7.0 package, which
