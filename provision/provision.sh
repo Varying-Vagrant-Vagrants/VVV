@@ -61,7 +61,7 @@ apt_package_check_list=(
   # other packages that come in handy
   imagemagick
   subversion
-  git-core
+  git
   zip
   unzip
   ngrep
@@ -117,6 +117,21 @@ network_check() {
     echo -e "\nNo network connection available, skipping package installation"
     exit 0
   fi
+}
+
+git_ppa_check() {
+  # git
+  #
+  # apt-get does not have latest version of git,
+  # so let's the use ppa repository instead.
+  #
+  # Install prerequisites.
+  sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
+  # Add ppa repo.
+  echo "Adding ppa:git-core/ppa repository"
+  sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
+  # Update apt-get info.
+  sudo apt-get update &>/dev/null
 }
 
 noroot() {
@@ -837,6 +852,7 @@ network_check
 # Package and Tools Install
 echo " "
 echo "Main packages check and install."
+git_ppa_check
 package_install
 tools_install
 nginx_setup
