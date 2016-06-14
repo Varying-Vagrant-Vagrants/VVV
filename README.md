@@ -11,7 +11,14 @@ VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blo
 
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/CONTRIBUTING.md). Thanks!
 
-## Overview
+## Table of Content ##
+* [Overview](#overview)
+* [Installation](#installation---the-first-vagrant-up)
+* [Credentials](#credentials)
+* [Extensions](#helpful-extensions)
+* [Copyright](#copyright--license)
+
+## [Overview](#overview)
 
 ### The Purpose of Varying Vagrant Vagrants
 
@@ -48,7 +55,7 @@ These shared directories allow you to work, for example, in `vagrant-local/www/w
 
 Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts. Check this project out and use it as a base to learn about server provisioning or change everything to make it your own.
 
-### The First Vagrant Up
+### [Installation - The First Vagrant Up](#installation)
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
 1. Install [VirtualBox 5.0.x](https://www.virtualbox.org/wiki/Downloads)
@@ -119,11 +126,24 @@ The default memory allotment for the VVV virtual machine is 1024MB. If you would
 
 Since version 1.2.0, VVV has used a 64bit version of Ubuntu. Some older CPUs (such as the popular *Intel Core 2 Duo* series) do not support this. Changing the line `config.vm.box = "ubuntu/trusty64"` to `"ubuntu/trusty32"` in the `Vagrantfile` before `vagrant up` will provision a 32bit version of Ubuntu that will work on older hardware.
 
-### Credentials
+### [Credentials](#credentials)
 
-All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
+All database usernames and passwords for WordPress installations included by default are: 
 
-All WordPress admin usernames and passwords for WordPress installations included by default are `admin` and `password`.
+__User:__ `wp`  
+__Password:__ `wp`
+
+All WordPress admin usernames and passwords for WordPress installations included by default are:
+
+__User:__ `admin`  
+__Password:__ `password`
+
+MySQL Root:
+
+__User:__ `root`
+__Password:__ `root`
+
+See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 #### WordPress Stable
 * LOCAL PATH: vagrant-local/www/wordpress-default
@@ -145,10 +165,6 @@ All WordPress admin usernames and passwords for WordPress installations included
 * DB Name: `wordpress_develop`
 * DB Name: `wordpress_unit_tests`
 
-#### MySQL Root
-* User: `root`
-* Pass: `root`
-* See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 ### What do you get?
 
@@ -186,7 +202,7 @@ A bunch of stuff!
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
-### Helpful Extensions
+### [Helpful Extensions](#extensions)
 
 Supporting init scripts during provisioning allows for some great extensions of VVV core.
 
@@ -217,7 +233,7 @@ To enable Git for core development, use `vagrant ssh` to access the virtual mach
 * Continue to work towards a stable state of software and configuration included in the default provisioning.
 * Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
 
-## Copyright / License
+## [Copyright / License](#license)
 
 VVV is copyright (c) 2014-2016, the contributors of the VVV project under the [MIT License](LICENSE).
 
