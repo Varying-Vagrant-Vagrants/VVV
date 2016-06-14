@@ -607,6 +607,10 @@ php_codesniff() {
     fi
   fi
 
+  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
+  ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
+  ln -sf "/srv/www/phpcs/scripts/phpcs" "/usr/local/bin/phpcs"
+
   # Sniffs WordPress Coding Standards
   if [[ ! -d "/srv/www/phpcs/CodeSniffer/Standards/WordPress" ]]; then
     echo -e "\nDownloading WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
@@ -622,9 +626,9 @@ php_codesniff() {
   fi
 
   # Install the standards in PHPCS
-  /srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
-  /srv/www/phpcs/scripts/phpcs --config-set default_standard WordPress-Core
-  /srv/www/phpcs/scripts/phpcs -i
+  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
+  phpcs --config-set default_standard WordPress-Core
+  phpcs -i
 }
 
 phpmyadmin_setup() {
