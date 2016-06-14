@@ -258,7 +258,7 @@ Vagrant.configure("2") do |config|
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
   if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
-    config.vm.provision :shell, :path => File.join( "provision", "provision-pre.sh" )
+    config.vm.provision "pre", type: "shell", path: File.join( "provision", "provision-pre.sh" )
   end
 
   # provision.sh or provision-custom.sh
@@ -268,9 +268,9 @@ Vagrant.configure("2") do |config|
   # created, that is run as a replacement. This is an opportunity to replace the entirety
   # of the provisioning provided by default.
   if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
-    config.vm.provision :shell, :path => File.join( "provision", "provision-custom.sh" )
+    config.vm.provision "custom", type: "shell", path: File.join( "provision", "provision-custom.sh" )
   else
-    config.vm.provision :shell, :path => File.join( "provision", "provision.sh" )
+    config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
 
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
@@ -278,7 +278,7 @@ Vagrant.configure("2") do |config|
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
   if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
-    config.vm.provision :shell, :path => File.join( "provision", "provision-post.sh" )
+    config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
   end
 
   # Always start MySQL on boot, even when not running the full provisioner
