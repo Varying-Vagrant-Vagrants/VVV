@@ -155,29 +155,41 @@ profile_setup() {
 }
 
 not_installed() {
-   if [[ "$(dpkg -s ${1} 2>&1 | grep 'Version:')" ]]; then
-      [[ -n "$(apt-cache policy ${1} | grep 'Installed: (none)')" ]] && return 0 || return 1
-   else
-      return 0
-   fi
+  dpkg -s "$1" 2>&1 | grep -q 'Version:'
+  if [[ "$?" -eq 0 ]]; then
+    apt-cache policy "$1" | grep 'Installed: (none)'
+    return "$?"
+  else
+    return 0
+  fi
+}
+
+print_pkg_info() {
+  local pkg="$1"
+  local pkg_version="$2"
+  local space_count
+  local pack_space_count
+  local real_space
+
+  space_count="$(( 20 - ${#pkg} ))" #11
+  pack_space_count="$(( 30 - ${#pkg_version} ))"
+  real_space="$(( space_count + pack_space_count + ${#pkg_version} ))"
+  printf " * $pkg %${real_space}.${#pkg_version}s ${pkg_version}\n"
 }
 
 package_check() {
   # Loop through each of our packages that should be installed on the system. If
   # not yet installed, it should be added to the array of packages to install.
   local pkg
-  local package_version
+  local pkg_version
 
   for pkg in "${apt_package_check_list[@]}"; do
     if not_installed "${pkg}"; then
-      echo " *" $pkg [not installed]
+      echo " *" "$pkg" [not installed]
       apt_package_install_list+=($pkg)
     else
-      package_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
-      space_count="$(expr 20 - "${#pkg}")" #11
-      pack_space_count="$(expr 30 - "${#package_version}")"
-      real_space="$(expr ${space_count} + ${pack_space_count} + ${#package_version})"
-      printf " * $pkg %${real_space}.${#package_version}s ${package_version}\n"
+      pkg_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
+      print_pkg_info "$pkg" "$pkg_version"
     fi
   done
 }
@@ -461,14 +473,13 @@ mailcatcher_setup() {
   # Installs mailcatcher using RVM. RVM allows us to install the
   # current version of ruby and all mailcatcher dependencies reliably.
   local pkg
+  local rvm_version
+  local mailcatcher_version
 
   rvm_version="$(/usr/bin/env rvm --silent --version 2>&1 | grep 'rvm ' | cut -d " " -f 2)"
   if [[ -n "${rvm_version}" ]]; then
     pkg="RVM"
-    space_count="$(( 20 - ${#pkg}))" #11
-    pack_space_count="$(( 30 - ${#rvm_version}))"
-    real_space="$(( ${space_count} + ${pack_space_count} + ${#rvm_version}))"
-    printf " * $pkg %${real_space}.${#rvm_version}s ${rvm_version}\n"
+    print_pkg_info "$pkg" "$rvm_version"
   else
     # RVM key D39DC0E3
     # Signatures introduced in 1.26.0
@@ -483,10 +494,7 @@ mailcatcher_setup() {
   mailcatcher_version="$(/usr/bin/env mailcatcher --version 2>&1 | grep 'mailcatcher ' | cut -d " " -f 2)"
   if [[ -n "${mailcatcher_version}" ]]; then
     pkg="Mailcatcher"
-    space_count="$(( 20 - ${#pkg}))" #11
-    pack_space_count="$(( 30 - ${#mailcatcher_version}))"
-    real_space="$(( ${space_count} + ${pack_space_count} + ${#mailcatcher_version}))"
-    printf " * $pkg %${real_space}.${#mailcatcher_version}s ${mailcatcher_version}\n"
+    print_pkg_info "$pkg" "$mailcatcher_version"
   else
     echo " * Mailcatcher [not installed]"
     /usr/bin/env rvm default@mailcatcher --create do gem install mailcatcher --no-rdoc --no-ri
@@ -868,5 +876,5 @@ custom_vvv
 # And it's done
 end_seconds="$(date +%s)"
 echo "-----------------------------"
-echo "Provisioning complete in "$((${end_seconds} - ${start_seconds}))" seconds"
+echo "Provisioning complete in "$(( end_seconds - start_seconds ))" seconds"
 echo "For further setup instructions, visit http://vvv.dev"
