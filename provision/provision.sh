@@ -605,6 +605,7 @@ php_codesniff() {
       echo -e "\nSkipped updating PHP_CodeSniffer since not on master branch"
     fi
   fi
+
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
   ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
   ln -sf "/srv/www/phpcs/scripts/phpcs" "/usr/local/bin/phpcs"
@@ -624,9 +625,9 @@ php_codesniff() {
   fi
 
   # Install the standards in PHPCS
-  /srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
-  /srv/www/phpcs/scripts/phpcs --config-set default_standard WordPress-Core
-  /srv/www/phpcs/scripts/phpcs -i
+  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
+  phpcs --config-set default_standard WordPress-Core
+  phpcs -i
 }
 
 phpmyadmin_setup() {
