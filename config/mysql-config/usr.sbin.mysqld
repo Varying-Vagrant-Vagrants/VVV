@@ -1,0 +1,5 @@
+# Configuration for Apparmor service to allow mysql to write to /srv/log
+# Site-specific additions and overrides for usr.sbin.mysqld.
+# For more details, please see /etc/apparmor.d/local/README.
+/srv/log/ r,
+/srv/log/** rwk,
