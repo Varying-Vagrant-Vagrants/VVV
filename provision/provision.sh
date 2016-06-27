@@ -243,8 +243,8 @@ package_install() {
     # the packages that we are installing from non standard sources via
     # our appended apt source.list
 
-    # Retrieve the Nginx signing key from nginx.org
-    echo "Applying Nginx signing key..."
+    # Retrieve the Nginx & MySQL signing key from nginx.org
+    echo "Applying Nginx/MySQL signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
     # Apply the nodejs signing key
