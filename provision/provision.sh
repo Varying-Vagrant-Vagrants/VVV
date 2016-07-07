@@ -691,6 +691,7 @@ wordpress_default() {
     cd /srv/www/
     curl -L -O "https://wordpress.org/latest.tar.gz"
     noroot tar -xvf latest.tar.gz
+    wait
     mv wordpress wordpress-default
     rm latest.tar.gz
     cd /srv/www/wordpress-default
