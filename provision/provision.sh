@@ -546,6 +546,21 @@ mailcatcher_setup() {
   fi
 }
 
+elasticsearch_setup() {
+    pkg='elasticsearch'
+    if not_installed "${pkg}"; then
+      echo " *" "$pkg" [not installed]
+      wget --quiet "https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.4/elasticsearch-2.3.4.deb"
+      dpkg -i elasticsearch-2.3.4.deb
+      rm elasticsearch-2.3.4.deb
+    else
+      pkg_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
+      print_pkg_info "$pkg" "$pkg_version"
+    fi
+
+    cp "/srv/config/elasticsearch/elasticsearch.yml" "/etc/elasticsearch/elasticsearch.yml"
+}
+
 services_restart() {
   # RESTART SERVICES
   #
@@ -554,6 +569,7 @@ services_restart() {
   service nginx restart
   service memcached restart
   service mailcatcher restart
+  service elasticsearch restart
 
   # Disable PHP Xdebug module by default
   phpdismod xdebug
@@ -872,6 +888,7 @@ package_install
 tools_install
 nginx_setup
 mailcatcher_setup
+elasticsearch_setup
 phpfpm_setup
 services_restart
 mysql_setup
