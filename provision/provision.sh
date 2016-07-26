@@ -48,6 +48,7 @@ apt_package_check_list=(
   php-pear
   php7.0-gd
   php7.0-soap
+  php7.0-zip
 
   # nginx is installed as the default web server
   nginx
