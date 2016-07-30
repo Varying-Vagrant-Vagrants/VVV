@@ -243,7 +243,7 @@ package_install() {
     # the packages that we are installing from non standard sources via
     # our appended apt source.list
 
-    # Retrieve the Nginx & MySQL signing key from nginx.org
+    # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx/MySQL signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
@@ -251,7 +251,7 @@ package_install() {
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key C7917B12 2>&1 | grep "gpg:"
     apt-key export C7917B12 | apt-key add -
 
-    # Apply the PHP signing key
+    # Apply the PHP & MySQL signing key
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
     apt-key export E5267A6C | apt-key add -
 
