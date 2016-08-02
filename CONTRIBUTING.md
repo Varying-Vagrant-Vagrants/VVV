@@ -32,7 +32,7 @@ Some loose organization has grown around milestones and labels. We'll often have
 
 ### Bash Scripting
 
-For any shell scripting that we do in Bash — see `provision.sh` — we try to follow the style provided in Google's [Shell Style Guide](http://google-styleguide.googlecode.com/svn/trunk/shell.xml).
+For any shell scripting that we do in Bash — see `provision.sh` — we try to follow the style provided in Google's [Shell Style Guide](https://google.github.io/styleguide/shell.xml).
 
 ### PHP
 
