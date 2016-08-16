@@ -38,16 +38,18 @@ apt_package_check_list=(
   php7.0-dev
 
   # Extra PHP modules that we find useful
-  php-memcache
   php-imagick
+  php-memcache
+  php-pear
+  php7.0-curl
+  php7.0-gd
   php7.0-mbstring
   php7.0-mcrypt
   php7.0-mysql
   php7.0-imap
-  php7.0-curl
-  php-pear
-  php7.0-gd
+  php7.0-json
   php7.0-soap
+  php7.0-xml
   php7.0-zip
 
   # nginx is installed as the default web server
