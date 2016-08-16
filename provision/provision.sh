@@ -712,7 +712,7 @@ PHP
   else
     echo "Updating WordPress Stable..."
     cd /srv/www/wordpress-default
-    noroot wp core upgrade
+    noroot wp core update
   fi
 }
 
