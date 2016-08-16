@@ -95,6 +95,9 @@ apt_package_check_list=(
   #Mailcatcher requirement
   libsqlite3-dev
 
+  #Docker requirement
+  linux-image-extra-$(uname -r)
+  docker-engine
 )
 
 ### FUNCTIONS
@@ -257,6 +260,10 @@ package_install() {
     # Apply the PHP signing key
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
     apt-key export E5267A6C | apt-key add -
+
+    # Apply the Docker signing key
+    apt-key adv --quiet --keyserver "hkp://p80.pool.sks-keyservers.net:80" --recv-keys 58118E89F3A912897C070ADBF76221572C52609D 2>&1 | grep "gpg:"
+    apt-key export 58118E89F3A912897C070ADBF76221572C52609D | apt-key add -
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
@@ -687,6 +694,14 @@ phpmyadmin_setup() {
   cp "/srv/config/phpmyadmin-config/config.inc.php" "/srv/www/default/database-admin/"
 }
 
+docker_setup() {
+  docker run -d --restart=always --net=host -v /srv/www:/srv/www -v /var/log:/var/log --name=php53 10up/php:5.3-fpm || docker restart php53
+  docker run -d --restart=always --net=host -v /srv/www:/srv/www -v /var/log:/var/log --name=php54 10up/php:5.4-fpm || docker restart php54
+  docker run -d --restart=always --net=host -v /srv/www:/srv/www -v /var/log:/var/log --name=php55 10up/php:5.5-fpm || docker restart php55
+  docker run -d --restart=always --net=host -v /srv/www:/srv/www -v /var/log:/var/log --name=php56 10up/php:5.6-fpm || docker restart php56
+  docker run -d --restart=always --net=host -v /srv/www:/srv/www -v /var/log:/var/log --name=php70 10up/php:7.0-fpm || docker restart php70
+}
+
 wordpress_default() {
   # Install and configure the latest stable version of WordPress
   if [[ ! -d "/srv/www/wordpress-default" ]]; then
@@ -698,7 +713,7 @@ wordpress_default() {
     rm latest.tar.gz
     cd /srv/www/wordpress-default
     echo "Configuring WordPress Stable..."
-    noroot wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+    noroot wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --dbhost=127.0.0.1 --quiet --extra-php <<PHP
 // Match any requests made via xip.io.
 if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
 define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
@@ -735,7 +750,7 @@ wordpress_trunk() {
     svn checkout "https://core.svn.wordpress.org/trunk/" "/srv/www/wordpress-trunk"
     cd /srv/www/wordpress-trunk
     echo "Configuring WordPress trunk..."
-    noroot wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+    noroot wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --dbhost=127.0.0.1 --quiet --extra-php <<PHP
 // Match any requests made via xip.io.
 if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress-trunk.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
 define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
@@ -760,7 +775,7 @@ wordpress_develop(){
     svn checkout "https://develop.svn.wordpress.org/trunk/" "/srv/www/wordpress-develop"
     cd /srv/www/wordpress-develop/src/
     echo "Configuring WordPress develop..."
-    noroot wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+    noroot wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --dbhost=127.0.0.1 --quiet --extra-php <<PHP
 // Match any requests made via xip.io.
 if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(src|build)(.wordpress-develop.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
 define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
@@ -878,6 +893,7 @@ mailcatcher_setup
 phpfpm_setup
 services_restart
 mysql_setup
+docker_setup
 
 network_check
 # WP-CLI and debugging tools

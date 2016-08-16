@@ -36,6 +36,9 @@ server {
     # delimited here. See http://nginx.org/en/docs/http/server_names.html
     server_name  testserver.com;
 
+    # Set the default backend to PHP 7
+    set $default_backend php70;
+
     # Tells nginx which directory the files for this domain are located
     root         /srv/www/wordpress-local;
 
