@@ -276,6 +276,9 @@ package_install() {
 }
 
 tools_install() {
+  # Disable xdebug before any composer provisioning.
+  sh /home/vagrant/bin/xdebug_off
+
   # nvm
   if [[ ! -d "/srv/config/nvm" ]]; then
     echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
