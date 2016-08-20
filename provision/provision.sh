@@ -396,18 +396,18 @@ tools_install() {
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /etc/nginx/server.key ]]; then
-    echo "Generate Nginx server private key..."
-    vvvgenrsa="$(openssl genrsa -out /etc/nginx/server.key 2048 2>&1)"
-    echo "$vvvgenrsa"
+	  echo "Generate Nginx server private key..."
+	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server.key 2048 2>&1)"
+	  echo "$vvvgenrsa"
   fi
   if [[ ! -e /etc/nginx/server.crt ]]; then
-    echo "Sign the certificate using the above private key..."
-    vvvsigncert="$(openssl req -new -x509 \
+	  echo "Sign the certificate using the above private key..."
+	  vvvsigncert="$(openssl req -new -x509 \
             -key /etc/nginx/server.key \
             -out /etc/nginx/server.crt \
             -days 3650 \
             -subj /CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev 2>&1)"
-    echo "$vvvsigncert"
+	  echo "$vvvsigncert"
   fi
 
   echo -e "\nSetup configuration files..."
