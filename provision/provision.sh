@@ -105,21 +105,32 @@ network_detection() {
   # Make an HTTP request to google.com to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=5 --spider http://google.com 2>&1 | grep 'connected')" ]]; then
-    echo "Network connection detected..."
-    ping_result="Connected"
-  else
-    echo "Network connection not detected. Unable to reach google.com..."
-    ping_result="Not Connected"
+  if [ -x "/usr/bin/wget" ]; then
+    wget --tries=3 --timeout=5 --spider http://google.com
+    if [ "$?" -eq 0 ]; then
+      ping_result="Connected"
+    fi
+  elif [ -x "/usr/bin/curl" ]; then
+    curl --retry 3 --connect-timeout 5 --head http://google.com
+    if [ "$?" -eq 0 ]; then
+      ping_result="Connected"
+      return
+    fi
   fi
+
+  echo "Network connection not detected. Unable to reach google.com..."
+  ping_result="Not Connected"
 }
 
 network_check() {
   network_detection
-  if [[ ! "$ping_result" == "Connected" ]]; then
-    echo -e "\nNo network connection available, skipping package installation"
-    exit 0
+  if [ "$ping_result" == "Connected" ]; then
+    echo "Network connection detected..."
+    return
   fi
+
+  echo -e "\nNo network connection available, skipping package installation"
+  exit 0
 }
 
 git_ppa_check() {
