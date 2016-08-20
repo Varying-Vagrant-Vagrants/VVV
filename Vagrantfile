@@ -47,6 +47,13 @@ Vagrant.configure("2") do |config|
   # on your host machine inside the guest. See the manual for `ssh-add`.
   config.ssh.forward_agent = true
 
+  # Expose SSH for Docker
+  config.vm.provider :docker do |v, override|
+    v.has_ssh = true
+    override.ssh.host = "127.0.0.1"
+    override.ssh.port = 2222
+  end
+
   # Default Ubuntu Box
   #
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
@@ -72,6 +79,13 @@ Vagrant.configure("2") do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
     override.vm.box = "ericmann/trusty64"
+  end
+
+  # Docker uses a Dockerfile instead of a box
+  config.vm.provider :docker do |v, override|
+    override.vm.box = nil
+    v.build_dir = vagrant_dir
+    v.name = "vvv"
   end
 
   config.vm.hostname = "vvv"
