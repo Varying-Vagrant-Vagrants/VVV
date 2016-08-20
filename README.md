@@ -42,8 +42,8 @@ Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagra
 
 Multiple projects can be developed at once in the same environment.
 
-* Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop themes.
-* Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop plugins.
+* Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-develop/src` directories to develop themes.
+* Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-develop/src` directories to develop plugins.
 * Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `www/`. The [Variable VVV](https://github.com/bradp/vv) project helps to automate this process.
 * Use the `www/wordpress-develop` directory to participate in [WordPress core](https://make.wordpress.org/core) development.
 
@@ -66,7 +66,7 @@ Entirely different server configurations can be created by modifying the files i
 1. Optionally, install some convenient Vagrant plugins:
     1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
         * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the provisioned VVV domains in your browser.
-        * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
+        * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev src.wordpress-develop.dev build.wordpress-develop.dev`
     1. Install the [vagrant-triggers](https://github.com/emyl/vagrant-triggers) plugin with `vagrant plugin install vagrant-triggers`
         * Note: This step is not a requirement. When installed, it allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
         * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
@@ -83,7 +83,6 @@ Entirely different server configurations can be created by modifying the files i
     * Watch as the script ends, as an administrator or `su` ***password may be required*** to properly modify the hosts file on your local machine.
 1. Visit any of the following default sites in your browser:
     * [http://local.wordpress.dev/](http://local.wordpress.dev/) for WordPress stable
-    * [http://local.wordpress-trunk.dev/](http://local.wordpress-trunk.dev/) for WordPress trunk
     * [http://src.wordpress-develop.dev/](http://src.wordpress-develop.dev/) for trunk WordPress development files
     * [http://build.wordpress-develop.dev/](http://build.wordpress-develop.dev/) for the version of those development files built with Grunt
     * [http://vvv.dev/](http://vvv.dev/) for a default dashboard containing several useful tools
@@ -132,7 +131,7 @@ Since version 1.2.0, VVV has used a 64bit version of Ubuntu. Some older CPUs (su
 
 ### [Credentials](#credentials)
 
-All database usernames and passwords for WordPress installations included by default are: 
+All database usernames and passwords for WordPress installations included by default are:
 
 __User:__ `wp`  
 __Password:__ `wp`
@@ -155,12 +154,6 @@ See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/
 * URL: `http://local.wordpress.dev`
 * DB Name: `wordpress_default`
 
-#### WordPress Trunk
-* LOCAL PATH: vagrant-local/www/wordpress-trunk
-* VM PATH: /srv/www/wordpress-trunk
-* URL: `http://local.wordpress-trunk.dev`
-* DB Name: `wordpress_trunk`
-
 #### WordPress Develop
 * LOCAL PATH: vagrant-local/www/wordpress-develop
 * VM PATH: /srv/www/wordpress-develop
@@ -177,7 +170,6 @@ A bunch of stuff!
 1. [Ubuntu](http://www.ubuntu.com/) 14.04 LTS (Trusty Tahr)
 1. [WordPress Develop](https://develop.svn.wordpress.org/trunk/)
 1. [WordPress Stable](https://wordpress.org/)
-1. [WordPress Trunk](https://core.svn.wordpress.org/trunk/)
 1. [WP-CLI](http://wp-cli.org/) (master branch)
 1. [nginx](http://nginx.org/) ([mainline](http://nginx.com/blog/nginx-1-6-1-7-released/) version)
 1. [mysql](https://www.mysql.com/) 5.5.x
