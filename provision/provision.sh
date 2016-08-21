@@ -49,6 +49,7 @@ apt_package_check_list=(
   php7.0-imap
   php7.0-json
   php7.0-soap
+  php7.0-ssh2
   php7.0-xml
   php7.0-zip
 
