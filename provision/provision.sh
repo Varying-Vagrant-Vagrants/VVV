@@ -694,13 +694,19 @@ phpmyadmin_setup() {
 }
 
 wpsvn_check() {
-  # Test to see if an svn upgrade is needed
-  svn_test=$( svn status -u "/srv/www/wordpress-develop/" 2>&1 );
+  # Get all SVN repos.
+  svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
 
-  if [[ "$svn_test" == *"svn upgrade"* ]]; then
-  # If the wordpress-develop svn repo needed an upgrade, they probably all need it
-    for repo in $(find /srv/www -maxdepth 5 -type d -name '.svn'); do
-      svn upgrade "${repo/%\.svn/}"
+  # Do we have any?
+  if [[ -n $svn_repos ]]; then
+    for repo in $svn_repos; do
+      # Test to see if an svn upgrade is needed on this repo.
+      svn_test=$( svn status -u "$repo" 2>&1 );
+
+      if [[ "$svn_test" == *"svn upgrade"* ]]; then
+        # If it is needed do it!
+        svn upgrade "${repo/%\.svn/}"
+      fi;
     done
   fi;
 }
