@@ -693,35 +693,6 @@ phpmyadmin_setup() {
   cp "/srv/config/phpmyadmin-config/config.inc.php" "/srv/www/default/database-admin/"
 }
 
-wordpress_default() {
-  # Install and configure the latest stable version of WordPress
-  if [[ ! -d "/srv/www/wordpress-default" ]]; then
-    echo "Downloading WordPress Stable, see http://wordpress.org/"
-    cd /srv/www/
-    curl -L -O "https://wordpress.org/latest.tar.gz"
-    noroot tar -xvf latest.tar.gz
-    mv wordpress wordpress-default
-    rm latest.tar.gz
-    cd /srv/www/wordpress-default
-    echo "Configuring WordPress Stable..."
-    noroot wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-    echo "Installing WordPress Stable..."
-    noroot wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-  else
-    echo "Updating WordPress Stable..."
-    cd /srv/www/wordpress-default
-    noroot wp core update
-  fi
-}
-
 wpsvn_check() {
   # Test to see if an svn upgrade is needed
   svn_test=$( svn status -u "/srv/www/wordpress-develop/" 2>&1 );
@@ -732,65 +703,6 @@ wpsvn_check() {
       svn upgrade "${repo/%\.svn/}"
     done
   fi;
-}
-
-wordpress_develop(){
-  # Checkout, install and configure WordPress trunk via develop.svn
-  if [[ ! -d "/srv/www/wordpress-develop" ]]; then
-    echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-    noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "/tmp/wordpress-develop"
-
-    cd /tmp/wordpress-develop/src/
-
-    echo "Installing local npm packages for src.wordpress-develop.dev, this may take several minutes."
-    noroot npm install
-
-    echo "Initializing grunt and creating build.wordpress-develop.dev, this may take several minutes."
-    noroot grunt
-
-    echo "Moving WordPress develop to a shared directory, /srv/www/wordpress-develop"
-    mv /tmp/wordpress-develop /srv/www/
-
-    cd /srv/www/wordpress-develop/src/
-    echo "Creating wp-config.php for src.wordpress-develop.dev and build.wordpress-develop.dev."
-    noroot wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(src|build)(.wordpress-develop.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-} else if ( 'build' === basename( dirname( __FILE__ ) ) ) {
-// Allow (src|build).wordpress-develop.dev to share the same Database
-define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
-define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-    echo "Installing src.wordpress-develop.dev."
-    noroot wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-    cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
-    cd /srv/www/wordpress-develop/
-  else
-    echo "Updating WordPress develop..."
-    cd /srv/www/wordpress-develop/
-    if [[ -e .svn ]]; then
-      svn up
-    else
-      if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-        git pull --no-edit git://develop.git.wordpress.org/ master
-      else
-        echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
-      fi
-    fi
-    echo "Updating npm packages..."
-    noroot npm install &>/dev/null
-  fi
-
-  if [[ ! -d "/srv/www/wordpress-develop/build" ]]; then
-    echo "Initializing grunt in WordPress develop... This may take a few moments."
-    cd /srv/www/wordpress-develop/
-    grunt
-  fi
 }
 
 custom_vvv(){
@@ -887,9 +799,7 @@ network_check
 echo " "
 echo "Installing/updating WordPress Stable & Develop"
 
-wordpress_default
 wpsvn_check
-wordpress_develop
 
 # VVV custom site import
 echo " "
