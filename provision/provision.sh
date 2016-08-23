@@ -752,6 +752,8 @@ custom_vvv(){
   # Domains should be entered on new lines.
   echo "Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
+  echo "127.0.0.1 vvv.dev # vvv-auto" >> "/etc/hosts"
+  echo "127.0.0.1 local.wordpress-trunk.dev # vvv-auto" >> "/etc/hosts"
   mv /tmp/hosts /etc/hosts
   echo "Adding domains to the virtual machine's /etc/hosts file..."
   find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
