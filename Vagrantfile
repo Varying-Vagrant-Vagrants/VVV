@@ -239,6 +239,16 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
   end
 
+  vvv_config['sites'].each do |site, args|
+    if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+      if vagrant_version >= "1.3.0"
+        config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+      else
+        config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :extra => 'dmode=775,fmode=774'
+      end
+    end
+  end
+
   config.vm.provision "fix-no-tty", type: "shell" do |s|
     s.privileged = false
     s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
@@ -249,6 +259,12 @@ Vagrant.configure("2") do |config|
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
+
+    vvv_config['sites'].each do |site, args|
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
+      end
+    end
   end
 
   # The Hyper-V Provider does not understand "dmode"/"fmode" in the "mount_options" as
@@ -257,6 +273,11 @@ Vagrant.configure("2") do |config|
   # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+    vvv_config['sites'].each do |site, args|
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+      end
+    end
     # Change all the folder to use SMB instead of Virtual Box shares
     override.vm.synced_folders.each do |id, options|
       if ! options[:type]
