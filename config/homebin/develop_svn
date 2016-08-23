@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# A script to convert the included develop.svn.wordpress.org repository into
+# the git mirror, develop.git.wordpress.org.
+
+set -e
+
+if [[ $USER != 'vagrant' ]]; then
+	echo "Please run inside Vagrant"
+	exit 1
+fi
+
+cd /srv/www/wordpress-develop/
+
+if [[ -e .svn ]]; then
+	echo "Repo has already been converted to SVN"
+	exit 1
+fi
+
+echo "Converting src.wordpress-develop.dev from GIT to SVN"
+
+echo "Rename .git to .git-backup"
+mv .git .git-backup
+
+svn co --force https://develop.svn.wordpress.org/trunk/ .
+
+echo "Done"
