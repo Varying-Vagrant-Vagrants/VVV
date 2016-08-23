@@ -4,17 +4,19 @@ noroot() {
   sudo -EH -u "vagrant" "$@";
 }
 
-# Clone or pull the site repository
-if [[ ! -d $4 ]]; then
-  echo -e "\nDownloading ${1}, see ${2}"
-  git clone $2 $4
-  cd $4
-  git checkout $3
-else
-  echo -e "\nUpdating ${1}..."
-  cd $4
-  git pull origin $3
-  git checkout $3
+if [[ false != "${2}" ]]; then
+  # Clone or pull the site repository
+  if [[ ! -d $4 ]]; then
+    echo -e "\nDownloading ${1}, see ${2}"
+    git clone $2 $4
+    cd $4
+    git checkout $3
+  else
+    echo -e "\nUpdating ${1}..."
+    cd $4
+    git pull origin $3
+    git checkout $3
+  fi
 fi
 
 # Look for site setup scripts

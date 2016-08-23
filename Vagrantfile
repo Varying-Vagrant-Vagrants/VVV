@@ -285,7 +285,12 @@ Vagrant.configure("2") do |config|
         args['repo'] = repo
     end
 
+    if ! args.kind_of? Hash then
+        args = Hash.new
+    end
+
     defaults = Hash.new
+    defaults['repo']   = false
     defaults['vm_dir'] = "/srv/www/#{site}"
     defaults['branch'] = 'master'
 
@@ -294,7 +299,7 @@ Vagrant.configure("2") do |config|
     config.vm.provision "site-#{site}",
       type: "shell",
       path: File.join( "provision", "provision-site.sh" ),
-      args: [ site, args['repo'], args['branch'], args['vm_dir'] ]
+      args: [ site, args['repo'].to_s, args['branch'], args['vm_dir'] ]
   end
 
 
