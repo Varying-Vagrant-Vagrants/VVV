@@ -8,6 +8,28 @@ vagrant_dir = File.expand_path(File.dirname(__FILE__))
 vvv_config_file = File.join(vagrant_dir, 'vvv-config.yml')
 vvv_config = YAML.load_file(vvv_config_file)
 
+vvv_config['sites'].each do |site, args|
+  if args.kind_of? String then
+      repo = args
+      args = Hash.new
+      args['repo'] = repo
+  end
+
+  if ! args.kind_of? Hash then
+      args = Hash.new
+  end
+
+  defaults = Hash.new
+  defaults['repo']   = false
+  defaults['vm_dir'] = "/srv/www/#{site}"
+  defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
+  defaults['branch'] = 'master'
+  defaults['skip_provisioning'] = false
+  defaults['allow_customfile'] = false
+
+  vvv_config['sites'][site] = defaults.merge(args)
+end
+
 Vagrant.configure("2") do |config|
 
   # Store the current version of Vagrant for use in conditionals when dealing
@@ -255,6 +277,15 @@ Vagrant.configure("2") do |config|
     eval(IO.read(File.join(vagrant_dir,'Customfile')), binding)
   end
 
+  vvv_config['sites'].each do |site, args|
+    if args['allow_customfile'] then
+      paths = Dir[File.join(args['local_dir'], '**', 'Customfile')]
+      paths.each do |file|
+        eval(IO.read(file), binding)
+      end
+    end
+  end
+
   # Provisioning
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
@@ -279,24 +310,6 @@ Vagrant.configure("2") do |config|
   end
 
   vvv_config['sites'].each do |site, args|
-    if args.kind_of? String then
-        repo = args
-        args = Hash.new
-        args['repo'] = repo
-    end
-
-    if ! args.kind_of? Hash then
-        args = Hash.new
-    end
-
-    defaults = Hash.new
-    defaults['repo']   = false
-    defaults['vm_dir'] = "/srv/www/#{site}"
-    defaults['branch'] = 'master'
-    defaults['skip_provisioning'] = false
-
-    args = defaults.merge(args)
-
     config.vm.provision "site-#{site}",
       type: "shell",
       path: File.join( "provision", "provision-site.sh" ),
