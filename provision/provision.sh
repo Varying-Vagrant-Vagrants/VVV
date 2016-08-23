@@ -711,62 +711,16 @@ wpsvn_check() {
   fi;
 }
 
-custom_vvv(){
-  # Find new sites to setup.
+cleanup_vvv(){
   # Kill previously symlinked Nginx configs
-  # We can't know what sites have been removed, so we have to remove all
-  # the configs and add them back in again.
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
-  # Look for site setup scripts
-  find /srv/www -maxdepth 5 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
-    DIR="$(dirname "$SITE_CONFIG_FILE")"
-    (
-    cd "$DIR"
-    source vvv-init.sh
-    )
-  done
-
-  # Look for Nginx vhost files, symlink them into the custom sites dir
-  for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
-    DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
-    DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
-    DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
-    DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< "$SITE_CONFIG_FILE" | cut -c1-32).conf"
-    # We allow the replacement of the {vvv_path_to_folder} token with
-    # whatever you want, allowing flexible placement of the site folder
-    # while still having an Nginx config which works.
-    DIR="$(dirname "$SITE_CONFIG_FILE")"
-    sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
-
-    # Resolve relative paths since not supported in Nginx root.
-    while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"; do
-      sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
-    done
-  done
-
-  # Parse any vvv-hosts file located in www/ or subdirectories of www/
-  # for domains to be added to the virtual machine's host file so that it is
-  # self aware.
-  #
-  # Domains should be entered on new lines.
+  # Cleanup the hosts file
   echo "Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
   echo "127.0.0.1 vvv.dev # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 local.wordpress-trunk.dev # vvv-auto" >> "/etc/hosts"
   mv /tmp/hosts /etc/hosts
-  echo "Adding domains to the virtual machine's /etc/hosts file..."
-  find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
-  while read hostfile; do
-    while IFS='' read -r line || [ -n "$line" ]; do
-      if [[ "#" != ${line:0:1} ]]; then
-        if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
-          echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-          echo " * Added $line from $hostfile"
-        fi
-      fi
-    done < "$hostfile"
-  done
 }
 
 ### SCRIPT
@@ -805,14 +759,12 @@ phpmyadmin_setup
 network_check
 # Time for WordPress!
 echo " "
-echo "Installing/updating WordPress Stable & Develop"
 
 wpsvn_check
 
 # VVV custom site import
 echo " "
-echo "VVV custom site import"
-custom_vvv
+cleanup_vvv
 
 #set +xv
 # And it's done

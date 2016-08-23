@@ -273,6 +273,8 @@ Vagrant.configure("2") do |config|
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
 
+  config.vm.provision "default", type: "shell", path: File.join( "provision", "provision-site.sh" )
+
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
