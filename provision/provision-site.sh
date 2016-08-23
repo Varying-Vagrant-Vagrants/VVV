@@ -4,12 +4,17 @@ SITE=$1
 REPO=$2
 BRANCH=$3
 VM_DIR=$4
+SKIP_PROVISIONING=$5
 
 noroot() {
   sudo -EH -u "vagrant" "$@";
 }
 
-if [[ false != "${REPO}" ]]; then
+if [[ true == $SKIP_PROVISIONING ]]; then
+    REPO=false
+fi
+
+if [[ true == "${REPO}" ]]; then
   # Clone or pull the site repository
   if [[ ! -d ${VM_DIR} ]]; then
     echo -e "\nDownloading ${SITE}, see ${REPO}"
@@ -24,14 +29,16 @@ if [[ false != "${REPO}" ]]; then
   fi
 fi
 
-# Look for site setup scripts
-find ${VM_DIR} -maxdepth 4 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
-  DIR="$(dirname "$SITE_CONFIG_FILE")"
-  (
-  cd "$DIR"
-  source vvv-init.sh
-  )
-done
+if [[ false == "${SKIP_PROVISIONING}" ]]; then
+  # Look for site setup scripts
+  find ${VM_DIR} -maxdepth 4 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
+    DIR="$(dirname "$SITE_CONFIG_FILE")"
+    (
+    cd "$DIR"
+    source vvv-init.sh
+    )
+  done
+fi
 
 # Look for Nginx vhost files, symlink them into the custom sites dir
 for SITE_CONFIG_FILE in $(find ${VM_DIR} -maxdepth 4 -name 'vvv-nginx.conf'); do

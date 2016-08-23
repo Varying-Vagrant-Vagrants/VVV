@@ -293,6 +293,7 @@ Vagrant.configure("2") do |config|
     defaults['repo']   = false
     defaults['vm_dir'] = "/srv/www/#{site}"
     defaults['branch'] = 'master'
+    defaults['skip_provisioning'] = false
 
     args = defaults.merge(args)
 
@@ -304,6 +305,7 @@ Vagrant.configure("2") do |config|
         args['repo'].to_s,
         args['branch'],
         args['vm_dir'],
+        args['skip_provisioning'].to_s
       ]
   end
 
