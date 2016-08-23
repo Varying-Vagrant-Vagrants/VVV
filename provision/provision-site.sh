@@ -1,5 +1,24 @@
+#!/usr/bin/env bash
+
+noroot() {
+  sudo -EH -u "vagrant" "$@";
+}
+
+# Clone or pull the site repository
+if [[ ! -d $4 ]]; then
+  echo -e "\nDownloading ${1}, see ${2}"
+  git clone $2 $4
+  cd $4
+  git checkout $3
+else
+  echo -e "\nUpdating ${1}..."
+  cd $4
+  git pull origin $3
+  git checkout $3
+fi
+
 # Look for site setup scripts
-find /srv/www -maxdepth 5 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
+find $4 -maxdepth 4 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
   DIR="$(dirname "$SITE_CONFIG_FILE")"
   (
   cd "$DIR"
@@ -8,7 +27,7 @@ find /srv/www -maxdepth 5 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE
 done
 
 # Look for Nginx vhost files, symlink them into the custom sites dir
-for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
+for SITE_CONFIG_FILE in $(find $4 -maxdepth 4 -name 'vvv-nginx.conf'); do
   DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
   DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
   DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
@@ -25,14 +44,12 @@ for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
   done
 done
 
-# Parse any vvv-hosts file located in www/ or subdirectories of www/
-# for domains to be added to the virtual machine's host file so that it is
-# self aware.
+# Parse any vvv-hosts file located in the site repository for domains to
+# be added to the virtual machine's host file so that it is self aware.
 #
 # Domains should be entered on new lines.
-mv /tmp/hosts /etc/hosts
 echo "Adding domains to the virtual machine's /etc/hosts file..."
-find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
+find $4 -maxdepth 4 -name 'vvv-hosts' | \
 while read hostfile; do
   while IFS='' read -r line || [ -n "$line" ]; do
     if [[ "#" != ${line:0:1} ]]; then

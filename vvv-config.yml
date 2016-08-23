@@ -1,0 +1,10 @@
+---
+sites:
+  wordpress-default:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+    vm_dir: '/srv/www/wordpress-default-provisioner'
+  wordpress-develop:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
+    vm_dir: '/srv/www/wordpress-develop-provisioner'
+  multisite: https://github.com/Varying-Vagrant-Vagrants/vvv-multisite.git
+  #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git

@@ -1,7 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'yaml'
+
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
+vvv_config_file = File.join(vagrant_dir, 'vvv-config.yml')
+vvv_config = YAML.load_file(vvv_config_file)
 
 Vagrant.configure("2") do |config|
 
@@ -273,7 +278,25 @@ Vagrant.configure("2") do |config|
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
 
-  config.vm.provision "default", type: "shell", path: File.join( "provision", "provision-site.sh" )
+  vvv_config['sites'].each do |site, args|
+    if args.kind_of? String then
+        repo = args
+        args = Hash.new
+        args['repo'] = repo
+    end
+
+    defaults = Hash.new
+    defaults['vm_dir'] = "/srv/www/#{site}"
+    defaults['branch'] = 'master'
+
+    args = defaults.merge(args)
+
+    config.vm.provision "site-#{site}",
+      type: "shell",
+      path: File.join( "provision", "provision-site.sh" ),
+      args: [ site, args['repo'], args['branch'], args['vm_dir'] ]
+  end
+
 
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
