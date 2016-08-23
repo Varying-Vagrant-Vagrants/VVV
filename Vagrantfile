@@ -299,7 +299,12 @@ Vagrant.configure("2") do |config|
     config.vm.provision "site-#{site}",
       type: "shell",
       path: File.join( "provision", "provision-site.sh" ),
-      args: [ site, args['repo'].to_s, args['branch'], args['vm_dir'] ]
+      args: [
+        site,
+        args['repo'].to_s,
+        args['branch'],
+        args['vm_dir'],
+      ]
   end
 
 
