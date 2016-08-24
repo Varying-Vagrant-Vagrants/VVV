@@ -53,13 +53,13 @@ if [[ -d ${VM_DIR} ]]; then
     # whatever you want, allowing flexible placement of the site folder
     # while still having an Nginx config which works.
     DIR="$(dirname "$SITE_CONFIG_FILE")"
-    sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
-    sed "s#{vvv_path_to_site}#$VM_DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
-    sed "s#{vvv_site_name}#$SITE#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+    sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+    sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+    sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
 
     # Resolve relative paths since not supported in Nginx root.
-    while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"; do
-      sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+    while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"; do
+      sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
     done
   done
 
