@@ -1,0 +1,943 @@
+/*--------------------------------------------------------------
+WordCamp Talks stylesheet
+
+----------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+1 - Icons
+2 - Pagination
+3 - User feedback
+4 - Talk Listing Navigation
+5 - Talk Listing / User comments listing
+6 - Single Talk
+7 - User profile
+8 - Forms
+9 - Widgets
+10 - Media Queries
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+1 - Icons
+--------------------------------------------------------------*/
+
+#wordcamp-talks .icon:before,
+#wordcamp-talks #rate i:before,
+span.sticky-talk:before,
+span.private-talk:before,
+span.protected-talk:before,
+#wordcamp-talks .tag span:before,
+.talk-title-sep:before,
+span.wp-talk-stream-group:before {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	line-height: 1;
+	font-family: "dashicons";
+	text-decoration: inherit;
+	font-weight: normal;
+	font-style: normal;
+	vertical-align: top;
+	text-align: center;
+	-webkit-transition: color .1s ease-in 0;
+	transition: color .1s ease-in 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#wordcamp-talks .talk-comment-link:before {
+	content: "\f101";
+}
+
+#wordcamp-talks .talk-rating-link.empty:before,
+#wordcamp-talks .star-off-png:before {
+	content: "\f154";
+}
+
+#wordcamp-talks .talk-rating-link:before,
+#wordcamp-talks .star-on-png:before {
+	content: "\f155";
+}
+
+#wordcamp-talks .star-half-png:before {
+	content: "\f459";
+}
+
+#wordcamp-talks .cancel-on-png:before {
+  content: "\f153";
+}
+
+#wordcamp-talks .cancel-off-png:before {
+  content: "\f159";
+}
+
+.talk-title-sep:before {
+	content: "\f139";
+	vertical-align: middle;
+}
+
+span.sticky-talk:before {
+	content: "\f109";
+	vertical-align: middle;
+}
+
+span.private-talk:before {
+	content: "\f332";
+	vertical-align: middle;
+}
+span.protected-talk:before {
+	content: "\f178";
+	vertical-align: middle;
+}
+
+span.wp-talk-stream-group:before {
+	content: "\f307";
+	vertical-align: middle;
+}
+
+/*--------------------------------------------------------------
+2 - Pagination
+--------------------------------------------------------------*/
+
+#wordcamp-talks div.pagination {
+	box-shadow: none;
+	background: transparent;
+	border: none;
+	color: #888;
+	font-size: 90%;
+	margin: 0;
+	position: relative;
+	display: block;
+	float: left;
+	width: 100%;
+	padding: 10px 0;
+}
+
+#wordcamp-talks div.pagination .pag-count {
+	float: left;
+	margin-left: 10px;
+}
+#wordcamp-talks div.pagination .pagination-links {
+	float: right;
+	margin-right: 10px;
+}
+#wordcamp-talks div.pagination .pagination-links span,
+#wordcamp-talks div.pagination .pagination-links a {
+	font-size: 90%;
+	height: auto;
+	line-height: 1;
+	padding: 0 5px;
+	border: none;
+	box-shadow: none;
+}
+#wordcamp-talks div.pagination .pagination-links a:hover {
+	font-weight: bold;
+}
+#wordcamp-talks div.pagination {
+	margin-bottom: 15px;
+}
+
+#wordcamp-talks div.pagination:before,
+#wordcamp-talks div.pagination:after {
+	display: none;
+}
+
+#wordcamp-talks div.pagination .pagination-links .prev,
+#wordcamp-talks div.pagination .pagination-links .next {
+	background-color: transparent;
+	color: inherit;
+	overflow: visible;
+	width: auto;
+}
+#wordcamp-talks div.pagination .pagination-links .prev:before,
+#wordcamp-talks div.pagination .pagination-links .next:before {
+	display: none;
+}
+
+#wordcamp-talks div.pagination .pagination-links .prev {
+	left: auto;
+	position: static;
+}
+
+#wordcamp-talks div.pagination .pagination-links .next {
+	position: static;
+	right: auto;
+}
+
+#wordcamp-talks div#pag-top {
+	border-bottom: solid 1px #ccc;
+}
+
+#wordcamp-talks div#pag-bottom {
+	border-top: solid 1px #ccc;
+	margin: 15px 0;
+}
+
+/*--------------------------------------------------------------
+3 - User Feedback
+--------------------------------------------------------------*/
+
+#wordcamp-talks .message {
+	padding: 1px 12px;
+	background-color: #fff;
+	-webkit-box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
+	box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
+ 	margin: 10px 0;
+ 	padding: 10px;
+}
+#wordcamp-talks .message p{
+ 	margin: 0;
+ 	padding: 0;
+}
+#wordcamp-talks .error{
+	margin-bottom: 10px;
+	padding: 10px 20px;
+	width: 100%;
+}
+
+#wordcamp-talks .info {
+	border-left: 4px solid #3388aa;
+}
+
+#wordcamp-talks .info a{
+	font-weight: bold;
+}
+#wordcamp-talks .warning,
+#wordcamp-talks .error {
+ 	border-left: 4px solid #dd3333;
+}
+#wordcamp-talks .notice{
+ 	border-left: 4px solid #eeeebb;
+}
+#wordcamp-talks .success{
+ 	border-left: 4px solid #88aa22;
+}
+
+/*--------------------------------------------------------------
+4 - Talk Listing Navigation
+--------------------------------------------------------------*/
+
+#wordcamp-talks .clear {
+	clear: left;
+}
+
+#wordcamp-talks ul#talks-main-nav {
+	margin-bottom: 10px;
+}
+
+#wordcamp-talks ul#talks-main-nav li {
+	max-width: 48%;
+}
+
+#wordcamp-talks ul#talks-main-nav li form input {
+	width: inherit;
+}
+
+#wordcamp-talks ul#talks-main-nav li {
+	display:inline-block;
+}
+
+#wordcamp-talks ul#talks-main-nav li.last {
+	float:right;
+}
+
+.talk-title-sep {
+	display: inline-block;
+	margin:0 5px;
+}
+
+/*--------------------------------------------------------------
+5 - Talk Listing
+--------------------------------------------------------------*/
+
+#wordcamp-talks ul.talk-list,
+#wordcamp-talks ul.talk-comments-list,
+#wordcamp-talks ul#talks-main-nav {
+	width: 100%;
+	list-style: none;
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+
+#wordcamp-talks ul.talk-list li,
+#wordcamp-talks ul.talk-comments-list li,
+#wordcamp-talks ul#talks-main-nav li {
+	overflow: hidden;
+	padding: 15px 0 0;
+	list-style: none;
+	position: relative;
+	margin:5px 0;
+}
+
+#wordcamp-talks ul.talk-list li.sticky-talk {
+	background-color: rgba(230, 230, 230, 0.5);
+	background: rgba(230, 230, 230, 0.5);
+	padding: 15px 10px 10px;
+}
+
+#wordcamp-talks ul.talk-list .talk-avatar,
+#wordcamp-talks ul.talk-comments-list .talk-comment-avatar {
+	float: left;
+}
+
+#wordcamp-talks ul.talk-list li img.avatar,
+#wordcamp-talks ul.talk-comments-list li img.avatar {
+	float: left;
+	margin: 0 10px 0 0;
+	vertical-align: top;
+}
+
+#wordcamp-talks ul.talk-list li a.talk-group img.avatar {
+	float: none;
+	margin: 0 5px 0 0;
+	vertical-align: middle;
+	display: inline;
+}
+
+#wordcamp-talks ul.talk-list .talk-content,
+#wordcamp-talks ul.talk-comments-list .talk-comment-content {
+	margin: 0 0 0 110px;
+}
+
+#wordcamp-talks ul.talk-list li div.talk-title,
+#wordcamp-talks ul.talk-comments-list li div.talk-comment-title {
+	font-size: 120%;
+	margin: 0;
+	padding-bottom: 10px;
+}
+
+#wordcamp-talks ul.talk-list li div.talk-title a,
+#wordcamp-talks ul.talk-comments-list li div.talk-comment-title a {
+	text-decoration: none;
+	border: none;
+}
+
+#wordcamp-talks ul.talk-list li div.talk-header,
+#wordcamp-talks ul.talk-list li div.talk-excerpt,
+#wordcamp-talks ul.talk-comments-list li div.talk-comment-excerpt {
+	margin:0;
+	padding-bottom:10px;
+}
+
+body.single-talks #wordcamp-talks div.talk-header {
+	margin-bottom: 1.4em;
+}
+
+#wordcamp-talks ul.talk-list li div.talk-excerpt p,
+#wordcamp-talks ul.talk-comments-list li div.talk-comment-excerpt p {
+	margin:5px 0;
+}
+
+#wordcamp-talks .talk-list li div.talk-footer p.talk-meta,
+#wordcamp-talks .talk-comments-list li div.talk-comment-footer p.talk-comment-meta {
+	font-size: 90%;
+	margin:0;
+	padding:5px 0;
+}
+
+#wordcamp-talks ul.talk-list li .user-rating-link img.avatar {
+	float:none;
+	margin: 0 5px 0 5px;
+	display:inline;
+}
+
+#wordcamp-talks .talk-comment-link,
+#wordcamp-talks .talk-rating-link,
+#wordcamp-talks .user-rating-link,
+#wordcamp-talks .talk-comments-protected,
+#wordcamp-talks .talk-comments-private,
+#wordcamp-talks .rating-info a {
+	text-decoration: none;
+	line-height: 1;
+	vertical-align: middle;
+	font-size: 13px;
+	border: none;
+	box-shadow: none;
+}
+
+#buddypress #wordcamp-talks h1.talk-title {
+	margin: 1em 0;
+}
+
+
+/*--------------------------------------------------------------
+6 - Single Talk
+--------------------------------------------------------------*/
+
+#wordcamp-talks .talk-description {
+	margin-top:20px;
+}
+
+#wordcamp-talks .talk-title {
+	font-weight: normal;
+}
+
+#wordcamp-talks .talk-title a {
+	text-decoration: none;
+}
+
+#wordcamp-talks .talk-author a,
+#wordcamp-talks .talk-author a:hover {
+	text-decoration: none;
+	border: none;
+}
+
+#wordcamp-talks .talk-author img.avatar {
+	float:none;
+	margin-right:5px;
+	vertical-align: middle;
+	display:inline;
+}
+
+#wordcamp-talks ul.talk-nav-single {
+	border-top: solid 1px #f1f1f1;
+	margin-top:15px;
+	padding:10px 0;
+	clear:both;
+	overflow: hidden;
+}
+
+#wordcamp-talks ul.talk-nav-single li {
+	margin: 0;
+	width:32%;
+}
+
+#wordcamp-talks ul.talk-nav-single li.talk-nav-previous {
+	text-align: left;
+}
+
+#wordcamp-talks ul.talk-nav-single li.talk-nav-all {
+	text-align: center;
+}
+
+#wordcamp-talks ul.talk-nav-single li.talk-nav-next {
+	text-align: right;
+}
+
+#wordcamp-talks ul.talk-nav-single li {
+	display: inline-block;
+}
+
+#wordcamp-talks #comments .commentlist li {
+	margin:0;
+}
+
+body.single-talks #comments .commentlist .reply,
+#wordcamp-talks #comments .commentlist .reply {
+	padding-bottom: 15px;
+}
+
+#wordcamp-talks #rate {
+	display:inline-block;
+	margin-left:5px;
+}
+
+#wordcamp-talks .rating-info {
+	display:inline-block;
+	vertical-align: top;
+	margin-left: 5px;
+}
+
+#wordcamp-talks a.comment-trash-link,
+#wordcamp-talks a.remove-talk {
+	color:#a00;
+	text-decoration: none;
+}
+
+#wordcamp-talks a.comment-spam-link {
+	color:#d98500;
+	text-decoration: none;
+}
+
+a.wpis-title-button {
+	vertical-align: middle;
+}
+
+#wordcamp-talks .talk-footer a {
+	box-shadow: none;
+}
+
+/*--------------------------------------------------------------
+7 - User Profile
+--------------------------------------------------------------*/
+
+#wordcamp-talks .user-avatar {
+	width:auto;
+	float:left;
+	margin-right: 15px;
+	margin-bottom: 15px
+}
+
+#wordcamp-talks ul.user-nav {
+	background: transparent;
+	clear: left;
+	overflow: hidden;
+	margin:15px 0;
+}
+
+#wordcamp-talks ul.user-nav li {
+	float: left;
+	margin: 0;
+	list-style: none;
+}
+
+#wordcamp-talks ul.user-nav li a {
+	display: block;
+	padding: 5px 10px;
+	text-decoration: none;
+	border: none;
+}
+
+#wordcamp-talks ul.user-nav li.current a {
+	background-color: #eee;
+	color: #555;
+	opacity: .8;
+	font-weight: bold;
+}
+
+#wordcamp-talks #wct_profile_description {
+	display:none;
+}
+
+#wordcamp-talks #wct_profile_description:focus {
+	outline: none;
+}
+
+#wordcamp-talks .user-profile-form textarea {
+	height: 60px;
+	width:100%;
+}
+
+#wordcamp-talks .user-profile-form input[type=submit] {
+	display:block;
+	float:right;
+	margin-top:5px;
+}
+
+#wct_profile_form blockquote {
+	border:none;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share-dialog .dashicons-no:before,
+body.talkstream.bp-user .wp-embed-share-dialog .dashicons-no:before {
+	display: none;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share .wp-embed-share-dialog-open:hover,
+#wordcamp-talks .profile-header .wp-embed-share .wp-embed-share-dialog-open:focus,
+#wordcamp-talks .profile-header .wp-embed-share-dialog-close:hover {
+	background: none;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share-dialog-close:hover {
+	border: none;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share,
+body.talkstream.bp-user .wp-embed-share {
+ 	margin: 9px 10px 0 0;
+ 	display: block;
+ 	float: left;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share,
+#wordcamp-talks .profile-header form .wp-embed-share-dialog-open {
+	float: right;
+}
+
+#wordcamp-talks .profile-header form .wp-embed-share-dialog-open {
+	margin: 5px 0 0 10px;
+	height: auto;
+	width: auto;
+}
+
+body.talkstream.bp-user .wp-embed-share .wp-embed-share-dialog-open {
+	border-radius: 0;
+	margin: 0;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share-dialog-open .dashicons,
+body.talkstream.bp-user .wp-embed-share-dialog-open .dashicons {
+	top: 0px;
+	padding: 0px;
+	font-size: inherit;
+	width: auto;
+	height: auto;
+	vertical-align: middle;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share-dialog-open:focus .dashicons,
+#wordcamp-talks .profile-header .wp-embed-share-dialog-close:focus .dashicons,
+body.talkstream.bp-user .wp-embed-share-dialog-open:focus .dashicons,
+body.talkstream.bp-user .wp-embed-share-dialog-close:focus .dashicons {
+	box-shadow: none;
+}
+
+#wordcamp-talks .profile-header .wp-embed-share-dialog-close,
+body.talkstream.bp-user #buddypress button.wp-embed-share-dialog-close {
+	border: none;
+	background: none;
+}
+
+
+#wordcamp-talks .profile-header .wp-embed-share-dialog-open .dashicons-share,
+body.talkstream.bp-user .wp-embed-share-dialog-open .dashicons-share {
+	background-image: none;
+}
+
+#wordcamp-talks .profile-header,
+body.talkstream.bp-user #item-header-content {
+	position: relative;
+}
+
+body.talkstream.bp-user #item-body h3:empty {
+	display: none;
+}
+
+#buddypress div#item-header ul.wp-embed-share-tabs li {
+	float: none;
+}
+
+body.talkstream .wp-embed-share-dialog {
+	z-index: 3;
+}
+
+/*--------------------------------------------------------------
+8 - Forms
+--------------------------------------------------------------*/
+#wordcamp-talks .standard-form textarea:not(.wp-talk-stream-tinymce),
+#wordcamp-talks .user-profile-form textarea,
+#wordcamp-talks .standard-form input[type=text],
+#wordcamp-talks .standard-form input[type=text],
+#wordcamp-talks .standard-form input[type=color],
+#wordcamp-talks .standard-form input[type=date],
+#wordcamp-talks .standard-form input[type=datetime],
+#wordcamp-talks .standard-form input[type=datetime-local],
+#wordcamp-talks .standard-form input[type=email],
+#wordcamp-talks .standard-form input[type=month],
+#wordcamp-talks .standard-form input[type=number],
+#wordcamp-talks .standard-form input[type=range],
+#wordcamp-talks .standard-form input[type=search],
+#wordcamp-talks .standard-form input[type=tel],
+#wordcamp-talks .standard-form input[type=time],
+#wordcamp-talks .standard-form input[type=url],
+#wordcamp-talks .standard-form input[type=week],
+#wordcamp-talks .standard-form select,
+#wordcamp-talks .standard-form input[type=password],
+#wordcamp-talks .nav-form input[type=text],
+#wordcamp-talks .nav-form select {
+	border: 1px solid #ccc;
+	background: #fafafa;
+	border-radius: 0;
+	color: #888;
+	font: inherit;
+	font-size: 100%;
+	padding: 6px;
+}
+
+#wordcamp-talks .nav-form input[type=text] {
+	padding:2px;
+}
+
+#wordcamp-talks .nav-form select {
+	padding:4px;
+	vertical-align: middle;
+}
+
+#wordcamp-talks .nav-form input[type=submit] {
+	margin-left:5px;
+}
+
+#wordcamp-talks .standard-form .tagging,
+#wordcamp-talks .standard-form .tag-items {
+	border: solid 1px #ccc;
+	background: #fafafa;
+	border-radius: 0;
+	cursor: text;
+	height: auto;
+	padding: 5px 5px 10px;
+	width:90%;
+}
+
+#wordcamp-talks .standard-form .tag {
+	background: none repeat scroll 0 0 #FFF;
+	color: #888;
+	cursor: default;
+	display: inline-block;
+	position: relative;
+	white-space: nowrap;
+	margin: 5px 10px 0 0;
+}
+
+#wordcamp-talks .standard-form .tag span:before {
+	content: "\f323";
+	vertical-align: middle;
+}
+
+#wordcamp-talks .standard-form .tag .tag-i {
+	color: #888;
+	cursor: pointer;
+	display:inline-block;
+	margin-left: 5px;
+	bottom: 0.7em;
+	width: 10px;
+}
+
+#wordcamp-talks .standard-form .tag .tag-i:hover {
+	color: #555;
+	text-decoration: underline;
+}
+
+#wordcamp-talks .standard-form .type-zone {
+	border: 0 none;
+	height: auto;
+	width: auto;
+	min-width: 20px;
+	display: inline-block;
+}
+
+#wordcamp-talks .standard-form .type-zone:focus {
+	outline: none;
+}
+
+#wordcamp-talks .standard-form span.required {
+	color:red;
+}
+#wordcamp-talks .standard-form select {
+	padding: 3px;
+}
+#wordcamp-talks .standard-form input[type=password] {
+	margin-bottom: 5px;
+}
+#wordcamp-talks .standard-form label,
+#wordcamp-talks .standard-form span.label {
+	display: block;
+	font-weight: bold;
+	margin: 15px 0 5px 0;
+}
+#wordcamp-talks .standard-form ul.category-list {
+	overflow: hidden;
+	margin:0;
+	padding:0;
+}
+#wordcamp-talks .standard-form ul.category-list li {
+	display:inline-block;
+	width:30%;
+	margin: 0px 5px 5px 0;
+	vertical-align: top;
+}
+
+#wordcamp-talks .standard-form ul.category-list li label {
+	font-weight: normal;
+	margin: 0;
+}
+
+#wordcamp-talks .standard-form div.checkbox label:nth-child(n+2),
+#wordcamp-talks .standard-form div.radio div label {
+	color: #888;
+	font-size: 100%;
+	font-weight: normal;
+	margin: 5px 0 0 0;
+}
+#buddypress #wordcamp-talks .standard-form input[type='text'],
+#wordcamp-talks .standard-form input[type=text] {
+	width: 90%;
+}
+#wordcamp-talks .form-allowed-tags,
+#wordcamp-talks #commentform input[type=text],
+#wordcamp-talks #commentform textarea {
+	width: 90%;
+}
+#wordcamp-talks .standard-form textarea:not(.wp-talk-stream-tinymce) {
+	height: 120px;
+	width: 90%;
+}
+
+#wp-wct_the_content-wrap {
+	width: 90%;
+	border: 1px solid #ccc;
+}
+
+#wct_the_content_ifr {
+	width:99%!important;
+}
+
+#wordcamp-talks #wp-wct_the_content-editor-container .mce-container button {
+	border-radius: 0;
+	padding: 2px 3px;
+	line-height: normal;
+}
+
+#wordcamp-talks .standard-form p.description {
+	color: #888;
+	font-size: 80%;
+	margin: 5px 0;
+}
+#wordcamp-talks .standard-form div.submit {
+	clear: both;
+	padding: 15px 0 0 0;
+}
+#wordcamp-talks .standard-form p.submit {
+	margin-bottom: 0;
+	padding: 15px 0 0 0;
+}
+#wordcamp-talks .standard-form div.submit input {
+	margin-right: 15px;
+}
+#wordcamp-talks .standard-form div.radio ul {
+	margin: 10px 0 15px 38px;
+	list-style: disc;
+}
+#wordcamp-talks .standard-form div.radio ul li {
+	margin-bottom: 5px;
+}
+#wordcamp-talks .standard-form a.clear-value {
+	display: block;
+	margin-top: 5px;
+	outline: none;
+}
+#wordcamp-talks .standard-form input:focus,
+#wordcamp-talks .standard-form textarea:focus:not(.wp-talk-stream-tinymce),
+#wordcamp-talks .user-profile-form textarea:focus,
+#wordcamp-talks .standard-form select:focus {
+	background: #fafafa;
+	color: #555;
+}
+#wordcamp-talks form#send-invite-form {
+	margin-top: 20px;
+}
+#wordcamp-talks button:not(.ed_button),
+#wordcamp-talks a.button,
+a.wpis-title-button,
+#wordcamp-talks input[type=submit],
+#wordcamp-talks input[type=button]:not(.ed_button),
+#wordcamp-talks input[type=reset],
+body.single-talks #comments .comment-reply-link {
+	background: #fff; /* Old browsers */
+	border: 1px solid #ccc;
+	color: #777;
+	font-size: small;
+	cursor: pointer;
+	outline: none;
+	padding: 4px 10px;
+	text-align: center;
+	text-decoration: none;
+}
+#wordcamp-talks button:hover:not(.ed_button),
+#wordcamp-talks a.button:hover,
+#wordcamp-talks a.button:focus,
+a.wpis-title-button:hover,
+a.wpis-title-button:focus,
+#wordcamp-talks input[type=submit]:hover,
+#wordcamp-talks input[type=button]:hover:not(.ed_button),
+#wordcamp-talks input[type=reset]:hover,
+body.single-talks #comments .comment-reply-link:hover {
+	background: #ededed;
+	border: 1px solid #bbb;
+	color: #555;
+	outline: none;
+	text-decoration: none;
+}
+
+#wordcamp-talks .standard-form .submit {
+	margin-top:15px;
+	width:90%;
+	text-align: right;
+}
+
+#wordcamp-talks .standard-form .submit input[type=submit],
+#wordcamp-talks .standard-form .submit input[type=reset] {
+	font-size:110%;
+}
+#wordcamp-talks #talks-search-submit,
+#wordcamp-talks #talks-order-submit {
+	font-size: 80%;
+}
+
+body.single-item.groups #buddypress #wordcamp-talks #buddydrive-btn {
+	float:none;
+	margin:1em 0;
+	display:inline-block;
+}
+
+#wordcamp-talks .standard-form #talk-images-list.hidden {
+	display: none;
+}
+
+#wordcamp-talks .standard-form #talk-images-list ul {
+	overflow: hidden;
+	list-style: none;
+	clear:both;
+}
+
+#wordcamp-talks .standard-form #talk-images-list ul li {
+	position:relative;
+	overflow: hidden;
+	float: left;
+	width: 100px;
+	margin: 0 1em 1em 0;
+	height: 100px;
+	border: solid 1px #ccc;
+}
+
+#wordcamp-talks .standard-form #talk-images-list ul li img {
+	max-width: 100%;
+}
+
+#wordcamp-talks .standard-form #talk-images-list ul li .cb-container {
+	position: absolute;
+	bottom: 0;
+	background-color: #fff;
+	width: 100%;
+	text-align: center;
+}
+
+/*--------------------------------------------------------------
+9 - Widgets
+--------------------------------------------------------------*/
+
+.widget ul.wp-talk-stream-tops li a {
+	display: block;
+	line-height: 40px;
+	margin:5px 0;
+}
+.widget ul.wp-talk-stream-tops li a {
+	text-decoration: none;
+}
+
+.widget ul.wp-talk-stream-tops li a img {
+	vertical-align: bottom;
+}
+
+/*--------------------------------------------------------------
+10 - Media Queries
+--------------------------------------------------------------*/
+
+@media only screen and (max-width: 480px ){
+	#wordcamp-talks ul#talks-main-nav {
+		margin-bottom: 10px;
+	}
+
+	#wordcamp-talks ul#talks-main-nav li {
+		max-width: 100%;
+	}
+
+	#wordcamp-talks ul#talks-main-nav li {
+		display:block;
+	}
+
+	#wordcamp-talks ul#talks-main-nav li.last {
+		float:none;
+	}
+
+	#wordcamp-talks ul.talk-list .talk-avatar,
+	#wordcamp-talks ul.talk-comments-list .talk-comment-avatar {
+		display:none;
+	}
+
+	#wordcamp-talks ul.talk-list .talk-content,
+	#wordcamp-talks ul.talk-comments-list .talk-comment-content {
+		margin: 0px;
+	}
+}
