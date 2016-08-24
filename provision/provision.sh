@@ -719,7 +719,6 @@ cleanup_vvv(){
   echo "Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
   echo "127.0.0.1 vvv.dev # vvv-auto" >> "/etc/hosts"
-  echo "127.0.0.1 local.wordpress-trunk.dev # vvv-auto" >> "/etc/hosts"
   mv /tmp/hosts /etc/hosts
 }
 
