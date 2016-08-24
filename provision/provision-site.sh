@@ -16,7 +16,7 @@ if [[ true == $SKIP_PROVISIONING ]]; then
     REPO=false
 fi
 
-if [[ true == "${REPO}" ]]; then
+if [[ false != "${REPO}" ]]; then
   # Clone or pull the site repository
   if [[ ! -d ${VM_DIR} ]]; then
     echo -e "\nDownloading ${SITE}, see ${REPO}"
