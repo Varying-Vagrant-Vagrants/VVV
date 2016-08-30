@@ -241,7 +241,7 @@ To enable Git for core development, use `vagrant ssh` to access the virtual mach
 
 Docker on Windows and macOS is currently available in two versions. Originally the Docker project used a virtual machine installed into VirtualBox called boot2docker. The newer system, sometimes referred-to as "Native Docker" no-longer uses VirtualBox but instead uses macOS' Hypervisor.framework or Windows Professional's Hyper-V to run the Docker Virtual Machine.
 
-By default Vagrant tries to run a new boot2docker-style virtual machine, which means if you want to use Native Docker on your non-Linux system you will need to create a file called `CustomFile` with contents similar to below. This will tell Vagrant to not spawn a new virtual machine but to use Docker commands directly anyway.
+By default Vagrant tries to run a new boot2docker-style virtual machine, which means if you want to use Native Docker on your non-Linux system you will need to create a file called `Customfile` with contents similar to below. This will tell Vagrant to not spawn a new virtual machine but to use Docker commands directly anyway.
 
 ```ruby
 config.vm.provider :docker do |v|
