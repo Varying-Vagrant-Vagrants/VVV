@@ -582,7 +582,7 @@ wp_cli() {
     echo -e "\nUpdating wp-cli..."
     cd /srv/www/wp-cli
     git pull --rebase origin master
-    composer update
+    composer install
   fi
   # Link `wp` to the `/usr/local/bin` directory
   ln -sf "/srv/www/wp-cli/bin/wp" "/usr/local/bin/wp"
