@@ -7,7 +7,7 @@ FROM ubuntu:trusty
 # wget: for network detection
 RUN set -x \
 	&& apt-get update \
-	&& apt-get install --no-install-recommends -y sudo openssh-server wget \
+	&& apt-get install --no-install-recommends -y sudo openssh-server wget rsync apt-transport-https \
 	&& mkdir /var/run/sshd \
 	&& sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config \
 	&& echo 'UseDNS no' >> /etc/ssh/sshd_config \
