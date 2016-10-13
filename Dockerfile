@@ -4,9 +4,10 @@ FROM ubuntu:trusty
 # As this image is not published, we do not optimize for size by combining RUN statements
 
 # Basic upgrades; install sudo and SSH.
+# wget: for network detection
 RUN set -x \
 	&& apt-get update \
-	&& apt-get install --no-install-recommends -y sudo openssh-server \
+	&& apt-get install --no-install-recommends -y sudo openssh-server wget \
 	&& mkdir /var/run/sshd \
 	&& sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config \
 	&& echo 'UseDNS no' >> /etc/ssh/sshd_config \

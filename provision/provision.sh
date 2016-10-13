@@ -102,7 +102,14 @@ apt_package_check_list=(
 
 network_detection() {
   # Network Detection
-  #
+
+  # Test that wget is installed to avoid giving bogus report about no network
+  command -v wget >/dev/null || {
+    echo "Unable to detect network: wget not installed"
+    ping_result="Not Connected"
+    return
+  }
+
   # Make an HTTP request to google.com to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
