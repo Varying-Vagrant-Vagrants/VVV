@@ -41,6 +41,7 @@ apt_package_check_list=(
   php-imagick
   php-memcache
   php-pear
+  php7.0-bcmath
   php7.0-curl
   php7.0-gd
   php7.0-mbstring
