@@ -1,5 +1,5 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
+# vi: set ft=ruby ts=2 sw=2 et:
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
@@ -52,7 +52,9 @@ Vagrant.configure("2") do |config|
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
   # box containing the Ubuntu 14.04 Trusty 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.provider :virtualbox do |v, override|
+    override.vm.box = "ubuntu/trusty64"
+  end
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
@@ -72,6 +74,13 @@ Vagrant.configure("2") do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
     override.vm.box = "ericmann/trusty64"
+  end
+
+  # Docker base box is defined in Dockerfile
+  config.vm.provider 'docker' do |d|
+    d.build_dir = "."
+    # Required for provisioning and 'vagrant ssh' to work.
+    d.has_ssh = true
   end
 
   config.vm.hostname = "vvv"

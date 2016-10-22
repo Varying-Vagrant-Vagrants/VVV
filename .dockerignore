@@ -1,0 +1,6 @@
+.git
+.vagrant
+config
+database
+log
+www
