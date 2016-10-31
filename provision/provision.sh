@@ -195,6 +195,12 @@ print_pkg_info() {
   pack_space_count="$(( 30 - ${#pkg_version} ))"
   real_space="$(( space_count + pack_space_count + ${#pkg_version} ))"
   printf " * $pkg %${real_space}.${#pkg_version}s ${pkg_version}\n"
+unattended_upgrades_setup() {
+  cp "/srv/config/apt/10periodic" "/etc/apt/apt.conf.d/10periodic"
+  echo " * Copied /srv/config/apt/10periodic to /etc/apt/apt.conf.d/10periodic"
+
+  cp "/srv/config/apt/50unattended-upgrades" "/etc/apt/apt.conf.d/50unattended-upgrades"
+  echo " * Copied /srv/config/apt/50unattended-upgrades to /etc/apt/apt.conf.d/50unattended-upgrades"
 }
 
 package_check() {
@@ -249,6 +255,9 @@ package_install() {
 
   if [[ ${#apt_package_install_list[@]} = 0 ]]; then
     echo -e "No apt packages to install.\n"
+
+    echo "Running apt-get update..."
+    apt-get update -y
   else
     # Before running `apt-get update`, we should add the public keys for
     # the packages that we are installing from non standard sources via
@@ -277,6 +286,10 @@ package_install() {
     # Clean up apt caches
     apt-get clean
   fi
+
+  # Check for security updates
+  echo "Checking for security updates"
+  unattended-upgrades
 }
 
 tools_install() {
@@ -863,6 +876,7 @@ network_check
 echo " "
 echo "Main packages check and install."
 git_ppa_check
+unattended_upgrades_setup
 package_install
 tools_install
 nginx_setup
