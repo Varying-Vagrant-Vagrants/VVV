@@ -25,27 +25,34 @@ apt_package_install_list=()
 # status before adding them to the apt_package_install_list array.
 apt_package_check_list=(
 
-  # PHP5
+  # PHP7
   #
-  # Our base packages for php5. As long as php5-fpm and php5-cli are
-  # installed, there is no need to install the general php5 package, which
+  # Our base packages for php7.0. As long as php7.0-fpm and php7.0-cli are
+  # installed, there is no need to install the general php7.0 package, which
   # can sometimes install apache as a requirement.
-  php5-fpm
-  php5-cli
+  php7.0-fpm
+  php7.0-cli
 
   # Common and dev packages for php
-  php5-common
-  php5-dev
+  php7.0-common
+  php7.0-dev
 
   # Extra PHP modules that we find useful
-  php5-memcache
-  php5-imagick
-  php5-mcrypt
-  php5-mysql
-  php5-imap
-  php5-curl
+  php-imagick
+  php-memcache
   php-pear
-  php5-gd
+  php7.0-bcmath
+  php7.0-curl
+  php7.0-gd
+  php7.0-mbstring
+  php7.0-mcrypt
+  php7.0-mysql
+  php7.0-imap
+  php7.0-json
+  php7.0-soap
+  php7.0-ssh2
+  php7.0-xml
+  php7.0-zip
 
   # nginx is installed as the default web server
   nginx
@@ -59,7 +66,7 @@ apt_package_check_list=(
   # other packages that come in handy
   imagemagick
   subversion
-  git-core
+  git
   zip
   unzip
   ngrep
@@ -117,6 +124,21 @@ network_check() {
   fi
 }
 
+git_ppa_check() {
+  # git
+  #
+  # apt-get does not have latest version of git,
+  # so let's the use ppa repository instead.
+  #
+  # Install prerequisites.
+  sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
+  # Add ppa repo.
+  echo "Adding ppa:git-core/ppa repository"
+  sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
+  # Update apt-get info.
+  sudo apt-get update &>/dev/null
+}
+
 noroot() {
   sudo -EH -u "vagrant" "$@";
 }
@@ -152,22 +174,42 @@ profile_setup() {
   fi
 }
 
+not_installed() {
+  dpkg -s "$1" 2>&1 | grep -q 'Version:'
+  if [[ "$?" -eq 0 ]]; then
+    apt-cache policy "$1" | grep 'Installed: (none)'
+    return "$?"
+  else
+    return 0
+  fi
+}
+
+print_pkg_info() {
+  local pkg="$1"
+  local pkg_version="$2"
+  local space_count
+  local pack_space_count
+  local real_space
+
+  space_count="$(( 20 - ${#pkg} ))" #11
+  pack_space_count="$(( 30 - ${#pkg_version} ))"
+  real_space="$(( space_count + pack_space_count + ${#pkg_version} ))"
+  printf " * $pkg %${real_space}.${#pkg_version}s ${pkg_version}\n"
+}
+
 package_check() {
   # Loop through each of our packages that should be installed on the system. If
   # not yet installed, it should be added to the array of packages to install.
   local pkg
-  local package_version
+  local pkg_version
 
   for pkg in "${apt_package_check_list[@]}"; do
-    package_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
-    if [[ -n "${package_version}" ]]; then
-      space_count="$(expr 20 - "${#pkg}")" #11
-      pack_space_count="$(expr 30 - "${#package_version}")"
-      real_space="$(expr ${space_count} + ${pack_space_count} + ${#package_version})"
-      printf " * $pkg %${real_space}.${#package_version}s ${package_version}\n"
-    else
-      echo " *" $pkg [not installed]
+    if not_installed "${pkg}"; then
+      echo " *" "$pkg" [not installed]
       apt_package_install_list+=($pkg)
+    else
+      pkg_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
+      print_pkg_info "$pkg" "$pkg_version"
     fi
   done
 }
@@ -199,6 +241,12 @@ package_install() {
   ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
   echo "Linked custom apt sources"
 
+  if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
+      # Retrieve the NodeJS signing key from nodesource.com
+      echo "Applying NodeSource NodeJS signing key..."
+	  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+  fi
+
   if [[ ${#apt_package_install_list[@]} = 0 ]]; then
     echo -e "No apt packages to install.\n"
   else
@@ -210,17 +258,21 @@ package_install() {
     echo "Applying Nginx signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
-    # Apply the nodejs assigning key
-    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key C7917B12 2>&1 | grep "gpg:"
-    apt-key export C7917B12 | apt-key add -
+    # Apply the PHP signing key
+    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
+    apt-key export E5267A6C | apt-key add -
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
-    apt-get update -y
+    apt-get -y update
 
     # Install required packages
     echo "Installing apt-get packages..."
-    apt-get install -y ${apt_package_install_list[@]}
+    apt-get -y install ${apt_package_install_list[@]}
+
+    # Remove unnecessary packages
+    echo "Removing unnecessary packages..."
+    apt-get autoremove -y
 
     # Clean up apt caches
     apt-get clean
@@ -228,18 +280,56 @@ package_install() {
 }
 
 tools_install() {
+  # Disable xdebug before any composer provisioning.
+  sh /home/vagrant/bin/xdebug_off
+
+  # nvm
+  if [[ ! -d "/srv/config/nvm" ]]; then
+    echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
+    git clone "https://github.com/creationix/nvm.git" "/srv/config/nvm"
+    cd /srv/config/nvm
+    git checkout `git describe --abbrev=0 --tags`
+  else
+    echo -e "\nUpdating nvm..."
+    cd /srv/config/nvm
+    git pull origin master
+    git checkout `git describe --abbrev=0 --tags`
+  fi
+  # Activate nvm
+  source /srv/config/nvm/nvm.sh
+
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
   npm install -g npm
   npm install -g npm-check-updates
 
-  # xdebug
+  # Xdebug
   #
-  # XDebug 2.2.3 is provided with the Ubuntu install by default. The PECL
-  # installation allows us to use a later version. Not specifying a version
-  # will load the latest stable.
-  pecl install xdebug
+  # The version of Xdebug 2.4.0 that is available for our Ubuntu installation
+  # is not compatible with PHP 7.0. We instead retrieve the source package and
+  # go through the manual installation steps.
+  if [[ -f /usr/lib/php/20151012/xdebug.so ]]; then
+      echo "Xdebug already installed"
+  else
+      echo "Installing Xdebug"
+      # Download and extract Xdebug.
+      curl -L -O --silent https://xdebug.org/files/xdebug-2.4.0.tgz
+      tar -xf xdebug-2.4.0.tgz
+      cd xdebug-2.4.0
+      # Create a build environment for Xdebug based on our PHP configuration.
+      phpize
+      # Complete configuration of the Xdebug build.
+      ./configure -q
+      # Build the Xdebug module for use with PHP.
+      make -s > /dev/null
+      # Install the module.
+      cp modules/xdebug.so /usr/lib/php/20151012/xdebug.so
+      # Clean up.
+      cd ..
+      rm -rf xdebug-2.4.0*
+      echo "Xdebug installed"
+  fi
 
   # ack-grep
   #
@@ -273,7 +363,7 @@ tools_install() {
   if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
     COMPOSER_HOME=/usr/local/src/composer composer self-update
-    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:4.8.*
+    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:5.*
     COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/php-invoker:1.1.*
     COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update mockery/mockery:0.9.*
     COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update d11wtq/boris:v1.0.8
@@ -320,7 +410,7 @@ nginx_setup() {
             -key /etc/nginx/server.key \
             -out /etc/nginx/server.crt \
             -days 3650 \
-            -subj /CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.wordpress-trunk.dev 2>&1)"
+            -subj /CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev 2>&1)"
 	  echo "$vvvsigncert"
   fi
 
@@ -345,21 +435,21 @@ nginx_setup() {
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php5-fpm-config/php5-fpm.conf" "/etc/php5/fpm/php5-fpm.conf"
-  cp "/srv/config/php5-fpm-config/www.conf" "/etc/php5/fpm/pool.d/www.conf"
-  cp "/srv/config/php5-fpm-config/php-custom.ini" "/etc/php5/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php5-fpm-config/opcache.ini" "/etc/php5/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php5-fpm-config/xdebug.ini" "/etc/php5/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/php7-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
+  cp "/srv/config/php-config/www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
+  cp "/srv/config/php-config/php-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
 
   # Find the path to Xdebug and prepend it to xdebug.ini
-  XDEBUG_PATH=$( find /usr -name 'xdebug.so' | head -1 )
-  sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php5/mods-available/xdebug.ini"
+  XDEBUG_PATH=$( find /usr/lib/php/ -name 'xdebug.so' | head -1 )
+  sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php/7.0/mods-available/xdebug.ini"
 
-  echo " * Copied /srv/config/php5-fpm-config/php5-fpm.conf     to /etc/php5/fpm/php5-fpm.conf"
-  echo " * Copied /srv/config/php5-fpm-config/www.conf          to /etc/php5/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php5-fpm-config/php-custom.ini    to /etc/php5/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php5-fpm-config/opcache.ini       to /etc/php5/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php5-fpm-config/xdebug.ini        to /etc/php5/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/php7-fpm.conf     to /etc/php/7.0/fpm/php-fpm.conf"
+  echo " * Copied /srv/config/php-config/www.conf          to /etc/php/7.0/fpm/pool.d/www.conf"
+  echo " * Copied /srv/config/php-config/php-custom.ini    to /etc/php/7.0/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
@@ -423,14 +513,13 @@ mailcatcher_setup() {
   # Installs mailcatcher using RVM. RVM allows us to install the
   # current version of ruby and all mailcatcher dependencies reliably.
   local pkg
+  local rvm_version
+  local mailcatcher_version
 
   rvm_version="$(/usr/bin/env rvm --silent --version 2>&1 | grep 'rvm ' | cut -d " " -f 2)"
   if [[ -n "${rvm_version}" ]]; then
     pkg="RVM"
-    space_count="$(( 20 - ${#pkg}))" #11
-    pack_space_count="$(( 30 - ${#rvm_version}))"
-    real_space="$(( ${space_count} + ${pack_space_count} + ${#rvm_version}))"
-    printf " * $pkg %${real_space}.${#rvm_version}s ${rvm_version}\n"
+    print_pkg_info "$pkg" "$rvm_version"
   else
     # RVM key D39DC0E3
     # Signatures introduced in 1.26.0
@@ -445,10 +534,7 @@ mailcatcher_setup() {
   mailcatcher_version="$(/usr/bin/env mailcatcher --version 2>&1 | grep 'mailcatcher ' | cut -d " " -f 2)"
   if [[ -n "${mailcatcher_version}" ]]; then
     pkg="Mailcatcher"
-    space_count="$(( 20 - ${#pkg}))" #11
-    pack_space_count="$(( 30 - ${#mailcatcher_version}))"
-    real_space="$(( ${space_count} + ${pack_space_count} + ${#mailcatcher_version}))"
-    printf " * $pkg %${real_space}.${#mailcatcher_version}s ${mailcatcher_version}\n"
+    print_pkg_info "$pkg" "$mailcatcher_version"
   else
     echo " * Mailcatcher [not installed]"
     /usr/bin/env rvm default@mailcatcher --create do gem install mailcatcher --no-rdoc --no-ri
@@ -462,11 +548,11 @@ mailcatcher_setup() {
     echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
   fi
 
-  if [[ -f "/etc/php5/mods-available/mailcatcher.ini" ]]; then
-    echo " *" Mailcatcher php5 fpm already configured.
+  if [[ -f "/etc/php/7.0/mods-available/mailcatcher.ini" ]]; then
+    echo " *" Mailcatcher php7 fpm already configured.
   else
-    cp "/srv/config/php5-fpm-config/mailcatcher.ini" "/etc/php5/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php5-fpm-config/mailcatcher.ini    to /etc/php5/mods-available/mailcatcher.ini"
+    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.0/mods-available/mailcatcher.ini"
   fi
 }
 
@@ -480,15 +566,15 @@ services_restart() {
   service mailcatcher restart
 
   # Disable PHP Xdebug module by default
-  php5dismod xdebug
+  phpdismod xdebug
 
   # Enable PHP mcrypt module by default
-  php5enmod mcrypt
+  phpenmod mcrypt
 
   # Enable PHP mailcatcher sendmail settings by default
-  php5enmod mailcatcher
+  phpenmod mailcatcher
 
-  service php5-fpm restart
+  service php7.0-fpm restart
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
@@ -569,6 +655,10 @@ php_codesniff() {
     fi
   fi
 
+  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
+  ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
+  ln -sf "/srv/www/phpcs/scripts/phpcs" "/usr/local/bin/phpcs"
+
   # Sniffs WordPress Coding Standards
   if [[ ! -d "/srv/www/phpcs/CodeSniffer/Standards/WordPress" ]]; then
     echo -e "\nDownloading WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
@@ -584,9 +674,9 @@ php_codesniff() {
   fi
 
   # Install the standards in PHPCS
-  /srv/www/phpcs/scripts/phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
-  /srv/www/phpcs/scripts/phpcs --config-set default_standard WordPress-Core
-  /srv/www/phpcs/scripts/phpcs -i
+  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
+  phpcs --config-set default_standard WordPress-Core
+  phpcs -i
 }
 
 phpmyadmin_setup() {
@@ -594,9 +684,9 @@ phpmyadmin_setup() {
   if [[ ! -d /srv/www/default/database-admin ]]; then
     echo "Downloading phpMyAdmin..."
     cd /srv/www/default
-    wget -q -O phpmyadmin.tar.gz "https://files.phpmyadmin.net/phpMyAdmin/4.4.10/phpMyAdmin-4.4.10-all-languages.tar.gz"
+    wget -q -O phpmyadmin.tar.gz "https://files.phpmyadmin.net/phpMyAdmin/4.6.0/phpMyAdmin-4.6.0-all-languages.tar.gz"
     tar -xf phpmyadmin.tar.gz
-    mv phpMyAdmin-4.4.10-all-languages database-admin
+    mv phpMyAdmin-4.6.0-all-languages database-admin
     rm phpmyadmin.tar.gz
   else
     echo "PHPMyAdmin already installed."
@@ -629,7 +719,7 @@ PHP
   else
     echo "Updating WordPress Stable..."
     cd /srv/www/wordpress-default
-    noroot wp core upgrade
+    noroot wp core update
   fi
 }
 
@@ -645,38 +735,25 @@ wpsvn_check() {
   fi;
 }
 
-wordpress_trunk() {
-  # Checkout, install and configure WordPress trunk via core.svn
-  if [[ ! -d "/srv/www/wordpress-trunk" ]]; then
-    echo "Checking out WordPress trunk from core.svn, see https://core.svn.wordpress.org/trunk"
-    svn checkout "https://core.svn.wordpress.org/trunk/" "/srv/www/wordpress-trunk"
-    cd /srv/www/wordpress-trunk
-    echo "Configuring WordPress trunk..."
-    noroot wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress-trunk.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-    echo "Installing WordPress trunk..."
-    noroot wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-  else
-    echo "Updating WordPress trunk..."
-    cd /srv/www/wordpress-trunk
-    svn up
-  fi
-}
-
 wordpress_develop(){
   # Checkout, install and configure WordPress trunk via develop.svn
   if [[ ! -d "/srv/www/wordpress-develop" ]]; then
-    echo "Checking out WordPress trunk from develop.svn, see https://develop.svn.wordpress.org/trunk"
-    svn checkout "https://develop.svn.wordpress.org/trunk/" "/srv/www/wordpress-develop"
+    echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
+    noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "/tmp/wordpress-develop"
+
+    cd /tmp/wordpress-develop/src/
+
+    echo "Installing local npm packages for src.wordpress-develop.dev, this may take several minutes."
+    noroot npm install
+
+    echo "Initializing grunt and creating build.wordpress-develop.dev, this may take several minutes."
+    noroot grunt
+
+    echo "Moving WordPress develop to a shared directory, /srv/www/wordpress-develop"
+    mv /tmp/wordpress-develop /srv/www/
+
     cd /srv/www/wordpress-develop/src/
-    echo "Configuring WordPress develop..."
+    echo "Creating wp-config.php for src.wordpress-develop.dev and build.wordpress-develop.dev."
     noroot wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 // Match any requests made via xip.io.
 if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(src|build)(.wordpress-develop.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
@@ -690,12 +767,10 @@ define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
 
 define( 'WP_DEBUG', true );
 PHP
-    echo "Installing WordPress develop..."
+    echo "Installing src.wordpress-develop.dev."
     noroot wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
     cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
     cd /srv/www/wordpress-develop/
-    echo "Running npm install for the first time, this may take several minutes..."
-    noroot npm install &>/dev/null
   else
     echo "Updating WordPress develop..."
     cd /srv/www/wordpress-develop/
@@ -727,7 +802,7 @@ custom_vvv(){
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
   # Look for site setup scripts
-  for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-init.sh'); do
+  find /srv/www -maxdepth 5 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
     DIR="$(dirname "$SITE_CONFIG_FILE")"
     (
     cd "$DIR"
@@ -746,6 +821,11 @@ custom_vvv(){
     # while still having an Nginx config which works.
     DIR="$(dirname "$SITE_CONFIG_FILE")"
     sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+
+    # Resolve relative paths since not supported in Nginx root.
+    while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"; do
+      sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
+    done
   done
 
   # Parse any vvv-hosts file located in www/ or subdirectories of www/
@@ -782,6 +862,7 @@ network_check
 # Package and Tools Install
 echo " "
 echo "Main packages check and install."
+git_ppa_check
 package_install
 tools_install
 nginx_setup
@@ -805,11 +886,10 @@ phpmyadmin_setup
 network_check
 # Time for WordPress!
 echo " "
-echo "Installing/updating WordPress Stable, Trunk & Develop"
+echo "Installing/updating WordPress Stable & Develop"
 
 wordpress_default
 wpsvn_check
-wordpress_trunk
 wordpress_develop
 
 # VVV custom site import
@@ -821,5 +901,5 @@ custom_vvv
 # And it's done
 end_seconds="$(date +%s)"
 echo "-----------------------------"
-echo "Provisioning complete in "$((${end_seconds} - ${start_seconds}))" seconds"
+echo "Provisioning complete in "$(( end_seconds - start_seconds ))" seconds"
 echo "For further setup instructions, visit http://vvv.dev"

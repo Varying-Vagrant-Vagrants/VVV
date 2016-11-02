@@ -4,14 +4,21 @@ Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) 
 
 VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
-* **Version**: 1.3.0
-* **Latest Stable**: [1.3.0](https://github.com/varying-vagrant-vagrants/vvv/tree/1.3.0)
+* **Version**: 1.4.0
+* **Latest Stable**: [1.4.0](https://github.com/varying-vagrant-vagrants/vvv/tree/1.4.0)
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
-* **Contributors**: [@jeremyfelt](https://github.com/jeremyfelt), [@carldanley](https://github.com/carldanley), [@ericmann](https://github.com/ericmann), [@lkwdwrd](https://github.com/lkwdwrd), [@TheLastCicada](https://github.com/TheLastCicada), [@tddewey](https://github.com/tddewey), [@johnpbloch](https://github.com/johnpbloch), [@kadamwhite](https://github.com/kadamwhite), [@scribu](https://github.com/scribu), [@danielbachhuber](https://github.com/danielbachhuber), [@tollmanz](https://github.com/tollmanz), [@mbijon](https://github.com/mbijon), [@markjaquith](https://github.com/markjaquith), [@curtismchale](https://github.com/curtismchale), [@Mamaduka](https://github.com/mamaduka), [@lgedeon](https://github.com/lgedeon), [@pmgarman](https://github.com/pmgarman), [@westonruter](https://github.com/westonruter), [@petemall](https://github.com/petemall), [@cmmarslender](https://github.com/cmmarslender), [@mintindeed](https://github.com/mintindeed), [@mboynes](https://github.com/mboynes), [@aaronjorbin](https://github.com/aaronjorbin), [@tobiasbg](https://github.com/tobiasbg), [@simonwheatley](https://github.com/simonwheatley), [@ocean90](https://github.com/ocean90), [@lvnilesh](https://github.com/lvnilesh), [@alexw23](https://github.com/alexw23), [@zamoose](https://github.com/zamoose), [@leewillis77](https://github.com/leewillis77), [@imichaeli](https://github.com/imichaeli), [@andrezrv](https://github.com/andrezrv), [@cadwell](https://github.com/cadwell), [@cfoellmann](https://github.com/cfoellmann), [@westi](https://github.com/westi), [@ryanduff](https://github.com/ryanduff), [@selinerdominik](https://github.com/selinerdominik), [@ericandrewlewis](https://github.com/ericandrewlewis), [@vDevices](https://github.com/vDevices), [@sunnyratilal](https://github.com/sunnyratilal), [@enejb](https://github.com/enejb), [@salcode](https://github.com/salcode), [@mattbanks](https://github.com/mattbanks), [@aaroncampbell](https://github.com/aaroncampbell), [@tnorthcutt](https://github.com/tnorthcutt), [@neilpie](https://github.com/neilpie), [@francescolaffi](https://github.com/francescolaffi), [@itsananderson](https://github.com/itsananderson), [@foolswis](https://github.com/foolswis), [@lloydde](https://github.com/lloydde), [@jmbarlow](https://github.com/jmbarlow), [@nacin](https://github.com/nacin), [@thewebists](https://github.com/thewebists), [@iparr](https://github.com/iparr), [@chrishepner](https://github.com/chrishepner), [@miya0001](https://github.com/miya0001), [@iamntz](https://github.com/iamntz), [@mirmillo](https://github.com/mirmillo), [@garyjones](https://github.com/garyjones), [@teraphy](https://github.com/teraphy), [@DrewAPicture](https://github.com/DrewAPicture), [@jjeaton](https://github.com/jjeaton), [@ntwb](https://github.com/ntwb), [@bradp](https://github.com/bradp), [@jb510](https://github.com/jb510), [@pbearne](https://github.com/pbearne), [@robneu](https://github.com/robneu), [@hubdotcom](https://github.com/hubdotcom), [@michaelbeil](https://github.com/michaelbeil), [@EHLOVader](https://github.com/EHLOVader), [@HongPong](https://github.com/HongPong), [@twisty7867](https://github.com/twisty7867), [@khromov](https://github.com/khromov), [@amchoukir](https://github.com/amchoukir), [@grantnorwood](https://github.com/grantnorwood), [@MatthewEppelsheimer](https://github.com/MatthewEppelsheimer), [@cristovaov](https://github.com/cristovaov), [@coreymckrill](https://github.com/coreymckrill), [@jonathanbardo](https://github.com/jonathanbardo), [@rasmusbe](https://github.com/rasmusbe)
+* **Contributors**: [@jeremyfelt](https://github.com/jeremyfelt), [@carldanley](https://github.com/carldanley), [@ericmann](https://github.com/ericmann), [@lkwdwrd](https://github.com/lkwdwrd), [@TheLastCicada](https://github.com/TheLastCicada), [@tddewey](https://github.com/tddewey), [@johnpbloch](https://github.com/johnpbloch), [@kadamwhite](https://github.com/kadamwhite), [@scribu](https://github.com/scribu), [@danielbachhuber](https://github.com/danielbachhuber), [@tollmanz](https://github.com/tollmanz), [@mbijon](https://github.com/mbijon), [@markjaquith](https://github.com/markjaquith), [@curtismchale](https://github.com/curtismchale), [@Mamaduka](https://github.com/mamaduka), [@lgedeon](https://github.com/lgedeon), [@pmgarman](https://github.com/pmgarman), [@westonruter](https://github.com/westonruter), [@petemall](https://github.com/petemall), [@cmmarslender](https://github.com/cmmarslender), [@mintindeed](https://github.com/mintindeed), [@mboynes](https://github.com/mboynes), [@aaronjorbin](https://github.com/aaronjorbin), [@tobiasbg](https://github.com/tobiasbg), [@simonwheatley](https://github.com/simonwheatley), [@ocean90](https://github.com/ocean90), [@lvnilesh](https://github.com/lvnilesh), [@alexw23](https://github.com/alexw23), [@zamoose](https://github.com/zamoose), [@leewillis77](https://github.com/leewillis77), [@imichaeli](https://github.com/imichaeli), [@andrezrv](https://github.com/andrezrv), [@cadwell](https://github.com/cadwell), [@cfoellmann](https://github.com/cfoellmann), [@westi](https://github.com/westi), [@ryanduff](https://github.com/ryanduff), [@selinerdominik](https://github.com/selinerdominik), [@ericandrewlewis](https://github.com/ericandrewlewis), [@vDevices](https://github.com/vDevices), [@sunnyratilal](https://github.com/sunnyratilal), [@enejb](https://github.com/enejb), [@salcode](https://github.com/salcode), [@mattbanks](https://github.com/mattbanks), [@aaroncampbell](https://github.com/aaroncampbell), [@tnorthcutt](https://github.com/tnorthcutt), [@neilpie](https://github.com/neilpie), [@francescolaffi](https://github.com/francescolaffi), [@itsananderson](https://github.com/itsananderson), [@foolswis](https://github.com/foolswis), [@lloydde](https://github.com/lloydde), [@jmbarlow](https://github.com/jmbarlow), [@nacin](https://github.com/nacin), [@thewebists](https://github.com/thewebists), [@iparr](https://github.com/iparr), [@chrishepner](https://github.com/chrishepner), [@miya0001](https://github.com/miya0001), [@iamntz](https://github.com/iamntz), [@mirmillo](https://github.com/mirmillo), [@garyjones](https://github.com/garyjones), [@teraphy](https://github.com/teraphy), [@DrewAPicture](https://github.com/DrewAPicture), [@jjeaton](https://github.com/jjeaton), [@ntwb](https://github.com/ntwb), [@bradp](https://github.com/bradp), [@jb510](https://github.com/jb510), [@pbearne](https://github.com/pbearne), [@robneu](https://github.com/robneu), [@hubdotcom](https://github.com/hubdotcom), [@michaelbeil](https://github.com/michaelbeil), [@EHLOVader](https://github.com/EHLOVader), [@HongPong](https://github.com/HongPong), [@twisty7867](https://github.com/twisty7867), [@khromov](https://github.com/khromov), [@amchoukir](https://github.com/amchoukir), [@grantnorwood](https://github.com/grantnorwood), [@MatthewEppelsheimer](https://github.com/MatthewEppelsheimer), [@cristovaov](https://github.com/cristovaov), [@coreymckrill](https://github.com/coreymckrill), [@jonathanbardo](https://github.com/jonathanbardo), [@rasmusbe](https://github.com/rasmusbe), [@eriktrom](https://github.com/eriktrom), [@f4bsch](https://github.com/f4bsch), [@meitar](https://github.com/meitar), [@keegoid](https://github.com/keegoid), [@LoreleiAurora](https://github.com/LoreleiAurora), [@cobyan](https://github.com/cobyan), [@goblindegook](https://github.com/goblindegook), [@dlackty](https://github.com/dlackty), [@rene-hermenau](https://github.com/rene-hermenau), [@jdevalk](https://github.com/jdevalk), [@kadimi](https://github.com/kadimi), [@sc0ttkclark](https://github.com/sc0ttkclark), [@jonathanbossenger](https://github.com/jonathanbossenger), [@hello-jason](https://github.com/hello-jason), [@weskoop](https://github.com/weskoop), [@thebrandonallen](https://github.com/thebrandonallen)
 
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/CONTRIBUTING.md). Thanks!
 
-## Overview
+## Table of Content ##
+* [Overview](#overview)
+* [Installation](#installation---the-first-vagrant-up)
+* [Credentials](#credentials)
+* [Extensions](#helpful-extensions)
+* [Copyright](#copyright--license)
+
+## [Overview](#overview)
 
 ### The Purpose of Varying Vagrant Vagrants
 
@@ -35,8 +42,8 @@ Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagra
 
 Multiple projects can be developed at once in the same environment.
 
-* Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop themes.
-* Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-trunk` directories to develop plugins.
+* Use `wp-content/themes` in either the `www/wordpress-default` or `www/wordpress-develop/src` directories to develop themes.
+* Use `wp-content/plugins` in either the `www/wordpress-default` or `www/wordpress-develop/src` directories to develop plugins.
 * Take advantage of VVV's [auto site configuration](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) to provision additional instances of WordPress in `www/`. The [Variable VVV](https://github.com/bradp/vv) project helps to automate this process.
 * Use the `www/wordpress-develop` directory to participate in [WordPress core](https://make.wordpress.org/core) development.
 
@@ -48,20 +55,24 @@ These shared directories allow you to work, for example, in `vagrant-local/www/w
 
 Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts. Check this project out and use it as a base to learn about server provisioning or change everything to make it your own.
 
-### The First Vagrant Up
+### [Installation - The First Vagrant Up](#installation)
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
-1. Install [VirtualBox 5.0.x](https://www.virtualbox.org/wiki/Downloads)
+    * For Windows 8 or higher it is recommended that you run the cmd window as Administrator
+1. Install [VirtualBox 5.1.x](https://www.virtualbox.org/wiki/Downloads)
 1. Install [Vagrant 1.8.x](https://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
-1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
-    * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the provisioned VVV domains in your browser.
-    * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev local.wordpress-trunk.dev src.wordpress-develop.dev build.wordpress-develop.dev`
-1. Install the [vagrant-triggers](https://github.com/emyl/vagrant-triggers) plugin with `vagrant plugin install vagrant-triggers`
-    * Note: This step is not a requirement. When installed, it allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
-    * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
-    * If vagrant-triggers is not installed, VVV will not provide automated database backups.
+1. Optionally, install some convenient Vagrant plugins:
+    1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
+        * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the provisioned VVV domains in your browser.
+        * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev src.wordpress-develop.dev build.wordpress-develop.dev`
+    1. Install the [vagrant-triggers](https://github.com/emyl/vagrant-triggers) plugin with `vagrant plugin install vagrant-triggers`
+        * Note: This step is not a requirement. When installed, it allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
+        * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
+        * If vagrant-triggers is not installed, VVV will not provide automated database backups.
+    1. Install the [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest) plugin with `vagrant plugin install vagrant-vbguest`.
+        * Note: This step is not a requirement. When installed, it keeps the [VirtualBox Guest Additions](https://www.virtualbox.org/manual/ch04.html) kernel modules of your guest synchronized with the version of your host whenever you do `vagrant up`. This can prevent some subtle shared folder errors.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone git://github.com/Varying-Vagrant-Vagrants/VVV.git vagrant-local`
     * OR download and extract the repository `develop` branch [zip file](https://github.com/varying-vagrant-vagrants/vvv/archive/develop.zip) to a `vagrant-local` directory on your computer.
@@ -72,7 +83,6 @@ Entirely different server configurations can be created by modifying the files i
     * Watch as the script ends, as an administrator or `su` ***password may be required*** to properly modify the hosts file on your local machine.
 1. Visit any of the following default sites in your browser:
     * [http://local.wordpress.dev/](http://local.wordpress.dev/) for WordPress stable
-    * [http://local.wordpress-trunk.dev/](http://local.wordpress-trunk.dev/) for WordPress trunk
     * [http://src.wordpress-develop.dev/](http://src.wordpress-develop.dev/) for trunk WordPress development files
     * [http://build.wordpress-develop.dev/](http://build.wordpress-develop.dev/) for the version of those development files built with Grunt
     * [http://vvv.dev/](http://vvv.dev/) for a default dashboard containing several useful tools
@@ -119,23 +129,30 @@ The default memory allotment for the VVV virtual machine is 1024MB. If you would
 
 Since version 1.2.0, VVV has used a 64bit version of Ubuntu. Some older CPUs (such as the popular *Intel Core 2 Duo* series) do not support this. Changing the line `config.vm.box = "ubuntu/trusty64"` to `"ubuntu/trusty32"` in the `Vagrantfile` before `vagrant up` will provision a 32bit version of Ubuntu that will work on older hardware.
 
-### Credentials
+### [Credentials](#credentials)
 
-All database usernames and passwords for WordPress installations included by default are `wp` and `wp`.
+All database usernames and passwords for WordPress installations included by default are:
 
-All WordPress admin usernames and passwords for WordPress installations included by default are `admin` and `password`.
+__User:__ `wp`  
+__Password:__ `wp`
+
+All WordPress admin usernames and passwords for WordPress installations included by default are:
+
+__User:__ `admin`  
+__Password:__ `password`
+
+MySQL Root:
+
+__User:__ `root`
+__Password:__ `root`
+
+See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 #### WordPress Stable
 * LOCAL PATH: vagrant-local/www/wordpress-default
 * VM PATH: /srv/www/wordpress-default
 * URL: `http://local.wordpress.dev`
 * DB Name: `wordpress_default`
-
-#### WordPress Trunk
-* LOCAL PATH: vagrant-local/www/wordpress-trunk
-* VM PATH: /srv/www/wordpress-trunk
-* URL: `http://local.wordpress-trunk.dev`
-* DB Name: `wordpress_trunk`
 
 #### WordPress Develop
 * LOCAL PATH: vagrant-local/www/wordpress-develop
@@ -145,10 +162,6 @@ All WordPress admin usernames and passwords for WordPress installations included
 * DB Name: `wordpress_develop`
 * DB Name: `wordpress_unit_tests`
 
-#### MySQL Root
-* User: `root`
-* Pass: `root`
-* See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
 
 ### What do you get?
 
@@ -157,11 +170,10 @@ A bunch of stuff!
 1. [Ubuntu](http://www.ubuntu.com/) 14.04 LTS (Trusty Tahr)
 1. [WordPress Develop](https://develop.svn.wordpress.org/trunk/)
 1. [WordPress Stable](https://wordpress.org/)
-1. [WordPress Trunk](https://core.svn.wordpress.org/trunk/)
 1. [WP-CLI](http://wp-cli.org/) (master branch)
 1. [nginx](http://nginx.org/) ([mainline](http://nginx.com/blog/nginx-1-6-1-7-released/) version)
 1. [mysql](https://www.mysql.com/) 5.5.x
-1. [php-fpm](http://php-fpm.org/) 5.5.x
+1. [php-fpm](http://php-fpm.org/) 7.0.x
 1. [memcached](http://memcached.org/)
 1. PHP [memcache extension](https://pecl.php.net/package/memcache)
 1. PHP [xdebug extension](https://pecl.php.net/package/xdebug/)
@@ -186,7 +198,7 @@ A bunch of stuff!
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
-### Helpful Extensions
+### [Helpful Extensions](#extensions)
 
 Supporting init scripts during provisioning allows for some great extensions of VVV core.
 
@@ -218,7 +230,7 @@ To enable Git for core development, use `vagrant ssh` to access the virtual mach
 * Continue to work towards a stable state of software and configuration included in the default provisioning.
 * Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
 
-## Copyright / License
+## [Copyright / License](#license)
 
 VVV is copyright (c) 2014-2016, the contributors of the VVV project under the [MIT License](LICENSE).
 

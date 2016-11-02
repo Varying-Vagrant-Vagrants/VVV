@@ -27,6 +27,9 @@
 # Ignore anything in the 'custom' directory in config
 /config/custom/*
 
+# Ignore the nvm git clone in the 'nvm' directory in config
+/config/nvm/*
+
 # Ignore a custom bash_prompt if it exists
 /config/bash_prompt
 
@@ -47,6 +50,7 @@
 
 # We do have some default nginx configs that should be included
 !/config/nginx-config/sites/default.conf
+!/config/nginx-config/sites/deprecated.conf
 
 # And we do have a default SQL file that should be included
 !/database/init.sql

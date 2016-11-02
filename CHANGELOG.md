@@ -1,5 +1,26 @@
 # Varying Vagrant Vagrants Changelog
 
+## 1.4.0 (November 2, 2016)
+
+### Bug fixes and Enhancements
+
+* PHP 7.0.x has now replaced PHP 5.5.x. See [#844](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/844).c
+* Update PHPUnit to the latest stable 5.6.x version. See [#1004](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1004)
+* Xdebug 2.4.0 is now built from source to provide PHP 7.0.x support. See [#869](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/869).
+* Disable Xdebug during provisioning so that Composer can operate at normal speed. See [#971](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/971)
+* Improve the package installation check to avoid false positives. See [#840](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/840).
+* Allow `vvv-nginx.conf` to be located in a project's subdirectory. See [#852](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/852).
+* Install the latest version of git via its PPA. See [#872](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/872)
+* Assign names to pre, custom, default, and post provisioners to make `--provision-with` possible. See [#806](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/806)
+* Install `nvm` to provide access to multiple NodeJS versions. See [#863](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/863)
+* Provide the NodeJS 6.x LTS release by default. See [#1007](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1007)
+* Switch to NodeSource for NodeJS packages. See [#779](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/779)
+* Move `query_cache_*` config for MySQL to its proper place in the `[mysqld]` section. See [#925](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/925)
+* Allow WordPress core unit test database configuration to be supplied with environment variables. See [#846](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/846).
+* Use the correct command `wp core update` when updating WordPress with WP-CLI. See [#958](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/958)
+* Remove the `core.svn.wordpress.org` WordPress trunk checkout from default provisioning. `develop.svn.wordpress.org` remains. See [#921](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/921)
+* Checkout and initialize the `develop.svn.wordpress.org` repository in a temporary (non-shared) directory. This addresses issues with a possible race condition during NPM package installation on a shared drive. See [#969](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/969)
+
 ## 1.3.0 (February 21, 2016)
 
 ### Features
