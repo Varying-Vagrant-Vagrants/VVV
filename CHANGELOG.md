@@ -1,6 +1,6 @@
 # Varying Vagrant Vagrants Changelog
 
-## 1.x.x (TBD)
+## 1.4.0 (November 2, 2016)
 
 ### Bug fixes and Enhancements
 
