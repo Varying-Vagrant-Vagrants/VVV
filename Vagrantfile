@@ -212,6 +212,17 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
   end
 
+  # /srv/plugins/
+  #
+  # If a plugins directory exists in the same directory as your Vagrantfile, a mapped directory
+  # inside the VM will be created that acts as the default location for nginx sites. Put all
+  # of your project files here that you want to access through the web server
+  if vagrant_version >= "1.3.0"
+    config.vm.synced_folder "plugins/", "/srv/plugins/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+  else
+    config.vm.synced_folder "plugins/", "/srv/plugins/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
+  end
+
   config.vm.provision "fix-no-tty", type: "shell" do |s|
     s.privileged = false
     s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"

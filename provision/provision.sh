@@ -850,6 +850,15 @@ custom_vvv(){
   done
 }
 
+custom_plugins(){
+  ln -s -f /srv/plugins/* /srv/www/wordpress-default/wp-content/plugins/
+  sudo -u vagrant -i  wp --path=/srv/www/wordpress-default plugin activate --all
+
+
+  ln -s -f /srv/plugins/* /srv/www/wordpress-develop/src/wp-content/plugins/
+  sudo -u vagrant -i wp --path=/srv/www/wordpress-develop/src/ plugin activate --all
+}
+
 ### SCRIPT
 #set -xv
 
@@ -891,6 +900,12 @@ echo "Installing/updating WordPress Stable & Develop"
 wordpress_default
 wpsvn_check
 wordpress_develop
+
+# Create links to plugins
+echo " "
+echo "VVV custom plugins"
+custom_plugins
+
 
 # VVV custom site import
 echo " "
