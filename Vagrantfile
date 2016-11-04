@@ -1,5 +1,5 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
+# vi: set ft=ruby ts=2 sw=2 et:
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
