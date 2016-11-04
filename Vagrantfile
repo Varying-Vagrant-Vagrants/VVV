@@ -1,7 +1,34 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'yaml'
+
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
+vvv_config_file = File.join(vagrant_dir, 'vvv-config.yml')
+vvv_config = YAML.load_file(vvv_config_file)
+
+vvv_config['sites'].each do |site, args|
+  if args.kind_of? String then
+      repo = args
+      args = Hash.new
+      args['repo'] = repo
+  end
+
+  if ! args.kind_of? Hash then
+      args = Hash.new
+  end
+
+  defaults = Hash.new
+  defaults['repo']   = false
+  defaults['vm_dir'] = "/srv/www/#{site}"
+  defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
+  defaults['branch'] = 'master'
+  defaults['skip_provisioning'] = false
+  defaults['allow_customfile'] = false
+
+  vvv_config['sites'][site] = defaults.merge(args)
+end
 
 Vagrant.configure("2") do |config|
 
@@ -212,6 +239,16 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
   end
 
+  vvv_config['sites'].each do |site, args|
+    if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+      if vagrant_version >= "1.3.0"
+        config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+      else
+        config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :extra => 'dmode=775,fmode=774'
+      end
+    end
+  end
+
   config.vm.provision "fix-no-tty", type: "shell" do |s|
     s.privileged = false
     s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
@@ -222,6 +259,12 @@ Vagrant.configure("2") do |config|
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
+
+    vvv_config['sites'].each do |site, args|
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
+      end
+    end
   end
 
   # The Hyper-V Provider does not understand "dmode"/"fmode" in the "mount_options" as
@@ -230,6 +273,11 @@ Vagrant.configure("2") do |config|
   # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+    vvv_config['sites'].each do |site, args|
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+      end
+    end
     # Change all the folder to use SMB instead of Virtual Box shares
     override.vm.synced_folders.each do |id, options|
       if ! options[:type]
@@ -248,6 +296,15 @@ Vagrant.configure("2") do |config|
   # different provisioning, then you may want to consider a new Vagrantfile entirely.
   if File.exists?(File.join(vagrant_dir,'Customfile')) then
     eval(IO.read(File.join(vagrant_dir,'Customfile')), binding)
+  end
+
+  vvv_config['sites'].each do |site, args|
+    if args['allow_customfile'] then
+      paths = Dir[File.join(args['local_dir'], '**', 'Customfile')]
+      paths.each do |file|
+        eval(IO.read(file), binding)
+      end
+    end
   end
 
   # Provisioning
@@ -272,6 +329,20 @@ Vagrant.configure("2") do |config|
   else
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
+
+  vvv_config['sites'].each do |site, args|
+    config.vm.provision "site-#{site}",
+      type: "shell",
+      path: File.join( "provision", "provision-site.sh" ),
+      args: [
+        site,
+        args['repo'].to_s,
+        args['branch'],
+        args['vm_dir'],
+        args['skip_provisioning'].to_s
+      ]
+  end
+
 
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
