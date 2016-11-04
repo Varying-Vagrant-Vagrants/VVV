@@ -11,3 +11,19 @@ sites:
   #  vm_dir: /srv/www/wordpress-trunk-provisioner
   #multisite: https://github.com/Varying-Vagrant-Vagrants/vvv-multisite.git
   #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git
+
+utility-repos:
+  official: https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git
+  unofficial: https://github.com/LoreleiAurora/vvv-utilities-2.git
+  unofficial2: https://github.com/LoreleiAurora/vvv-utilities-3.git
+
+utilities:
+  official:
+  unofficial:
+    - test1
+    - test2
+    - test3
+  unofficial2:
+    - test4
+    - test5
+    - test6

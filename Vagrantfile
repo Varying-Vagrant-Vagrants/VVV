@@ -35,6 +35,15 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site] = defaults.merge(args)
 end
 
+if ! vvv_config['utility-repos'].kind_of? Hash then
+  vvv_config['utility-repos'] = Hash.new
+end
+vvv_config['utility-repos']['official'] = 'https://github.com/LoreleiAurora/vvv-utilities.git'
+
+if ! vvv_config['utilities'].kind_of? Hash then
+  vvv_config['utilities'] = Hash.new
+end
+
 Vagrant.configure("2") do |config|
 
   # Store the current version of Vagrant for use in conditionals when dealing
@@ -335,6 +344,32 @@ Vagrant.configure("2") do |config|
     config.vm.provision "custom", type: "shell", path: File.join( "provision", "provision-custom.sh" )
   else
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
+  end
+
+  vvv_config['utility-repos'].each do |name, repo|
+    config.vm.provision "utiluty-repo-#{name}",
+      type: "shell",
+      path: File.join( "provision", "provision-utility-repo.sh" ),
+      args: [
+          name,
+          repo
+      ]
+  end
+
+  vvv_config['utilities'].each do |name, utilities|
+    if ! utilities.kind_of? Hash then
+      utilities = Hash.new
+    end
+
+    utilities.each do |utility|
+      config.vm.provision "utility-#{name}-#{utility}",
+        type: "shell",
+        path: File.join( "provision", "resources", name, utility, "provision.sh" ),
+        args: [
+            name,
+            utility
+        ]
+    end
   end
 
   vvv_config['sites'].each do |site, args|
