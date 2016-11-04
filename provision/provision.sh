@@ -723,23 +723,11 @@ PHP
   fi
 }
 
-wpsvn_check() {
-  # Test to see if an svn upgrade is needed
-  svn_test=$( svn status -u "/srv/www/wordpress-develop/" 2>&1 );
-
-  if [[ "$svn_test" == *"svn upgrade"* ]]; then
-  # If the wordpress-develop svn repo needed an upgrade, they probably all need it
-    for repo in $(find /srv/www -maxdepth 5 -type d -name '.svn'); do
-      svn upgrade "${repo/%\.svn/}"
-    done
-  fi;
-}
-
 wordpress_develop(){
-  # Checkout, install and configure WordPress trunk via develop.svn
+  # Checkout, install and configure WordPress trunk via develop.git
   if [[ ! -d "/srv/www/wordpress-develop" ]]; then
-    echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-    noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "/tmp/wordpress-develop"
+    echo "Checking out WordPress trunk. See https://develop.git.wordpress.org/trunk"
+    noroot git clone --depth 1 "git://develop.git.wordpress.org/" "/tmp/wordpress-develop"
 
     cd /tmp/wordpress-develop/src/
 
@@ -889,7 +877,6 @@ echo " "
 echo "Installing/updating WordPress Stable & Develop"
 
 wordpress_default
-wpsvn_check
 wordpress_develop
 
 # VVV custom site import
