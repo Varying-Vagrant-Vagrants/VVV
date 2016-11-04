@@ -13,7 +13,6 @@ sites:
   #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git
 
 utility-repos:
-  official: https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git
   unofficial: https://github.com/LoreleiAurora/vvv-utilities-2.git
   unofficial2: https://github.com/LoreleiAurora/vvv-utilities-3.git
 
