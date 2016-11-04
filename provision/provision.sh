@@ -694,160 +694,33 @@ phpmyadmin_setup() {
   cp "/srv/config/phpmyadmin-config/config.inc.php" "/srv/www/default/database-admin/"
 }
 
-wordpress_default() {
-  # Install and configure the latest stable version of WordPress
-  if [[ ! -d "/srv/www/wordpress-default" ]]; then
-    echo "Downloading WordPress Stable, see http://wordpress.org/"
-    cd /srv/www/
-    curl -L -O "https://wordpress.org/latest.tar.gz"
-    noroot tar -xvf latest.tar.gz
-    mv wordpress wordpress-default
-    rm latest.tar.gz
-    cd /srv/www/wordpress-default
-    echo "Configuring WordPress Stable..."
-    noroot wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(local.wordpress.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-    echo "Installing WordPress Stable..."
-    noroot wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-  else
-    echo "Updating WordPress Stable..."
-    cd /srv/www/wordpress-default
-    noroot wp core update
-  fi
-}
-
 wpsvn_check() {
-  # Test to see if an svn upgrade is needed
-  svn_test=$( svn status -u "/srv/www/wordpress-develop/" 2>&1 );
+  # Get all SVN repos.
+  svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
 
-  if [[ "$svn_test" == *"svn upgrade"* ]]; then
-  # If the wordpress-develop svn repo needed an upgrade, they probably all need it
-    for repo in $(find /srv/www -maxdepth 5 -type d -name '.svn'); do
-      svn upgrade "${repo/%\.svn/}"
+  # Do we have any?
+  if [[ -n $svn_repos ]]; then
+    for repo in $svn_repos; do
+      # Test to see if an svn upgrade is needed on this repo.
+      svn_test=$( svn status -u "$repo" 2>&1 );
+
+      if [[ "$svn_test" == *"svn upgrade"* ]]; then
+        # If it is needed do it!
+        svn upgrade "${repo/%\.svn/}"
+      fi;
     done
   fi;
 }
 
-wordpress_develop(){
-  # Checkout, install and configure WordPress trunk via develop.svn
-  if [[ ! -d "/srv/www/wordpress-develop" ]]; then
-    echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-    noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "/tmp/wordpress-develop"
-
-    cd /tmp/wordpress-develop/src/
-
-    echo "Installing local npm packages for src.wordpress-develop.dev, this may take several minutes."
-    noroot npm install
-
-    echo "Initializing grunt and creating build.wordpress-develop.dev, this may take several minutes."
-    noroot grunt
-
-    echo "Moving WordPress develop to a shared directory, /srv/www/wordpress-develop"
-    mv /tmp/wordpress-develop /srv/www/
-
-    cd /srv/www/wordpress-develop/src/
-    echo "Creating wp-config.php for src.wordpress-develop.dev and build.wordpress-develop.dev."
-    noroot wp core config --dbname=wordpress_develop --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-// Match any requests made via xip.io.
-if ( isset( \$_SERVER['HTTP_HOST'] ) && preg_match('/^(src|build)(.wordpress-develop.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', \$_SERVER['HTTP_HOST'] ) ) {
-define( 'WP_HOME', 'http://' . \$_SERVER['HTTP_HOST'] );
-define( 'WP_SITEURL', 'http://' . \$_SERVER['HTTP_HOST'] );
-} else if ( 'build' === basename( dirname( __FILE__ ) ) ) {
-// Allow (src|build).wordpress-develop.dev to share the same Database
-define( 'WP_HOME', 'http://build.wordpress-develop.dev' );
-define( 'WP_SITEURL', 'http://build.wordpress-develop.dev' );
-}
-
-define( 'WP_DEBUG', true );
-PHP
-    echo "Installing src.wordpress-develop.dev."
-    noroot wp core install --url=src.wordpress-develop.dev --quiet --title="WordPress Develop" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-    cp /srv/config/wordpress-config/wp-tests-config.php /srv/www/wordpress-develop/
-    cd /srv/www/wordpress-develop/
-  else
-    echo "Updating WordPress develop..."
-    cd /srv/www/wordpress-develop/
-    if [[ -e .svn ]]; then
-      svn up
-    else
-      if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-        git pull --no-edit git://develop.git.wordpress.org/ master
-      else
-        echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
-      fi
-    fi
-    echo "Updating npm packages..."
-    noroot npm install &>/dev/null
-  fi
-
-  if [[ ! -d "/srv/www/wordpress-develop/build" ]]; then
-    echo "Initializing grunt in WordPress develop... This may take a few moments."
-    cd /srv/www/wordpress-develop/
-    grunt
-  fi
-}
-
-custom_vvv(){
-  # Find new sites to setup.
+cleanup_vvv(){
   # Kill previously symlinked Nginx configs
-  # We can't know what sites have been removed, so we have to remove all
-  # the configs and add them back in again.
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
-  # Look for site setup scripts
-  find /srv/www -maxdepth 5 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
-    DIR="$(dirname "$SITE_CONFIG_FILE")"
-    (
-    cd "$DIR"
-    source vvv-init.sh
-    )
-  done
-
-  # Look for Nginx vhost files, symlink them into the custom sites dir
-  for SITE_CONFIG_FILE in $(find /srv/www -maxdepth 5 -name 'vvv-nginx.conf'); do
-    DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
-    DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
-    DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
-    DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< "$SITE_CONFIG_FILE" | cut -c1-32).conf"
-    # We allow the replacement of the {vvv_path_to_folder} token with
-    # whatever you want, allowing flexible placement of the site folder
-    # while still having an Nginx config which works.
-    DIR="$(dirname "$SITE_CONFIG_FILE")"
-    sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
-
-    # Resolve relative paths since not supported in Nginx root.
-    while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"; do
-      sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/""$DEST_CONFIG_FILE"
-    done
-  done
-
-  # Parse any vvv-hosts file located in www/ or subdirectories of www/
-  # for domains to be added to the virtual machine's host file so that it is
-  # self aware.
-  #
-  # Domains should be entered on new lines.
+  # Cleanup the hosts file
   echo "Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
+  echo "127.0.0.1 vvv.dev # vvv-auto" >> "/etc/hosts"
   mv /tmp/hosts /etc/hosts
-  echo "Adding domains to the virtual machine's /etc/hosts file..."
-  find /srv/www/ -maxdepth 5 -name 'vvv-hosts' | \
-  while read hostfile; do
-    while IFS='' read -r line || [ -n "$line" ]; do
-      if [[ "#" != ${line:0:1} ]]; then
-        if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
-          echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-          echo " * Added $line from $hostfile"
-        fi
-      fi
-    done < "$hostfile"
-  done
 }
 
 ### SCRIPT
@@ -886,16 +759,12 @@ phpmyadmin_setup
 network_check
 # Time for WordPress!
 echo " "
-echo "Installing/updating WordPress Stable & Develop"
 
-wordpress_default
 wpsvn_check
-wordpress_develop
 
 # VVV custom site import
 echo " "
-echo "VVV custom site import"
-custom_vvv
+cleanup_vvv
 
 #set +xv
 # And it's done
