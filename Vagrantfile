@@ -38,7 +38,7 @@ end
 if ! vvv_config['utility-repos'].kind_of? Hash then
   vvv_config['utility-repos'] = Hash.new
 end
-vvv_config['utility-repos']['official'] = 'https://github.com/LoreleiAurora/vvv-utilities.git'
+vvv_config['utility-repos']['official'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
 
 if ! vvv_config['utilities'].kind_of? Hash then
   vvv_config['utilities'] = Hash.new
