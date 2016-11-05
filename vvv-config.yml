@@ -18,6 +18,7 @@ utility-repos:
 
 utilities:
   official:
+    - memcached-admin
   unofficial:
     - test1
     - test2

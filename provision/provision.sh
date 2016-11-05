@@ -598,21 +598,6 @@ wp_cli() {
   ln -sf "/srv/www/wp-cli/bin/wp" "/usr/local/bin/wp"
 }
 
-memcached_admin() {
-  # Download and extract phpMemcachedAdmin to provide a dashboard view and
-  # admin interface to the goings on of memcached when running
-  if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
-    echo -e "\nDownloading phpMemcachedAdmin, see https://github.com/wp-cloud/phpmemcacheadmin"
-    cd /srv/www/default
-    wget -q -O phpmemcachedadmin.tar.gz "https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.2.1.tar.gz"
-    tar -xf phpmemcachedadmin.tar.gz
-    mv phpmemcacheadmin* memcached-admin
-    rm phpmemcachedadmin.tar.gz
-  else
-    echo "phpMemcachedAdmin already installed."
-  fi
-}
-
 opcached_status(){
   # Checkout Opcache Status to provide a dashboard for viewing statistics
   # about PHP's built in opcache.
@@ -750,7 +735,6 @@ echo " "
 echo "Installing/updating wp-cli and debugging tools"
 
 wp_cli
-memcached_admin
 opcached_status
 webgrind_install
 php_codesniff
