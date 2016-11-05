@@ -598,20 +598,6 @@ wp_cli() {
   ln -sf "/srv/www/wp-cli/bin/wp" "/usr/local/bin/wp"
 }
 
-opcached_status(){
-  # Checkout Opcache Status to provide a dashboard for viewing statistics
-  # about PHP's built in opcache.
-  if [[ ! -d "/srv/www/default/opcache-status" ]]; then
-    echo -e "\nDownloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
-    cd /srv/www/default
-    git clone "https://github.com/rlerdorf/opcache-status.git" opcache-status
-  else
-    echo -e "\nUpdating Opcache Status"
-    cd /srv/www/default/opcache-status
-    git pull --rebase origin master
-  fi
-}
-
 webgrind_install() {
   # Webgrind install (for viewing callgrind/cachegrind files produced by
   # xdebug profiler)
@@ -735,7 +721,6 @@ echo " "
 echo "Installing/updating wp-cli and debugging tools"
 
 wp_cli
-opcached_status
 webgrind_install
 php_codesniff
 phpmyadmin_setup
