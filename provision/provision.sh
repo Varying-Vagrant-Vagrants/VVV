@@ -637,21 +637,6 @@ php_codesniff() {
   phpcs -i
 }
 
-phpmyadmin_setup() {
-  # Download phpMyAdmin
-  if [[ ! -d /srv/www/default/database-admin ]]; then
-    echo "Downloading phpMyAdmin..."
-    cd /srv/www/default
-    wget -q -O phpmyadmin.tar.gz "https://files.phpmyadmin.net/phpMyAdmin/4.6.0/phpMyAdmin-4.6.0-all-languages.tar.gz"
-    tar -xf phpmyadmin.tar.gz
-    mv phpMyAdmin-4.6.0-all-languages database-admin
-    rm phpmyadmin.tar.gz
-  else
-    echo "PHPMyAdmin already installed."
-  fi
-  cp "/srv/config/phpmyadmin-config/config.inc.php" "/srv/www/default/database-admin/"
-}
-
 wpsvn_check() {
   # Get all SVN repos.
   svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
@@ -709,7 +694,6 @@ echo "Installing/updating wp-cli and debugging tools"
 
 wp_cli
 php_codesniff
-phpmyadmin_setup
 
 network_check
 # Time for WordPress!

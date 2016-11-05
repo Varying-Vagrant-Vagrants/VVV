@@ -16,4 +16,5 @@ utilities:
   official:
     - memcached-admin
     - opcache-status
+    - phpmyadmin
     - webgrind
