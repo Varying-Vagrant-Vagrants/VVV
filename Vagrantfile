@@ -362,14 +362,14 @@ Vagrant.configure("2") do |config|
       utilities = Hash.new
     end
     utilities.each do |utility|
-      config.vm.provision "utility-#{name}-#{utility}",
-        type: "shell",
-        path: File.join( "provision", "resources", name, utility, "provision.sh" ),
-        args: [
-            name,
-            utility
-        ]
-    end
+        config.vm.provision "utility-#{name}-#{utility}",
+          type: "shell",
+          path: File.join( "provision", "provision-utility.sh" ),
+          args: [
+              name,
+              utility
+          ]
+      end
   end
 
   vvv_config['sites'].each do |site, args|
