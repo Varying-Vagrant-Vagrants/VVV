@@ -357,10 +357,10 @@ Vagrant.configure("2") do |config|
   end
 
   vvv_config['utilities'].each do |name, utilities|
-    if ! utilities.kind_of? Hash then
+
+    if ! utilities.kind_of? Array then
       utilities = Hash.new
     end
-
     utilities.each do |utility|
       config.vm.provision "utility-#{name}-#{utility}",
         type: "shell",
