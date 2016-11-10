@@ -127,7 +127,7 @@ Vagrant.configure("2") do |config|
       lines.grep(/\A[^#]/)
     end.flatten.uniq # Remove duplicate entries
 
-    hosts += ['vvv.dev']
+    hosts += ['vvv.dev', 'local.wordpress.dev', 'src.wordpress-develop.dev', 'build.wordpress-develop.dev']
 
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = hosts
