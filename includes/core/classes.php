@@ -68,8 +68,9 @@ class WordCamp_Talks_Rewrites {
 
 		$this->page_rid          = 'paged'; // WordPress built-in global var
 		$this->user_rid          = wct_user_rewrite_id();
-		$this->user_rates_rid    = wct_user_rates_rewrite_id();
 		$this->user_comments_rid = wct_user_comments_rewrite_id();
+		$this->user_rates_rid    = wct_user_rates_rewrite_id();
+		$this->user_to_rate_rid  = wct_user_to_rate_rewrite_id();
 		$this->cpage_rid         = wct_cpage_rewrite_id();
 		$this->action_rid        = wct_action_rewrite_id();
 		$this->search_rid        = wct_search_rewrite_id();
@@ -77,8 +78,9 @@ class WordCamp_Talks_Rewrites {
 		/** Rewrite slugs *************************************************************/
 
 		$this->user_slug          = wct_user_slug();
-		$this->user_rates_slug    = wct_user_rates_slug();
 		$this->user_comments_slug = wct_user_comments_slug();
+		$this->user_rates_slug    = wct_user_rates_slug();
+		$this->user_to_rate_slug  = wct_user_to_rate_slug();
 		$this->cpage_slug         = wct_cpage_slug();
 		$this->action_slug        = wct_action_slug();
 	}
@@ -112,8 +114,9 @@ class WordCamp_Talks_Rewrites {
 	 */
 	public function add_rewrite_tags() {
 		add_rewrite_tag( '%' . $this->user_rid          . '%', '([^/]+)'   );
-		add_rewrite_tag( '%' . $this->user_rates_rid    . '%', '([1]{1,})' );
 		add_rewrite_tag( '%' . $this->user_comments_rid . '%', '([1]{1,})' );
+		add_rewrite_tag( '%' . $this->user_rates_rid    . '%', '([1]{1,})' );
+		add_rewrite_tag( '%' . $this->user_to_rate_rid  . '%', '([1]{1,})' );
 		add_rewrite_tag( '%' . $this->cpage_rid         . '%', '([^/]+)'   );
 		add_rewrite_tag( '%' . $this->action_rid        . '%', '([^/]+)'   );
 		add_rewrite_tag( '%' . $this->search_rid        . '%', '([^/]+)'   );
@@ -135,19 +138,25 @@ class WordCamp_Talks_Rewrites {
 		$paged_rule = '/([^/]+)/' . $page_slug . '/?([0-9]{1,})/?$';
 		$embed_rule = '/([^/]+)/embed/?$';
 
+		// User Comments
+		$user_comments_rule        = '/([^/]+)/' . $this->user_comments_slug . '/?$';
+		$user_comments_paged_rule  = '/([^/]+)/' . $this->user_comments_slug . '/' . $this->cpage_slug . '/?([0-9]{1,})/?$';
+
 		// User Rates
 		$user_rates_rule       = '/([^/]+)/' . $this->user_rates_slug . '/?$';
 		$user_rates_paged_rule = '/([^/]+)/' . $this->user_rates_slug . '/' . $page_slug . '/?([0-9]{1,})/?$';
 
-		// User Comments
-		$user_comments_rule        = '/([^/]+)/' . $this->user_comments_slug . '/?$';
-		$user_comments_paged_rule  = '/([^/]+)/' . $this->user_comments_slug . '/' . $this->cpage_slug . '/?([0-9]{1,})/?$';
+		// User to rate
+		$user_to_rate_rule       = '/([^/]+)/' . $this->user_to_rate_slug . '/?$';
+		$user_to_rate_paged_rule = '/([^/]+)/' . $this->user_to_rate_slug . '/' . $page_slug . '/?([0-9]{1,})/?$';
 
 		// User rules
 		add_rewrite_rule( $this->user_slug . $user_comments_paged_rule, 'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_comments_rid . '=1&' . $this->cpage_rid . '=$matches[2]', $priority );
 		add_rewrite_rule( $this->user_slug . $user_comments_rule,       'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_comments_rid . '=1',                                      $priority );
 		add_rewrite_rule( $this->user_slug . $user_rates_paged_rule,    'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_rates_rid .    '=1&' . $this->page_rid . '=$matches[2]',  $priority );
 		add_rewrite_rule( $this->user_slug . $user_rates_rule,          'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_rates_rid .    '=1',                                      $priority );
+		add_rewrite_rule( $this->user_slug . $user_to_rate_paged_rule,  'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_to_rate_rid .  '=1&' . $this->page_rid . '=$matches[2]',  $priority );
+		add_rewrite_rule( $this->user_slug . $user_to_rate_rule,        'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_to_rate_rid .  '=1',                                      $priority );
 		add_rewrite_rule( $this->user_slug . $embed_rule,               'index.php?' . $this->user_rid . '=$matches[1]&embed=true',                                                              $priority );
 		add_rewrite_rule( $this->user_slug . $root_rule,                'index.php?' . $this->user_rid . '=$matches[1]',                                                                         $priority );
 

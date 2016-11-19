@@ -108,6 +108,9 @@ function wct_parse_query( $posts_query = null ) {
 		// Are we requesting user rates
 		$user_rates    = $posts_query->get( wct_user_rates_rewrite_id() );
 
+		// Are we requesting user's ideas to rate?
+		$user_to_rate  = $posts_query->get( wct_user_to_rate_rewrite_id() );
+
 		// Or user comments ?
 		$user_comments = $posts_query->get( wct_user_comments_rewrite_id() );
 
@@ -123,6 +126,27 @@ function wct_parse_query( $posts_query = null ) {
 					'compare' => 'LIKE'
 				)
 			) );
+
+		} else if ( ! empty( $user_to_rate ) && ! wct_is_user_to_rate_disabled() ) {
+			// We are viewing user's ideas to rate
+			wct_set_global( 'is_user_to_rate', true );
+
+			// Define the Meta Query to get the not rated yet talks
+			$posts_query->set( 'meta_query', array(
+				'relation' => 'OR',
+				array(
+					'key'     => '_wc_talks_rates',
+					'value'   => ';i:' . $user->ID .';',
+					'compare' => 'NOT LIKE'
+				),
+				array(
+					'key'     => '_wc_talks_average_rate',
+					'compare' => 'NOT EXISTS'
+				)
+			) );
+
+			// We need to see all ideas, not only the one of the current displayed user
+			$posts_query->set( 'author', 0 );
 
 		} else if ( ! empty( $user_comments ) ) {
 			// We are viewing user's comments
@@ -644,6 +668,20 @@ function wct_is_user_profile_rates() {
 }
 
 /**
+ * Are we viewing the "to rate" area of the user's profile
+ *
+ * @package WordCamp Talks
+ * @subpackage core/template-functions
+ *
+ * @since 1.0.0
+ * 
+ * @return bool true if viewing user's profile to rate, false otherwise.
+ */
+function wct_is_user_profile_to_rate() {
+	return (bool) apply_filters( 'wct_is_user_profile_to_rate', wct_get_global( 'is_user_to_rate' ) );
+}
+
+/**
  * Are we viewing talks in user's profile
  *
  * @package WordCamp Talks
@@ -654,7 +692,7 @@ function wct_is_user_profile_rates() {
  * @return bool true if viewing talks in the user's profile, false otherwise
  */
 function wct_is_user_profile_talks() {
-	return (bool) ( ! wct_is_user_profile_comments() && ! wct_is_user_profile_rates() );
+	return (bool) ( ! wct_is_user_profile_comments() && ! wct_is_user_profile_rates() && ! wct_is_user_profile_to_rate() );
 }
 
 /**

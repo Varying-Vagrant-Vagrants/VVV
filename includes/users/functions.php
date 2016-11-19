@@ -299,6 +299,65 @@ function wct_users_get_user_rates_url( $user_id = 0, $user_nicename = '' ) {
 }
 
 /**
+ * Gets URL to the "to rate" profile page of a user
+ *
+ * Inspired by bbPress's bbp_get_user_profile_url() function
+ *
+ * @package WordCamp Talks
+ * @subpackage users/functions
+ *
+ * @since 1.0.0
+ *
+ * @global $wp_rewrite
+ * @param  int    $user_id User id
+ * @param  string $user_nicename Optional. User nicename
+ * @return string                To rate profile url
+ */
+function wct_users_get_user_to_rate_url( $user_id = 0, $user_nicename = '' ) {
+	global $wp_rewrite;
+
+	// Bail if no user id provided
+	if ( empty( $user_id ) ) {
+		return false;
+	}
+
+	/**
+	 * @param int    $user_id       the user ID
+	 * @param string $user_nicename the username
+	 */
+	$early_profile_url = apply_filters( 'wct_users_pre_get_user_to_rate_url', (int) $user_id, $user_nicename );
+	if ( is_string( $early_profile_url ) ) {
+		return $early_profile_url;
+	}
+
+	// Pretty permalinks
+	if ( $wp_rewrite->using_permalinks() ) {
+		$url = $wp_rewrite->root . wct_user_slug() . '/%' . wct_user_rewrite_id() . '%/' . wct_user_to_rate_slug();
+
+		// Get username if not passed
+		if ( empty( $user_nicename ) ) {
+			$user_nicename = wct_users_get_user_data( 'id', $user_id, 'user_nicename' );
+		}
+
+		$url = str_replace( '%' . wct_user_rewrite_id() . '%', $user_nicename, $url );
+		$url = home_url( user_trailingslashit( $url ) );
+
+	// Unpretty permalinks
+	} else {
+		$url = add_query_arg( array( wct_user_rewrite_id() => $user_id, wct_user_to_rate_rewrite_id() => '1' ), home_url( '/' ) );
+	}
+
+	/**
+	 * Filter the "to rate" profile url once it has built it
+	 *
+	 * @param string $url           To rate profile Url
+	 * @param int    $user_id       the user ID
+	 * @param string $user_nicename the username
+	 */
+	return apply_filters( 'wct_users_get_user_to_rate_url', $url, $user_id, $user_nicename );
+}
+
+/**
  * Gets URL to the comments profile page of a user
  *
  * Inspired by bbPress's bbp_get_user_profile_url() function
@@ -476,6 +535,15 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 			'current' => wct_is_user_profile_rates(),
 			'slug'    => wct_user_rates_slug(),
 		);
+
+		if ( ! wct_is_user_to_rate_disabled( 0, false ) ) {
+			$nav_items['to_rate'] = array(
+				'title'   => __( 'To rate', 'wordcamp-talks' ),
+				'url'     => wct_users_get_user_to_rate_url( $user_id, $username ),
+				'current' => wct_is_user_profile_to_rate(),
+				'slug'    => 'to-rate',
+			);
+		}
 	}
 
 	if ( false === $nofilter ) {

@@ -290,16 +290,26 @@ function wct_talks_not_found() {
 		$output = esc_html__( 'It looks like no talk has been submitted yet, please sign in or sign up to add yours!', 'wordcamp-talks' );
 
 		if ( wct_is_user_profile() ) {
-
-			if ( ! wct_is_user_profile_rates() ) {
+			/**
+			 * This part should probably be improved..
+			 */
+			if ( ! wct_is_user_profile_rates() && ! wct_is_user_profile_to_rate() ) {
 				$output = sprintf(
 					__( 'It looks like %s has not submitted any talk yet', 'wordcamp-talks' ),
 					wct_users_get_displayed_user_displayname()
 				);
+
 			// We're viewing the talk the user rated
-			} else {
+			} elseif ( ! wct_is_user_profile_to_rate() ) {
 				$output = sprintf(
 					__( 'It looks like %s has not rated any talks yet', 'wordcamp-talks' ),
+					wct_users_get_displayed_user_displayname()
+				);
+
+			// We're viewing the talk the user had to rate, and he rated all
+			} else {
+				$output = sprintf(
+					__( 'Alright sparky, no more talks to rate.. Good job!', 'wordcamp-talks' ),
 					wct_users_get_displayed_user_displayname()
 				);
 			}

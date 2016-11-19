@@ -478,6 +478,10 @@ class WordCamp_Talks_Loop_Talks extends WordCamp_Talks_Loop {
 			} else if ( wct_is_user_profile_rates() ) {
 				$base = trailingslashit( wct_users_get_displayed_profile_url( 'rates' ) ) . '%_%';
 
+			// Or the displayed user talks "to rate"  ?
+			} else if ( wct_is_user_profile_to_rate() ) {
+				$base = trailingslashit( wct_users_get_displayed_profile_url( 'to_rate' ) ) . '%_%';
+
 			// Or the displayed user published talks ?
 			} else if ( wct_is_user_profile_talks() ) {
 				$base = trailingslashit( wct_users_get_displayed_profile_url() ) . '%_%';

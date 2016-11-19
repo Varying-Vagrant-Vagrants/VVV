@@ -48,6 +48,7 @@ function wct_get_default_options() {
 		'_wc_talks_allow_comments'     => 1,
 		'_wc_talks_embed_profile'      => 0,
 		'_wc_talks_featured_images'    => 1,
+		'_wc_talks_to_rate_disabled'   => 0,
 	);
 
 	// Pretty links customization
@@ -60,6 +61,7 @@ function wct_get_default_options() {
 			'_wc_talks_user_slug'          => _x( 'user', 'default user slug', 'wordcamp-talks' ),
 			'_wc_talks_user_comments_slug' => _x( 'comments', 'default comments slug', 'wordcamp-talks' ),
 			'_wc_talks_user_rates_slug'    => _x( 'ratings', 'default ratings slug', 'wordcamp-talks' ),
+			'_wc_talks_user_to_rate_slug'  => _x( 'to-rate', 'default to rate slug', 'wordcamp-talks' ),
 			'_wc_talks_signup_slug'        => _x( 'sign-up', 'default sign-up action slug', 'wordcamp-talks' ),
 			'_wc_talks_action_slug'        => _x( 'action', 'default action slug', 'wordcamp-talks' ),
 			'_wc_talks_addnew_slug'        => _x( 'add', 'default add talk action slug', 'wordcamp-talks' ),
@@ -301,6 +303,27 @@ function wct_featured_images_allowed( $default = 1 ) {
 }
 
 /**
+ * Is user's to rate profile tab disabled ?
+ *
+ * @since 1.0.0
+ *
+ * @param  int        $default        default value
+ * @param  null|bool  $rates_disabled Whether built-in rating system is disabled or not.
+ * @return bool                       True if disabled, false otherwise.
+ */
+function wct_is_user_to_rate_disabled( $default = 0, $rates_disabled = null ) {
+	if ( is_null( $rates_disabled ) ) {
+		$rates_disabled = wct_is_rating_disabled();
+	}
+
+	if ( $rates_disabled ) {
+		return true;
+	}
+
+	return (bool) apply_filters( 'wct_is_user_to_rate_disabled', (bool) get_option( '_wc_talks_to_rate_disabled', $default ) );
+}
+
+/**
  * Customize the root slug of the plugin
  *
  * @package WordCamp Talks
@@ -468,6 +491,25 @@ function wct_user_rates_slug( $default = '' ) {
 	}
 
 	return apply_filters( 'wct_user_rates_slug', get_option( '_wc_talks_user_rates_slug', $default ) );
+}
+
+/**
+ * Customize the user's profile to rate slug of the plugin
+ *
+ * @package WordCamp Talks
+ * @subpackage core/options
+ *
+ * @since 1.0.0
+ *
+ * @param  string $default default value
+ * @return string       the user's profile to rate slug
+ */
+function wct_user_to_rate_slug( $default = '' ) {
+	if ( empty( $default ) ) {
+		$default = _x( 'to-rate', 'default user to rate slug', 'wordcamp-talks' );
+	}
+
+	return apply_filters( 'wct_user_to_rate_slug', get_option( '_wc_talks_user_to_rate_slug', $default ) );
 }
 
 /**

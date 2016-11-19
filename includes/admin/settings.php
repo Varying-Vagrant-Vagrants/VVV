@@ -134,6 +134,14 @@ function wct_get_settings_fields() {
 				'args'              => array()
 			),
 
+			// Are user's talks to rate profile area enabled ?
+			'_wc_talks_to_rate_disabled' => array(
+				'title'             => __( 'Disable the &quot;To rate&quot; tab for the user\'s profile', 'wordcamp-talks' ),
+				'callback'          => 'wct_to_rate_profile_setting_callback',
+				'sanitize_callback' => 'absint',
+				'args'              => array()
+			),
+
 			// Disable stickies ?
 			'_wc_talks_sticky_talks' => array(
 				'title'             => __( 'Sticky talks', 'wordcamp-talks' ),
@@ -236,6 +244,14 @@ function wct_get_settings_fields() {
 				'args'              => array()
 			),
 
+			// User rates slug
+			'_wc_talks_user_to_rate_slug' => array(
+				'title'             => __( 'User &quot;to rate&quot; slug', 'wordcamp-talks' ),
+				'callback'          => 'wct_user_to_rate_slug_setting_callback',
+				'sanitize_callback' => 'wct_sanitize_slug',
+				'args'              => array()
+			),
+
 			// Signup slug
 			'_wc_talks_signup_slug' => array(
 				'title'             => __( 'Sign-up slug', 'wordcamp-talks' ),
@@ -268,6 +284,20 @@ function wct_get_settings_fields() {
 				'args'              => array()
 			),
 		);
+	}
+
+	/**
+	 * Disable some settings if ratings are disabled.
+	 */
+	if ( wct_is_rating_disabled() ) {
+		unset(
+			$setting_fields['wc_talks_settings_core']['_wc_talks_hint_list'],
+			$setting_fields['wc_talks_settings_core']['_wc_talks_to_rate_disabled'],
+			$setting_fields['wc_talks_settings_rewrite']['_wc_talks_user_rates_slug'],
+			$setting_fields['wc_talks_settings_rewrite']['_wc_talks_user_to_rate_slug']
+		);
+	} elseif ( wct_is_user_to_rate_disabled( 0, false ) ) {
+		unset( $setting_fields['wc_talks_settings_rewrite']['_wc_talks_user_to_rate_slug'] );
 	}
 
 	if ( is_multisite() ) {
@@ -621,6 +651,22 @@ function wct_hint_list_setting_callback() {
 }
 
 /**
+ * User's Profile "To Rate" tab disabling callback
+ *
+ * @since 1.0.0
+ *
+ * @return string HTML output
+ */
+function wct_to_rate_profile_setting_callback() {
+	?>
+
+	<input name="_wc_talks_to_rate_disabled" id="_wc_talks_to_rate_disabled" type="checkbox" value="1" <?php checked( wct_is_user_to_rate_disabled() ); ?> />
+	<label for="_wc_talks_to_rate_disabled"><?php esc_html_e( '&quot;To rate&quot; user\'s profile tab.', 'wordcamp-talks' ); ?></label>
+
+	<?php
+}
+
+/**
  * Sticky talks callback
  *
  * @package WordCamp Talks
@@ -855,6 +901,24 @@ function wct_user_rates_slug_setting_callback() {
 	?>
 
 	<input name="_wc_talks_user_rates_slug" id="_wc_talks_user_rates_slug" type="text" class="regular-text code" value="<?php echo esc_attr( wct_user_rates_slug() ); ?>" />
+
+	<?php
+}
+
+/**
+ * User's "To Rate" lug of the plugin
+ *
+ * @package WordCamp Talks
+ * @subpackage admin/settings
+ *
+ * @since 1.0.0
+ * 
+ * @return string HTML output
+ */
+function wct_user_to_rate_slug_setting_callback() {
+	?>
+
+	<input name="_wc_talks_user_to_rate_slug" id="_wc_talks_user_to_rate_slug" type="text" class="regular-text code" value="<?php echo esc_attr( wct_user_to_rate_slug() ); ?>" />
 
 	<?php
 }

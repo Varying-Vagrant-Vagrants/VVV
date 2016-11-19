@@ -82,6 +82,20 @@ function wct_user_rates_rewrite_id( $default = 'is_rates' ) {
 }
 
 /**
+ * Rewrite id for the user's to rate
+ *
+ * @package WordCamp Talks
+ * @subpackage core/rewrites
+ *
+ * @since 1.0.0
+ * 
+ * @return string The user's to rate rewrite id
+ */
+function wct_user_to_rate_rewrite_id( $default = 'is_to_rate' ) {
+	return apply_filters( 'wct_user_to_rate_rewrite_id', $default );
+}
+
+/**
  * Rewrite id for the user's comments
  *
  * @package WordCamp Talks
