@@ -1,0 +1,6 @@
+// Minified scripts
+js/*.min.js
+
+// External libraries
+js/jquery.raty.js
+js/tagging.js

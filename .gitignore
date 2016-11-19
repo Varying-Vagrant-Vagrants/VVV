@@ -1,0 +1,7 @@
+*DS_*
+
+pids
+logs
+
+node_modules
+npm-debug.log

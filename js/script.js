@@ -1,12 +1,12 @@
+/* global wct_vars */
 /*!
  * WordCamp Talks script
  */
 
-;
 ( function( $ ) {
 
 	// Only use raty if loaded
-	if ( typeof wct_vars.raty_loaded != 'undefined' ) {
+	if ( typeof wct_vars.raty_loaded !== 'undefined' ) {
 
 		wpis_update_rate_num( 0 );
 
@@ -21,14 +21,14 @@
 			noRatedMsg : wct_vars.not_rated,
 			hints      : wct_vars.hints,
 			number     : wct_vars.hints_nb,
-			click      : function( score, evt ) {
+			click      : function( score ) {
 				if ( ! wct_vars.can_rate ) {
 					return;
 				}
 				// Disable the rating stars
 				$.fn.raty( 'readOnly', true, '#rate' );
 				// Update the score
-		    	wct_post_rating( score );
+				wct_post_rating( score );
 			}
 		} );
 	}
@@ -60,9 +60,9 @@
 		var number = Number( wct_vars.rate_nb ) + rate,
 			msg;
 
-		if ( 1 == number ) {
+		if ( 1 === number ) {
 			msg = wct_vars.one_rate;
-		} else if( '0' == number ) {
+		} else if( 0 === number ) {
 			msg = wct_vars.not_rated;
 		} else {
 			msg = wct_vars.x_rate.replace( '%', number );
@@ -71,7 +71,7 @@
 		$( '.rating-info' ).html( '<a>' + msg + '</a>' );
 	}
 
-	if ( typeof wct_vars.tagging_loaded != 'undefined' ) {
+	if ( typeof wct_vars.tagging_loaded !== 'undefined' ) {
 		$( '#_wct_the_tags' ).tagging( {
 			'tags-input-name'      : 'wct[_the_tags]',
 			'edit-on-delete'       : false,
@@ -90,52 +90,52 @@
 		$( '#wct_most_used_tags .tag-items a' ).on( 'click', function( event ) {
 			event.preventDefault();
 
-			$( '#_wct_the_tags' ).tagging( "add", $( this ).html() );
+			$( '#_wct_the_tags' ).tagging( 'add', $( this ).html() );
 		} );
 
 		// Reset tags
-		$( '#wordcamp-talks-form' ).on( 'reset', function( event ) {
+		$( '#wordcamp-talks-form' ).on( 'reset', function() {
 			$( '#_wct_the_tags' ).tagging( 'reset' );
 		} );
 	}
 
 	// Set the interval and the namespace event
-	if ( typeof wp != 'undefined' && typeof wp.heartbeat != 'undefined' && typeof wct_vars.pulse != 'undefined' ) {
+	if ( typeof wp !== 'undefined' && typeof wp.heartbeat !== 'undefined' && typeof wct_vars.pulse !== 'undefined' ) {
 		wp.heartbeat.interval( wct_vars.pulse );
 
 		$.fn.extend( {
 			'heartbeat-send': function() {
 				return this.bind( 'heartbeat-send.wc_talks' );
-	        }
-	    } );
+			}
+		} );
 	}
 
 	// Send the current talk ID being edited
 	$( document ).on( 'heartbeat-send.wc_talks', function( e, data ) {
-		data['wc_talks_heartbeat_current_talk'] = wct_vars.talk_id;
-    } );
+		data.wc_talks_heartbeat_current_talk = wct_vars.talk_id;
+	} );
 
 	// Inform the user if data has been returned
 	$( document ).on( 'heartbeat-tick', function( e, data ) {
 
 		// Only proceed if an admin took the lead
-		if ( ! data['wc_talks_heartbeat_response'] )
-        	return;
+		if ( ! data.wc_talks_heartbeat_response ) {
+			return;
+		}
 
 		if ( ! $( '#wordcamp-talks .message' ).length ) {
-        	$( '#wordcamp-talks' ).prepend(
-        		'<div class="message info">' +
+			$( '#wordcamp-talks' ).prepend(
+				'<div class="message info">' +
 					'<p>' + wct_vars.warning + '</p>' +
 				'</div>'
 			);
-        } else {
-        	$( '#wordcamp-talks .message' ).removeClass( 'error' ).addClass( 'info' );
-        	$( '#wordcamp-talks .message p' ).html( wct_vars.warning );
-        }
+		} else {
+			$( '#wordcamp-talks .message' ).removeClass( 'error' ).addClass( 'info' );
+			$( '#wordcamp-talks .message p' ).html( wct_vars.warning );
+		}
 
-        $( '#wordcamp-talks .submit input[name="wct[save]"]' ).remove();
-
-    } );
+		$( '#wordcamp-talks .submit input[name="wct[save]"]' ).remove();
+	} );
 
 	if ( typeof wct_vars.is_profile !== 'undefined' ) {
 
@@ -144,7 +144,7 @@
 			$( '#wct_profile_description' ).show();
 			$( 'textarea[name="wct_profile[description]"]').hide();
 
-			$( '#wct_profile_form' ).on( 'submit', function(event) {
+			$( '#wct_profile_form' ).on( 'submit', function() {
 				$( 'textarea[name="wct_profile[description]"]').val( $( '#wct_profile_description' ).html() );
 			} );
 

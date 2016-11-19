@@ -1,0 +1,1663 @@
+# Copyright (C) 2016 imath
+# This file is distributed under the GNU/GPL 2.
+msgid ""
+msgstr ""
+"Project-Id-Version: WordCamp Talks 1.0.0-alpha\n"
+"Report-Msgid-Bugs-To: https://github.com/imath/wordcamp-talks/issues\n"
+"POT-Creation-Date: 2016-11-19 13:26:07+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: imath <imath@cluster.press>\n"
+"Language-Team: FRENCH <imath@cluster.press>\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
+
+#: includes/admin/admin.php:229 includes/admin/admin.php:230
+#: includes/admin/admin.php:244 includes/admin/admin.php:245
+#: includes/admin/admin.php:1600
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/admin.php:416
+msgid "Talk updated. <a href=\"%s\">View Talk</a>"
+msgstr ""
+
+#: includes/admin/admin.php:417
+msgid "Custom field updated."
+msgstr ""
+
+#: includes/admin/admin.php:418
+msgid "Custom field deleted."
+msgstr ""
+
+#: includes/admin/admin.php:419
+msgid "Talk updated."
+msgstr ""
+
+#: includes/admin/admin.php:420
+msgid "Talk restored to revision from %s"
+msgstr ""
+
+#: includes/admin/admin.php:421
+msgid "Talk published. <a href=\"%s\">View Talk</a>"
+msgstr ""
+
+#: includes/admin/admin.php:422
+msgid "Talk saved."
+msgstr ""
+
+#: includes/admin/admin.php:423
+msgid "Talk submitted. <a target=\"_blank\" href=\"%s\">Preview Talk</a>"
+msgstr ""
+
+#: includes/admin/admin.php:425
+msgid ""
+"Talk scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
+"href=\"%2$s\">Preview Talk</a>"
+msgstr ""
+
+#: includes/admin/admin.php:429
+msgid "Talk draft updated. <a target=\"_blank\" href=\"%s\">Preview Talk</a>"
+msgstr ""
+
+#: includes/admin/admin.php:454
+msgid "%s talk updated."
+msgid_plural "%s talks updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/admin.php:455
+msgid "%s talk not updated; somebody is editing it."
+msgid_plural "%s talks not updated; somebody is editing them."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/admin.php:456
+msgid "%s talk permanently deleted."
+msgid_plural "%s talks permanently deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/admin.php:457
+msgid "%s talk moved to the Trash."
+msgid_plural "%s talks moved to the Trash."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/admin.php:458
+msgid "%s talk restored from the Trash."
+msgid_plural "%s talks restored from the Trash."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/admin.php:532
+msgid "Download all talks in a csv spreadsheet"
+msgstr ""
+
+#: includes/admin/admin.php:757
+msgid "Average Rating"
+msgstr ""
+
+#: includes/admin/admin.php:981 includes/talks/functions.php:800
+#: includes/talks/tags.php:912
+msgid "Not rated yet"
+msgstr ""
+
+#: includes/admin/admin.php:987
+msgid "%1$s member rated the talk. Its Average rating is: %2$s"
+msgid_plural "%1$s members rated the talk. Its Average rating is: %2$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/admin.php:1010
+msgid "Delete this rating"
+msgstr ""
+
+#: includes/admin/admin.php:1077
+msgid "Rating successfully deleted"
+msgstr ""
+
+#: includes/admin/admin.php:1078
+msgid "Something went wrong while trying to delete the rating."
+msgstr ""
+
+#: includes/admin/admin.php:1232 includes/admin/admin.php:1280
+#: includes/admin/admin.php:1291 includes/admin/admin.php:1325
+#: includes/admin/admin.php:1342
+msgid "Overview"
+msgstr ""
+
+#: includes/admin/admin.php:1234
+msgid ""
+"This screen provides access to all the talks users of your site shared. You "
+"can customize the display of this screen to suit your workflow."
+msgstr ""
+
+#: includes/admin/admin.php:1235
+msgid ""
+"You can customize the display of this screen&#39;s contents in a number of "
+"ways:"
+msgstr ""
+
+#: includes/admin/admin.php:1237
+msgid ""
+"You can hide/display columns based on your needs and decide how many talks "
+"to list per screen using the Screen Options tab."
+msgstr ""
+
+#: includes/admin/admin.php:1238
+msgid ""
+"You can filter the list of talks by post status using the text links in the "
+"upper left to show All, Published, Private or Trashed talks. The default "
+"view is to show all talks."
+msgstr ""
+
+#: includes/admin/admin.php:1239
+msgid ""
+"You can view talks in a simple title list or with an excerpt. Choose the "
+"view you prefer by clicking on the icons at the top of the list on the "
+"right."
+msgstr ""
+
+#: includes/admin/admin.php:1245
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/admin.php:1247
+msgid ""
+"Hovering over a row in the talks list will display action links that allow "
+"you to manage an talk. You can perform the following actions:"
+msgstr ""
+
+#: includes/admin/admin.php:1249
+msgid ""
+"Edit takes you to the editing screen for that talk. You can also reach that "
+"screen by clicking on the talk title."
+msgstr ""
+
+#: includes/admin/admin.php:1250
+msgid ""
+"Trash removes the talk from this list and places it in the trash, from "
+"which you can permanently delete it."
+msgstr ""
+
+#: includes/admin/admin.php:1251
+msgid "View opens the talk in the WordCamp Talks&#39;s part of your site."
+msgstr ""
+
+#: includes/admin/admin.php:1257
+msgid "Bulk Actions"
+msgstr ""
+
+#: includes/admin/admin.php:1259
+msgid ""
+"You can also move multiple talks to the trash at once. Select the talks you "
+"want to trash using the checkboxes, then select the &#34;Move to Trash&#34; "
+"action from the Bulk Actions menu and click Apply."
+msgstr ""
+
+#: includes/admin/admin.php:1264
+msgid "Sorting & filtering"
+msgstr ""
+
+#: includes/admin/admin.php:1266
+msgid ""
+"Clicking on specific column headers will sort the talks list. You can sort "
+"the talks alphabetically using the Title column header or by popularity:"
+msgstr ""
+
+#: includes/admin/admin.php:1268
+msgid ""
+"Click on the column header having a dialog buble icon to sort by number of "
+"comments."
+msgstr ""
+
+#: includes/admin/admin.php:1269
+msgid "Click on the column header having a star icon to sort by rating."
+msgstr ""
+
+#: includes/admin/admin.php:1271
+msgid ""
+"Inside the rows, you can filter the talks by categories or tags clicking on "
+"the corresponding terms."
+msgstr ""
+
+#: includes/admin/admin.php:1282
+msgid ""
+"The title field and the big Talk Editing Area are fixed in place, but you "
+"can reposition all the other boxes using drag and drop. You can also "
+"minimize or expand them by clicking the title bar of each box. Use the "
+"Screen Options tab to hide/show boxes."
+msgstr ""
+
+#: includes/admin/admin.php:1293
+msgid "This is the place where you can customize the behavior of WordCamp Talks."
+msgstr ""
+
+#: includes/admin/admin.php:1294
+msgid ""
+"Please see the additional help tabs for more information on each individual "
+"section."
+msgstr ""
+
+#: includes/admin/admin.php:1299 includes/admin/settings.php:29
+msgid "Main Settings"
+msgstr ""
+
+#: includes/admin/admin.php:1301
+msgid ""
+"Just before the first option, you will find the link to the main archive "
+"page of the plugin. If you wish, you can use it to define a new custom link "
+"%1$smenu item%2$s."
+msgstr ""
+
+#: includes/admin/admin.php:1302
+msgid ""
+"If you do so, do not forget to update the link in case you change your "
+"permalink settings. Another possible option is to use the %1$sWordCamp "
+"Talks Navigation%2$s widget in one of your dynamic sidebars."
+msgstr ""
+
+#: includes/admin/admin.php:1303
+msgid "In the Main Settings you have a number of options:"
+msgstr ""
+
+#: includes/admin/admin.php:1305
+msgid ""
+"WordCamp Talks archive page: you can customize the title of this page. It "
+"will appear on every WordCamp Talks&#39;s page, except the single talk one."
+msgstr ""
+
+#: includes/admin/admin.php:1306
+msgid ""
+"New talks status: this is the default status to apply to the talks "
+"submitted by the user. If this setting is set to &#34;Pending&#34;, it will "
+"be possible to edit the moderation message once this setting has been saved."
+msgstr ""
+
+#: includes/admin/admin.php:1307
+msgid ""
+"Images & Links are settings about the WordCamp Talks&#39;s editor. If you "
+"wish to disable the image or link buttons, you can disable the "
+"corresponding setting."
+msgstr ""
+
+#: includes/admin/admin.php:1308
+msgid ""
+"Featured images is a setting that requires the Editor Images button to be "
+"active. It allows your users to select an image they inserted and set it as "
+"the featured image for the talk. You must know this image will be uploaded "
+"inside your WordPress site."
+msgstr ""
+
+#: includes/admin/admin.php:1309
+msgid ""
+"Moderation message: if New talks status is defined to Pending, it is the "
+"place to customize the awaiting moderation message the user will see once "
+"he submited his talk."
+msgstr ""
+
+#: includes/admin/admin.php:1310
+msgid ""
+"Not logged in message: if a user reaches the WordCamp Talks&#39;s front end "
+"submit form without being logged in, a message will invite him to do so. If "
+"you wish to use a custom message, use this setting."
+msgstr ""
+
+#: includes/admin/admin.php:1311
+msgid ""
+"Rating stars hover captions: fill a comma separated list of captions to "
+"replace default one. On front end, the number of rating stars will depend "
+"on the number of comma separated captions you defined in this setting."
+msgstr ""
+
+#: includes/admin/admin.php:1312
+msgid ""
+"Sticky talks: choose whether to allow or not Administrators to stick talks "
+"to the top of the WordCamp Talks&#39;s archive first page."
+msgstr ""
+
+#: includes/admin/admin.php:1313
+msgid ""
+"Talk comments: if on, comments about talks will be separated from other "
+"post types comments and you will be able to moderate comments about talks "
+"from the comments submenu of the WordCamp Talks&#39;s main Administration "
+"menu. If you uncheck this setting, talks comments will be mixed up with "
+"other post types comments into the main Comments Administration menu"
+msgstr ""
+
+#: includes/admin/admin.php:1314
+msgid ""
+"Comments: you can completely disable commenting about talks by activating "
+"this option"
+msgstr ""
+
+#: includes/admin/admin.php:1315
+msgid ""
+"Embed profile: if this setting is active, your users profiles will include "
+"a sharing button to let your visitors copy the embed code and share it into "
+"their website."
+msgstr ""
+
+#: includes/admin/admin.php:1327
+msgid ""
+"Talk Categories can only be created by the site Administrator. To add a new "
+"talk category please fill the following fields:"
+msgstr ""
+
+#: includes/admin/admin.php:1329
+msgid ""
+"Name - The name is how it appears on your site (in the category checkboxes "
+"of the talk front end submit form, in the talk&#39;s footer part or in the "
+"title of WordCamp Talks&#39;s category archive pages)."
+msgstr ""
+
+#: includes/admin/admin.php:1330 includes/admin/admin.php:1347
+msgid ""
+"Slug - The &#34;slug&#34; is the URL-friendly version of the name. It is "
+"usually all lowercase and contains only letters, numbers, and hyphens."
+msgstr ""
+
+#: includes/admin/admin.php:1331
+msgid ""
+"Description - If you set a description for your category, it will be "
+"displayed over the list of talks in the category archive page."
+msgstr ""
+
+#: includes/admin/admin.php:1333 includes/admin/admin.php:1350
+msgid ""
+"You can change the display of this screen using the Screen Options tab to "
+"set how many items are displayed per screen and to display/hide columns in "
+"the table."
+msgstr ""
+
+#: includes/admin/admin.php:1344
+msgid ""
+"Talk Tags can be created by any logged in user of the site from the talk "
+"front end submit form. From this screen, to add a new talk tag please fill "
+"the following fields:"
+msgstr ""
+
+#: includes/admin/admin.php:1346
+msgid ""
+"Name - The name is how it appears on your site (in the tag cloud, in the "
+"tags editor of the talk front end submit form, in the talk&#39;s footer "
+"part or in the title of WordCamp Talks&#39;s tag archive pages)."
+msgstr ""
+
+#: includes/admin/admin.php:1348
+msgid ""
+"Description - If you set a description for your tag, it will be displayed "
+"over the list of talks in the tag archive page."
+msgstr ""
+
+#: includes/admin/admin.php:1360 includes/admin/settings.php:37
+msgid "Pretty Links"
+msgstr ""
+
+#: includes/admin/admin.php:1362
+msgid ""
+"The Pretty Links section allows you to control the permalink structure of "
+"the plugin by defining custom slugs."
+msgstr ""
+
+#: includes/admin/admin.php:1363
+msgid ""
+"The WordCamp Talks root slug is the most important one. Make sure the slug "
+"you chose is unique. Once saved, WordCamp Talks will check for an eventual "
+"slug collision with WordPress (Posts, Pages or subsites in case of a "
+"MultiSite Config), and will display a warning next to the option field."
+msgstr ""
+
+#: includes/admin/admin.php:1364
+msgid ""
+"In the case of a slug collision, we strongly advise you to change the "
+"WordCamp Talks root slug."
+msgstr ""
+
+#: includes/admin/admin.php:1365
+msgid ""
+"About the text you will enter in the slug fields, make sure it is all "
+"lowercase and contains only letters, numbers, and/or hyphens."
+msgstr ""
+
+#: includes/admin/admin.php:1382
+msgid "For more information:"
+msgstr ""
+
+#: includes/admin/admin.php:1411
+msgid "The Ratings metabox allows you to manage the ratings the talk has received."
+msgstr ""
+
+#: includes/admin/comments.php:160 includes/admin/comments.php:173
+#: includes/admin/settings.php:163
+msgid "Comments"
+msgstr ""
+
+#: includes/admin/settings.php:45
+msgid "Network users settings"
+msgstr ""
+
+#: includes/admin/settings.php:75
+msgid "WordCamp Talks archive page"
+msgstr ""
+
+#: includes/admin/settings.php:83
+msgid "New talks status"
+msgstr ""
+
+#: includes/admin/settings.php:91
+msgid "Images"
+msgstr ""
+
+#: includes/admin/settings.php:99
+msgid "Featured images"
+msgstr ""
+
+#: includes/admin/settings.php:107
+msgid "Links"
+msgstr ""
+
+#: includes/admin/settings.php:115
+msgid "Moderation message"
+msgstr ""
+
+#: includes/admin/settings.php:123
+msgid "Not logged in message"
+msgstr ""
+
+#: includes/admin/settings.php:131
+msgid "Rating stars hover captions"
+msgstr ""
+
+#: includes/admin/settings.php:139
+msgid "Disable the &quot;To rate&quot; tab for the user's profile"
+msgstr ""
+
+#: includes/admin/settings.php:147
+msgid "Sticky talks"
+msgstr ""
+
+#: includes/admin/settings.php:155
+msgid "Talk comments"
+msgstr ""
+
+#: includes/admin/settings.php:171
+msgid "Embed Profile"
+msgstr ""
+
+#: includes/admin/settings.php:185
+msgid "WordCamp Talks root slug"
+msgstr ""
+
+#: includes/admin/settings.php:193
+msgid "Single talk slug"
+msgstr ""
+
+#: includes/admin/settings.php:201
+msgid "Category slug"
+msgstr ""
+
+#: includes/admin/settings.php:209
+msgid "Tag slug"
+msgstr ""
+
+#: includes/admin/settings.php:217
+msgid "User slug"
+msgstr ""
+
+#: includes/admin/settings.php:225
+msgid "User comments slug"
+msgstr ""
+
+#: includes/admin/settings.php:233
+msgid "User comments paging slug"
+msgstr ""
+
+#: includes/admin/settings.php:241
+msgid "User ratings slug"
+msgstr ""
+
+#: includes/admin/settings.php:249
+msgid "User &quot;to rate&quot; slug"
+msgstr ""
+
+#: includes/admin/settings.php:257
+msgid "Sign-up slug"
+msgstr ""
+
+#: includes/admin/settings.php:265
+msgid "Action slug"
+msgstr ""
+
+#: includes/admin/settings.php:273
+msgid "New form slug"
+msgstr ""
+
+#: includes/admin/settings.php:281
+msgid "Edit form slug"
+msgstr ""
+
+#: includes/admin/settings.php:309
+msgid "Sign-ups"
+msgstr ""
+
+#: includes/admin/settings.php:317
+msgid "Default role for network users"
+msgstr ""
+
+#: includes/admin/settings.php:472
+msgid "Possible conflict with: %s"
+msgstr ""
+
+#: includes/admin/settings.php:493
+msgid "Customize WordCamp Talks features"
+msgstr ""
+
+#: includes/admin/settings.php:494
+msgid "Url of WordCamp Talks&#39;s main page: %s"
+msgstr ""
+
+#: includes/admin/settings.php:531 includes/users/functions.php:518
+msgid "Published"
+msgstr ""
+
+#: includes/admin/settings.php:532
+msgid "Pending"
+msgstr ""
+
+#: includes/admin/settings.php:534
+msgid ""
+"The default status for all talks. Depending on this setting, the moderation "
+"message setting will be available"
+msgstr ""
+
+#: includes/admin/settings.php:553
+msgid "Allow users to add images to their talks"
+msgstr ""
+
+#: includes/admin/settings.php:554
+msgid "Depending on this setting, the featured images setting will be available"
+msgstr ""
+
+#: includes/admin/settings.php:570
+msgid ""
+"If users can add images, you can allow them to choose the featured image "
+"for their talks"
+msgstr ""
+
+#: includes/admin/settings.php:589
+msgid "Allow users to add links to their talks"
+msgstr ""
+
+#: includes/admin/settings.php:607
+msgid ""
+"In cases where &#34;Pending&#34; is the status for all talks, you can "
+"customize the moderation message"
+msgstr ""
+
+#: includes/admin/settings.php:626
+msgid ""
+"You can customize the message shown to not logged in users on the new talk "
+"form"
+msgstr ""
+
+#: includes/admin/settings.php:647
+msgid ""
+"You can customize the hover captions used for stars by using a comma "
+"separated list of captions"
+msgstr ""
+
+#: includes/admin/settings.php:664
+msgid "&quot;To rate&quot; user's profile tab."
+msgstr ""
+
+#: includes/admin/settings.php:683
+msgid ""
+"Allow talks to be made &#34;sticky&#34; (they will stay at the top of "
+"WordCamp Talks first page)"
+msgstr ""
+
+#: includes/admin/settings.php:702
+msgid "Separate comments made on talks from the other post types."
+msgstr ""
+
+#: includes/admin/settings.php:721
+msgid "Allow users to add comments on talks"
+msgstr ""
+
+#: includes/admin/settings.php:737
+msgid "Allow users profiles to be embed"
+msgstr ""
+
+#: includes/admin/settings.php:757
+msgid "Customize the slugs of WordCamp Talks urls"
+msgstr ""
+
+#: includes/admin/settings.php:885
+msgid "&#39;%s&#39; slug cannot be used here."
+msgstr ""
+
+#: includes/admin/settings.php:1011
+msgid "Define your preferences about network users"
+msgstr ""
+
+#: includes/admin/settings.php:1030
+msgid "Allow WordCamp Talks to manage signups for your site"
+msgstr ""
+
+#: includes/admin/settings.php:1049
+msgid ""
+"Automatically set this site&#39;s default role for users posting a new talk "
+"and having no role on this site."
+msgstr ""
+
+#: includes/admin/settings.php:1253
+msgid "WordCamp Talks Settings"
+msgstr ""
+
+#: includes/admin/settings.php:1262
+msgid "Save Changes"
+msgstr ""
+
+#: includes/admin/sticky.php:142
+msgid "Sticky"
+msgstr ""
+
+#: includes/admin/sticky.php:173
+msgid "This talk cannot be sticky"
+msgstr ""
+
+#: includes/admin/sticky.php:180
+msgid "Select whether or not to make the talk sticky."
+msgstr ""
+
+#: includes/admin/sticky.php:181
+msgid "Mark as sticky"
+msgstr ""
+
+#: includes/admin/sticky.php:292
+msgid "Private or password protected talks cannot be marked as sticky"
+msgstr ""
+
+#: includes/admin/sticky.php:293
+msgid "Talk successfully removed from stickies"
+msgstr ""
+
+#: includes/admin/sticky.php:294
+msgid "Talk successfully added to stickies"
+msgstr ""
+
+#: includes/admin/sticky.php:398
+msgid ""
+"The Sticky metabox allows you to stick a published talk (not password "
+"protected) to the top of the front talks archive first page."
+msgstr ""
+
+#: includes/comments/classes.php:336
+msgid "New comment on your talk \"%s\""
+msgstr ""
+
+#: includes/comments/classes.php:337
+msgid "Comment: "
+msgstr ""
+
+#: includes/comments/classes.php:338
+msgid "Permalink to the comment: %s"
+msgstr ""
+
+#: includes/comments/tags.php:112
+msgid "It looks like %s has not commented on any talks yet"
+msgstr ""
+
+#: includes/comments/tags.php:150
+msgid "Viewing %1$s to %2$s (of %3$s comments)"
+msgid_plural "Viewing %1$s to %2$s (of %3$s comments)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/comments/tags.php:241 includes/talks/tags.php:535
+msgid "User&#39;s profile"
+msgstr ""
+
+#: includes/comments/tags.php:277
+msgid "In reply to:"
+msgstr ""
+
+#: includes/comments/tags.php:440
+msgid ""
+"The talk the comment was posted on is password protected: you will need the "
+"password to view its content."
+msgstr ""
+
+#: includes/comments/tags.php:444
+msgid "The talk the comment was posted on is private: you cannot view its content."
+msgstr ""
+
+#: includes/comments/tags.php:480
+msgid "This comment was posted on %s"
+msgstr ""
+
+#: includes/comments/widgets.php:34
+msgid "Latest comments about talks"
+msgstr ""
+
+#: includes/comments/widgets.php:35
+msgid "WordCamp Talks latest comments"
+msgstr ""
+
+#: includes/core/functions.php:290 includes/core/template-functions.php:823
+#: includes/core/template-functions.php:886
+msgid "Talks"
+msgstr ""
+
+#: includes/core/functions.php:292 includes/talks/tags.php:1309
+msgid "All Talks"
+msgstr ""
+
+#: includes/core/functions.php:293
+msgid "Talk"
+msgstr ""
+
+#: includes/core/functions.php:294 includes/core/functions.php:295
+msgid "Add New Talk"
+msgstr ""
+
+#: includes/core/functions.php:296 includes/core/template-functions.php:765
+#: includes/talks/tags.php:1269
+msgid "Edit Talk"
+msgstr ""
+
+#: includes/core/functions.php:297 includes/core/template-functions.php:760
+msgid "New Talk"
+msgstr ""
+
+#: includes/core/functions.php:298
+msgid "View Talk"
+msgstr ""
+
+#: includes/core/functions.php:299 includes/talks/tags.php:26
+msgid "Search Talks"
+msgstr ""
+
+#: includes/core/functions.php:300
+msgid "No Talks Found"
+msgstr ""
+
+#: includes/core/functions.php:301
+msgid "No Talks Found in Trash"
+msgstr ""
+
+#: includes/core/functions.php:302
+msgid "Insert into talk"
+msgstr ""
+
+#: includes/core/functions.php:303
+msgid "Uploaded to this talk"
+msgstr ""
+
+#: includes/core/functions.php:304
+msgid "Filter Talks list"
+msgstr ""
+
+#: includes/core/functions.php:305
+msgid "Talks list navigation"
+msgstr ""
+
+#: includes/core/functions.php:306
+msgid "Talks list"
+msgstr ""
+
+#: includes/core/functions.php:365
+msgid "Talk Categories"
+msgstr ""
+
+#: includes/core/functions.php:366
+msgid "Talk Category"
+msgstr ""
+
+#: includes/core/functions.php:367
+msgid "Edit Category"
+msgstr ""
+
+#: includes/core/functions.php:368
+msgid "Update Category"
+msgstr ""
+
+#: includes/core/functions.php:369
+msgid "Add New Category"
+msgstr ""
+
+#: includes/core/functions.php:370
+msgid "New Category Name"
+msgstr ""
+
+#: includes/core/functions.php:371
+msgid "All Categories"
+msgstr ""
+
+#: includes/core/functions.php:372
+msgid "Search Categories"
+msgstr ""
+
+#: includes/core/functions.php:373
+msgid "Parent Category"
+msgstr ""
+
+#: includes/core/functions.php:374
+msgid "Parent Category:"
+msgstr ""
+
+#: includes/core/functions.php:433
+msgid "Talk Tags"
+msgstr ""
+
+#: includes/core/functions.php:434
+msgid "Talk Tag"
+msgstr ""
+
+#: includes/core/functions.php:435
+msgid "Edit Tag"
+msgstr ""
+
+#: includes/core/functions.php:436
+msgid "Update Tag"
+msgstr ""
+
+#: includes/core/functions.php:437
+msgid "Add New Tag"
+msgstr ""
+
+#: includes/core/functions.php:438
+msgid "New Tag Name"
+msgstr ""
+
+#: includes/core/functions.php:439
+msgid "All Tags"
+msgstr ""
+
+#: includes/core/functions.php:440
+msgid "Search Tags"
+msgstr ""
+
+#: includes/core/functions.php:441
+msgid "Popular Tags"
+msgstr ""
+
+#: includes/core/functions.php:442
+msgid "Separate tags with commas"
+msgstr ""
+
+#: includes/core/functions.php:443
+msgid "Add or remove tags"
+msgstr ""
+
+#: includes/core/functions.php:444
+msgid "Choose from the most popular tags"
+msgstr ""
+
+#: includes/core/functions.php:616
+msgid "Saved successfully"
+msgstr ""
+
+#: includes/core/functions.php:720
+msgid "bad"
+msgstr ""
+
+#: includes/core/functions.php:721
+msgid "poor"
+msgstr ""
+
+#: includes/core/functions.php:722
+msgid "regular"
+msgstr ""
+
+#: includes/core/functions.php:723
+msgid "good"
+msgstr ""
+
+#: includes/core/functions.php:724
+msgid "gorgeous"
+msgstr ""
+
+#: includes/core/template-functions.php:744
+msgid "Add new"
+msgstr ""
+
+#: includes/core/template-functions.php:755
+#: includes/core/template-functions.php:806 includes/users/functions.php:1438
+msgid "%s&#39;s profile"
+msgstr ""
+
+#: includes/core/template-functions.php:770
+#: includes/core/template-functions.php:821
+msgid "Create an account"
+msgstr ""
+
+#: includes/core/template-functions.php:802 includes/core/widgets.php:69
+msgid "New talk"
+msgstr ""
+
+#: includes/core/template-functions.php:804
+msgid "Edit talk"
+msgstr ""
+
+#: includes/core/template-functions.php:866
+msgid "Talk Comments"
+msgstr ""
+
+#: includes/core/template-functions.php:877
+msgid "Page %s"
+msgstr ""
+
+#: includes/core/template-functions.php:882
+msgid "Talk Ratings"
+msgstr ""
+
+#: includes/core/template-loader.php:413
+msgid "The talk: &#34;%s&#34; is already being edited by another user."
+msgstr ""
+
+#: includes/core/template-loader.php:425 includes/talks/functions.php:1122
+msgid "You are not allowed to edit this talk."
+msgstr ""
+
+#: includes/core/widgets.php:35
+msgid "Add WordCamp Talks&#39;s nav to your sidebar."
+msgstr ""
+
+#: includes/core/widgets.php:36
+msgid "WordCamp Talks Nav"
+msgstr ""
+
+#: includes/core/widgets.php:76
+msgid "My profile"
+msgstr ""
+
+#: includes/core/widgets.php:199 includes/talks/widgets.php:108
+#: includes/talks/widgets.php:305 includes/users/widgets.php:178
+msgid "Title:"
+msgstr ""
+
+#: includes/talks/classes.php:624
+msgid "Custom fields"
+msgstr ""
+
+#: includes/talks/classes.php:646
+msgid "No custom fields available"
+msgstr ""
+
+#: includes/talks/classes.php:856
+msgid "This image file type is not supported."
+msgstr ""
+
+#: includes/talks/functions.php:791
+msgid "Saving your rating; please wait"
+msgstr ""
+
+#: includes/talks/functions.php:792
+msgid "Thanks! The average rating is now:"
+msgstr ""
+
+#: includes/talks/functions.php:793
+msgid "Oops! Something went wrong"
+msgstr ""
+
+#: includes/talks/functions.php:796
+msgid "One rating"
+msgstr ""
+
+#: includes/talks/functions.php:797
+msgid "% ratings"
+msgstr ""
+
+#: includes/talks/functions.php:825
+msgid "Duplicate tag:"
+msgstr ""
+
+#: includes/talks/functions.php:826
+msgid "Forbidden character:"
+msgstr ""
+
+#: includes/talks/functions.php:827
+msgid "Forbidden word:"
+msgstr ""
+
+#: includes/talks/functions.php:836
+msgid "An admin is currently editing this talk, please try to edit your talk later."
+msgstr ""
+
+#: includes/talks/functions.php:887
+msgid "Latest"
+msgstr ""
+
+#: includes/talks/functions.php:888
+msgid "Most commented"
+msgstr ""
+
+#: includes/talks/functions.php:893
+msgid "Highest Rating"
+msgstr ""
+
+#: includes/talks/functions.php:988
+msgid "You are not allowed to publish talks"
+msgstr ""
+
+#: includes/talks/functions.php:1003 includes/talks/functions.php:1137
+msgid "Title and description are required fields."
+msgstr ""
+
+#: includes/talks/functions.php:1016
+msgid "Something went wrong while trying to save your talk."
+msgstr ""
+
+#: includes/talks/functions.php:1031 includes/talks/functions.php:1147
+msgid "There was a problem saving the featured image, sorry."
+msgstr ""
+
+#: includes/talks/functions.php:1037
+msgid "Your talk is currently awaiting moderation."
+msgstr ""
+
+#: includes/talks/functions.php:1108
+msgid "The talk you are trying to edit does not seem to exist."
+msgstr ""
+
+#: includes/talks/functions.php:1187
+msgid "Something went wrong while trying to update your talk."
+msgstr ""
+
+#: includes/talks/tags.php:43
+msgid "Search"
+msgstr ""
+
+#: includes/talks/tags.php:112
+msgid "Sort"
+msgstr ""
+
+#: includes/talks/tags.php:290
+msgid ""
+"It looks like no talk has been submitted yet, please sign in or sign up to "
+"add yours!"
+msgstr ""
+
+#: includes/talks/tags.php:298
+msgid "It looks like %s has not submitted any talk yet"
+msgstr ""
+
+#: includes/talks/tags.php:305
+msgid "It looks like %s has not rated any talks yet"
+msgstr ""
+
+#: includes/talks/tags.php:312
+msgid "Alright sparky, no more talks to rate.. Good job!"
+msgstr ""
+
+#: includes/talks/tags.php:318
+msgid "It looks like no talk has been published in this category yet"
+msgstr ""
+
+#: includes/talks/tags.php:321
+msgid "It looks like no talk has been marked with this tag yet"
+msgstr ""
+
+#: includes/talks/tags.php:324 includes/talks/tags.php:327
+msgid "It looks like no talk matches your search terms."
+msgstr ""
+
+#: includes/talks/tags.php:330
+msgid "It looks like no talks have been rated yet."
+msgstr ""
+
+#: includes/talks/tags.php:334
+msgid ""
+"It looks like no talks has been submitted yet, <a href=\"%s\" "
+"title=\"Submit your talk\">add yours</a>"
+msgstr ""
+
+#: includes/talks/tags.php:372
+msgid "Viewing %1$s to %2$s (of %3$s talks)"
+msgid_plural "Viewing %1$s to %2$s (of %3$s talks)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/talks/tags.php:759
+msgid "No Comments"
+msgstr ""
+
+#: includes/talks/tags.php:762
+msgid "1 Comment"
+msgstr ""
+
+#: includes/talks/tags.php:765
+msgid "% Comments"
+msgstr ""
+
+#: includes/talks/tags.php:768
+msgid "Comments Off"
+msgstr ""
+
+#: includes/talks/tags.php:792
+msgid "Comment on %s"
+msgstr ""
+
+#: includes/talks/tags.php:915 templates/talk-header.php:13
+msgid "Average rating: %"
+msgstr ""
+
+#: includes/talks/tags.php:923
+msgid "Rate %s"
+msgstr ""
+
+#: includes/talks/tags.php:988 includes/talks/tags.php:1050
+msgid "This talk is password protected, you will need it to view its content."
+msgstr ""
+
+#: includes/talks/tags.php:992 includes/talks/tags.php:1054
+msgid "This talk is private, you cannot view its content."
+msgstr ""
+
+#: includes/talks/tags.php:1328
+msgid "You are not allowed to submit talks"
+msgstr ""
+
+#: includes/talks/tags.php:1334
+msgid ""
+"Please <a href=\"%s\" title=\"Log in\">log in</a> or <a href=\"%s\" "
+"title=\"Sign up\">register</a> to this site to submit an talk."
+msgstr ""
+
+#: includes/talks/tags.php:1340
+msgid ""
+"Please <a href=\"%s\" title=\"Log in\">log in</a> to this site to submit an "
+"talk."
+msgstr ""
+
+#: includes/talks/tags.php:1372
+msgid "Title"
+msgstr ""
+
+#: includes/talks/tags.php:1436
+msgid "Description"
+msgstr ""
+
+#: includes/talks/tags.php:1566
+msgid "Select the featured image for your talk."
+msgstr ""
+
+#: includes/talks/tags.php:1638
+msgid "Categories"
+msgstr ""
+
+#: includes/talks/tags.php:1671
+msgid "No categories are available."
+msgstr ""
+
+#: includes/talks/tags.php:1714
+msgid "Tags"
+msgstr ""
+
+#: includes/talks/tags.php:1715
+msgid "Type your tag, then hit the return or space key to add it"
+msgstr ""
+
+#: includes/talks/tags.php:1781
+msgid "Choose the most used tag"
+msgid_plural "Choose from the %d most used tags"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/talks/tags.php:1860 includes/users/tags.php:459
+msgid "Reset"
+msgstr ""
+
+#: includes/talks/tags.php:1861
+msgid "Submit"
+msgstr ""
+
+#: includes/talks/tags.php:1866
+msgid "Update"
+msgstr ""
+
+#: includes/talks/tags.php:1914
+msgid "%1$sAverage Rating:%2$s%3$s"
+msgstr ""
+
+#: includes/talks/widgets.php:39
+msgid "A list of Talk categories"
+msgstr ""
+
+#: includes/talks/widgets.php:40
+msgid "WordCamp Talks categories"
+msgstr ""
+
+#: includes/talks/widgets.php:114
+msgid "Show talk counts"
+msgstr ""
+
+#: includes/talks/widgets.php:148
+msgid "List the most popular talks"
+msgstr ""
+
+#: includes/talks/widgets.php:149
+msgid "WordCamp Talks Popular Talks"
+msgstr ""
+
+#: includes/talks/widgets.php:310
+msgid "Type:"
+msgstr ""
+
+#: includes/talks/widgets.php:323
+msgid "Number of talks to show:"
+msgstr ""
+
+#: includes/users/functions.php:524
+msgid "Commented"
+msgstr ""
+
+#: includes/users/functions.php:533
+msgid "Rated"
+msgstr ""
+
+#: includes/users/functions.php:541
+msgid "To rate"
+msgstr ""
+
+#: includes/users/functions.php:607
+msgid "Please enter some content in your description"
+msgstr ""
+
+#: includes/users/functions.php:620
+msgid "Something went wrong while trying to update your description."
+msgstr ""
+
+#: includes/users/functions.php:628
+msgid "Description updated."
+msgstr ""
+
+#: includes/users/functions.php:900
+msgid "Please choose a login having at least 4 characters."
+msgstr ""
+
+#: includes/users/functions.php:934
+msgid "Please fill all required fields."
+msgstr ""
+
+#: includes/users/functions.php:1040
+msgid "Registration complete. Please check your e-mail."
+msgstr ""
+
+#: includes/users/functions.php:1067
+msgid "Username"
+msgstr ""
+
+#: includes/users/functions.php:1068
+msgid "E-mail"
+msgstr ""
+
+#: includes/users/tags.php:250
+msgid "%s has not created his description yet"
+msgstr ""
+
+#: includes/users/tags.php:253
+msgid ""
+"Replace this text with your description, then hit the Edit button to save "
+"it."
+msgstr ""
+
+#: includes/users/tags.php:341
+msgid "View %s full profile"
+msgstr ""
+
+#: includes/users/tags.php:406
+msgid "rated 1 star"
+msgid_plural "rated %s stars"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/users/tags.php:460
+msgid "Sign-up"
+msgstr ""
+
+#: includes/users/widgets.php:37
+msgid "List the top talk contributors"
+msgstr ""
+
+#: includes/users/widgets.php:38
+msgid "WordCamp Talks Tops"
+msgstr ""
+
+#: includes/users/widgets.php:183
+msgid "Number of users to show:"
+msgstr ""
+
+#: templates/talk-header.php:12
+msgid "Leave a reply"
+msgstr ""
+
+#: templates/talk-header.php:12
+msgid "1 Reply"
+msgstr ""
+
+#: templates/talk-header.php:12
+msgid "% Replies"
+msgstr ""
+
+#: templates/talk-header.php:13
+msgid "Rate the talk"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WordCamp Talks"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/imath/wordcamp-talks/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "A WordCamp Talk Submission System"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "imath"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://imathi.eu/"
+msgstr ""
+
+#: includes/admin/admin.php:426
+msgctxt "Talk Publish box date format"
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: includes/admin/admin.php:752
+msgctxt "talks admin category column header"
+msgid "Categories"
+msgstr ""
+
+#: includes/admin/admin.php:753
+msgctxt "talks admin tag column header"
+msgid "Tags"
+msgstr ""
+
+#: includes/admin/admin.php:786
+msgctxt "downloaded csv content header"
+msgid "Content"
+msgstr ""
+
+#: includes/admin/admin.php:787
+msgctxt "downloaded csv link header"
+msgid "Link"
+msgstr ""
+
+#: includes/admin/admin.php:795
+msgctxt "downloaded csv comments num header"
+msgid "# comments"
+msgstr ""
+
+#: includes/admin/admin.php:799
+msgctxt "downloaded csv rates num header"
+msgid "Average rating"
+msgstr ""
+
+#: includes/admin/admin.php:872
+msgctxt "separator for tags list"
+msgid ", "
+msgstr ""
+
+#: includes/admin/admin.php:952
+msgctxt "Ratings metabox title"
+msgid "Rates"
+msgstr ""
+
+#: includes/admin/admin.php:1197
+msgctxt "prefix of the downloaded csv"
+msgid "talks"
+msgstr ""
+
+#: includes/admin/admin.php:1384
+msgctxt "help tab links"
+msgid "%1$sSupport Forums (en)%2$s"
+msgstr ""
+
+#: includes/admin/comments.php:141
+msgctxt "wordcamp-talks admin menu bubble"
+msgid "%1$s %2$s"
+msgstr ""
+
+#: includes/admin/comments.php:204 includes/core/functions.php:291
+msgctxt "Main Plugin menu"
+msgid "Talks"
+msgstr ""
+
+#: includes/admin/settings.php:425
+msgctxt "wc_talks settings root slug conflict"
+msgid "this %s"
+msgstr ""
+
+#: includes/admin/settings.php:435
+msgctxt "bbPress possible conflict"
+msgid "bbPress forum root slug"
+msgstr ""
+
+#: includes/admin/settings.php:449
+msgctxt "Child blog possible conflict"
+msgid "child blog slug"
+msgstr ""
+
+#: includes/admin/sticky.php:317
+msgctxt "talk list table row state"
+msgid "Sticky"
+msgstr ""
+
+#: includes/admin/sticky.php:353
+msgctxt "admin talks sticky view"
+msgid "Sticky <span class=\"count\">(%s)</span>"
+msgid_plural "Sticky <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/comments/tags.php:348 includes/talks/tags.php:675
+msgctxt "talk permalink title protected attribute"
+msgid "Protected:"
+msgstr ""
+
+#: includes/comments/tags.php:350 includes/talks/tags.php:677
+msgctxt "talk permalink title private attribute"
+msgid "Private:"
+msgstr ""
+
+#: includes/core/classes.php:570
+msgctxt "pagination previous text"
+msgid "&larr;"
+msgstr ""
+
+#: includes/core/classes.php:571
+msgctxt "pagination next text"
+msgid "&rarr;"
+msgstr ""
+
+#: includes/core/functions.php:1120
+msgctxt "talks tag cloud count text"
+msgid "%s talk"
+msgid_plural "%s talks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/core/functions.php:1278
+msgctxt "Admin bar menu"
+msgid "WordCamp Talks"
+msgstr ""
+
+#: includes/core/options.php:57 includes/core/options.php:339
+msgctxt "default root slug"
+msgid "talks"
+msgstr ""
+
+#: includes/core/options.php:58 includes/core/options.php:372
+msgctxt "default talk slug"
+msgid "talk"
+msgstr ""
+
+#: includes/core/options.php:59 includes/core/options.php:405
+msgctxt "default category slug"
+msgid "category"
+msgstr ""
+
+#: includes/core/options.php:60 includes/core/options.php:438
+msgctxt "default tag slug"
+msgid "tag"
+msgstr ""
+
+#: includes/core/options.php:61 includes/core/options.php:471
+msgctxt "default user slug"
+msgid "user"
+msgstr ""
+
+#: includes/core/options.php:62 includes/core/options.php:528
+msgctxt "default comments slug"
+msgid "comments"
+msgstr ""
+
+#: includes/core/options.php:63 includes/core/options.php:490
+msgctxt "default ratings slug"
+msgid "ratings"
+msgstr ""
+
+#: includes/core/options.php:64
+msgctxt "default to rate slug"
+msgid "to-rate"
+msgstr ""
+
+#: includes/core/options.php:65 includes/core/options.php:618
+msgctxt "default sign-up action slug"
+msgid "sign-up"
+msgstr ""
+
+#: includes/core/options.php:66 includes/core/options.php:561
+msgctxt "default action slug"
+msgid "action"
+msgstr ""
+
+#: includes/core/options.php:67 includes/core/options.php:580
+msgctxt "default add talk action slug"
+msgid "add"
+msgstr ""
+
+#: includes/core/options.php:68 includes/core/options.php:599
+msgctxt "default edit talk action slug"
+msgid "edit"
+msgstr ""
+
+#: includes/core/options.php:69 includes/core/options.php:637
+msgctxt "default comments pagination slug"
+msgid "cpage"
+msgstr ""
+
+#: includes/core/options.php:509
+msgctxt "default user to rate slug"
+msgid "to-rate"
+msgstr ""
+
+#: includes/talks/tags.php:775
+msgctxt "talk protected comments message"
+msgid "Comments are protected."
+msgstr ""
+
+#: includes/talks/tags.php:778
+msgctxt "talk private comments message"
+msgid "Comments are private."
+msgstr ""
+
+#: includes/talks/tags.php:927
+msgctxt "talk rating not logged in message"
+msgid "Please, log in to rate."
+msgstr ""
+
+#: includes/talks/tags.php:1192
+#. Translators: 1 is category, 2 is tag and 3 is the date.
+msgctxt "default talk footer utility text"
+msgid "This talk was posted on %3$s."
+msgstr ""
+
+#: includes/talks/tags.php:1197
+#. Translators: 1 is category, 2 is tag and 3 is the date.
+msgctxt "talk attached to at least one category footer utility text"
+msgid "This talk was posted in %1$s on %3$s."
+msgstr ""
+
+#: includes/talks/tags.php:1203
+#. Translators: 1 is category, 2 is tag and 3 is the date.
+msgctxt "talk attached to at least one tag footer utility text"
+msgid "This talk was tagged %2$s on %3$s."
+msgstr ""
+
+#: includes/talks/tags.php:1208
+#. Translators: 1 is category, 2 is tag and 3 is the date.
+msgctxt "talk attached to at least one tag and one category footer utility text"
+msgid "This talk was posted in %1$s and tagged %2$s on %3$s."
+msgstr ""
+
+#: includes/talks/tags.php:1218
+#. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
+msgctxt "default single talk footer utility text"
+msgid "This talk was posted on %3$s by %4$s."
+msgstr ""
+
+#: includes/talks/tags.php:1223
+#. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
+msgctxt "single talk attached to at least one category footer utility text"
+msgid "This talk was posted in %1$s on %3$s by %4$s."
+msgstr ""
+
+#: includes/talks/tags.php:1228
+#. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
+msgctxt "single talk attached to at least one tag footer utility text"
+msgid "This talk was tagged %2$s on %3$s by %4$s."
+msgstr ""
+
+#: includes/talks/tags.php:1232
+#. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
+msgctxt ""
+"single talk attached to at least one tag and one category footer utility "
+"text"
+msgid "This talk was posted in %1$s and tagged %2$s on %3$s by %4$s."
+msgstr ""
+
+#: includes/talks/tags.php:1308
+msgctxt "Previous post link"
+msgid "&larr;"
+msgstr ""
+
+#: includes/talks/tags.php:1310
+msgctxt "Next post link"
+msgid "&rarr;"
+msgstr ""
+
+#: includes/users/functions.php:521
+msgctxt "user talks profile slug for BuddyPress use"
+msgid "talks"
+msgstr ""
+
+#: includes/users/functions.php:1129
+msgctxt "Use the same translation as WP Core"
+msgid "[%s] Your username and password info"
+msgstr ""
+
+#: includes/users/tags.php:119
+msgctxt "embed profile type of stat"
+msgid "%s talks"
+msgstr ""
+
+#: includes/users/tags.php:300
+msgctxt "User profile description edit"
+msgid "Edit"
+msgstr ""
+
+#: includes/users/tags.php:341
+msgctxt "Screen reader text for embed user display name for the more link"
+msgid "%s&#39;s"
+msgstr ""

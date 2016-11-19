@@ -1,9 +1,9 @@
+/* global tinymce */
 /*!
  * WordCamp Talks Featured images script
  * A tinyMCE plugin to list inserted images
  */
 
-;
 ( function($) {
 	if ( ! $( '#talk-images-list' ).length || 'undefined' === typeof tinymce ) {
 		return;
@@ -24,7 +24,7 @@
 		editor.on( 'init', function() {
 			// Listen to Image Tiny MCE Plugin form submit
 			editor.on( 'wpImageFormSubmit', function( event ) {
-				var is_in  = 0, image = event.imgData;
+				var is_in  = 0, image = event.imgData,
 					output = $( '<li></li>' ).html( '<img src="' + image.data.src + '"/><div class="cb-container"><input type="checkbox" name="wct[_the_thumbnail][' + image.data.src + ']" value="' + image.data.src + '"/></div>' );
 
 				// Display the container

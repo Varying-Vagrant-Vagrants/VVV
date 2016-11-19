@@ -1,0 +1,39 @@
+{
+  "author": "imath",
+  "bugs": {
+    "url": "https://github.com/imath/wordcamp-talks/issues"
+  },
+  "description": "A WordCamp Talk Submission System",
+  "devDependencies": {
+    "grunt": "~1.0.1",
+    "grunt-checktextdomain": "~1.0.1",
+    "grunt-contrib-clean": "~1.0.0",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-cssmin": "~1.0.2",
+    "grunt-contrib-imagemin": "~1.0.1",
+    "grunt-contrib-jshint": "~1.0.0",
+    "grunt-contrib-uglify": "~2.0.0",
+    "grunt-contrib-watch": "~1.0.0",
+    "grunt-exec": "~1.0.1",
+    "grunt-check-dependencies": "~0.12.0",
+    "grunt-jsvalidate": "~0.2.2",
+    "grunt-legacy-util": "^1.0.0",
+    "grunt-wp-i18n": "~0.5.4",
+    "matchdep": "~1.0.1"
+  },
+  "engines": {
+    "node": "~6.6.0"
+  },
+  "keywords": [
+    "wordcamp",
+    "talks"
+  ],
+  "homepage": "https://github.com/imath/wordcamp-talks",
+  "license": "GPL-2.0+",
+  "name": "wordcamp-talks",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/imath/wordcamp-talks.git"
+  },
+  "version": "1.0.0-alpha"
+}

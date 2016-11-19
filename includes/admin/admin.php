@@ -506,9 +506,9 @@ class WordCamp_Talks_Admin {
 	public function talk_views( $views = array() ) {
 		/**
 		 * Add new views to edit talks page
-		 * 
+		 *
 		 * @since 1.0.0
-		 * 
+		 *
 		 * @param  array $view list of views
 		 */
 		$talk_views = apply_filters( 'wct_admin_edit_talks_views', $views );
@@ -544,7 +544,7 @@ class WordCamp_Talks_Admin {
 	 * @subpackage admin/admin
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string HTML output
 	 */
 	public function admin_notices() {
@@ -586,7 +586,7 @@ class WordCamp_Talks_Admin {
 
 			// Only add section and fields if section has fields
 			$fields = wct_get_settings_fields_for_section( $section_id );
-			
+
 			if ( empty( $fields ) ) {
 				continue;
 			}
@@ -758,7 +758,7 @@ class WordCamp_Talks_Admin {
 		}
 
 		/**
-		 * 
+		 *
 		 * @param array $new_columns the specific columns
 		 */
 		$new_columns = apply_filters( 'wct_admin_column_headers', $new_columns );
@@ -869,7 +869,7 @@ class WordCamp_Talks_Admin {
 					);
 				}
 
-				echo join( __( ', ' ), $out );
+				echo join( _x( ', ', 'separator for tags list', 'wordcamp-talks' ), $out );
 				break;
 
 			default:
@@ -1125,7 +1125,7 @@ class WordCamp_Talks_Admin {
 	 * @subpackage admin/admin
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return String text/csv
 	 */
 	public function csv_export() {
@@ -1422,7 +1422,7 @@ class WordCamp_Talks_Admin {
 	 * @subpackage admin/admin
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string CSS output
 	 */
 	public function admin_head() {
