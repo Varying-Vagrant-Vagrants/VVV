@@ -5,7 +5,7 @@ Plugin URI: https://github.com/imath/wordcamp-talks/
 Description: A WordCamp Talk Submission System
 Version: 1.0.0-alpha
 Requires at least: 4.6
-Tested up to: 4.6
+Tested up to: 4.6.1
 License: GNU/GPL 2
 Author: imath
 Author URI: http://imathi.eu/
