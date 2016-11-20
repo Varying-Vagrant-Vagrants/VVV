@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return array the setting sections
  */
 function wct_get_settings_sections() {
@@ -61,7 +61,7 @@ function wct_get_settings_sections() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return array the settings fields
  */
 function wct_get_settings_fields() {
@@ -367,14 +367,19 @@ function wct_get_settings_fields_for_section( $section_id = '' ) {
  * @param  string $option   the option value
  * @return string HTML output
  */
-function wct_setting_disabled( $function = '', $option = '' ) {
+function wct_setting_disabled( $function = '', $option = '', $operator = '=' ) {
 	if ( empty( $function ) || empty( $option ) || ! function_exists( $function ) ) {
 		return;
 	}
 
 	$compare = call_user_func( $function );
 
-	disabled( $compare == $option );
+	if ( '!=' === $operator ) {
+		disabled( $compare !== $option );
+		return;
+	}
+
+	disabled( $compare === $option );
 }
 
 /**
@@ -484,7 +489,7 @@ function wct_root_slug_conflict_check( $slug = 'talks' ) {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_settings_core_section_callback() {
@@ -503,7 +508,7 @@ function wct_settings_core_section_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_archive_title_setting_callback() {
@@ -521,18 +526,26 @@ function wct_archive_title_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_submit_status_setting_callback() {
 	$current_status = wct_default_talk_status();
+	$stati          = array_diff_key( get_post_stati( array( 'show_in_admin_all_list' => true ), 'objects' ), array(
+		'draft'  => false,
+		'future' => false,
+	) );
 	?>
-	<select name="_wc_talks_submit_status" id="_wc_talks_submit_status" <?php wct_setting_disabled_option( '_wc_talks_groups_integration' ); ?>>
-		<option value="publish" <?php selected( $current_status, 'publish' );?>><?php esc_html_e( 'Published', 'wordcamp-talks' );?></option>
-		<option value="pending" <?php selected( $current_status, 'pending' );?>><?php esc_html_e( 'Pending', 'wordcamp-talks' );?></option>
+	<select name="_wc_talks_submit_status" id="_wc_talks_submit_status">
+
+		<?php foreach ( $stati as $status ) : ?>
+
+			<option value="<?php echo esc_attr( $status->name ); ?>" <?php selected( $current_status, $status->name );?>><?php echo esc_html( $status->label );?></option>
+
+		<?php endforeach; ?>
+
 	</select>
 	<p class="description"><?php esc_html_e( 'The default status for all talks. Depending on this setting, the moderation message setting will be available', 'wordcamp-talks' ); ?></p>
-
 	<?php
 }
 
@@ -543,7 +556,7 @@ function wct_submit_status_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_editor_image_setting_callback() {
@@ -579,7 +592,7 @@ function wct_editor_featured_images_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_editor_link_setting_callback() {
@@ -598,14 +611,14 @@ function wct_editor_link_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_moderation_message_setting_callback() {
 	?>
 
 	<label for="_wc_talks_moderation_message"><?php esc_html_e( 'In cases where &#34;Pending&#34; is the status for all talks, you can customize the moderation message', 'wordcamp-talks' ); ?></label>
-	<textarea name="_wc_talks_moderation_message" id="_wc_talks_moderation_message" rows="10" cols="50" class="large-text code" <?php wct_setting_disabled( 'wct_default_talk_status', 'publish' ); ?>><?php echo esc_textarea( wct_moderation_message() );?></textarea>
+	<textarea name="_wc_talks_moderation_message" id="_wc_talks_moderation_message" rows="10" cols="50" class="large-text code" <?php wct_setting_disabled( 'wct_default_talk_status', 'pending', '!=' ); ?>><?php echo esc_textarea( wct_moderation_message() );?></textarea>
 
 	<?php
 }
@@ -617,7 +630,7 @@ function wct_moderation_message_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_login_message_setting_callback() {
@@ -636,7 +649,7 @@ function wct_login_message_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_hint_list_setting_callback() {
@@ -673,7 +686,7 @@ function wct_to_rate_profile_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_sticky_talks_setting_callback() {
@@ -692,7 +705,7 @@ function wct_sticky_talks_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_disjoin_comments_setting_callback() {
@@ -711,7 +724,7 @@ function wct_disjoin_comments_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_allow_comments_setting_callback() {
@@ -766,7 +779,7 @@ function wct_settings_rewrite_section_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_root_slug_setting_callback() {
@@ -785,7 +798,7 @@ function wct_root_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_talk_slug_setting_callback() {
@@ -803,7 +816,7 @@ function wct_talk_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_category_slug_setting_callback() {
@@ -821,7 +834,7 @@ function wct_category_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_tag_slug_setting_callback() {
@@ -839,7 +852,7 @@ function wct_tag_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_user_slug_setting_callback() {
@@ -857,7 +870,7 @@ function wct_user_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_user_comments_slug_setting_callback() {
@@ -875,7 +888,7 @@ function wct_user_comments_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_cpage_slug_setting_callback() {
@@ -894,7 +907,7 @@ function wct_cpage_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_user_rates_slug_setting_callback() {
@@ -912,7 +925,7 @@ function wct_user_rates_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_user_to_rate_slug_setting_callback() {
@@ -930,7 +943,7 @@ function wct_user_to_rate_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_signup_slug_setting_callback() {
@@ -948,7 +961,7 @@ function wct_signup_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_action_slug_setting_callback() {
@@ -966,7 +979,7 @@ function wct_action_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_addnew_slug_setting_callback() {
@@ -984,7 +997,7 @@ function wct_addnew_slug_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_edit_slug_setting_callback() {
@@ -1020,7 +1033,7 @@ function wct_settings_multisite_section_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_allow_signups_setting_callback() {
@@ -1039,7 +1052,7 @@ function wct_allow_signups_setting_callback() {
  * @subpackage admin/settings
  *
  * @since 1.0.0
- * 
+ *
  * @return string HTML output
  */
 function wct_get_user_default_role_setting_callback() {
