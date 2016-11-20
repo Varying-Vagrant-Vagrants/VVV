@@ -158,11 +158,17 @@ class WordCamp_Talks_Admin {
 
 		add_action( 'load-settings_page_wc_talks', array( $this, 'settings_load' ) );
 
+		// Filter the list by workflow state
+		add_action( 'restrict_manage_posts', array( $this, 'filter_by_state' ), 10 );
+
 		// Talks columns (in post row)
 		add_action( "manage_{$this->post_type}_posts_custom_column", array( $this, 'column_data' ), 10, 2 );
 
-		// Neutralize quick edit
+		// Maybe neutralize quick edit
 		add_action( 'post_row_actions', array( $this, 'talk_row_actions'), 10, 2 );
+
+		// Add the Workflow inline edit field
+		add_action( 'quick_edit_custom_box', array( $this, 'inline_edit_workflow' ), 10, 2 );
 
 		// Do some global stuff here (custom css rule)
 		add_action( 'wct_admin_head', array( $this, 'admin_head' ), 10 );
@@ -319,7 +325,7 @@ class WordCamp_Talks_Admin {
 		 * @see  $this->ratings_metabox() for an example of use
 		 * @param array $metaboxes list of metaboxes to add
 		 */
-		$this->metaboxes = apply_filters( 'wct_admin_get_meta_boxes', $this->metaboxes );
+		$this->metaboxes = apply_filters( 'wct_admin_get_meta_boxes', $this->get_workflow_metabox() );
 
 		if ( empty( $this->metaboxes ) ) {
 			return;
@@ -378,6 +384,40 @@ class WordCamp_Talks_Admin {
 		// Bail if not a post request
 		if ( 'POST' != strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
 			return $id;
+		}
+
+		// Nonce check
+		if ( ! empty( $_POST['wct_workflow_metabox_metabox'] ) && check_admin_referer( 'wct_workflow_metabox_save', 'wct_workflow_metabox_metabox' ) ) {
+
+			$db_state = wct_talks_get_meta( $id, 'workflow_state' );
+			$states   = $this->get_workflow_states();
+
+			// State is to update or to delete
+			if ( ! empty( $_POST['wct_admin_workflow_states'] ) ) {
+				$state = $_POST['wct_admin_workflow_states'];
+
+				// Valid states are updated
+				if ( isset( $states[ $state ] ) ) {
+					if ( 'pending' === $state && ! empty( $db_state ) ) {
+						wct_talks_delete_meta( $id, 'workflow_state' );
+					}
+
+					if ( 'pending' !== $state ) {
+						wct_talks_update_meta( $id, 'workflow_state', $state );
+					};
+				}
+			}
+		}
+
+		// inline edit
+		if ( ! empty( $_REQUEST['_inline_workflow_state'] ) ) {
+			check_ajax_referer( 'inlineeditnonce', '_inline_edit' );
+
+			if ( 'pending' == $_REQUEST['_inline_workflow_state'] ) {
+				wct_talks_delete_meta( $id, 'workflow_state' );
+			} else {
+				wct_talks_update_meta( $id, 'workflow_state', $_REQUEST['_inline_workflow_state'] );
+			}
 		}
 
 		/**
@@ -696,7 +736,7 @@ class WordCamp_Talks_Admin {
 	}
 
 	/**
-	 * Disable the quick edit row action
+	 * Maybe disable the quick edit row action
 	 *
 	 * @package WordCamp Talks
 	 * @subpackage admin/admin
@@ -716,23 +756,6 @@ class WordCamp_Talks_Admin {
 			return array();
 		}
 
-		/**
-		 * I don't know yet if inline edit is well supported by the plugin, so if you
-		 * want to test, just return true to this filter
-		 * eg: add_filter( 'wct_admin_talks_inline_edit', '__return_true' );
-		 *
-		 * @param  bool true to allow inline edit, false otherwise (default is false)
-		 */
-		$keep_inline_edit = apply_filters( 'wct_admin_talks_inline_edit', false );
-
-		if ( ! empty( $keep_inline_edit ) ) {
-			return $actions;
-		}
-
-		if ( ! empty( $actions['inline hide-if-no-js'] ) ) {
-			unset( $actions['inline hide-if-no-js'] );
-		}
-
 		return $actions;
 	}
 
@@ -749,8 +772,9 @@ class WordCamp_Talks_Admin {
 	 */
 	public function column_headers( $columns = array() ) {
 		$new_columns = array(
-			'cat_talks' => _x( 'Categories', 'talks admin category column header', 'wordcamp-talks' ),
-			'tag_talks' => _x( 'Tags',      'talks admin tag column header',       'wordcamp-talks' ),
+			'workflow_state' => _x( 'State of the talk', 'talks admin workflow status column header', 'wordcamp-talks' ),
+			'cat_talks'      => _x( 'Categories',        'talks admin category column header',        'wordcamp-talks' ),
+			'tag_talks'      => _x( 'Tags',              'talks admin tag column header',             'wordcamp-talks' ),
 		);
 
 		if ( ! wct_is_rating_disabled() ) {
@@ -832,6 +856,27 @@ class WordCamp_Talks_Admin {
 				} else {
 					echo '&#8212;';
 				}
+				break;
+
+			case 'workflow_state' :
+				// Try to get the db state
+				$state = wct_talks_get_meta( $talk_id, 'workflow_state' );
+
+				// Fallback on pending
+				if ( empty( $state ) ) {
+					$state = 'pending';
+				}
+
+				if ( empty( $this->workflow_states ) ) {
+					$this->workflow_states = $this->get_workflow_states();
+				}
+
+				if ( ! empty( $this->workflow_states[ $state ] ) ) {
+					echo '<span data-workflowstate="' . $state . '">' . esc_html( $this->workflow_states[ $state ] ) . '</span>';
+				} else {
+					echo '&#8212;';
+				}
+
 				break;
 
 			case 'cat_talks' :
@@ -1413,6 +1458,182 @@ class WordCamp_Talks_Admin {
 		}
 
 		return $help_tabs;
+	}
+
+	/**
+	 * Get the workflow states
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return array the list of workflow states.
+	 */
+	public function get_workflow_states() {
+		/**
+		 * Use this filter to add/remove your own workflow states.
+		 *
+		 * @since  1.0.0
+		 *
+		 * @return  array the list of workflow states.
+		 */
+		return apply_filters( 'wct_admin_get_workflow_states', array(
+			'pending'   => __( 'Pending',      'wordcamp-talks' ),
+			'shortlist' => __( 'Short-listed', 'wordcamp-talks' ),
+			'selected'  => __( 'Selected',     'wordcamp-talks' ),
+			'rejected'  => __( 'Rejected',     'wordcamp-talks' ),
+		) );
+	}
+
+	/**
+	 * Prints a dropdown to select workflow state
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $selected  the db state
+	 * @param  string $select_id the name/id of select field
+	 * @return string HTML Output
+	 */
+	public function print_dropdown_workflow( $selected = '', $select_id = 'wct_admin_workflow_states' ) {
+		$workflow_states = $this->workflow_states;
+
+		printf( '<select name="%s" id="%s">', esc_attr( $select_id ), esc_attr( $select_id ) );
+
+		if ( 'workflow-states' === $select_id ) {
+			printf( '<option value="">%s</option>', esc_attr__( 'Filter by state', 'wordcamp-talks' ) );
+		}
+
+		foreach ( $workflow_states as $key_state => $state ) {
+			$current = selected( $selected, $key_state, false );
+			printf(
+				'<option value="%s" %s>%s</option>',
+				esc_attr( $key_state ),
+				$current,
+				esc_html( $state )
+			);
+		}
+
+		echo '</select>';
+	}
+
+	/**
+	 * Registers the workflow metabox
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return array The workflow metabox parameters.
+	 */
+	public function get_workflow_metabox() {
+		$states = $this->get_workflow_states();
+
+		if ( empty( $states ) ) {
+			return array();
+		}
+
+		// Globalize states.
+		$this->workflow_states = $states;
+
+		return array(
+			'workflow' => array(
+				'id'            => 'wct_workflow_metabox',
+				'title'         => __( 'Workflow', 'wordcamp-talks' ),
+				'callback'      => array( $this, 'workflow_do_metabox' ),
+				'context'       => 'side',
+				'priority'      => 'high',
+			),
+		);
+	}
+
+	/**
+	 * Outputs the workflow metabox.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  WP_Post $selected  the db state
+	 * @return string HTML Output
+	 */
+	public function workflow_do_metabox( $talk = null ) {
+		$id = $talk->ID;
+
+		if ( ! $id ) {
+			return;
+		}
+
+		$state = 'pending';
+		$db_state = wct_talks_get_meta( $id, 'workflow_state' );
+
+		if ( ! empty( $db_state ) ) {
+			$state = sanitize_key( $db_state );
+		}
+		?>
+
+		<p>
+			<label class="screen-reader-text" for="wc_talk_workflow_states"><?php esc_html_e( 'State of the talk', 'wordcamp-talks' ); ?></label>
+			<?php $this->print_dropdown_workflow( $state ); ?>
+		</p>
+
+		<?php
+		wp_nonce_field( 'wct_workflow_metabox_save', 'wct_workflow_metabox_metabox' );
+	}
+
+	/**
+	 * Add the inline edit workflow state control.
+	 *
+	 * @since  1.O.0
+	 *
+	 * @param  string $column_name the column name.
+	 * @param  string $post_type   the post type identifier.
+	 * @return string HTML output
+	 */
+	public function inline_edit_workflow( $column_name = '', $post_type = '' ) {
+		// Only in Edit Talks screen!
+		if ( $this->post_type !== $post_type || 'workflow_state' !== $column_name ) {
+			return;
+		}
+		?>
+
+		<fieldset class="inline-edit-col-right">
+			<div class="inline-edit-group">
+				<label class="inline-edit-workflow-state alignleft">
+					<span class="title"><?php esc_html_e( 'State of the talk', 'wordcamp-talks' ); ?></span>
+					<?php $this->print_dropdown_workflow( 'pending', '_inline_workflow_state' ); ?>
+				</label>
+			</div>
+		</fieldset>
+
+		<?php
+	}
+
+	/**
+	 * Add a dropdown to filter the talks by state
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return string HTML Output
+	 */
+	public function filter_by_state() {
+		if ( ! wct_is_admin() ) {
+			return;
+		}
+
+		$current_screen = get_current_screen();
+
+		if ( empty( $current_screen->id ) ) {
+			return;
+		}
+
+		if ( 'edit-' . wct_get_post_type() !== $current_screen->id ) {
+			return;
+		}
+
+		if ( empty( $this->workflow_states ) ) {
+			$this->workflow_states = $this->get_workflow_states();
+		}
+
+		$state = '';
+		if ( ! empty( $_REQUEST['workflow_states'] ) ) {
+			$state = sanitize_key( $_REQUEST['workflow_states'] );
+		}
+
+		$this->print_dropdown_workflow( $state, 'workflow_states' );
 	}
 
 	/**

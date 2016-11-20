@@ -57,6 +57,26 @@ function wct_parse_query( $posts_query = null ) {
 			wct_set_global( 'orderby', 'rates_count' );
 		}
 
+		// Build a meta query to filter by workflow state
+		if ( ! empty( $_REQUEST['workflow_states'] ) ) {
+			$admin_meta_query = array();
+
+			if ( 'pending' == $_REQUEST['workflow_states'] ) {
+				$admin_meta_query = array(
+					'key'     => '_wc_talks_workflow_state',
+					'compare' => 'NOT EXISTS'
+				);
+			} else {
+				$admin_meta_query = array(
+					'key'     => '_wc_talks_workflow_state',
+					'compare' => '=',
+					'value'   => $_REQUEST['workflow_states']
+				);
+			}
+
+			$posts_query->set( 'meta_query', array( $admin_meta_query ) );
+		}
+
 		do_action( 'wct_admin_request', $posts_query );
 
 		return;
@@ -376,7 +396,7 @@ function wct_enqueue_embed_style() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if displaying a plugin's admin screen, false otherwise
  */
 function wct_is_admin() {
@@ -405,7 +425,7 @@ function wct_is_admin() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if viewing a plugin's front end page, false otherwise
  */
 function wct_is_talks() {
@@ -419,7 +439,7 @@ function wct_is_talks() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if on the addnew form, false otherwise
  */
 function wct_is_addnew() {
@@ -433,7 +453,7 @@ function wct_is_addnew() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if on the edit form, false otherwise
  */
 function wct_is_edit() {
@@ -447,7 +467,7 @@ function wct_is_edit() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if on the edit form, false otherwise
  */
 function wct_is_signup() {
@@ -461,7 +481,7 @@ function wct_is_signup() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if on a single talk template, false otherwise
  */
 function wct_is_single_talk() {
@@ -475,7 +495,7 @@ function wct_is_single_talk() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return int the current talk ID
  */
 function wct_get_single_talk_id() {
@@ -489,7 +509,7 @@ function wct_get_single_talk_id() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if on talks archive, false otherwise
  */
 function wct_is_talks_archive() {
@@ -509,7 +529,7 @@ function wct_is_talks_archive() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if viewing talks categorized in a sepecific term, false otherwise.
  */
 function wct_is_category() {
@@ -569,7 +589,7 @@ function wct_get_current_term() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string the term name
  */
 function wct_get_term_name() {
@@ -585,7 +605,7 @@ function wct_get_term_name() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if an talk search is performed, otherwise false
  */
 function wct_is_search() {
@@ -632,7 +652,7 @@ function wct_is_orderby( $type = '' ) {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true a user's profile is being viewed, false otherwise
  */
 function wct_is_user_profile() {
@@ -646,7 +666,7 @@ function wct_is_user_profile() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if viewing user's profile comments, false otherwise
  */
 function wct_is_user_profile_comments() {
@@ -660,7 +680,7 @@ function wct_is_user_profile_comments() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if viewing user's profile rates, false otherwise
  */
 function wct_is_user_profile_rates() {
@@ -674,7 +694,7 @@ function wct_is_user_profile_rates() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if viewing user's profile to rate, false otherwise.
  */
 function wct_is_user_profile_to_rate() {
@@ -688,7 +708,7 @@ function wct_is_user_profile_to_rate() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if viewing talks in the user's profile, false otherwise
  */
 function wct_is_user_profile_talks() {
@@ -702,7 +722,7 @@ function wct_is_user_profile_talks() {
  * @subpackage core/template-functions
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if current user is viewing his profile, false otherwise
  */
 function wct_is_current_user_profile() {

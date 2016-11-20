@@ -231,7 +231,7 @@ class WordCamp_Talks_Talk {
 
 			foreach ( $this->metas as $meta_key => $meta_value ) {
 				// Do not update these keys.
-				$skip_keys = apply_filters( 'wct_meta_key_skip_save', array( 'keys', 'rates', 'average_rate' ) );
+				$skip_keys = apply_filters( 'wct_meta_key_skip_save', array( 'keys', 'rates', 'average_rate', 'workflow_state' ) );
 				if ( in_array( $meta_key, $skip_keys ) ) {
 					continue;
 				}
@@ -798,7 +798,7 @@ class WordCamp_Talk_Metas {
 	 * @subpackage talks/classes
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string          HTML Output
 	 */
 	public function single_output() {

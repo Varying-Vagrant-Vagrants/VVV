@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string Plugin's current version
  */
 function wct_get_version() {
@@ -38,7 +38,7 @@ function wct_get_version() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string DB version of the plugin
  */
 function wct_db_version() {
@@ -52,7 +52,7 @@ function wct_db_version() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string Plugin's basename
  */
 function wct_get_basename() {
@@ -66,7 +66,7 @@ function wct_get_basename() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string plugin's main path
  */
 function wct_get_plugin_dir() {
@@ -80,7 +80,7 @@ function wct_get_plugin_dir() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string plugin's main url
  */
 function wct_get_plugin_url() {
@@ -96,7 +96,7 @@ function wct_get_plugin_url() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string plugin's javascript url
  */
 function wct_get_js_url() {
@@ -131,7 +131,7 @@ function wct_get_js_script( $script = '' ) {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string includes directory path
  */
 function wct_get_includes_dir() {
@@ -145,7 +145,7 @@ function wct_get_includes_dir() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string includes directory url
  */
 function wct_get_includes_url() {
@@ -165,7 +165,7 @@ function wct_get_includes_url() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string path to templates directory
  */
 function wct_get_templates_dir() {
@@ -212,7 +212,7 @@ function wct_get_global( $var_key = '' ) {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string the post type identifier
  */
 function wct_post_type() {
@@ -226,7 +226,7 @@ function wct_post_type() {
 	 * @subpackage core/functions
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string the post type identifier
 	 */
 	function wct_get_post_type() {
@@ -240,7 +240,7 @@ function wct_post_type() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array the init arguments for the 'talks' post type
  */
 function wct_post_type_register_args() {
@@ -281,7 +281,7 @@ function wct_post_type_register_args() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array post type labels
  */
 function wct_post_type_register_labels() {
@@ -315,7 +315,7 @@ function wct_post_type_register_labels() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string hierarchical taxonomy identifier
  */
 function wct_get_category() {
@@ -329,7 +329,7 @@ function wct_get_category() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array taxonomy init arguments
  */
 function wct_category_register_args() {
@@ -356,7 +356,7 @@ function wct_category_register_args() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array "category" taxonomy labels
  */
 function wct_category_register_labels() {
@@ -383,7 +383,7 @@ function wct_category_register_labels() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string non hierarchical taxonomy identifier
  */
 function wct_get_tag() {
@@ -397,7 +397,7 @@ function wct_get_tag() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array taxonomy init arguments
  */
 function wct_tag_register_args() {
@@ -424,7 +424,7 @@ function wct_tag_register_args() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array "tag" taxonomy labels
  */
 function wct_tag_register_labels() {
@@ -455,7 +455,7 @@ function wct_tag_register_labels() {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string root url for the post type
  */
 function wct_get_root_url() {
@@ -522,7 +522,7 @@ function wct_get_tag_url( $tag = '' ) {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string the url to redirect the user to
  */
 function wct_get_redirect_url() {
@@ -709,7 +709,7 @@ function wct_is_rating_disabled( $default = 0 ) {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array the hintlist
  */
 function wct_get_hint_list() {
@@ -914,7 +914,7 @@ function wct_add_rate( $talk = 0, $user_id = 0, $rate = 0 ) {
  * @subpackage core/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return mixed the average rate or 0
  */
 function wct_ajax_rate() {

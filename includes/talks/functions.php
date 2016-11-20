@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  * @subpackage talks/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array          the post status of talks to retrieve
  */
 function wct_talks_get_status() {
@@ -67,7 +67,7 @@ function wct_talks_get_all_status( $status = array() ) {
  * @subpackage talks/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array           the post status of talks to retrieve
  */
 function wct_talks_per_page() {
@@ -1215,7 +1215,7 @@ function wct_talks_update_talk() {
  * @subpackage talks/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return array the list of IDs of sticked to front talks
  */
 function wct_talks_get_stickies() {
