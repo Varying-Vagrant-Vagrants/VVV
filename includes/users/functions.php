@@ -518,7 +518,7 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 			'title'   => __( 'Published', 'wordcamp-talks' ),
 			'url'     => wct_users_get_user_profile_url( $user_id, $username ),
 			'current' => wct_is_user_profile_talks(),
-			'slug'    => sanitize_title( _x( 'talks', 'user talks profile slug for BuddyPress use', 'wordcamp-talks' ) ),
+			'slug'    => sanitize_title( _x( 'talks', 'user talks profile slug', 'wordcamp-talks' ) ),
 		),
 	);
 
@@ -1102,11 +1102,7 @@ function wct_user_signup_redirect( $context = '' ) {
 		exit();
 	} else {
 		if ( 'signup' == $context )  {
-			/**
-			 * If we are here the signup url has been requested
-			 * Before using it let plugins override it. Used internally to
-			 * let BuddyPress handle signups if needed
-			 */
+
 			do_action( 'wct_user_signup_override' );
 		}
 		return;

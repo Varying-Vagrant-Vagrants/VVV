@@ -1264,9 +1264,6 @@ class WordCamp_Talks_Admin {
 		$widgets_page         = '<a href="' . esc_url( admin_url( 'widgets.php' ) ) . '">';
 
 		/**
-		 * Used internally to add sticky/ratings/BuddyPress groups help tabs
-		 * if enabled.
-		 *
 		 * @param array associative array to list the help tabs
 		 */
 		$help = array(
@@ -1413,9 +1410,6 @@ class WordCamp_Talks_Admin {
 		}
 
 		/**
-		 * Used internally to add sticky/ratings/BuddyPress groups help tabs
-		 * if enabled.
-		 *
 		 * @param array $help associative array to list the help tabs
 		 */
 		$help = apply_filters( 'wct_get_help_tabs', $help );
@@ -1810,9 +1804,7 @@ class WordCamp_Talks_Admin {
 	 * @return array  the existing links + the new ones
 	 */
 	public function modify_plugin_action_links( $links, $file ) {
-
-		// Return normal links if not BuddyPress
-		if ( wct_get_basename() != $file ) {
+		if ( wct_get_basename() !== $file ) {
 			return $links;
 		}
 

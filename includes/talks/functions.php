@@ -390,10 +390,6 @@ function wct_talks_get_terms( $taxonomy = '', $args = array() ) {
  */
 function wct_talks_insert_status( $talkarr = array() ) {
 	/**
-	 * Used internally to set the status to private in case the talk
-	 * is posted from a non public BuddyPress group
-	 * @see  WordCamp_Talks_Group->group_talk_status()
-	 *
 	 * @param  string  the default post status for an talk
 	 * @param  array   $talkarr  the arguments of the talk to save
 	 */
@@ -532,7 +528,7 @@ function wct_talks_can_edit( $talk = null ) {
 	}
 
 	// Period of time
-	$lockable  = apply_filters( 'wct_talks_can_edit_time', '+5 minutes' );
+	$lockable  = apply_filters( 'wct_talks_can_edit_time', '+1 hour' );
 
 	// Now
 	$cur_time  = current_time( 'timestamp', true );
@@ -658,8 +654,7 @@ function wct_talks_save_talk( $talkarr = array() ) {
 		}
 	}
 
-	// Handling metas. By default none, but can be useful for plugins or
-	// when playing with BuddyPress groups.
+	// Handling metas. By default none, but can be useful for plugins
 	if ( ! empty( $talkarr['_the_metas'] ) && is_array( $talkarr['_the_metas'] ) ) {
 		$talk->metas = $talkarr['_the_metas'];
 	}

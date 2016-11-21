@@ -357,11 +357,6 @@ body.single-talks #wordcamp-talks div.talk-header {
 	width: auto;
 }
 
-#buddypress #wordcamp-talks h1.talk-title {
-	margin: 1em 0;
-}
-
-
 /*--------------------------------------------------------------
 6 - Single Talk
 --------------------------------------------------------------*/
@@ -520,8 +515,7 @@ a.wpis-title-button {
 	border:none;
 }
 
-#wordcamp-talks .profile-header .wp-embed-share-dialog .dashicons-no:before,
-body.talkstream.bp-user .wp-embed-share-dialog .dashicons-no:before {
+#wordcamp-talks .profile-header .wp-embed-share-dialog .dashicons-no:before {
 	display: none;
 }
 
@@ -535,8 +529,7 @@ body.talkstream.bp-user .wp-embed-share-dialog .dashicons-no:before {
 	border: none;
 }
 
-#wordcamp-talks .profile-header .wp-embed-share,
-body.talkstream.bp-user .wp-embed-share {
+#wordcamp-talks .profile-header .wp-embed-share {
  	margin: 9px 10px 0 0;
  	display: block;
  	float: left;
@@ -558,8 +551,7 @@ body.talkstream.bp-user .wp-embed-share .wp-embed-share-dialog-open {
 	margin: 0;
 }
 
-#wordcamp-talks .profile-header .wp-embed-share-dialog-open .dashicons,
-body.talkstream.bp-user .wp-embed-share-dialog-open .dashicons {
+#wordcamp-talks .profile-header .wp-embed-share-dialog-open .dashicons {
 	top: 0px;
 	padding: 0px;
 	font-size: inherit;
@@ -569,35 +561,21 @@ body.talkstream.bp-user .wp-embed-share-dialog-open .dashicons {
 }
 
 #wordcamp-talks .profile-header .wp-embed-share-dialog-open:focus .dashicons,
-#wordcamp-talks .profile-header .wp-embed-share-dialog-close:focus .dashicons,
-body.talkstream.bp-user .wp-embed-share-dialog-open:focus .dashicons,
-body.talkstream.bp-user .wp-embed-share-dialog-close:focus .dashicons {
+#wordcamp-talks .profile-header .wp-embed-share-dialog-close:focus .dashicons {
 	box-shadow: none;
 }
 
-#wordcamp-talks .profile-header .wp-embed-share-dialog-close,
-body.talkstream.bp-user #buddypress button.wp-embed-share-dialog-close {
+#wordcamp-talks .profile-header .wp-embed-share-dialog-close {
 	border: none;
 	background: none;
 }
 
-
-#wordcamp-talks .profile-header .wp-embed-share-dialog-open .dashicons-share,
-body.talkstream.bp-user .wp-embed-share-dialog-open .dashicons-share {
+#wordcamp-talks .profile-header .wp-embed-share-dialog-open .dashicons-share {
 	background-image: none;
 }
 
-#wordcamp-talks .profile-header,
-body.talkstream.bp-user #item-header-content {
+#wordcamp-talks .profile-header {
 	position: relative;
-}
-
-body.talkstream.bp-user #item-body h3:empty {
-	display: none;
-}
-
-#buddypress div#item-header ul.wp-embed-share-tabs li {
-	float: none;
 }
 
 body.talkstream .wp-embed-share-dialog {
@@ -741,7 +719,7 @@ body.talkstream .wp-embed-share-dialog {
 	font-weight: normal;
 	margin: 5px 0 0 0;
 }
-#buddypress #wordcamp-talks .standard-form input[type='text'],
+
 #wordcamp-talks .standard-form input[type=text] {
 	width: 90%;
 }
@@ -854,12 +832,6 @@ body.single-talks #comments .comment-reply-link:hover {
 #wordcamp-talks #talks-search-submit,
 #wordcamp-talks #talks-order-submit {
 	font-size: 80%;
-}
-
-body.single-item.groups #buddypress #wordcamp-talks #buddydrive-btn {
-	float:none;
-	margin:1em 0;
-	display:inline-block;
 }
 
 #wordcamp-talks .standard-form #talk-images-list.hidden {

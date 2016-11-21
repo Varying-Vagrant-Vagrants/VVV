@@ -377,9 +377,6 @@ function wct_set_template( $template = '' ) {
 			) );
 
 			/**
-			 * Internally used to redirect to BuddyPress member's profile
-			 * if needed
-			 *
 			 * @param  string $context to help choosing the best template to use
 			 */
 			do_action( 'wct_set_core_template', $template_args['context'], $template_args );

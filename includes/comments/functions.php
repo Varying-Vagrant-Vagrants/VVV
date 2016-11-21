@@ -175,7 +175,6 @@ function wct_comments_get_comment_link( $comment_id = 0 ) {
 
 	/**
 	 * Check if the Talk still exists.
-	 * Avoid notices when deleting a user/post if BuddyPress Activity & Blogs are active
 	 */
 	if ( empty( $comment->comment_post_ID ) ) {
 		$comment_link = false;
@@ -280,8 +279,6 @@ function wct_comments_open( $open = true, $talk_id = 0 ) {
 	}
 
 	/**
-	 * Used internally in BuddyPress parts
-	 *
 	 * @param  bool $open true if comments are opened, false otherwise
 	 * @param  int $talk_id the ID of the talk
 	 */
@@ -320,4 +317,25 @@ function wct_comments_array( $comments = array(), $talk_id = 0 ) {
 	}
 
 	return $comments;
+}
+
+/**
+ * Make sure user can see comment feeds.
+ *
+ * @package WordCamp Talks
+ * @subpackage comments/functions
+ *
+ * @since 1.0.0
+ *
+ * @param  string   $limit    the limit args of the WP_Query comment subquery.
+ * @param  WP_Query $wp_query WordPress main query.
+ * @return string             the limit args of the WP_Query comment subquery.
+ */
+function wct_comment_feed_limits( $limit = '', $wp_query = null ) {
+	// Force the comments query to return nothing
+	if ( ! empty( $wp_query->query['post_type'] ) && wct_get_post_type() === $wp_query->query['post_type'] && ! wct_user_can( 'comment_talks' ) ) {
+		$limit = 'LIMIT 0';
+	}
+
+	return $limit;
 }

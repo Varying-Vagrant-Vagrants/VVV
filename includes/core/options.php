@@ -119,10 +119,7 @@ function wct_archive_title( $default = 'Talks' ) {
 }
 
 /**
- * Default publishing status (publish/pending)
- *
- * If BuddyPress Groupes are enabled, this option is overriden
- * and only publish status is available
+ * Default publishing status (private/publish/pending)
  *
  * @package WordCamp Talks
  * @subpackage core/options
@@ -132,7 +129,7 @@ function wct_archive_title( $default = 'Talks' ) {
  * @param  string $default default value
  * @return string default value or customized one
  */
-function wct_default_talk_status( $default = 'publish' ) {
+function wct_default_talk_status( $default = 'private' ) {
 	$default_status = get_option( '_wc_talks_submit_status', $default );
 
 	// Make sure admins will have a publish status whatever the settings choice

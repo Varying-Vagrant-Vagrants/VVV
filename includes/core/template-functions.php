@@ -745,8 +745,6 @@ function wct_is_current_user_profile() {
 	$is_user_profile = ( $current_user->ID == $displayed_user_id );
 
 	/**
-	 * Used Internally to map this function to BuddyPress bp_is_my_profile one
-	 *
 	 * @param  bool $is_user_profile whether the user is viewing his profile or not
 	 */
 	return (bool) apply_filters( 'wct_is_current_user_profile', $is_user_profile );
@@ -1038,10 +1036,6 @@ function wct_maybe_reset_postdata() {
 	if ( wct_get_global( 'needs_reset' ) ) {
 		wp_reset_postdata();
 
-		/**
-		 * Internally used in BuddyPress Groups pages
-		 * to reset the $wp_query->post to BuddyPress Group's page one
-		 */
 		do_action( 'wct_maybe_reset_postdata' );
 	}
 }

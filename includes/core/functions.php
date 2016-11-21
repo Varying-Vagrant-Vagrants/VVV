@@ -1156,9 +1156,13 @@ function wct_tag_cloud_args( $args = array() ) {
  * @return array           associative array containing the number of tags and the content of the cloud.
  */
 function wct_generate_tag_cloud( $number = 10, $args = array() ) {
-	$tags = get_terms( wct_get_tag(), apply_filters( 'wct_generate_tag_cloud_args',
-		array( 'number' => $number, 'orderby' => 'count', 'order' => 'DESC' )
-	) );
+	$r = array( 'number' => $number, 'orderby' => 'count', 'order' => 'DESC' );
+
+	if ( 'private' === wct_default_talk_status() ) {
+		$r = array( 'hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC' );
+	}
+
+	$tags = get_terms( wct_get_tag(), apply_filters( 'wct_generate_tag_cloud_args', $r ) );
 
 	if ( empty( $tags ) ) {
 		return;

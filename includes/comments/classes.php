@@ -100,6 +100,10 @@ class WordCamp_Talks_Comments {
 		add_filter( 'comment_moderation_recipients', array( $this, 'moderation_recipients' ), 10, 2 );
 		add_filter( 'comment_notification_text',     array( $this, 'comment_notification' ),  10, 2 );
 		add_filter( 'comment_moderation_text',       array( $this, 'comment_notification' ),  10, 2 );
+
+		if ( 'private' === wct_default_talk_status() ) {
+			add_filter( 'comment_notification_recipients', array( $this, 'donot_notify_talk_authors' ), 10, 2 );
+		}
 	}
 
 	/**
@@ -339,8 +343,6 @@ class WordCamp_Talks_Comments {
 		}
 
 		/**
-		 * Used internally to generate a BuddyPress screen notification
-		 *
 		 * @param  object $comment the comment object
 		 */
 		do_action( 'wct_comments_notify_author', $comment );
@@ -458,6 +460,38 @@ class WordCamp_Talks_Comments {
 		}
 
 		return (object) $stats;
+	}
+
+	/**
+	 * Make sure speakers won't be notified in case a comment has been added to their talks
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array   $emails     list of emails
+	 * @param  int     $comment_id the comment id
+	 * @return array               list of emails without the speaker one
+	 */
+	function donot_notify_talk_authors( $emails = array(), $comment_id = 0 ) {
+		if ( empty( $comment_id ) ) {
+			return $emails;
+		}
+
+		$comment = wct_comments_get_comment( $comment_id );
+
+		// check if it relates to a talk
+		if ( empty( $comment->comment_post_type ) || wct_get_post_type() !== $comment->comment_post_type ) {
+			return $emails;
+		}
+
+		// Get the speaker email
+		$author_email = wct_users_get_user_data( 'id', $comment->comment_post_author, 'user_email' );
+
+		// Found speaker's email in the list ? If so, let's remove it.
+		if ( ! empty( $author_email ) && in_array( $author_email, $emails ) ) {
+			$emails = array_diff( $emails, array( $author_email ) );
+		}
+
+		return $emails;
 	}
 }
 

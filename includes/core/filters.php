@@ -37,8 +37,11 @@ add_filter( 'posts_clauses', 'wct_set_rates_count_orderby', 10, 2 );
 // Sticky Talks
 add_filter( 'the_posts', 'wct_talks_stick_talks', 10, 2 );
 
-// Filter comment author urls just after BuddyPress
+// Filter comment author urls
 add_filter( 'comments_array', 'wct_comments_array',  11, 2 );
+
+// Filter comment feeds
+add_filter( 'comment_feed_limits', 'wct_comment_feed_limits', 10, 2 );
 
 // Formating loop tags
 add_filter( 'wct_talks_get_title', 'wptexturize'   );
