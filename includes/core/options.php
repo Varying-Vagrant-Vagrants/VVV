@@ -136,7 +136,7 @@ function wct_default_talk_status( $default = 'publish' ) {
 	$default_status = get_option( '_wc_talks_submit_status', $default );
 
 	// Make sure admins will have a publish status whatever the settings choice
-	if ( wct_is_talks() && wct_user_can( 'wct_talks_admin' ) ) {
+	if ( 'pending' === $default_status && wct_user_can( 'wct_talks_admin' ) ) {
 		$default_status = 'publish';
 	}
 

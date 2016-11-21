@@ -52,7 +52,7 @@ function wct_talks_search_form() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return string Output for the search form.
  */
 function wct_talks_order_form() {
@@ -121,7 +121,7 @@ function wct_talks_order_form() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return string Output for the current term description.
  */
 function wct_talks_taxonomy_description() {
@@ -239,7 +239,7 @@ function wct_talks_has_talks( $args = array() ) {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return array List of Talks.
  */
 function wct_talks_the_talks() {
@@ -253,7 +253,7 @@ function wct_talks_the_talks() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return object The current Talk within the loop.
  */
 function wct_talks_the_talk() {
@@ -282,7 +282,7 @@ function wct_talks_not_found() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string the message to output
 	 */
 	function wct_talks_get_not_found() {
@@ -360,7 +360,7 @@ function wct_talks_pagination_count() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string HTML for the pagination count.
 	 */
 	function wct_talks_get_pagination_count() {
@@ -396,7 +396,7 @@ function wct_talks_pagination_links() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string output for the pagination links.
 	 */
 	function wct_talks_get_pagination_links() {
@@ -425,7 +425,7 @@ function wct_talks_the_id() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return int ID of the current Talk.
 	 */
 	function wct_talks_get_id() {
@@ -442,7 +442,7 @@ function wct_talks_the_id() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return bool True if the Talk being iterating on is sticky, false otherwise
  */
 function wct_talks_is_sticky_talk() {
@@ -488,7 +488,7 @@ function wct_talks_the_classes() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string output the row class attribute
 	 */
 	function wct_talks_get_classes() {
@@ -525,7 +525,7 @@ function wct_talks_the_author_avatar() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string output the author's avatar
 	 */
 	function wct_talks_get_author_avatar() {
@@ -562,7 +562,7 @@ function wct_talks_before_talk_title() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string output the talk title prefix
 	 */
 	function wct_talks_get_before_talk_title() {
@@ -598,7 +598,7 @@ function wct_talks_the_title() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string output the title of the talk
 	 */
 	function wct_talks_get_title() {
@@ -631,7 +631,7 @@ function wct_talks_the_permalink() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string output the permalink to the talk
 	 */
 	function wct_talks_get_permalink() {
@@ -664,7 +664,7 @@ function wct_talks_the_title_attribute() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string output of the attribute
 	 */
 	function wct_talks_get_title_attribute() {
@@ -766,6 +766,10 @@ function wct_talks_the_talk_comment_link( $zero = false, $one = false, $more = f
 		}
 		if ( false === $none ) {
 			$none = __( 'Comments Off', 'wordcamp-talks' );
+		}
+
+		if ( ! wct_user_can( 'comment_talks', $talk->ID ) ) {
+			return $none;
 		}
 
 		$number = wct_talks_get_comment_number( $talk->ID );
@@ -873,7 +877,7 @@ function wct_talks_the_average_rating() {
  */
 function wct_talks_the_rating_link( $zero = false, $more = false, $css_class = '' ) {
 	// Bail if ratings are disabled
-	if ( wct_is_rating_disabled() ) {
+	if ( wct_is_rating_disabled() || ! wct_user_can( 'rate_talks' ) ) {
 		return false;
 	}
 
@@ -1175,7 +1179,7 @@ function wct_talks_the_talk_footer() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string  output for the footer
 	 */
 	function wct_talks_get_talk_footer() {
@@ -1299,7 +1303,7 @@ function wct_talks_the_talk_footer() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return string the bottom nav output
  */
 function wct_talks_bottom_navigation() {
@@ -1321,7 +1325,7 @@ function wct_talks_bottom_navigation() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return string the not logged in message output
  */
 function wct_talks_not_loggedin() {
@@ -1364,7 +1368,7 @@ function wct_talks_not_loggedin() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return string output for the talk title field
  */
 function wct_talks_the_title_edit() {
@@ -1413,7 +1417,7 @@ function wct_talks_the_title_edit() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return string output for the talk content field
  */
 function wct_talks_the_editor() {
@@ -1449,7 +1453,7 @@ function wct_talks_the_editor() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string  output for the content field
 	 */
 	function wct_talks_get_editor_content() {
@@ -1594,7 +1598,7 @@ function wct_talks_the_images_list() {
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return bool true if category has terms, false otherwise
  */
 function wct_talks_has_terms() {
@@ -1646,7 +1650,7 @@ function wct_talks_the_category_edit() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string  output for the list of categories
 	 */
 	function wct_talks_get_category_edit() {
@@ -1724,7 +1728,7 @@ function wct_talks_the_tags_edit() {
 	 * @subpackage talks/tags
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string  output for the list of tags
 	 */
 	function wct_talks_get_tags() {
@@ -1845,7 +1849,7 @@ function wct_meta_admin_display( $display_meta = '', $meta_object = null, $conte
  * @subpackage talks/tags
  *
  * @since 1.0.0
- * 
+ *
  * @return string output for submit/reset buttons
  */
 function wct_talks_the_form_submit() {

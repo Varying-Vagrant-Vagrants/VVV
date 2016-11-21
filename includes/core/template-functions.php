@@ -125,14 +125,18 @@ function wct_parse_query( $posts_query = null ) {
 		// Make sure the post_type is set to talks.
 		$posts_query->set( 'post_type', $talk_post_type );
 
-		// Are we requesting user rates
-		$user_rates    = $posts_query->get( wct_user_rates_rewrite_id() );
+		if ( wct_user_can( 'rate_talks' ) ) {
+			// Are we requesting user rates
+			$user_rates    = $posts_query->get( wct_user_rates_rewrite_id() );
 
-		// Are we requesting user's ideas to rate?
-		$user_to_rate  = $posts_query->get( wct_user_to_rate_rewrite_id() );
+			// Are we requesting user's ideas to rate?
+			$user_to_rate  = $posts_query->get( wct_user_to_rate_rewrite_id() );
+		}
 
-		// Or user comments ?
-		$user_comments = $posts_query->get( wct_user_comments_rewrite_id() );
+		if ( wct_user_can( 'comment_talks' ) ) {
+			// Or user comments ?
+			$user_comments = $posts_query->get( wct_user_comments_rewrite_id() );
+		}
 
 		if ( ! empty( $user_rates ) && ! wct_is_rating_disabled() ) {
 			// We are viewing user's rates
@@ -198,13 +202,18 @@ function wct_parse_query( $posts_query = null ) {
 		// No stickies on user's profile
 		$posts_query->set( 'ignore_sticky_posts', true );
 
-		// Make sure no 404
-		$posts_query->is_404  = false;
-
 		// Set the displayed user.
 		wct_set_global( 'displayed_user', $user );
-	}
 
+		if ( wct_user_can( 'view_other_profiles' ) ) {
+			// Make sure no 404
+			$posts_query->is_404  = false;
+		} else {
+			// Make sure it is a 404!
+			$posts_query->is_404  = true;
+			return;
+		}
+	}
 
 	/** Actions (New Talk) ********************************************************/
 
@@ -977,7 +986,7 @@ function wct_body_class( $wp_classes, $custom_classes = false ) {
 
 	// Force Twentyseventeen to display the one column style
 	if ( 'twentyseventeen' === get_template() ) {
-		$wp_classes = array_diff( $wp_classes, array( 'has-sidebar', 'page-two-column' ) );
+		$wp_classes = array_diff( $wp_classes, array( 'has-sidebar', 'page-two-column', 'blog' ) );
 		$talks_classes[] = 'page-one-column';
 	}
 

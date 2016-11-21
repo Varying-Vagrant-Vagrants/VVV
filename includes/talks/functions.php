@@ -889,8 +889,12 @@ function wct_talks_get_order_options() {
 	);
 
 	// Only if not disabled.
-	if ( ! wct_is_rating_disabled() ) {
+	if ( ! wct_is_rating_disabled() && wct_user_can( 'rate_talks' ) ) {
 		$order_options['rates_count'] = __( 'Highest Rating', 'wordcamp-talks' );
+	}
+
+	if ( ! wct_user_can( 'comment_talks' ) ) {
+		unset( $order_options['comment_count'] );
 	}
 
 	/**

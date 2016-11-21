@@ -273,8 +273,10 @@ function wct_comments_open( $open = true, $talk_id = 0 ) {
 		return $open;
 	}
 
-	if ( $open != wct_is_comments_allowed() ) {
+	if ( $open !== wct_is_comments_allowed() ) {
 		$open = false;
+	} else {
+		$open = wct_user_can( 'comment_talks' );
 	}
 
 	/**
@@ -298,10 +300,15 @@ function wct_comments_open( $open = true, $talk_id = 0 ) {
  * @param  int     $talk_id  the ID of the talk
  * @return array             the list of comments, author links replaced by the plugin's profile if needed
  */
-function wct_comments_append_profile_url( $comments = array(), $talk_id = 0 ) {
+function wct_comments_array( $comments = array(), $talk_id = 0 ) {
 	// Only filter comments arry if on a single talk
 	if ( ! wct_is_single_talk() || empty( $comments ) || empty( $talk_id ) ) {
 		return $comments;
+	}
+
+	// If the user can't comment
+	if ( ! wct_user_can( 'comment_talks' ) ) {
+		return array();
 	}
 
 	foreach (  $comments as $key => $comment ) {

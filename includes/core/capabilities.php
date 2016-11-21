@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * @subpackage core/capabilities
  *
  * @since 1.0.0
- * 
+ *
  * @return array Talks capabilities
  */
 function wct_get_post_type_caps() {
@@ -46,7 +46,7 @@ function wct_get_post_type_caps() {
  * @subpackage core/capabilities
  *
  * @since 1.0.0
- * 
+ *
  * @return array Talks tag capabilities
  */
 function wct_get_tag_caps() {
@@ -65,7 +65,7 @@ function wct_get_tag_caps() {
  * @subpackage core/capabilities
  *
  * @since 1.0.0
- * 
+ *
  * @return array Talks category capabilities
  */
 function wct_get_category_caps() {
@@ -97,7 +97,6 @@ function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = ar
 	switch ( $cap ) {
 
 		case 'publish_talks' :
-		case 'rate_talks'    :
 			if ( ! empty( $user_id ) ) {
 				$caps = array( 'exist' );
 			} else {
@@ -132,6 +131,27 @@ function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = ar
 		case 'edit_published_talks' :
 		case 'read_private_talks'   :
 			$caps = array( 'manage_options' );
+			break;
+
+		case 'comment_talks'       :
+		case 'rate_talks'          :
+			if ( 'private' === wct_default_talk_status() ) {
+				$caps = array( 'manage_options' );
+			} elseif ( 'rate_talks' === $cap && empty( $user_id ) ) {
+				$caps = array( 'do_not_allow' );
+			} else {
+				$caps = array( 'exist' );
+			}
+
+			break;
+
+		case 'view_other_profiles' :
+			if ( 'private' === wct_default_talk_status() && ! wct_is_current_user_profile() ) {
+				$caps = array( 'manage_options' );
+			} else {
+				$caps = array( 'exist' );
+			}
+
 			break;
 
 		case 'edit_comment' :

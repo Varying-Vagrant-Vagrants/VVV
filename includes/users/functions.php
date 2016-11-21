@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  * @subpackage users/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return int the logged in user ID
  */
 function wct_users_current_user_id() {
@@ -36,7 +36,7 @@ function wct_users_current_user_id() {
  * @subpackage users/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string the logged in username
  */
 function wct_users_current_user_nicename() {
@@ -50,7 +50,7 @@ function wct_users_current_user_nicename() {
  * @subpackage users/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return int the displayed user ID
  */
 function wct_users_displayed_user_id() {
@@ -64,7 +64,7 @@ function wct_users_displayed_user_id() {
  * @subpackage users/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string the displayed user username
  */
 function wct_users_get_displayed_user_username() {
@@ -78,7 +78,7 @@ function wct_users_get_displayed_user_username() {
  * @subpackage users/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string the displayed user display name
  */
 function wct_users_get_displayed_user_displayname() {
@@ -92,7 +92,7 @@ function wct_users_get_displayed_user_displayname() {
  * @subpackage users/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return string the displayed user description
  */
 function wct_users_get_displayed_user_description() {
@@ -106,7 +106,7 @@ function wct_users_get_displayed_user_description() {
  * @subpackage users/functions
  *
  * @since 1.0.0
- * 
+ *
  * @return mixed WP_User/string/array/int the user object or one of its attribute
  */
 function wct_users_get_user_data( $field = '', $value ='', $attribute = 'all'  ) {
@@ -520,15 +520,18 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 			'current' => wct_is_user_profile_talks(),
 			'slug'    => sanitize_title( _x( 'talks', 'user talks profile slug for BuddyPress use', 'wordcamp-talks' ) ),
 		),
-		'comments' => array(
+	);
+
+	if ( wct_user_can( 'comment_talks' ) ) {
+		$nav_items[ 'comments' ] = array(
 			'title'   => __( 'Commented', 'wordcamp-talks' ),
 			'url'     => wct_users_get_user_comments_url( $user_id, $username ),
 			'current' => wct_is_user_profile_comments(),
 			'slug'    => wct_user_comments_slug(),
-		),
-	);
+		);
+	}
 
-	if ( ! wct_is_rating_disabled() ) {
+	if ( ! wct_is_rating_disabled() && wct_user_can( 'rate_talks' ) ) {
 		$nav_items['rates'] = array(
 			'title'   => __( 'Rated', 'wordcamp-talks' ),
 			'url'     => wct_users_get_user_rates_url( $user_id, $username ),
