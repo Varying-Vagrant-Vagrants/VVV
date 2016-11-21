@@ -98,10 +98,28 @@ function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = ar
 
 		case 'publish_talks' :
 			if ( ! empty( $user_id ) ) {
-				$caps = array( 'exist' );
+				$closing   = (int) wct_get_closing_date( true );
+				$is_closed = false;
+
+				// No closing date defined, free to post if you can!
+				if ( ! empty( $closing ) ) {
+					$now = strtotime( date_i18n( 'Y-m-d H:i' ) );
+
+					if ( $closing < $now ) {
+						$is_closed = true;
+					}
+				}
+
+				if ( ! $is_closed ) {
+					$caps = array( 'exist' );
+				} else {
+					$caps = array( 'manage_options' );
+				}
+
 			} else {
-				$caps = array( 'publish_posts' );
+				$caps = array( 'manage_options' );
 			}
+
 			break;
 
 		case 'read_talk' :

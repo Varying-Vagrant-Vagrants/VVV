@@ -37,6 +37,7 @@ function wct_get_default_options() {
 
 		/** Core Settings **********************************************************/
 		'_wc_talks_archive_title'      => 'Talks',
+		'_wc_talks_closing_date'       => '',
 		'_wc_talks_submit_status'      => 'private',
 		'_wc_talks_editor_image'       => 1,
 		'_wc_talks_editor_link'        => 1,
@@ -116,6 +117,28 @@ function wct_add_options() {
  */
 function wct_archive_title( $default = 'Talks' ) {
 	return apply_filters( 'wct_archive_title', get_option( '_wc_talks_archive_title', $default ) );
+}
+
+/**
+ * Gets the timestamp or mysql date closing limit
+ *
+ * @since 1.0.0
+ *
+ * @param  bool $timestamp true to get the timestamp
+ * @return mixed int|string timestamp or mysql date closing limit
+ */
+function wct_get_closing_date( $timestamp = false ) {
+	$closing = get_option( '_wc_talks_closing_date', '' );
+
+	if ( ! empty( $timestamp ) ) {
+		return $closing;
+	}
+
+	if ( is_numeric( $closing ) ) {
+		$closing = date_i18n( 'Y-m-d H:i', $closing );
+	}
+
+	return $closing;
 }
 
 /**

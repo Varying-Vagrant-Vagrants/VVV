@@ -78,6 +78,14 @@ function wct_get_settings_fields() {
 				'args'              => array()
 			),
 
+			// Closing date for the call for speakers.
+			'_wc_talks_closing_date' => array(
+				'title'             => __( 'Closing date.', 'wordcamp-talks' ),
+				'callback'          => 'wct_closing_date_setting_callback',
+				'sanitize_callback' => 'wct_sanitize_closing_date',
+				'args'              => array()
+			),
+
 			// Default post type status
 			'_wc_talks_submit_status' => array(
 				'title'             => __( 'New talks status', 'wordcamp-talks' ),
@@ -516,6 +524,24 @@ function wct_archive_title_setting_callback() {
 
 	<input name="_wc_talks_archive_title" id="_wc_talks_archive_title" type="text" class="regular-text code" value="<?php echo esc_attr( wct_archive_title() ); ?>" />
 
+	<?php
+}
+
+/**
+ * Callback function for Talks submission closing date
+ *
+ * @package WordCamp Talks
+ * @subpackage admin/settings
+ *
+ * @since 1.0.0
+ *
+ * @return string HTML output
+ */
+function wct_closing_date_setting_callback() {
+	$closing = wct_get_closing_date();
+	?>
+	<input name="_wc_talks_closing_date" id="_wc_talks_closing_date" type="text" class="regular-text code" placeholder="YYYY-MM-DD HH:II" value="<?php echo esc_attr( $closing ); ?>" />
+	<p class="description"><?php esc_html_e( 'Date when the call for speakers will end.', 'wordcamp-talks' ); ?></p>
 	<?php
 }
 
@@ -1065,6 +1091,33 @@ function wct_get_user_default_role_setting_callback() {
 }
 
 /** Custom sanitization *******************************************************/
+
+/**
+ * 'Sanitize' the date
+ *
+ * @package WordCamp Talks
+ * @subpackage admin/settings
+ *
+ * @since 1.0.0
+ *
+ * @param  string $option
+ * @return string closing date
+ */
+function wct_sanitize_closing_date( $option = '' ) {
+	if ( empty( $option ) ) {
+		delete_option( '_wc_talks_closing_date' );
+	}
+
+	$now    = strtotime( date_i18n( 'Y-m-d H:i' ) );
+	$option = strtotime( $option );
+
+	if ( $option <= $now ) {
+		return wct_get_closing_date( true );
+
+	} else {
+		return $option;
+	}
+}
 
 /**
  * Sanitize the status setting
