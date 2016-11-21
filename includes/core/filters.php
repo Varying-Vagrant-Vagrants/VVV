@@ -15,7 +15,7 @@ add_filter( 'template_include',          'wct_set_template',                 10,
 add_filter( 'wp_title_parts',            'wct_title',                        10, 1 );
 add_filter( 'document_title_parts',      'wct_document_title_parts',         10, 1 );
 add_filter( 'wp_title',                  'wct_title_adjust',                 20, 3 );
-add_filter( 'body_class',                'wct_body_class',                   10, 2 );
+add_filter( 'body_class',                'wct_body_class',                   20, 2 );
 add_filter( 'post_class',                'wct_post_class',                   10, 2 );
 add_filter( 'map_meta_cap',              'wct_map_meta_caps',                10, 4 );
 add_filter( 'widget_tag_cloud_args',     'wct_tag_cloud_args',               10, 1 );

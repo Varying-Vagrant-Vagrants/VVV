@@ -354,6 +354,7 @@ body.single-talks #wordcamp-talks div.talk-header {
 	font-size: 13px;
 	border: none;
 	box-shadow: none;
+	width: auto;
 }
 
 #buddypress #wordcamp-talks h1.talk-title {

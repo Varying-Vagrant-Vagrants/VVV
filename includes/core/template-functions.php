@@ -973,7 +973,12 @@ function wct_body_class( $wp_classes, $custom_classes = false ) {
 
 	if ( wct_is_talks() ) {
 		$talks_classes[] = 'talks';
+	}
 
+	// Force Twentyseventeen to display the one column style
+	if ( 'twentyseventeen' === get_template() ) {
+		$wp_classes = array_diff( $wp_classes, array( 'has-sidebar', 'page-two-column' ) );
+		$talks_classes[] = 'page-one-column';
 	}
 
 	/** Clean up **************************************************************/
@@ -1009,7 +1014,7 @@ function wct_post_class( $wp_classes, $theme_class ) {
 		$classes = $wp_classes;
 	}
 
-	return apply_filters( 'wct_body_class', $classes, $wp_classes, $theme_class );
+	return apply_filters( 'wct_post_class', $classes, $wp_classes, $theme_class );
 }
 
 /**
