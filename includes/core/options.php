@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  * @subpackage core/options
  *
  * @since 1.0.0
- * 
+ *
  * @return array Filtered option names and values
  */
 function wct_get_default_options() {
@@ -37,7 +37,7 @@ function wct_get_default_options() {
 
 		/** Core Settings **********************************************************/
 		'_wc_talks_archive_title'      => 'Talks',
-		'_wc_talks_submit_status'      => 'publish',
+		'_wc_talks_submit_status'      => 'private',
 		'_wc_talks_editor_image'       => 1,
 		'_wc_talks_editor_link'        => 1,
 		'_wc_talks_moderation_message' => '',
@@ -349,7 +349,7 @@ function wct_root_slug( $default = '' ) {
  * @subpackage core/options
  *
  * @since 1.0.0
- * 
+ *
  * @return string       the talk slug (prefixed by the root one)
  */
 function wct_talk_slug() {
@@ -382,7 +382,7 @@ function wct_talk_slug() {
  * @subpackage core/options
  *
  * @since 1.0.0
- * 
+ *
  * @return string the category slug (prefixed by the root one)
  */
 function wct_category_slug() {
@@ -415,7 +415,7 @@ function wct_category_slug() {
  * @subpackage core/options
  *
  * @since 1.0.0
- * 
+ *
  * @return string       the tag slug (prefixed by the root one)
  */
 function wct_tag_slug() {
@@ -448,7 +448,7 @@ function wct_tag_slug() {
  * @subpackage core/options
  *
  * @since 1.0.0
- * 
+ *
  * @return string the user slug (prefixed by the root one)
  */
 function wct_user_slug() {
@@ -538,7 +538,7 @@ function wct_user_comments_slug( $default = '' ) {
  * @subpackage core/options
  *
  * @since 1.0.0
- * 
+ *
  * @return string       the action slug (prefixed by the root one)
  */
 function wct_action_slug() {
@@ -609,7 +609,7 @@ function wct_edit_slug( $default = '' ) {
  * @subpackage core/options
  *
  * @since 1.0.0
- * 
+ *
  * @param  string the default signup slug
  * @return string the signup slug (prefixed by the root one)
  */
