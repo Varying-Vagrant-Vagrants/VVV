@@ -138,20 +138,6 @@
 	} );
 
 	if ( typeof wct_vars.is_profile !== 'undefined' ) {
-
-		// Specific to the User profile
-		if ( typeof wct_vars.profile_editing !== 'undefined' ) {
-			$( '#wct_profile_description' ).show();
-			$( 'textarea[name="wct_profile[description]"]').hide();
-
-			$( '#wct_profile_form' ).on( 'submit', function() {
-				$( 'textarea[name="wct_profile[description]"]').val( $( '#wct_profile_description' ).html() );
-			} );
-
-			$( '#wct_profile_form input[type="submit"]' ).before( $( '.wp-embed-share' ).html() );
-			$( '.wp-embed-share' ).remove();
-		}
-
 		var reset_height = $( '#item-header-content' ).innerHeight() || 0;
 
 		$( '.wp-embed-share-input' ).on( 'click', function ( e ) {

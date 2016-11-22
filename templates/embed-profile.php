@@ -35,17 +35,27 @@ if ( ! headers_sent() ) {
 
 			<div class="user-display-name">
 				<p class="wp-embed-heading">
-					<a href="<?php wct_users_embed_user_profile_link(); ?>">
+					<?php if ( current_user_can( 'view_other_profiles' ) ) : ?>
+
+						<a href="<?php wct_users_embed_user_profile_link(); ?>">
+							<?php wct_users_embed_user_profile_display_name(); ?>
+						</a>
+
+					<?php else : ?>
+
 						<?php wct_users_embed_user_profile_display_name(); ?>
-					</a>
+
+					<?php endif; ?>
 				</p>
 			</div>
 		</div>
 
 		<?php if ( wct_users_has_embed_description() ) : ?>
+
 			<div class="wp-embed-excerpt">
 				<p><?php wct_users_embed_user_profile_description(); ?></p>
 			</div>
+
 		<?php endif ; ?>
 
 		<div class="profile-footer">

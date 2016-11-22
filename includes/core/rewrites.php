@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return bool True if custom permalink are one, false otherwise
  */
 function wct_is_pretty_links() {
@@ -60,7 +60,7 @@ function wct_paged_slug() {
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return string The user's profile rewrite id
  */
 function wct_user_rewrite_id( $default = 'is_user' ) {
@@ -74,7 +74,7 @@ function wct_user_rewrite_id( $default = 'is_user' ) {
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return string The user's rates rewrite id
  */
 function wct_user_rates_rewrite_id( $default = 'is_rates' ) {
@@ -88,11 +88,25 @@ function wct_user_rates_rewrite_id( $default = 'is_rates' ) {
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return string The user's to rate rewrite id
  */
 function wct_user_to_rate_rewrite_id( $default = 'is_to_rate' ) {
 	return apply_filters( 'wct_user_to_rate_rewrite_id', $default );
+}
+
+/**
+ * Rewrite id for the user's talks
+ *
+ * @package WordCamp Talks
+ * @subpackage core/rewrites
+ *
+ * @since 1.0.0
+ *
+ * @return string The user's talks rewrite id
+ */
+function wct_user_talks_rewrite_id( $default = 'is_user_talks' ) {
+	return apply_filters( 'wct_user_talks_rewrite_id', $default );
 }
 
 /**
@@ -102,7 +116,7 @@ function wct_user_to_rate_rewrite_id( $default = 'is_to_rate' ) {
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return string The user's comments rewrite id
  */
 function wct_user_comments_rewrite_id( $default = 'is_comments' ) {
@@ -116,7 +130,7 @@ function wct_user_comments_rewrite_id( $default = 'is_comments' ) {
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return string The actions rewrite id
  */
 function wct_action_rewrite_id( $default = 'is_action' ) {
@@ -130,7 +144,7 @@ function wct_action_rewrite_id( $default = 'is_action' ) {
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return string Searching in talks rewrite id
  */
 function wct_search_rewrite_id( $default = 'talk_search' ) {
@@ -144,7 +158,7 @@ function wct_search_rewrite_id( $default = 'talk_search' ) {
  * @subpackage core/rewrites
  *
  * @since 1.0.0
- * 
+ *
  * @return string User's comments pagination rewrite id
  */
 function wct_cpage_rewrite_id( $default = 'cpaged' ) {

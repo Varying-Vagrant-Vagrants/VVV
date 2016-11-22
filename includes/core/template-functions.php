@@ -125,6 +125,9 @@ function wct_parse_query( $posts_query = null ) {
 		// Make sure the post_type is set to talks.
 		$posts_query->set( 'post_type', $talk_post_type );
 
+		// Are we requesting user talks.
+		$user_talks = $posts_query->get( wct_user_talks_rewrite_id() );
+
 		if ( wct_user_can( 'rate_talks' ) ) {
 			// Are we requesting user rates
 			$user_rates    = $posts_query->get( wct_user_rates_rewrite_id() );
@@ -182,6 +185,13 @@ function wct_parse_query( $posts_query = null ) {
 			 */
 			$posts_query->set( 'p', -1 );
 
+		} elseif ( $user_talks ) {
+			// We are viewing user's talks
+			wct_set_global( 'is_user_talks', true );
+
+			// Set the author of the talks as the displayed user
+			$posts_query->set( 'author', $user->ID  );
+
 		} else {
 			if ( ( 'true' === get_query_var( 'embed' ) || true === get_query_var( 'embed' ) ) ) {
 				$posts_query->is_embed = true;
@@ -193,10 +203,9 @@ function wct_parse_query( $posts_query = null ) {
 					$posts_query->set_404();
 					return;
 				}
+			} else {
+				wct_set_global( 'is_user_home', true );
 			}
-
-			// Default to the talks the user submitted
-			$posts_query->set( 'author', $user->ID  );
 		}
 
 		// No stickies on user's profile
@@ -721,7 +730,21 @@ function wct_is_user_profile_to_rate() {
  * @return bool true if viewing talks in the user's profile, false otherwise
  */
 function wct_is_user_profile_talks() {
-	return (bool) ( ! wct_is_user_profile_comments() && ! wct_is_user_profile_rates() && ! wct_is_user_profile_to_rate() );
+	return (bool) apply_filters( 'wct_is_user_profile_talks', wct_get_global( 'is_user_talks' ) );
+}
+
+/**
+ * Are we viewing the "home" page of the user's profile
+ *
+ * @package WordCamp Talks
+ * @subpackage core/template-functions
+ *
+ * @since 1.0.0
+ *
+ * @return bool true if viewing user's profile home page, false otherwise.
+ */
+function wct_is_user_profile_home() {
+	return (bool) apply_filters( 'wct_is_user_profile_home', wct_get_global( 'is_user_home' ) );
 }
 
 /**
@@ -779,7 +802,7 @@ function wct_reset_post_title( $context = '' ) {
 
 		case 'user-profile':
 			$post_title = '<a href="' . esc_url( wct_get_root_url() ) . '">' . $post_title . '</a>';
-			$post_title .= '<span class="talk-title-sep"></span>' . sprintf( esc_html__( '%s&#39;s profile', 'wordcamp-talks' ), wct_users_get_displayed_user_displayname() );
+			$post_title .= '<span class="talk-title-sep"></span>' . esc_html__( 'Speaker&#39;s profile', 'wordcamp-talks' );
 			break;
 
 		case 'new-talk' :
@@ -908,9 +931,17 @@ function wct_document_title_parts( $document_title = array() ) {
 			} elseif( wct_is_user_profile_rates() ) {
 				$title[] = __( 'Talk Ratings', 'wordcamp-talks' );
 
+			// Seeing To rates for the user
+			} elseif( wct_is_user_profile_to_rate() ) {
+				$title[] = __( 'Talks to rate', 'wordcamp-talks' );
+
+			// Seeing Talks of the user
+			} elseif( wct_is_user_profile_talks() ) {
+				$title[] = __( 'Talks', 'wordcamp-talks' );
+
 			// Seeing The root profile
 			} else {
-				$title[] = __( 'Talks', 'wordcamp-talks' );
+				$title[] = __( 'Profile', 'wordcamp-talks' );
 			}
 		}
 
@@ -1127,7 +1158,7 @@ function wct_embed_profile( $template = '' ) {
  * @since 1.0.0
  */
 function wct_oembed_add_discovery_links() {
-	if ( ! wct_is_user_profile_talks() || ! wct_is_embed_profile() ) {
+	if ( ! wct_is_user_profile_home() || ! wct_is_embed_profile() ) {
 		return;
 	}
 

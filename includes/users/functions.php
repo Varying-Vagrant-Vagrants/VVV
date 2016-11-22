@@ -123,7 +123,78 @@ function wct_users_get_user_data( $field = '', $value ='', $attribute = 'all'  )
 	}
 }
 
+/**
+ * Get the user contact methods according to the context
+ *
+ * @since 1.0.0
+ *
+ * @param  array $methods The user contact methods.
+ * @return array          The user contact methods.
+ */
+function wct_users_contactmethods( $methods = array(), $context = 'admin' ) {
+	if ( 'admin' === $context ) {
+		$methods = array_merge( $methods, wct_user_private_fields_list(), wct_user_public_fields_list() );
+	} elseif ( function_exists( "wct_user_{$context}_fields_list" ) ) {
+		$methods = call_user_func( "wct_user_{$context}_fields_list" );
+	}
+
+	return apply_filters( 'wct_users_contactmethods', $methods, $context );
+}
+
+/**
+ * Get All user contact methods.
+ *
+ * @since 1.0.0
+ *
+ * @return array All user contact methods.
+ */
+function wct_users_get_all_contact_methods() {
+	return apply_filters( 'wct_users_get_all_contact_methods', array_merge( array(
+		'description' => __( 'Biographical Info', 'wordcamp-talks' ),
+		'user_url'    => __( 'Website', 'wordcamp-talks' ),
+	), wp_get_user_contact_methods() ) );
+}
+
 /** User urls *****************************************************************/
+
+/**
+ * Gets URL to the edit profile page of a user
+ *
+ * @package WordCamp Talks
+ * @subpackage users/functions
+ *
+ * @since 1.0.0
+ *
+ * @param  int $user_id User id.
+ * @return string       User profile edit url.
+ */
+function wct_users_get_user_profile_edit_url( $user_id = 0 ) {
+	if ( empty( $user_id ) ) {
+		$user_id = wct_users_displayed_user_id();
+	}
+
+	if ( empty( $user_id ) ) {
+		return false;
+	}
+
+	$profile_url = '';
+
+	if ( user_can( $user_id, 'read' ) ) {
+		$profile_url = get_edit_profile_url( $user_id );
+	} elseif ( is_multisite() ) {
+		$profile_url = get_dashboard_url( $user_id, 'profile.php' );
+	}
+
+	/**
+	 * Filter the user profile url once it has been built
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $profile_url   Profile Edit Url
+	 * @param int    $user_id       the user ID
+	 */
+	return apply_filters( 'wct_users_get_user_profile_edit_url', $profile_url, $user_id );
+}
 
 /**
  * Gets the displayed user's profile url
@@ -236,6 +307,65 @@ function wct_users_get_user_profile_url( $user_id = 0, $user_nicename = '', $nof
 	} else {
 		return $url;
 	}
+}
+
+/**
+ * Gets URL to the talks profile page of a user
+ *
+ * Inspired by bbPress's bbp_get_user_profile_url() function
+ *
+ * @package WordCamp Talks
+ * @subpackage users/functions
+ *
+ * @since 1.0.0
+ *
+ * @global $wp_rewrite
+ * @param  int    $user_id User id
+ * @param  string $user_nicename Optional. User nicename
+ * @return string                To talks section of the profile url
+ */
+function wct_users_get_user_talks_url( $user_id = 0, $user_nicename = '' ) {
+	global $wp_rewrite;
+
+	// Bail if no user id provided
+	if ( empty( $user_id ) ) {
+		return false;
+	}
+
+	/**
+	 * @param int    $user_id       the user ID
+	 * @param string $user_nicename the username
+	 */
+	$early_profile_url = apply_filters( 'wct_users_pre_get_user_talks_url', (int) $user_id, $user_nicename );
+	if ( is_string( $early_profile_url ) ) {
+		return $early_profile_url;
+	}
+
+	// Pretty permalinks
+	if ( $wp_rewrite->using_permalinks() ) {
+		$url = $wp_rewrite->root . wct_user_slug() . '/%' . wct_user_rewrite_id() . '%/' . wct_user_talks_slug();
+
+		// Get username if not passed
+		if ( empty( $user_nicename ) ) {
+			$user_nicename = wct_users_get_user_data( 'id', $user_id, 'user_nicename' );
+		}
+
+		$url = str_replace( '%' . wct_user_rewrite_id() . '%', $user_nicename, $url );
+		$url = home_url( user_trailingslashit( $url ) );
+
+	// Unpretty permalinks
+	} else {
+		$url = add_query_arg( array( wct_user_rewrite_id() => $user_id, wct_user_talks_rewrite_id() => '1' ), home_url( '/' ) );
+	}
+
+	/**
+	 * Filter the talks section of the profile url once it has built it
+	 *
+	 * @param string $url           Talks section of the  profile Url
+	 * @param int    $user_id       the user ID
+	 * @param string $user_nicename the username
+	 */
+	return apply_filters( 'wct_users_get_user_talks_url', $url, $user_id, $user_nicename );
 }
 
 /**
@@ -486,10 +616,6 @@ function wct_users_enqueue_scripts() {
 		'is_profile' => 1,
 	);
 
-	if ( wct_is_current_user_profile() ) {
-		$js_vars['profile_editing'] = 1;
-	}
-
 	wp_enqueue_script ( 'wc-talks-script', wct_get_js_script( 'script' ), array( 'jquery' ), wct_get_version(), true );
 	wp_localize_script( 'wc-talks-script', 'wct_vars', apply_filters( 'wct_users_current_profile_script', $js_vars ) );
 }
@@ -515,14 +641,20 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 
 	$nav_items = array(
 		'profile' => array(
-			'title'   => __( 'Published', 'wordcamp-talks' ),
+			'title'   => __( 'Profile', 'wordcamp-talks' ),
 			'url'     => wct_users_get_user_profile_url( $user_id, $username ),
+			'current' => wct_is_user_profile_home(),
+			'slug'    => sanitize_title( _x( 'home', 'user profile slug', 'wordcamp-talks' ) ),
+		),
+		'talks' => array(
+			'title'   => __( 'Published', 'wordcamp-talks' ),
+			'url'     => wct_users_get_user_talks_url( $user_id, $username ),
 			'current' => wct_is_user_profile_talks(),
 			'slug'    => sanitize_title( _x( 'talks', 'user talks profile slug', 'wordcamp-talks' ) ),
 		),
 	);
 
-	if ( wct_user_can( 'comment_talks' ) ) {
+	if ( user_can( $user_id, 'comment_talks' ) ) {
 		$nav_items[ 'comments' ] = array(
 			'title'   => __( 'Commented', 'wordcamp-talks' ),
 			'url'     => wct_users_get_user_comments_url( $user_id, $username ),
@@ -531,7 +663,7 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 		);
 	}
 
-	if ( ! wct_is_rating_disabled() && wct_user_can( 'rate_talks' ) ) {
+	if ( ! wct_is_rating_disabled() && user_can( $user_id, 'rate_talks' ) ) {
 		$nav_items['rates'] = array(
 			'title'   => __( 'Rated', 'wordcamp-talks' ),
 			'url'     => wct_users_get_user_rates_url( $user_id, $username ),
@@ -564,83 +696,6 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 }
 
 /** Handle User actions *******************************************************/
-
-/**
- * Edit User's profile description
- *
- * @package WordCamp Talks
- * @subpackage users/functions
- *
- * @since 1.0.0
- */
-function wct_users_profile_description_update() {
-	// Bail if not a post request
-	if ( 'POST' != strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
-		return;
-	}
-
-	// Bail if not a post talk request
-	if ( empty( $_POST['wct_profile'] ) ) {
-		return;
-	}
-
-	// Check nonce
-	check_admin_referer( 'wct_update_description', '_wpis_nonce' );
-
-	$user_id = wct_users_displayed_user_id();
-
-	// Capbility checks
-	if ( ! is_user_logged_in() ) {
-		return;
-	}
-
-	// Capbility checks
-	if ( (int) get_current_user_id() !== (int) $user_id ) {
-		return;
-	}
-
-	$redirect = wct_users_get_user_profile_url( $user_id, wct_users_get_displayed_user_username() );
-
-	$user_description = str_replace( array( '<div>', '</div>'), "\n", $_POST['wct_profile']['description'] );
-	$user_description = rtrim( $user_description, "\n" );
-
-	if ( empty( $user_description ) ) {
-		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'Please enter some content in your description', 'wordcamp-talks' ),
-		) );
-
-		wp_safe_redirect( $redirect );
-		exit();
-	}
-
-	// Remove all html tags
-	$user_description = wp_kses( wp_specialchars_decode( $user_description ), array() );
-
-	if ( ! update_user_meta( $user_id, 'description', $user_description ) ) {
-		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'Something went wrong while trying to update your description.', 'wordcamp-talks' ),
-		) );
-
-		wp_safe_redirect( $redirect );
-		exit();
-	} else {
-		wct_add_message( array(
-			'type'    => 'success',
-			'content' => __( 'Description updated.', 'wordcamp-talks' ),
-		) );
-
-		/**
-		 * @param int    $user_id          the user ID
-		 * @param string $user_description the user description ("about field")
-		 */
-		do_action( 'wct_users_profile_description_updated', $user_id, $user_description );
-
-		wp_safe_redirect( $redirect );
-		exit();
-	}
-}
 
 /**
  * Hooks to deleted_user to perform additional actions
@@ -1062,15 +1117,17 @@ function wct_users_signup_user( $exit = true ) {
  * @param  string $type whether we're on a signup form or not
  */
 function wct_user_get_fields( $type = 'signup' ) {
-	$fields = wp_get_user_contact_methods();
+	$fields = wct_users_get_all_contact_methods();
 
 	if ( 'signup' == $type ) {
+		$signup = array_flip( wct_user_signup_fields() );
+
 		$fields = array_merge(
 			apply_filters( 'wct_user_get_signup_fields', array(
 				'user_login' => __( 'Username',   'wordcamp-talks' ),
 				'user_email' => __( 'E-mail',     'wordcamp-talks' ),
 			) ),
-			$fields
+			array_intersect_key( $fields, $signup )
 		);
 	}
 
@@ -1277,7 +1334,7 @@ function wct_users_get_stat_for( $type = '', $user_id = 0 ) {
 		return $$count;
 	}
 
-	if ( 'profile' === $type ) {
+	if ( 'talks' === $type ) {
 		$count = count_user_posts( $user_id, wct_get_post_type() );
 	} elseif ( 'comments' === $type ) {
 		$count = wct_comments_count_comments( $user_id );
@@ -1460,3 +1517,31 @@ function wct_embed_html( $output, $post ) {
 	return $output;
 }
 add_filter( 'embed_html', 'wct_embed_html', 10, 2 );
+
+function wct_users_sanitize_user_description( $text = '' ) {
+	$allowed_html = wp_kses_allowed_html( 'user_description' );
+
+	return wpautop( wp_kses( $text, $allowed_html ) );
+}
+
+function wct_users_sanitize_public_profile_field( $value = '', $key = '' ) {
+	$filters = array(
+		'wp_filter_kses',
+		'make_clickable',
+		'wp_rel_nofollow',
+		'wptexturize',
+		'convert_smilies',
+		'convert_chars',
+		'wp_unslash',
+	);
+
+	if ( 'user_description' === $key ) {
+		$filters[0] = 'wct_users_sanitize_user_description';
+	}
+
+	foreach ( $filters as $filter ) {
+		$value = call_user_func( $filter, $value );
+	}
+
+	return $value;
+}

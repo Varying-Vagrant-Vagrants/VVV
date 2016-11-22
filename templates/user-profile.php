@@ -27,13 +27,15 @@
 
 		<?php do_action( 'wct_user_profile_after_avatar' ); ?>
 
-		<?php wct_users_the_user_profile_description(); ?>
+		<div class="user-display-name">
 
-		<div class="clear"></div>
+			<h2><?php wct_users_user_profile_display_name(); ?></h2>
 
-		<?php do_action( 'wct_user_profile_after_description' ); ?>
+			<?php wct_users_buttons(); ?>
 
-		<div class="clear"></div>
+		</div>
+
+		<?php do_action( 'wct_user_profile_after_display_name' ); ?>
 
 	</div>
 
@@ -49,11 +51,15 @@
 
 		<?php do_action( 'wct_user_profile_after_comments' ); ?>
 
-	<?php else : ?>
+	<?php elseif ( ! wct_is_user_profile_home() ) : ?>
 
 		<?php wct_template_part( 'talk', 'loop' ); ?>
 
 		<?php do_action( 'wct_user_profile_after_loop' ); ?>
+
+	<?php else : ?>
+
+		<?php wct_template_part( 'user', 'infos' ); ?>
 
 	<?php endif; ?>
 

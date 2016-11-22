@@ -138,7 +138,7 @@ function wct_get_settings_fields() {
 			'_wc_talks_hint_list' => array(
 				'title'             => __( 'Rating stars hover captions', 'wordcamp-talks' ),
 				'callback'          => 'wct_hint_list_setting_callback',
-				'sanitize_callback' => 'wct_sanitize_hint_list',
+				'sanitize_callback' => 'wct_sanitize_list',
 				'args'              => array()
 			),
 
@@ -171,6 +171,30 @@ function wct_get_settings_fields() {
 				'title'             => __( 'Comments', 'wordcamp-talks' ),
 				'callback'          => 'wct_allow_comments_setting_callback',
 				'sanitize_callback' => 'absint',
+				'args'              => array()
+			),
+
+			// Private fields (not shown on front-end)
+			'_wc_talks_private_fields_list' => array(
+				'title'             => __( 'Private user profile fields', 'wordcamp-talks' ),
+				'callback'          => 'wct_fields_list_setting_callback',
+				'sanitize_callback' => 'wct_sanitize_user_fields_list',
+				'args'              => array( 'type' => 'private' )
+			),
+
+			// Public fields (shown on front-end)
+			'_wc_talks_public_fields_list' => array(
+				'title'             => __( 'Public user profile fields', 'wordcamp-talks' ),
+				'callback'          => 'wct_fields_list_setting_callback',
+				'sanitize_callback' => 'wct_sanitize_user_fields_list',
+				'args'              => array( 'type' => 'public' )
+			),
+
+			// Signup fields (shown into the signup form)
+			'_wc_talks_signup_fields' => array(
+				'title'             => __( 'Fields to add to the signup form.', 'wordcamp-talks' ),
+				'callback'          => 'wct_signup_fields_setting_callback',
+				'sanitize_callback' => 'wct_sanitize_list',
 				'args'              => array()
 			),
 
@@ -306,6 +330,13 @@ function wct_get_settings_fields() {
 		);
 	} elseif ( wct_is_user_to_rate_disabled( 0, false ) ) {
 		unset( $setting_fields['wc_talks_settings_rewrite']['_wc_talks_user_to_rate_slug'] );
+	}
+
+	if ( ! wct_is_signup_allowed_for_current_blog() ) {
+		unset(
+			$setting_fields['wc_talks_settings_core']['_wc_talks_signup_fields'],
+			$setting_fields['wc_talks_settings_rewrite']['_wc_talks_signup_slug']
+		);
 	}
 
 	if ( is_multisite() ) {
@@ -763,6 +794,68 @@ function wct_allow_comments_setting_callback() {
 }
 
 /**
+ * List of labels for the user's profile fields
+ *
+ * @package WordCamp Talks
+ * @subpackage admin/settings
+ *
+ * @since 1.0.0
+ *
+ * @param  array  $args  Whether to get private or public fields.
+ * @return string        HTML output.
+ */
+function wct_fields_list_setting_callback( $args = array() ) {
+	if ( empty( $args['type'] ) ) {
+		return;
+	}
+
+	if ( 'public' === $args['type'] ) {
+		$label_list = wct_user_public_fields_list();
+		$option     = '_wc_talks_public_fields_list';
+	} else {
+		$label_list = wct_user_private_fields_list();
+		$option     = '_wc_talks_private_fields_list';
+	}
+
+	$csv_list   = join( ',', $label_list );
+	?>
+
+	<label for="<?php echo esc_attr( $option ); ?>"><?php printf( esc_html__( 'Adding a comma separated list of fields label will generate new %s contact informations for the user.', 'wordcamp-talks' ), $args['type'] ); ?></label>
+	<input name="<?php echo esc_attr( $option ); ?>" id="<?php echo esc_attr( $option ); ?>" type="text" class="large-text code" value="<?php echo esc_attr( $csv_list ); ?>" />
+
+	<?php
+}
+
+/**
+ * List of field keys to include in the signup form.
+ *
+ * @package WordCamp Talks
+ * @subpackage admin/settings
+ *
+ * @since 1.0.0
+ *
+ * @return string HTML output.
+ */
+function wct_signup_fields_setting_callback() {
+	$fields = wct_users_get_all_contact_methods();
+	$signup = array_flip( wct_user_signup_fields() );
+	?>
+	<ul>
+		<?php foreach ( $fields as $field_key => $field_name ):?>
+
+			<li style="display:inline-block;width:45%;margin-right:1em">
+				<label for="wct-signup-field-cb-<?php echo esc_attr( $field_key ); ?>">
+					<input type="checkbox" class="checkbox" id="wct-signup-field-cb-<?php echo esc_attr( $field_key ); ?>" value="<?php echo esc_attr( $field_key ); ?>" name="_wc_talks_signup_fields[]" <?php checked( isset( $signup[ $field_key ] ) ); ?>>
+					<?php echo esc_html( $field_name ); ?>
+				</label>
+			</li>
+
+		<?php endforeach; ?>
+	</ul>
+	<?php
+}
+
+/**
  * Embed User Profiles callback
  *
  * @since 1.0.0
@@ -1138,7 +1231,7 @@ function wct_sanitize_status( $option = '' ) {
 }
 
 /**
- * Sanitize the rating stars captions
+ * Sanitize list
  *
  * @package WordCamp Talks
  * @subpackage admin/settings
@@ -1148,23 +1241,60 @@ function wct_sanitize_status( $option = '' ) {
  * @param  string $option the comma separated values choosed by the admin
  * @return string         the sanitized value
  */
-function wct_sanitize_hint_list( $option = '' ) {
+function wct_sanitize_list( $option = '' ) {
 	if ( is_array( $option ) ) {
-		$captions = $option;
+		$items = $option;
 	} else {
-		$captions = explode( ',', wp_unslash( $option ) );
+		$items = explode( ',', wp_unslash( $option ) );
 	}
 
-	if ( ! is_array( $captions ) ) {
+	if ( ! is_array( $items ) ) {
 		return false;
 	}
 
-	$captions = array_map( 'sanitize_text_field', $captions );
+	$items = array_map( 'sanitize_text_field', $items );
 
 	/**
-	 * @param array $captions the sanitized captions
+	 * @param array $items the sanitized items
 	 */
-	return apply_filters( 'wct_sanitize_hint_list', $captions );
+	return apply_filters( 'wct_sanitize_list', $items );
+}
+
+/**
+ * Sanitize the user profile fields
+ *
+ * @package WordCamp Talks
+ * @subpackage admin/settings
+ *
+ * @since 1.0.0
+ *
+ * @param  string $option the comma separated values choosed by the admin
+ * @return string         the sanitized value
+ */
+function wct_sanitize_user_fields_list( $option = '' ) {
+	if ( is_array( $option ) ) {
+		$labels = $option;
+	} else {
+		$labels = explode( ',', wp_unslash( $option ) );
+	}
+
+	if ( ! is_array( $labels ) ) {
+		return false;
+	}
+
+	$labels = array_map( 'sanitize_text_field', $labels );
+	$keys   = array();
+
+	foreach ( $labels as $label ) {
+		$keys[] = 'wct_' . sanitize_key( $label );
+	}
+
+	$fields = array_combine( $keys, $labels );
+
+	/**
+	 * @param array $fields the sanitized fields
+	 */
+	return apply_filters( 'wct_sanitize_user_fields_list', $fields );
 }
 
 /**

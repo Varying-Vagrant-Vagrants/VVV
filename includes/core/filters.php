@@ -40,6 +40,9 @@ add_filter( 'the_posts', 'wct_talks_stick_talks', 10, 2 );
 // Filter comment author urls
 add_filter( 'comments_array', 'wct_comments_array',  11, 2 );
 
+// Eventually add new contact methods
+add_filter( 'user_contactmethods', 'wct_users_contactmethods', 10, 1 );
+
 // Filter comment feeds
 add_filter( 'comment_feed_limits', 'wct_comment_feed_limits', 10, 2 );
 
@@ -60,18 +63,18 @@ add_filter( 'wct_create_excerpt_text', 'wpautop'              );
 add_filter( 'wct_create_excerpt_text', 'wp_unslash',        5 );
 add_filter( 'wct_create_excerpt_text', 'make_clickable',    9 );
 
-add_filter( 'wct_talks_get_content', 'wptexturize'                );
-add_filter( 'wct_talks_get_content', 'convert_smilies'            );
-add_filter( 'wct_talks_get_content', 'convert_chars'              );
-add_filter( 'wct_talks_get_content', 'wpautop'                    );
-add_filter( 'wct_talks_get_content', 'wct_do_embed', 8 );
-add_filter( 'wct_talks_get_content', 'wp_unslash',              5 );
-add_filter( 'wct_talks_get_content', 'make_clickable',          9 );
-add_filter( 'wct_talks_get_content', 'force_balance_tags'         );
+add_filter( 'wct_talks_get_content', 'wptexturize'          );
+add_filter( 'wct_talks_get_content', 'convert_smilies'      );
+add_filter( 'wct_talks_get_content', 'convert_chars'        );
+add_filter( 'wct_talks_get_content', 'wpautop'              );
+add_filter( 'wct_talks_get_content', 'wct_do_embed',      8 );
+add_filter( 'wct_talks_get_content', 'wp_unslash',        5 );
+add_filter( 'wct_talks_get_content', 'make_clickable',    9 );
+add_filter( 'wct_talks_get_content', 'force_balance_tags'   );
 
-add_filter( 'wct_talks_get_editor_content', 'wp_unslash'  , 5               );
-add_filter( 'wct_talks_get_editor_content', 'wp_kses_post'                  );
-add_filter( 'wct_talks_get_editor_content', 'wpautop'                       );
+add_filter( 'wct_talks_get_editor_content', 'wp_unslash'  , 5    );
+add_filter( 'wct_talks_get_editor_content', 'wp_kses_post'       );
+add_filter( 'wct_talks_get_editor_content', 'wpautop'            );
 add_filter( 'wct_talks_get_editor_content', 'wct_format_to_edit' );
 
 add_filter( 'wct_comments_get_comment_excerpt', 'strip_tags',        1 );
@@ -83,5 +86,6 @@ add_filter( 'wct_comments_get_comment_excerpt', 'wpautop'              );
 add_filter( 'wct_comments_get_comment_excerpt', 'wp_unslash',        5 );
 add_filter( 'wct_comments_get_comment_excerpt', 'make_clickable',    9 );
 
-add_filter( 'wct_users_get_user_profile_description', 'make_clickable', 9 );
+add_filter( 'wct_users_public_value', 'wct_users_sanitize_public_profile_field', 10, 2 );
+
 add_filter( 'embed_template', 'wct_embed_profile', 10, 1 );

@@ -53,7 +53,6 @@ add_action( 'wct_template_redirect', 'wct_actions',                             
 add_action( 'wct_actions',           'wct_set_user_feedback',                   5 );
 add_action( 'wct_actions',           'wct_talks_post_talk'                        );
 add_action( 'wct_actions',           'wct_talks_update_talk'                      );
-add_action( 'wct_actions',           'wct_users_profile_description_update'       );
 add_action( 'wct_actions',           'wct_users_signup_user',               10, 0 );
 
 // Rates actions

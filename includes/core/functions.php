@@ -1307,7 +1307,7 @@ function wct_is_signup_allowed() {
 	$registration_status = get_site_option( $option, 0 );
 
 	// On multisite config, just deal with user signups and avoid blog signups
-	$signup_allowed = ( 1 == $registration_status || 'user' == $registration_status );
+	$signup_allowed = ( 1 === $registration_status || 'user' === $registration_status );
 
 	return (bool) apply_filters( 'wct_is_signup_allowed', $signup_allowed );
 }

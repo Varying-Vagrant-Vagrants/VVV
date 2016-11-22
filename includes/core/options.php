@@ -33,23 +33,26 @@ function wct_get_default_options() {
 	$default_options = array(
 
 		/** DB Version ********************************************************/
-		'_wc_talks_version'            => wct_get_version(),
+		'_wc_talks_version' => wct_get_version(),
 
 		/** Core Settings **********************************************************/
-		'_wc_talks_archive_title'      => 'Talks',
-		'_wc_talks_closing_date'       => '',
-		'_wc_talks_submit_status'      => 'private',
-		'_wc_talks_editor_image'       => 1,
-		'_wc_talks_editor_link'        => 1,
-		'_wc_talks_moderation_message' => '',
-		'_wc_talks_login_message'      => '',
-		'_wc_talks_hint_list'          => array(),
-		'_wc_talks_sticky_talks'       => 1,
-		'_wc_talks_disjoin_comments'   => 1,
-		'_wc_talks_allow_comments'     => 1,
-		'_wc_talks_embed_profile'      => 0,
-		'_wc_talks_featured_images'    => 1,
-		'_wc_talks_to_rate_disabled'   => 0,
+		'_wc_talks_archive_title'       => 'Talks',
+		'_wc_talks_closing_date'        => '',
+		'_wc_talks_submit_status'       => 'private',
+		'_wc_talks_editor_image'        => 1,
+		'_wc_talks_editor_link'         => 1,
+		'_wc_talks_moderation_message'  => '',
+		'_wc_talks_login_message'       => '',
+		'_wc_talks_hint_list'           => array(),
+		'_wc_talks_private_fields_list' => array(),
+		'_wc_talks_public_fields_list'  => array(),
+		'_wc_talks_signup_fields'       => array(),
+		'_wc_talks_sticky_talks'        => 1,
+		'_wc_talks_disjoin_comments'    => 1,
+		'_wc_talks_allow_comments'      => 1,
+		'_wc_talks_embed_profile'       => 0,
+		'_wc_talks_featured_images'     => 1,
+		'_wc_talks_to_rate_disabled'    => 0,
 	);
 
 	// Pretty links customization
@@ -246,6 +249,51 @@ function wct_hint_list( $default = array() ) {
 	}
 
 	return apply_filters( 'wct_hint_list', get_option( '_wc_talks_hint_list', $default ) );
+}
+
+/**
+ * Are Private profile fields set?
+ *
+ * @package WordCamp Talks
+ * @subpackage core/options
+ *
+ * @since 1.0.0
+ *
+ * @param  array $default Default value
+ * @return array          The list of private profile fields.
+ */
+function wct_user_private_fields_list( $default = array() ) {
+	return (array) apply_filters( 'wct_user_private_fields_list', get_option( '_wc_talks_private_fields_list', $default ) );
+}
+
+/**
+ * Are Public profile fields set?
+ *
+ * @package WordCamp Talks
+ * @subpackage core/options
+ *
+ * @since 1.0.0
+ *
+ * @param  array $default Default value
+ * @return array          The list of private profile fields.
+ */
+function wct_user_public_fields_list( $default = array() ) {
+	return (array) apply_filters( 'wct_user_public_fields_list', get_option( '_wc_talks_public_fields_list', $default ) );
+}
+
+/**
+ * Get the signup fields.
+ *
+ * @package WordCamp Talks
+ * @subpackage core/options
+ *
+ * @since 1.0.0
+ *
+ * @param  array $default Default value
+ * @return array          The list of fields to display into the signup form.
+ */
+function wct_user_signup_fields( $default = array() ) {
+	return (array) apply_filters( 'wct_user_signup_fields', get_option( '_wc_talks_signup_fields', $default ) );
 }
 
 /**
@@ -530,6 +578,25 @@ function wct_user_to_rate_slug( $default = '' ) {
 	}
 
 	return apply_filters( 'wct_user_to_rate_slug', get_option( '_wc_talks_user_to_rate_slug', $default ) );
+}
+
+/**
+ * Customize the user's profile talks section slug of the plugin
+ *
+ * @package WordCamp Talks
+ * @subpackage core/options
+ *
+ * @since 1.0.0
+ *
+ * @param  string $default default value
+ * @return string          the user's profile talks section slug
+ */
+function wct_user_talks_slug( $default = '' ) {
+	if ( empty( $default ) ) {
+		$default = wct_root_slug();
+	}
+
+	return apply_filters( 'wct_user_talks_slug', $default );
 }
 
 /**

@@ -77,6 +77,10 @@ function wct_users_the_user_nav() {
  * @since 1.0.0
  */
 function wct_users_embed_user_stats() {
+	if ( ! current_user_can( 'view_other_profiles' ) ) {
+		return;
+	}
+
 	echo wct_users_get_embed_user_stats();
 }
 
@@ -110,6 +114,10 @@ function wct_users_embed_user_stats() {
 
 		if ( empty( $nav_items ) ) {
 			return;
+
+		// Remove unused nav items on embed profile.
+		} else {
+			$nav_items = array_diff_key( $nav_items, array( 'profile' => false, 'to_rate' => false ) );
 		}
 
 		$user_stats = '<ul class="user-stats">';
@@ -164,6 +172,24 @@ function wct_users_the_user_profile_avatar() {
 	 */
 	function wct_users_get_user_profile_avatar() {
 		return apply_filters( 'wct_users_get_user_profile_avatar', get_avatar( wct_users_displayed_user_id(), '150' ) );
+	}
+
+/**
+ * Outputs user's profile display name
+ *
+ * @since 1.0.0
+ */
+function wct_users_user_profile_display_name() {
+	echo wct_users_get_user_profile_display_name();
+}
+
+	/**
+	 * Gets user's profile display name
+	 *
+	 * @since 1.0.0
+	 */
+	function wct_users_get_user_profile_display_name() {
+		return esc_html( apply_filters( 'wct_users_get_user_profile_display_name', wct_users_get_displayed_user_displayname() ) );
 	}
 
 
@@ -223,89 +249,6 @@ function wct_users_embed_user_profile_link() {
 	}
 
 /**
- * Outputs user's profile description
- *
- * @package WordCamp Talks
- * @subpackage users/tags
- *
- * @since 1.0.0
- */
-function wct_users_the_user_profile_description() {
-	echo wct_users_get_user_profile_description();
-}
-
-	/**
-	 * Gets user's profile description
-	 *
-	 * @package WordCamp Talks
-	 * @subpackage users/tags
-	 *
-	 * @since 1.0.0
-	 */
-	function wct_users_get_user_profile_description() {
-		$display_name = wct_users_get_displayed_user_displayname();
-		$self = '';
-		$is_self_profile = wct_is_current_user_profile();
-
-		$user_description = sprintf( esc_html__( '%s has not created his description yet', 'wordcamp-talks' ), $display_name );
-
-		if ( ! empty( $is_self_profile ) ) {
-			$user_description = esc_html__( 'Replace this text with your description, then hit the Edit button to save it.', 'wordcamp-talks' );
-		}
-
-		$description = wct_users_get_displayed_user_description();
-
-		if ( ! empty( $description ) ) {
-			$allowed_html = wp_kses_allowed_html( 'user_description' );
-			$user_description = wp_kses( $description, $allowed_html );
-		}
-
-		$output = '<div class="user-description">';
-
-
-		if ( ! empty( $is_self_profile ) ) {
-			$output .= '<form action="" method="post" id="wct_profile_form" class="user-profile-form">';
-		}
-
-		$output .= '<blockquote>';
-
-		if ( ! empty( $is_self_profile ) ) {
-			$self = 'self_';
-			$output .= '<div id="wct_profile_description" contenteditable="true">';
-		}
-
-		/**
-		 * Use 'wct_users_get_user_profile_description' to filter description when the current user
-		 * is viewing someone else profile
-		 * Use 'wct_users_get_self_user_profile_description' to filter description when the current user
-		 * is viewing his profile
-		 *
-		 * @param string $user_description User description
-		 */
-		$user_description = apply_filters( "wct_users_get_{$self}user_profile_description", $user_description );
-
-		// Add desciption to the output
-		$output .= $user_description;
-
-		if ( ! empty( $is_self_profile ) ) {
-			$output .= '</div>';
-		}
-
-		$output .= '</blockquote>';
-
-		// Fall back is javscript's going wild
-		if ( ! empty( $is_self_profile ) ) {
-			$output .= '<textarea name="wct_profile[description]">' . $user_description . '</textarea>';
-			$output .= wp_nonce_field( 'wct_update_description', '_wpis_nonce', true , false );
-			$output .= '<input type="submit" name="wct_profile[save]" value="' . esc_attr_x( 'Edit', 'User profile description edit', 'wordcamp-talks' ) . '"/></form>';
-		}
-
-		$output .= '</div>';
-
-		return $output;
-	}
-
-/**
  * Does the user's embed profile has a description ?
  *
  * @since 1.0.0
@@ -336,10 +279,14 @@ function wct_users_embed_user_profile_description() {
 		$description = wct_users_get_displayed_user_description();
 
 		if ( ! empty( $description ) ) {
-			$more = ' &hellip; ' . sprintf( '<a href="%1$s" class="wp-embed-more" target="_top">%2$s</a>',
-				esc_url( wct_users_get_embed_user_profile_link() ),
-				sprintf( esc_html__( "View %s full profile", 'wordcamp-talks' ), '<span class="screen-reader-text">' . sprintf( _x( '%s&#39;s', 'Screen reader text for embed user display name for the more link', 'wordcamp-talks' ), wct_users_get_embed_user_profile_display_name() ) . '</span>' )
-			);
+			$more = ' [&hellip;]';
+
+			if ( current_user_can( 'view_other_profiles' ) ) {
+				$more = ' &hellip; ' . sprintf( '<a href="%1$s" class="wp-embed-more" target="_top">%2$s</a>',
+					esc_url( wct_users_get_embed_user_profile_link() ),
+					sprintf( esc_html__( "View %s full profile", 'wordcamp-talks' ), '<span class="screen-reader-text">' . sprintf( _x( '%s&#39;s', 'Screen reader text for embed user display name for the more link', 'wordcamp-talks' ), wct_users_get_embed_user_profile_display_name() ) . '</span>' )
+				);
+			}
 
 			$description = wct_create_excerpt( $description, 20, $more, true );
 		}
@@ -418,6 +365,7 @@ function wct_users_the_user_talk_rating( $id = 0, $user_id = 0 ) {
 function wct_users_the_signup_fields() {
 	echo wct_users_get_signup_fields();
 }
+
 	function wct_users_get_signup_fields() {
 		$output = '';
 
@@ -441,7 +389,12 @@ function wct_users_the_signup_fields() {
 			}
 
 			$output .= '<label for="_wct_signup_' . esc_attr( $sanitized['key'] ) . '">' . esc_html( $sanitized['label'] ) . ' ' . $required_output . '</label>';
-			$output .= '<input type="text" id="_wct_signup_' . esc_attr( $sanitized['key'] ) . '" name="wct_signup[' . esc_attr( $sanitized['key'] ) . ']" value="' . esc_attr( $sanitized['value'] ) . '"/>';
+
+			if ( 'description' !== $sanitized['key'] ) {
+				$output .= '<input type="text" id="_wct_signup_' . esc_attr( $sanitized['key'] ) . '" name="wct_signup[' . esc_attr( $sanitized['key'] ) . ']" value="' . esc_attr( $sanitized['value'] ) . '"/>';
+			} else {
+				$output .= '<textarea id="_wct_signup_' . esc_attr( $sanitized['key'] ) . '" name="wct_signup[' . esc_attr( $sanitized['key'] ) . ']">' . esc_textarea( $sanitized['value'] ) . '</textarea>';
+			}
 
 			$output .= apply_filters( 'wct_users_after_signup_field', '', $sanitized );
 		}
@@ -530,23 +483,155 @@ function wct_users_embed_content_reset_post() {
 }
 
 /**
+ * Edit/Share profile buttons.
+ *
+ * Displays the edit profile URL for Admins/self profiles.
  * Displays the sharing dialog box on user's profile so
  * that people can easily get the embed code.
  *
  * @since 1.0.0
  */
-function wct_users_sharing_button() {
-	// No need to carry on.
-	if ( ! wct_is_embed_profile() ) {
+function wct_users_buttons() {
+	// Edit button for self profiles.
+	if ( wct_is_current_user_profile() || is_super_admin() ) {
+		$url = wct_users_get_user_profile_edit_url();
+
+		if ( $url ) {
+			?>
+			<div class="wct-edit">
+				<a href="<?php echo esc_url( $url ); ?>" class="button" aria-label="<?php esc_attr_e( 'Edit profile', 'wordcamp-talks' ); ?>">
+					<span class="dashicons dashicons-edit"></span>
+				</a>
+			</div>
+			<?php
+		}
+	}
+
+	// Embed profile button.
+	if ( wct_is_embed_profile() ) {
+		wct_users_embed_content_meta();
+
+		// Print the sharing dialog
+		print_embed_sharing_dialog();
+
+		// Reset the post
+		wct_users_embed_content_reset_post();
+	}
+}
+
+/**
+ * Set the public profile fields for the user's info template on front-end
+ *
+ * @since  1.0.0
+ *
+ * @return array The list of field keys.
+ */
+function wct_users_public_profile_infos() {
+	/**
+	 * Filter here if you need to edit the public profile infos list.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param array $value An associative array keyed by field IDs containing field labels.
+	 */
+	$public_labels = (array) apply_filters( 'wct_users_public_profile_infos', array_merge( array(
+		'user_description' => __( 'Biographical Info', 'wordcamp-talks' ),
+		'user_url'         => __( 'Website', 'wordcamp-talks' ),
+	), wct_users_contactmethods( array(), 'public' ) ) );
+
+	wct_set_global( 'public_profile_labels', $public_labels );
+
+	return array_keys( $public_labels );
+}
+
+/**
+ * Check if a field's key has a corresponding value for the user.
+ *
+ * @since  1.0.0
+ *
+ * @param  string $info The field key.
+ * @return bool         True if the user has filled the field. False otherwise.
+ */
+function wct_users_public_profile_has_info(  $info = '' ) {
+	if ( empty( $info ) ) {
+		return false;
+	}
+
+	return ! empty( wct()->displayed_user->{$info} );
+}
+
+/**
+ * While Iterating fields, count the empty ones.
+ *
+ * @since  1.0.0
+ */
+function wct_users_public_empty_info() {
+	$empty_info = (int) wct_get_global( 'empty_info' );
+
+	wct_set_global( 'empty_info', $empty_info + 1 );
+}
+
+/**
+ * Displays the field label.
+ *
+ * @since  1.0.0
+ *
+ * @param  string $info The field key.
+ */
+function wct_users_public_profile_label( $info = '' ) {
+	if ( empty( $info ) ) {
 		return;
 	}
 
-	wct_users_embed_content_meta();
+	$labels = wct_get_global( 'public_profile_labels' );
 
-	// Print the sharing dialog
-	print_embed_sharing_dialog();
+	if ( ! isset( $labels[ $info ] ) ) {
+		return;
+	}
 
-	// Reset the post
-	wct_users_embed_content_reset_post();
+	echo esc_html( apply_filters( 'wct_users_public_label', $labels[ $info ], $info ) );
 }
-add_action( 'wct_user_profile_after_description', 'wct_users_sharing_button', 10 );
+
+/**
+ * Displays the field value.
+ *
+ * @since  1.0.0
+ *
+ * @param  string $info The field key.
+ */
+function wct_users_public_profile_value( $info = '' ) {
+	if ( empty( $info ) ) {
+		return;
+	}
+
+	echo apply_filters( 'wct_users_public_value', wct()->displayed_user->{$info}, $info );
+}
+
+/**
+ * Check if no fields were filled by the user.
+ *
+ * @since  1.0.0
+ *
+ * @return bool True if the user didn't filled any fields. False otherwise.
+ */
+function wct_users_public_empty_profile() {
+	$empty_info = (int) wct_get_global( 'empty_info' );
+	$labels     = wct_get_global( 'public_profile_labels' );
+
+	if ( $empty_info && $empty_info === count( $labels ) ) {
+		$message = __( 'This user has not filled any public profile informations.', 'wordcamp-talks' );
+
+		if ( wct_is_current_user_profile() ) {
+			$message = __( 'You have not filled any public profile informations. You can edit your profile to add some.', 'wordcamp-talks' );
+		}
+
+		wct_set_global( 'feedback', array(
+			'type'    => 'info',
+			'content' => $message,
+		) );
+
+		return true;
+	}
+
+	return false;
+}
