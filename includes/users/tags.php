@@ -386,10 +386,30 @@ function wct_users_the_signup_fields() {
 
 			$output .= '<label for="_wct_signup_' . esc_attr( $sanitized['key'] ) . '">' . esc_html( $sanitized['label'] ) . ' ' . $required_output . '</label>';
 
-			if ( 'description' !== $sanitized['key'] ) {
-				$output .= '<input type="text" id="_wct_signup_' . esc_attr( $sanitized['key'] ) . '" name="wct_signup[' . esc_attr( $sanitized['key'] ) . ']" value="' . esc_attr( $sanitized['value'] ) . '"/>';
-			} else {
+			// Description is a text area.
+			if ( 'description' === $sanitized['key'] ) {
 				$output .= '<textarea id="_wct_signup_' . esc_attr( $sanitized['key'] ) . '" name="wct_signup[' . esc_attr( $sanitized['key'] ) . ']">' . esc_textarea( $sanitized['value'] ) . '</textarea>';
+
+			// Language is a select box.
+			} elseif ( 'locale' === $sanitized['key'] ) {
+				$languages = get_available_languages();
+
+				if ( empty( $languages ) ) {
+					continue;
+				}
+
+				$output .=  wp_dropdown_languages( array(
+					'name'                        => 'wct_signup[' . esc_attr( $sanitized['key'] ) . ']',
+					'id'                          => '_wct_signup_' . esc_attr( $sanitized['key'] ),
+					'selected'                    => get_locale(),
+					'languages'                   => $languages,
+					'show_available_translations' => false,
+					'echo'                        => 0,
+				) );
+
+			// Default is text field.
+			} else {
+				$output .= '<input type="text" id="_wct_signup_' . esc_attr( $sanitized['key'] ) . '" name="wct_signup[' . esc_attr( $sanitized['key'] ) . ']" value="' . esc_attr( $sanitized['value'] ) . '"/>';
 			}
 
 			$output .= apply_filters( 'wct_users_after_signup_field', '', $sanitized );

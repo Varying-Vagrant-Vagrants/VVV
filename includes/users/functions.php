@@ -170,10 +170,17 @@ function wct_users_contactmethods( $methods = array(), $context = 'admin' ) {
  * @return array All user contact methods.
  */
 function wct_users_get_all_contact_methods() {
-	return apply_filters( 'wct_users_get_all_contact_methods', array_merge( array(
+	$wp_fields = array(
 		'description' => __( 'Biographical Info', 'wordcamp-talks' ),
 		'user_url'    => __( 'Website', 'wordcamp-talks' ),
-	), wp_get_user_contact_methods() ) );
+	);
+
+	// Use WordPress 4.7 new user locale feature if available.
+	if ( function_exists( 'get_user_locale' ) ) {
+		$wp_fields['locale'] = __( 'Language', 'wordcamp-talks' );
+	}
+
+	return apply_filters( 'wct_users_get_all_contact_methods', array_merge( $wp_fields, wp_get_user_contact_methods() ) );
 }
 
 /** User urls *****************************************************************/
@@ -1092,6 +1099,10 @@ function wct_users_signup_user( $exit = true ) {
 			$userdata = new stdClass();
 			$userdata = (object) $edit_user;
 			$userdata->ID = $user;
+
+			if ( isset( $userdata->locale ) && '' === $userdata->locale ) {
+				$userdata->locale = 'en_US';
+			}
 
 			/**
 			 * Just before the user is updated, this will only be available
