@@ -44,6 +44,27 @@ function wct_users_current_user_nicename() {
 }
 
 /**
+ * Gets displayed user object if set.
+ *
+ * @package WordCamp Talks
+ * @subpackage users/functions
+ *
+ * @since 1.0.0
+ *
+ * @return null|WP_User The displayed user if set. Null otherwise.
+ */
+function wct_users_displayed_user() {
+	$displayed_user = null;
+	$wct            = wct();
+
+	if ( ! empty( $wct->displayed_user->ID ) && is_a( $wct->displayed_user, 'WP_User' ) ) {
+		$displayed_user = $wct->displayed_user;
+	}
+
+	return $displayed_user;
+}
+
+/**
  * Gets displayed user ID
  *
  * @package WordCamp Talks

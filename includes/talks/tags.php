@@ -788,7 +788,7 @@ function wct_talks_the_talk_comment_link( $zero = false, $one = false, $more = f
 			$more = __( '% Comments', 'wordcamp-talks' );
 		}
 		if ( false === $none ) {
-			$none = __( 'Comments Off', 'wordcamp-talks' );
+			$none = sprintf( '<span class="%1$s">%2$s</span>', $css_class, esc_html__( 'Comments Off', 'wordcamp-talks' ) );
 		}
 
 		if ( ! wct_user_can( 'comment_talks', $talk->ID ) ) {

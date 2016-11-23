@@ -1306,6 +1306,10 @@ function wct_is_signup_allowed() {
 
 	$registration_status = get_site_option( $option, 0 );
 
+	if ( is_numeric( $registration_status ) ) {
+		$registration_status = (int) $registration_status;
+	}
+
 	// On multisite config, just deal with user signups and avoid blog signups
 	$signup_allowed = ( 1 === $registration_status || 'user' === $registration_status );
 

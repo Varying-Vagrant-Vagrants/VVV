@@ -156,6 +156,9 @@ add_action( 'wct_admin_init', 'wct_register_roles' );
  * @return array Actual capabilities for meta capability
  */
 function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = array() ) {
+	// First take care of specific cases: raters
+
+	// 1. The rater is the loggedin user
 	$user = wp_get_current_user();
 
 	if ( ( ! empty( $user->allcaps['blind_rater'] ) || ! empty( $user->allcaps['rater'] ) ) && (int) $user_id === (int) $user->ID ) {
@@ -170,7 +173,18 @@ function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = ar
 		return $caps;
 	}
 
-	// What capability is being checked?
+	// 3. The rater is the displayed user
+	$displayed_user = wct_users_displayed_user();
+
+	if ( ! is_null( $displayed_user ) && ( ! empty( $displayed_user->allcaps['blind_rater'] ) || ! empty( $displayed_user->allcaps['rater'] ) ) && 'view_other_profiles' !== $cap ) {
+		if ( (int) $user_id !== (int) $displayed_user->ID ) {
+			return array( 'manage_options' );
+		}
+
+		return $caps;
+	}
+
+	// For any other cases, use the caps mapping!
 	switch ( $cap ) {
 
 		case 'publish_talks' :
