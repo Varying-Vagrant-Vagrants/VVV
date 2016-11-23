@@ -1646,15 +1646,45 @@ function wct_talks_has_terms() {
 		return false;
 	}
 
+	/**
+	 * This part is there to extract the terms having children.
+	 *
+	 * NB: It only works for one level. If a child term alse has one or more children,
+	 * this children will be added to the "flat" terms.
+	 */
+	$parents = wp_filter_object_list( $terms, array( 'parent' => 0 ), 'AND', 'term_id' );
+	$hierarchical_terms = array();
+	$flat_terms         = array();
+
+	foreach ( $terms as $kt => $term ) {
+		if ( false !== array_search( $term->parent, $parents ) ) {
+			$hierarchical_terms[ $term->parent ][] = $term;
+		} else {
+			$flat_terms[ $term->term_id ] = $term;
+		}
+	}
+
+	foreach ( array_keys( $hierarchical_terms ) as $term_parent_id ) {
+		$parent_term = wp_list_filter( $terms, array( 'term_id' => $term_parent_id ) );
+
+		// Remove the parent from flat terms.
+		unset( $flat_terms[ $term_parent_id ] );
+
+		// Merge it with hierarchical
+		$hierarchical_terms[ $term_parent_id ] = array_merge( $parent_term, $hierarchical_terms[ $term_parent_id ] );
+	}
+
 	// Catch terms
-	wct_set_global( 'edit_form_terms', $terms );
+	wct_set_global( 'edit_hierachical_terms', $hierarchical_terms );
+	wct_set_global( 'edit_flat_terms',        $flat_terms         );
+	wct_set_global( 'edit_form_terms',        $terms              );
 
 	// Inform we have categories
 	return true;
 }
 
 /**
- * Displays the checkboxes to select categories
+ * Displays the checkboxes to select "regular" categories
  *
  * @package WordCamp Talks
  * @subpackage talks/tags
@@ -1665,9 +1695,34 @@ function wct_talks_the_category_edit() {
 	if ( ! taxonomy_exists( wct_get_category() ) || ! wct_talks_has_terms() ) {
 		return;
 	}
-	?>
+
+	$flat_terms = wct_get_global( 'edit_flat_terms' );
+
+	// Output the label only if we have flat terms.
+	if ( ! empty( $flat_terms ) ) : ?>
+
 	<label><?php esc_html_e( 'Categories', 'wordcamp-talks' );?></label>
-	<?php wct_talks_get_category_edit();
+
+	<?php endif ;
+
+	// Get the output and the selected terms.
+	$form_terms = wct_talks_get_category_edit( $flat_terms );
+
+	// If we have hierarchical terms, output them.
+	$hierarchical = wct_get_global( 'edit_hierachical_terms' );
+
+	if ( ! empty( $hierarchical ) ) {
+		// Only output if we have flat terms
+		if ( empty( $form_terms['no_flat'] ) ) {
+			echo $form_terms['output'];
+		}
+
+		wct_talks_loop_hierarchical_categories( $hierarchical, $form_terms['selected_terms'] );
+
+	// Always output the no terms message if no hierarchical terms.
+	} else {
+		echo $form_terms['output'];
+	}
 }
 
 	/**
@@ -1680,7 +1735,7 @@ function wct_talks_the_category_edit() {
 	 *
 	 * @return string  output for the list of categories
 	 */
-	function wct_talks_get_category_edit() {
+	function wct_talks_get_category_edit( $terms = array() ) {
 		$wct = wct();
 
 		// Did the user submitted categories ?
@@ -1696,8 +1751,6 @@ function wct_talks_the_category_edit() {
 			$edit_categories = array();
 		}
 
-		$terms = wct_get_global( 'edit_form_terms' );
-
 		// Default output
 		$output = esc_html__( 'No categories are available.', 'wordcamp-talks' );
 
@@ -1705,8 +1758,7 @@ function wct_talks_the_category_edit() {
 			/**
 			 * @param  string $output the output when no categories
 			 */
-			echo apply_filters( 'wct_talks_get_category_edit_none', $output );
-			return;
+			return apply_filters( 'wct_talks_get_category_edit_none', array( 'output' => $output, 'selected_terms' => $edit_categories, 'no_flat' => true ) );
 		}
 
 		$output = '<ul class="category-list">';
@@ -1715,19 +1767,64 @@ function wct_talks_the_category_edit() {
 			$output .= '<li><label for="_wct_the_category_' . esc_attr( $term->term_id ) . '">';
 			$output .= '<input type="checkbox" name="wct[_the_category][]" id="_wct_the_category_' . esc_attr( $term->term_id ) . '" value="' . esc_attr( $term->term_id ) . '" ' . checked( true, in_array( $term->term_id, $edit_categories  ), false ) . '/>';
 			$output .= ' ' . esc_html( $term->name ) . '</label></li>';
-
 		}
 
 		$output .= '</ul>';
 
 		/**
-		 * @param  string $output the output when has categories
+		 * @param  array  $value the output when has categories
 		 * @param  array  $edit_categories selected term ids
 		 * @param  array  $terms available terms for the category taxonomy
 		 */
-		echo apply_filters( 'wct_talks_get_category_edit', $output, $edit_categories, $terms );
+		return apply_filters( 'wct_talks_get_category_edit', array( 'output' => $output, 'selected_terms' => $edit_categories ), $edit_categories, $terms );
 	}
 
+/**
+ * Displays the checkboxes to select "hierarchical" categories
+ *
+ * @package WordCamp Talks
+ * @subpackage talks/tags
+ *
+ * @since 1.0.0
+ *
+ * @param  array  $parents        An array containing the hierarchical terms.
+ * @param  array  $selected_terms An array containing the selected term ids.
+ * @return string                 HTML Output.
+ */
+function wct_talks_loop_hierarchical_categories( $parents = array(), $selected_terms = array() ) {
+	if ( empty( $parents ) ) {
+		return;
+	}
+
+	foreach ( $parents as $terms ) :
+
+		$label = array_shift( $terms ) ; ?>
+
+		<label><?php echo esc_html( $label->name );?></label>
+
+		<?php if ( ! empty( $label->description ) ) : ?>
+
+			<p class="description"><?php echo apply_filters( 'wct_term_description', $label->description ); ?></p>
+
+		<?php endif ; ?>
+
+		<ul class="category-list">
+
+			<?php foreach ( $terms as $term ) : ?>
+
+				<li>
+					<label for="_wct_the_category_<?php echo esc_attr( $term->term_id ) ; ?>">
+						<input type="checkbox" name="wct[_the_category][]" id="_wct_the_category_<?php echo esc_attr( $term->term_id ) ; ?>" value="<?php echo esc_attr( $term->term_id ) ; ?>" <?php checked( true, in_array( $term->term_id, $selected_terms ) ) ; ?>/>
+						 <?php echo esc_html( $term->name ) ; ?>
+					</label>
+				</li>
+
+			<?php endforeach ; ?>
+
+		</ul>
+
+	<?php endforeach ;
+}
 
 /**
  * Displays the tag editor for an talk

@@ -71,6 +71,15 @@
 		$( '.rating-info' ).html( '<a>' + msg + '</a>' );
 	}
 
+	// Checkbox are radio groups!
+	$( '#wordcamp-talks-form ul.category-list' ).on( 'click', ':checkbox', function( event ) {
+		$.each( $( event.delegateTarget ).find( ':checked' ), function( cb, checkbox ) {
+			if ( $( checkbox ).prop( 'id' ) !== $( event.target ).prop( 'id' ) ) {
+				$( checkbox ).prop( 'checked', false );
+			}
+		} );
+	} );
+
 	if ( typeof wct_vars.tagging_loaded !== 'undefined' ) {
 		$( '#_wct_the_tags' ).tagging( {
 			'tags-input-name'      : 'wct[_the_tags]',
