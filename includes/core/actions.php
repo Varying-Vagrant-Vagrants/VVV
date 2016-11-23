@@ -39,6 +39,7 @@ add_action( 'wct_loaded', array( 'WordCamp_Talks_Comments', 'start' ) );
 // Comments actions
 add_action( 'wp_set_comment_status', 'wct_comments_clean_count_cache', 10, 2 );
 add_action( 'delete_comment',        'wct_comments_clean_count_cache', 10, 1 );
+add_action( 'wp_insert_comment',     'wct_comments_clean_count_cache', 10, 2 );
 
 // Actions hooking enqueue_scripts (tags, rates UI)
 add_action( 'wct_enqueue_scripts', 'wct_talks_enqueue_scripts', 10 );

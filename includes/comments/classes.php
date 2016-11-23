@@ -161,19 +161,20 @@ class WordCamp_Talks_Comments {
 	 * @return  array adjusted comment count stats
 	 */
 	public function adjust_comment_count( $stats = array() ) {
-		if( did_action( 'wct_cache_comments_count' ) ) {
+		if ( did_action( 'wct_cache_comments_count' ) ) {
 			$this->talk_comment_count = wct_comments_count_comments();
 
 			// Catch this count
 			wct_set_global( 'talk_comment_count', $this->talk_comment_count );
 
 			if ( ! did_action( 'wct_comments_count_cached' ) ) {
-				foreach ( $this->comment_count as $key => $count ) {
-					if ( empty( $this->talk_comment_count->{$key} ) ) {
-						continue;
-					}
+				$talk_comment_count = clone $this->talk_comment_count;
 
-					$this->comment_count->{$key} = $count - $this->talk_comment_count->{$key};
+				foreach ( $this->comment_count as $key => $count ) {
+					if ( ! empty( $talk_comment_count->{$key} ) ) {
+						$this->comment_count->{$key} = $count - $talk_comment_count->{$key};
+						unset( $talk_comment_count->{$key} );
+					}
 				}
 
 				// For internal use only, please don't use this action.
@@ -182,6 +183,7 @@ class WordCamp_Talks_Comments {
 
 			$stats = $this->comment_count;
 		}
+
 		return $stats;
 	}
 
@@ -440,26 +442,45 @@ class WordCamp_Talks_Comments {
 		$query = apply_filters( 'wct_count_talks_comments_query', join( ' ', $sql ), $sql );
 		$count = $wpdb->get_results( $query, ARRAY_A );
 
-		$total = 0;
-		$approved = array('0' => 'moderated', '1' => 'approved', 'spam' => 'spam', 'trash' => 'trash', 'post-trashed' => 'post-trashed');
-		foreach ( (array) $count as $row ) {
-			// Don't count post-trashed toward totals
-			if ( 'post-trashed' != $row['comment_approved'] && 'trash' != $row['comment_approved'] ) {
-				$total += $row['num_comments'];
-			}
-			if ( isset( $approved[ $row['comment_approved'] ] ) ) {
-				$stats[ $approved[ $row['comment_approved'] ] ] = $row['num_comments'];
+		$stats = array(
+			'approved'            => 0,
+			'awaiting_moderation' => 0,
+			'spam'                => 0,
+			'trash'               => 0,
+			'post-trashed'        => 0,
+			'total_comments'      => 0,
+			'all'                 => 0,
+		);
+
+		foreach ( $count as $row ) {
+			switch ( $row['comment_approved'] ) {
+				case 'trash':
+					$stats['trash'] = $row['num_comments'];
+					break;
+				case 'post-trashed':
+					$stats['post-trashed'] = $row['num_comments'];
+					break;
+				case 'spam':
+					$stats['spam'] = $row['num_comments'];
+					$stats['total_comments'] += $row['num_comments'];
+					break;
+				case '1':
+					$stats['approved'] = $row['num_comments'];
+					$stats['total_comments'] += $row['num_comments'];
+					$stats['all'] += $row['num_comments'];
+					break;
+				case '0':
+					$stats['awaiting_moderation'] = $row['num_comments'];
+					$stats['total_comments'] += $row['num_comments'];
+					$stats['all'] += $row['num_comments'];
+					break;
+				default:
+					break;
 			}
 		}
 
-		$stats['total_comments'] = $total;
-		$stats['all']            = $total;
-
-		foreach ( $approved as $key ) {
-			if ( empty( $stats[$key] ) ) {
-				$stats[$key] = 0;
-			}
-		}
+		$stats['moderated'] = $stats['awaiting_moderation'];
+		unset( $stats['awaiting_moderation'] );
 
 		return (object) $stats;
 	}
