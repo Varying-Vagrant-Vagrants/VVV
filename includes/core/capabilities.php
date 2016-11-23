@@ -78,6 +78,70 @@ function wct_get_category_caps() {
 }
 
 /**
+ * Get Raters capabilities
+ *
+ * @since  1.0.0
+ *
+ * @return array The list of caps for the rater roles.
+ */
+function wct_get_rater_caps() {
+	$caps = array(
+		'view_other_profiles' => true,
+		'comment_talks'       => true,
+		'rate_talks'          => true,
+	);
+
+	$post_type_object = get_post_type_object( wct_get_post_type() );
+
+	if ( ! empty( $post_type_object->cap ) ) {
+		$caps = array_merge( $caps, array(
+			$post_type_object->cap->publish_posts      => false,
+			$post_type_object->cap->read_post          => true,
+			$post_type_object->cap->read_private_posts => true,
+		) );
+	}
+
+	/**
+	 * Filter here to edit rater caps.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  array $caps The list of caps for the rater roles.
+	 */
+	return apply_filters( 'wct_get_rater_caps', $caps );
+}
+
+/**
+ * Register Rater roles.
+ *
+ * @since  1.0.0
+ */
+function wct_register_roles() {
+	$rater       = get_role( 'rater' );
+	$blind_rater = get_role( 'blind_rater' );
+
+	$caps = array(
+		'read' => true,
+	);
+
+	if ( is_null( $rater ) && is_null( $blind_rater ) ) {
+		$caps = $caps + wct_get_rater_caps();
+	}
+
+	// Create the role if not already done.
+	if ( is_null( $rater ) ) {
+		add_role( 'rater', __( 'Rater', 'wordcamp-talks' ), $caps );
+	}
+
+	// Create the role if not already done.
+	if ( is_null( $blind_rater ) ) {
+		$caps = array_diff_key( $caps, array( 'view_other_profiles' => false ) );
+		add_role( 'blind_rater', __( 'Blind Rater', 'wordcamp-talks' ), $caps );
+	}
+}
+add_action( 'wct_admin_init', 'wct_register_roles' );
+
+/**
  * Maps Talks capabilities
  *
  * @package WordCamp Talks
@@ -92,6 +156,19 @@ function wct_get_category_caps() {
  * @return array Actual capabilities for meta capability
  */
 function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = array() ) {
+	$user = wp_get_current_user();
+
+	if ( ( ! empty( $user->allcaps['blind_rater'] ) || ! empty( $user->allcaps['rater'] ) ) && (int) $user_id === (int) $user->ID ) {
+
+		// Allow blind raters to view their profile.
+		if ( 'view_other_profiles' === $cap && isset( $user->allcaps['blind_rater'] ) ) {
+			if ( ! empty( $args[0] ) && ! empty( $user_id ) && (int) $args[0] === (int) $user_id ) {
+				$caps = array( 'exist' );
+			}
+		}
+
+		return $caps;
+	}
 
 	// What capability is being checked?
 	switch ( $cap ) {
@@ -164,8 +241,13 @@ function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = ar
 			break;
 
 		case 'view_other_profiles' :
-			if ( 'private' === wct_default_talk_status() && ! wct_is_current_user_profile() ) {
+			if ( 'private' === wct_default_talk_status() ) {
 				$caps = array( 'manage_options' );
+
+				if ( ! empty( $args[0] ) && ! empty( $user_id ) && (int) $args[0] === (int) $user_id ) {
+					$caps = array( 'exist' );
+				}
+
 			} else {
 				$caps = array( 'exist' );
 			}

@@ -436,6 +436,25 @@ function wct_talks_the_id() {
 	}
 
 /**
+ * Get the Talk author ID.
+ *
+ * @since 1.0.0
+ *
+ * @return  int The Talk author ID
+ */
+function wct_talks_get_author_id() {
+	$talk   = wct()->query_loop->talk;
+
+	$author_ID = 0;
+
+	if ( ! empty( $talk->post_author ) ) {
+		$author_ID = (int) $talk->post_author;
+	}
+
+	return $author_ID;
+}
+
+/**
  * Checks if the Talk being iterated on is sticky
  *
  * @package WordCamp Talks
@@ -496,6 +515,10 @@ function wct_talks_the_classes() {
 
 		if ( wct_talks_is_sticky_talk() ) {
 			$classes[] = 'sticky-talk';
+		}
+
+		if ( ! wct_user_can( 'view_other_profiles', wct_talks_get_author_id() ) ) {
+			$classes[] = 'no-avatar';
 		}
 
 		/**
@@ -1214,9 +1237,13 @@ function wct_talks_the_talk_footer() {
 		}
 
 		if ( wct_is_single_talk() ) {
-			$user = wct_users_get_user_data( 'id', $talk->post_author );
-			$user_link = '<a class="talk-author" href="' . esc_url( wct_users_get_user_profile_url( $talk->post_author, $user->user_nicename ) ) . '" title="' . esc_attr( $user->display_name ) . '">';
-			$user_link .= get_avatar( $talk->post_author, 20 ) . esc_html( $user->display_name ) . '</a>';
+			if ( ! wct_user_can( 'view_other_profiles', $talk->post_author ) ) {
+				$user_link = __( 'hidden name', 'wordcamp-talks' );
+			} else {
+				$user = wct_users_get_user_data( 'id', $talk->post_author );
+				$user_link = '<a class="talk-author" href="' . esc_url( wct_users_get_user_profile_url( $talk->post_author, $user->user_nicename ) ) . '" title="' . esc_attr( $user->display_name ) . '">';
+				$user_link .= get_avatar( $talk->post_author, 20 ) . esc_html( $user->display_name ) . '</a>';
+			}
 
 			// Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
 			$retarray['utility_text']  = _x( 'This talk was posted on %3$s by %4$s.', 'default single talk footer utility text', 'wordcamp-talks' );

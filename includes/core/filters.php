@@ -40,6 +40,9 @@ add_filter( 'the_posts', 'wct_talks_stick_talks', 10, 2 );
 // Filter comment author urls
 add_filter( 'comments_array', 'wct_comments_array',  11, 2 );
 
+// Filter the comment approved for Raters & Blind Raters
+add_filter( 'pre_comment_approved', 'wct_users_raters_approved', 10,  2 );
+
 // Eventually add new contact methods
 add_filter( 'user_contactmethods', 'wct_users_contactmethods', 10, 1 );
 

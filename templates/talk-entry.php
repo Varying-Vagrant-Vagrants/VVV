@@ -8,9 +8,13 @@
  * @since 1.0.0
  */
 ?>
-<div class="talk-avatar">
-	<?php wct_talks_the_author_avatar(); ?>
-</div>
+
+<?php if ( wct_user_can( 'view_other_profiles', wct_talks_get_author_id() ) ) : ?>
+	<div class="talk-avatar">
+		<?php wct_talks_the_author_avatar(); ?>
+	</div>
+<?php endif ;?>
+
 <div class="talk-content">
 
 	<?php do_action( 'wct_talk_entry_before_title' ); ?>

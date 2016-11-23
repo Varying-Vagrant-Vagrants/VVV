@@ -654,6 +654,11 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 		),
 	);
 
+	// Remove the talks nav if user can't publish some!
+	if ( ! user_can( $user_id, 'publish_talks' ) ) {
+		unset( $nav_items['talks'] );
+	}
+
 	if ( user_can( $user_id, 'comment_talks' ) ) {
 		$nav_items[ 'comments' ] = array(
 			'title'   => __( 'Commented', 'wordcamp-talks' ),
@@ -1518,12 +1523,29 @@ function wct_embed_html( $output, $post ) {
 }
 add_filter( 'embed_html', 'wct_embed_html', 10, 2 );
 
+/**
+ * Sanitize the user description for display
+ *
+ * @since  1.0.0
+ *
+ * @param  string $text The description content.
+ * @return string       The sanitized content.
+ */
 function wct_users_sanitize_user_description( $text = '' ) {
 	$allowed_html = wp_kses_allowed_html( 'user_description' );
 
 	return wpautop( wp_kses( $text, $allowed_html ) );
 }
 
+/**
+ * Sanitize public fields for displaye
+ *
+ * @since  1.0.0
+ *
+ * @param  string $value The field value.
+ * @param  string $key   The field key.
+ * @return string        The sanitized field value.
+ */
 function wct_users_sanitize_public_profile_field( $value = '', $key = '' ) {
 	$filters = array(
 		'wp_filter_kses',
@@ -1544,4 +1566,26 @@ function wct_users_sanitize_public_profile_field( $value = '', $key = '' ) {
 	}
 
 	return $value;
+}
+
+/**
+ * Directly approve comments made by raters.
+ *
+ * @since  1.0.0
+ *
+ * @param  int    $approved    1 if approved, 0 or spam if not.
+ * @param  array  $commentdata The list of comment's parameter.
+ * @return int                 1 if approved, 0 or spam if not.
+ */
+function wct_users_raters_approved( $approved = 0, $commentdata = array() ) {
+	// Comment is already approved, no need to carry on.
+	if ( 1 === (int) $approved ) {
+		return $approved;
+	}
+
+	if ( ! empty( $commentdata['user_id'] ) && wct_user_can( 'comment_talks' ) ) {
+		$approved = 1;
+	}
+
+	return $approved;
 }

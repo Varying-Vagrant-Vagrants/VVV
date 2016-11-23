@@ -77,10 +77,6 @@ function wct_users_the_user_nav() {
  * @since 1.0.0
  */
 function wct_users_embed_user_stats() {
-	if ( ! current_user_can( 'view_other_profiles' ) ) {
-		return;
-	}
-
 	echo wct_users_get_embed_user_stats();
 }
 
@@ -96,7 +92,7 @@ function wct_users_embed_user_stats() {
 		$user_id = wct_users_displayed_user_id();
 
 		// If not set, we're not on a user's profile.
-		if ( empty( $user_id ) ) {
+		if ( empty( $user_id ) || ! current_user_can( 'view_other_profiles', $user_id ) ) {
 			return;
 		}
 
@@ -281,7 +277,7 @@ function wct_users_embed_user_profile_description() {
 		if ( ! empty( $description ) ) {
 			$more = ' [&hellip;]';
 
-			if ( current_user_can( 'view_other_profiles' ) ) {
+			if ( current_user_can( 'view_other_profiles', wct_users_displayed_user_id() ) ) {
 				$more = ' &hellip; ' . sprintf( '<a href="%1$s" class="wp-embed-more" target="_top">%2$s</a>',
 					esc_url( wct_users_get_embed_user_profile_link() ),
 					sprintf( esc_html__( "View %s full profile", 'wordcamp-talks' ), '<span class="screen-reader-text">' . sprintf( _x( '%s&#39;s', 'Screen reader text for embed user display name for the more link', 'wordcamp-talks' ), wct_users_get_embed_user_profile_display_name() ) . '</span>' )

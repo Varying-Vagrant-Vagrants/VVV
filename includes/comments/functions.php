@@ -309,7 +309,7 @@ function wct_comments_array( $comments = array(), $talk_id = 0 ) {
 	}
 
 	foreach (  $comments as $key => $comment ) {
-		if ( empty( $comment->user_id ) ) {
+		if ( empty( $comment->user_id ) || ! wct_user_can( 'view_other_profiles', $comment->user_id ) ) {
 			continue;
 		}
 

@@ -126,7 +126,9 @@ function wct_parse_query( $posts_query = null ) {
 		$posts_query->set( 'post_type', $talk_post_type );
 
 		// Are we requesting user talks.
-		$user_talks = $posts_query->get( wct_user_talks_rewrite_id() );
+		if ( user_can( $user->ID, 'publish_talks' ) ) {
+			$user_talks = $posts_query->get( wct_user_talks_rewrite_id() );
+		}
 
 		if ( wct_user_can( 'rate_talks' ) ) {
 			// Are we requesting user rates
@@ -185,7 +187,7 @@ function wct_parse_query( $posts_query = null ) {
 			 */
 			$posts_query->set( 'p', -1 );
 
-		} elseif ( $user_talks ) {
+		} elseif ( ! empty( $user_talks ) ) {
 			// We are viewing user's talks
 			wct_set_global( 'is_user_talks', true );
 
@@ -214,7 +216,7 @@ function wct_parse_query( $posts_query = null ) {
 		// Set the displayed user.
 		wct_set_global( 'displayed_user', $user );
 
-		if ( wct_user_can( 'view_other_profiles' ) ) {
+		if ( wct_user_can( 'view_other_profiles', $user->ID ) ) {
 			// Make sure no 404
 			$posts_query->is_404  = false;
 		} else {

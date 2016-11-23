@@ -300,6 +300,10 @@ span.wp-talk-stream-group:before {
 	margin: 0 0 0 110px;
 }
 
+#wordcamp-talks ul.talk-list li.no-avatar .talk-content {
+	margin: 0;
+}
+
 #wordcamp-talks ul.talk-list li div.talk-title,
 #wordcamp-talks ul.talk-comments-list li div.talk-comment-title {
 	font-size: 120%;

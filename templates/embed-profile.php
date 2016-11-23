@@ -35,7 +35,7 @@ if ( ! headers_sent() ) {
 
 			<div class="user-display-name">
 				<p class="wp-embed-heading">
-					<?php if ( current_user_can( 'view_other_profiles' ) ) : ?>
+					<?php if ( current_user_can( 'view_other_profiles', wct_users_displayed_user_id() ) ) : ?>
 
 						<a href="<?php wct_users_embed_user_profile_link(); ?>">
 							<?php wct_users_embed_user_profile_display_name(); ?>
