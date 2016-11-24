@@ -2,9 +2,9 @@
 # This file is distributed under the GNU/GPL 2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WordCamp Talks 1.0.0-alpha\n"
+"Project-Id-Version: WordCamp Talks 1.0.0-beta1\n"
 "Report-Msgid-Bugs-To: https://github.com/imath/wordcamp-talks/issues\n"
-"POT-Creation-Date: 2016-11-23 00:58:01+00:00\n"
+"POT-Creation-Date: 2016-11-24 01:26:48+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -741,15 +741,15 @@ msgid ""
 "protected) to the top of the front talks archive first page."
 msgstr ""
 
-#: includes/comments/classes.php:340
+#: includes/comments/classes.php:342
 msgid "New comment on your talk \"%s\""
 msgstr ""
 
-#: includes/comments/classes.php:341
+#: includes/comments/classes.php:343
 msgid "Comment: "
 msgstr ""
 
-#: includes/comments/classes.php:342
+#: includes/comments/classes.php:344
 msgid "Permalink to the comment: %s"
 msgstr ""
 
@@ -996,7 +996,7 @@ msgstr ""
 msgid "Edit talk"
 msgstr ""
 
-#: includes/core/template-functions.php:858 includes/users/functions.php:1499
+#: includes/core/template-functions.php:858 includes/users/functions.php:1531
 msgid "%s&#39;s profile"
 msgstr ""
 
@@ -1016,7 +1016,7 @@ msgstr ""
 msgid "Talks to rate"
 msgstr ""
 
-#: includes/core/template-functions.php:946 includes/users/functions.php:644
+#: includes/core/template-functions.php:946 includes/users/functions.php:672
 msgid "Profile"
 msgstr ""
 
@@ -1040,7 +1040,11 @@ msgstr ""
 msgid "My profile"
 msgstr ""
 
-#: includes/core/widgets.php:199 includes/talks/widgets.php:108
+#: includes/core/widgets.php:83
+msgid "Sign up"
+msgstr ""
+
+#: includes/core/widgets.php:210 includes/talks/widgets.php:108
 #: includes/talks/widgets.php:305 includes/users/widgets.php:178
 msgid "Title:"
 msgstr ""
@@ -1255,41 +1259,41 @@ msgstr ""
 msgid "Select the featured image for your talk."
 msgstr ""
 
-#: includes/talks/tags.php:1669
+#: includes/talks/tags.php:1704
 msgid "Categories"
 msgstr ""
 
-#: includes/talks/tags.php:1702
+#: includes/talks/tags.php:1755
 msgid "No categories are available."
 msgstr ""
 
-#: includes/talks/tags.php:1745
+#: includes/talks/tags.php:1842
 msgid "Tags"
 msgstr ""
 
-#: includes/talks/tags.php:1746
+#: includes/talks/tags.php:1843
 msgid "Type your tag, then hit the return or space key to add it"
 msgstr ""
 
-#: includes/talks/tags.php:1812
+#: includes/talks/tags.php:1909
 msgid "Choose the most used tag"
 msgid_plural "Choose from the %d most used tags"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/talks/tags.php:1891 includes/users/tags.php:408
+#: includes/talks/tags.php:1988 includes/users/tags.php:428
 msgid "Reset"
 msgstr ""
 
-#: includes/talks/tags.php:1892
+#: includes/talks/tags.php:1989
 msgid "Submit"
 msgstr ""
 
-#: includes/talks/tags.php:1897
+#: includes/talks/tags.php:1994
 msgid "Update"
 msgstr ""
 
-#: includes/talks/tags.php:1945
+#: includes/talks/tags.php:2042
 msgid "%1$sAverage Rating:%2$s%3$s"
 msgstr ""
 
@@ -1321,47 +1325,51 @@ msgstr ""
 msgid "Number of talks to show:"
 msgstr ""
 
-#: includes/users/functions.php:153 includes/users/tags.php:534
+#: includes/users/functions.php:174 includes/users/tags.php:554
 msgid "Biographical Info"
 msgstr ""
 
-#: includes/users/functions.php:154 includes/users/tags.php:535
+#: includes/users/functions.php:175 includes/users/tags.php:555
 msgid "Website"
 msgstr ""
 
-#: includes/users/functions.php:650
+#: includes/users/functions.php:180
+msgid "Language"
+msgstr ""
+
+#: includes/users/functions.php:678
 msgid "Published"
 msgstr ""
 
-#: includes/users/functions.php:664
+#: includes/users/functions.php:692
 msgid "Commented"
 msgstr ""
 
-#: includes/users/functions.php:673
+#: includes/users/functions.php:701
 msgid "Rated"
 msgstr ""
 
-#: includes/users/functions.php:681
+#: includes/users/functions.php:709
 msgid "To rate"
 msgstr ""
 
-#: includes/users/functions.php:963
+#: includes/users/functions.php:991
 msgid "Please choose a login having at least 4 characters."
 msgstr ""
 
-#: includes/users/functions.php:997
+#: includes/users/functions.php:1025
 msgid "Please fill all required fields."
 msgstr ""
 
-#: includes/users/functions.php:1103
+#: includes/users/functions.php:1135
 msgid "Registration complete. Please check your e-mail."
 msgstr ""
 
-#: includes/users/functions.php:1132
+#: includes/users/functions.php:1164
 msgid "Username"
 msgstr ""
 
-#: includes/users/functions.php:1133
+#: includes/users/functions.php:1165
 msgid "E-mail"
 msgstr ""
 
@@ -1375,19 +1383,19 @@ msgid_plural "rated %s stars"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/users/tags.php:409
+#: includes/users/tags.php:429
 msgid "Sign-up"
 msgstr ""
 
-#: includes/users/tags.php:498
+#: includes/users/tags.php:518
 msgid "Edit profile"
 msgstr ""
 
-#: includes/users/tags.php:618
+#: includes/users/tags.php:638
 msgid "This user has not filled any public profile informations."
 msgstr ""
 
-#: includes/users/tags.php:621
+#: includes/users/tags.php:641
 msgid ""
 "You have not filled any public profile informations. You can edit your "
 "profile to add some."
@@ -1715,17 +1723,17 @@ msgctxt "Next post link"
 msgid "&rarr;"
 msgstr ""
 
-#: includes/users/functions.php:647
+#: includes/users/functions.php:675
 msgctxt "user profile slug"
 msgid "home"
 msgstr ""
 
-#: includes/users/functions.php:653
+#: includes/users/functions.php:681
 msgctxt "user talks profile slug"
 msgid "talks"
 msgstr ""
 
-#: includes/users/functions.php:1190
+#: includes/users/functions.php:1222
 msgctxt "Use the same translation as WP Core"
 msgid "[%s] Your username and password info"
 msgstr ""
