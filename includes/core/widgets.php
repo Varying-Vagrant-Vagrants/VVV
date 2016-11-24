@@ -77,6 +77,13 @@ if ( ! class_exists( 'WordCamp_Talks_Navig' ) ) :
 			);
 		}
 
+		if ( wct_is_signup_allowed_for_current_blog() ) {
+			$this->nav_items_available['signup'] = array(
+				'url'  => wct_users_get_signup_url(),
+				'name' => __( 'Sign up', 'wordcamp-talks' )
+			);
+		}
+
 		/**
 		 * @param array the available nav items
 		 * @param string the widget's id base
@@ -128,6 +135,10 @@ if ( ! class_exists( 'WordCamp_Talks_Navig' ) ) :
 			<ul class="menu">
 
 				<?php foreach ( $nav_items as $key_nav => $nav_item ) :
+					if ( 'signup' === $key_nav && is_user_logged_in() ) {
+						continue;
+					}
+
 					$current = '';
 
 					if ( function_exists( 'wct_is_' . $key_nav ) &&  call_user_func( 'wct_is_' . $key_nav ) ) {
