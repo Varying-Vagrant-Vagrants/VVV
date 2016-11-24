@@ -7,15 +7,15 @@ Candidates will be able to sign up to your WordPress site using a form including
 
 ![Signup Form](https://cldup.com/CdigRMNoFE.png)
 
-As you can see, you just need to add a comma separated list of contact methods label into the Public or Private user profile fields, save the settings and then you'll be able to activate the checkboxes of your choice in the "Fields to add to the signup form" option.
+As you can see, you just need to add a comma separated list of contact method labels into the Public or Private user profile fields, save the settings and then you'll be able to activate the checkboxes of your choice in the "Fields to add to the signup form" option.
 
 NB: if you are using WordPress 4.7 and you have more than one language available in your WordPress config, candidates will also be able to select their prefered language for the strings used in the plugin from this signup form.
 
-Then, once logged in they will be able to submit as many talk as they wish using the [submit form](https://cloudup.com/cbfQ4jgXtU3). You can create new categories to tidy all this creativity.
+Then, once logged in they will be able to submit as many talk as they wish using the [submit form](https://cldup.com/oCAOf9VED0.png). You can create new categories to tidy all this creativity.
 
 ![Regular categories](https://cldup.com/nnMX5CIqE3.png)
 
-Using "flat" (without a hierarchy) categories will display them into a section called "Categories" of the submit form. But you can also choose to use a one level hierarchy in which the parent will be used as the section and the children as checkboxes like show below:
+Using "flat" (without a hierarchy) categories will display them into a section called "Categories" of the submit form. But you can also choose to use a one level hierarchy in which the parent will be used as the section and the children as checkboxes like shown below:
 
 ![Hierarchical categories](https://cldup.com/R1z5y2oTJ8.png)
 
@@ -23,8 +23,8 @@ As you can see the title section is using the parent category name and the addit
 
 The talks will be published privately so that only the candidate, the Site Administrator or users having one of the 2 specific rating roles can read and evaluate the talks. These 2 roles are:
 
-+ The Rater: users having this role cannot publish talks but only evaluate them (comment/rate) and they can view the candidates profiles.
-+ The Blind Rater: users having this role cannot publish talks but only evaluate them (comment/rate) and they *cannot* view the candidates profiles.
++ The Rater: users having this role cannot publish talks but can only evaluate them (comment/rate) and view the candidates profiles.
++ The Blind Rater: users having this role cannot publish talks, they can evaluate them (comment/rate) *but* they *cannot* view the candidates profiles.
 
 Raters and Admins can use the comments to discuss directly on the talk, the talk's author won't see them. Raters can also use the built in star rating system to progressively build a list of the most promising talks for your WordCamp. From the main archive page of the plugin (usually available at site.url/talks), you will be able to reorder talks according to the number of comments or the average rate they got.
 
@@ -34,7 +34,7 @@ Admins can also use a mini workflow to build their selection. It's also possible
 
 When you begin to have a lot of submissions, it can be tricky to remember the talks you already rated. That's the reason why @jennybeaumont had the idea to include a specific tab into the Rater's user profile: the "To rate" tab:
 
-[Workflow](https://cldup.com/BeMdU2rb1B.png)
+![Workflow](https://cldup.com/BeMdU2rb1B.png)
 
 Thanks to her you won't miss a talk!
 
