@@ -141,7 +141,7 @@ All WordPress admin usernames and passwords for WordPress installations included
 __User:__ `admin`  
 __Password:__ `password`
 
-MySQL Root:
+MariaDB/MySQL Root:
 
 __User:__ `root`
 __Password:__ `root`
@@ -172,7 +172,7 @@ A bunch of stuff!
 1. [WordPress Stable](https://wordpress.org/)
 1. [WP-CLI](http://wp-cli.org/) (master branch)
 1. [nginx](http://nginx.org/) ([mainline](http://nginx.com/blog/nginx-1-6-1-7-released/) version)
-1. [mysql](https://www.mysql.com/) 5.5.x
+1. [MariaDB](https://mariadb.org/) 5.5.x (drop-in replacement for MySQL)
 1. [php-fpm](http://php-fpm.org/) 7.0.x
 1. [memcached](http://memcached.org/)
 1. PHP [memcache extension](https://pecl.php.net/package/memcache)

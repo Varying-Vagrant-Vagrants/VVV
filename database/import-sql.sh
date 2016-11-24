@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Import provided SQL files in to MySQL.
+# Import provided SQL files in to MariaDB/MySQL.
 #
 # The files in the {vvv-dir}/database/backups/ directory should be created by
 # mysqldump or some other export process that generates a full set of SQL commands
@@ -19,7 +19,7 @@
 # Let's begin...
 
 # Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
-printf "\nStart MySQL Database Import\n"
+printf "\nStart MariaDB Database Import\n"
 cd /srv/database/backups/
 
 # Parse through each file in the directory and use the file name to
