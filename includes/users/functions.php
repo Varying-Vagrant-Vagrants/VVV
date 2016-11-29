@@ -159,7 +159,7 @@ function wct_users_contactmethods( $methods = array(), $context = 'admin' ) {
 		$methods = call_user_func( "wct_user_{$context}_fields_list" );
 	}
 
-	return apply_filters( 'wct_users_contactmethods', $methods, $context );
+	return apply_filters( 'wct_users_contactmethods', array_filter( $methods ), $context );
 }
 
 /**
