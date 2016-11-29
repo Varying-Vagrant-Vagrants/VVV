@@ -160,7 +160,17 @@ function wct_default_talk_status( $default = 'private' ) {
 
 	// Make sure admins will have a publish status whatever the settings choice
 	if ( 'pending' === $default_status && wct_user_can( 'wct_talks_admin' ) ) {
-		$default_status = 'publish';
+		$wct            = wct();
+		$current_screen = false;
+
+		if ( function_exists( 'get_current_screen' ) ) {
+			$current_screen = get_current_screen();
+		}
+
+		// In administration screens we need to be able to change the status
+		if ( empty( $wct->admin->is_plugin_settings ) && ( empty( $current_screen->post_type ) || wct_get_post_type() !== $current_screen->post_type ) ) {
+			$default_status = 'publish';
+		}
 	}
 
 	/**

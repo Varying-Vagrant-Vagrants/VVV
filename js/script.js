@@ -5,6 +5,11 @@
 
 ( function( $ ) {
 
+	// Cleanup the url
+	if ( wct_vars.canonical && window.history.replaceState ) {
+			window.history.replaceState( null, null, wct_vars.canonical + window.location.hash );
+	}
+
 	// Only use raty if loaded
 	if ( typeof wct_vars.raty_loaded !== 'undefined' ) {
 

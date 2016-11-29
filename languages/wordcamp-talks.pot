@@ -2,9 +2,9 @@
 # This file is distributed under the GNU/GPL 2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WordCamp Talks 1.0.0-beta1\n"
+"Project-Id-Version: WordCamp Talks 1.0.0-beta2\n"
 "Report-Msgid-Bugs-To: https://github.com/imath/wordcamp-talks/issues\n"
-"POT-Creation-Date: 2016-11-24 01:26:48+00:00\n"
+"POT-Creation-Date: 2016-11-29 20:23:58+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Average Rating"
 msgstr ""
 
-#: includes/admin/admin.php:1026 includes/talks/functions.php:795
+#: includes/admin/admin.php:1026 includes/talks/functions.php:801
 #: includes/talks/tags.php:939
 msgid "Not rated yet"
 msgstr ""
@@ -951,27 +951,87 @@ msgstr ""
 msgid "Choose from the most popular tags"
 msgstr ""
 
-#: includes/core/functions.php:616
+#: includes/core/functions.php:634
 msgid "Saved successfully"
 msgstr ""
 
-#: includes/core/functions.php:720
+#: includes/core/functions.php:635
+msgid "Registration complete. Please check your mailbox."
+msgstr ""
+
+#: includes/core/functions.php:636
+msgid "The talk was successfully created."
+msgstr ""
+
+#: includes/core/functions.php:637
+msgid "The talk was successfully updated."
+msgstr ""
+
+#: includes/core/functions.php:640
+msgid "Something went wrong, please try again"
+msgstr ""
+
+#: includes/core/functions.php:641
+msgid "You are not allowed to edit this talk."
+msgstr ""
+
+#: includes/core/functions.php:642
+msgid "You are not allowed to publish talks"
+msgstr ""
+
+#: includes/core/functions.php:643
+msgid "Title and description are required fields."
+msgstr ""
+
+#: includes/core/functions.php:644
+msgid "Something went wrong while trying to save your talk."
+msgstr ""
+
+#: includes/core/functions.php:645
+msgid "There was a problem saving the featured image, sorry."
+msgstr ""
+
+#: includes/core/functions.php:646
+msgid "Please choose a username having at least 4 characters."
+msgstr ""
+
+#: includes/core/functions.php:647
+msgid "Please fill all required fields."
+msgstr ""
+
+#: includes/core/functions.php:648
+msgid "The talk you are trying to edit does not seem to exist."
+msgstr ""
+
+#: includes/core/functions.php:649
+msgid "Something went wrong while trying to update your talk."
+msgstr ""
+
+#: includes/core/functions.php:652
+msgid "This talk is already being edited by another user."
+msgstr ""
+
+#: includes/core/functions.php:653
+msgid "Your talk is currently awaiting moderation."
+msgstr ""
+
+#: includes/core/functions.php:837
 msgid "bad"
 msgstr ""
 
-#: includes/core/functions.php:721
+#: includes/core/functions.php:838
 msgid "poor"
 msgstr ""
 
-#: includes/core/functions.php:722
+#: includes/core/functions.php:839
 msgid "regular"
 msgstr ""
 
-#: includes/core/functions.php:723
+#: includes/core/functions.php:840
 msgid "good"
 msgstr ""
 
-#: includes/core/functions.php:724
+#: includes/core/functions.php:841
 msgid "gorgeous"
 msgstr ""
 
@@ -996,7 +1056,7 @@ msgstr ""
 msgid "Edit talk"
 msgstr ""
 
-#: includes/core/template-functions.php:858 includes/users/functions.php:1531
+#: includes/core/template-functions.php:858 includes/users/functions.php:1528
 msgid "%s&#39;s profile"
 msgstr ""
 
@@ -1018,14 +1078,6 @@ msgstr ""
 
 #: includes/core/template-functions.php:946 includes/users/functions.php:672
 msgid "Profile"
-msgstr ""
-
-#: includes/core/template-loader.php:410
-msgid "The talk: &#34;%s&#34; is already being edited by another user."
-msgstr ""
-
-#: includes/core/template-loader.php:422 includes/talks/functions.php:1121
-msgid "You are not allowed to edit this talk."
 msgstr ""
 
 #: includes/core/widgets.php:35
@@ -1061,80 +1113,52 @@ msgstr ""
 msgid "This image file type is not supported."
 msgstr ""
 
-#: includes/talks/functions.php:786
+#: includes/talks/functions.php:792
 msgid "Saving your rating; please wait"
 msgstr ""
 
-#: includes/talks/functions.php:787
+#: includes/talks/functions.php:793
 msgid "Thanks! The average rating is now:"
 msgstr ""
 
-#: includes/talks/functions.php:788
+#: includes/talks/functions.php:794
 msgid "Oops! Something went wrong"
 msgstr ""
 
-#: includes/talks/functions.php:791
+#: includes/talks/functions.php:797
 msgid "One rating"
 msgstr ""
 
-#: includes/talks/functions.php:792
+#: includes/talks/functions.php:798
 msgid "% ratings"
 msgstr ""
 
-#: includes/talks/functions.php:820
+#: includes/talks/functions.php:825
 msgid "Duplicate tag:"
 msgstr ""
 
-#: includes/talks/functions.php:821
+#: includes/talks/functions.php:826
 msgid "Forbidden character:"
 msgstr ""
 
-#: includes/talks/functions.php:822
+#: includes/talks/functions.php:827
 msgid "Forbidden word:"
 msgstr ""
 
-#: includes/talks/functions.php:831
+#: includes/talks/functions.php:836
 msgid "An admin is currently editing this talk, please try to edit your talk later."
 msgstr ""
 
-#: includes/talks/functions.php:882
+#: includes/talks/functions.php:888
 msgid "Latest"
 msgstr ""
 
-#: includes/talks/functions.php:883
+#: includes/talks/functions.php:889
 msgid "Most commented"
 msgstr ""
 
-#: includes/talks/functions.php:888
+#: includes/talks/functions.php:894
 msgid "Highest Rating"
-msgstr ""
-
-#: includes/talks/functions.php:987
-msgid "You are not allowed to publish talks"
-msgstr ""
-
-#: includes/talks/functions.php:1002 includes/talks/functions.php:1136
-msgid "Title and description are required fields."
-msgstr ""
-
-#: includes/talks/functions.php:1015
-msgid "Something went wrong while trying to save your talk."
-msgstr ""
-
-#: includes/talks/functions.php:1030 includes/talks/functions.php:1146
-msgid "There was a problem saving the featured image, sorry."
-msgstr ""
-
-#: includes/talks/functions.php:1036
-msgid "Your talk is currently awaiting moderation."
-msgstr ""
-
-#: includes/talks/functions.php:1107
-msgid "The talk you are trying to edit does not seem to exist."
-msgstr ""
-
-#: includes/talks/functions.php:1186
-msgid "Something went wrong while trying to update your talk."
 msgstr ""
 
 #: includes/talks/tags.php:43
@@ -1353,23 +1377,11 @@ msgstr ""
 msgid "To rate"
 msgstr ""
 
-#: includes/users/functions.php:991
-msgid "Please choose a login having at least 4 characters."
-msgstr ""
-
-#: includes/users/functions.php:1025
-msgid "Please fill all required fields."
-msgstr ""
-
-#: includes/users/functions.php:1135
-msgid "Registration complete. Please check your e-mail."
-msgstr ""
-
-#: includes/users/functions.php:1164
+#: includes/users/functions.php:1161
 msgid "Username"
 msgstr ""
 
-#: includes/users/functions.php:1165
+#: includes/users/functions.php:1162
 msgid "E-mail"
 msgstr ""
 
@@ -1566,49 +1578,49 @@ msgctxt "pagination next text"
 msgid "&rarr;"
 msgstr ""
 
-#: includes/core/functions.php:1120
+#: includes/core/functions.php:1237
 msgctxt "talks tag cloud count text"
 msgid "%s talk"
 msgid_plural "%s talks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/core/functions.php:1282
+#: includes/core/functions.php:1399
 msgctxt "Admin bar menu"
 msgid "WordCamp Talks"
 msgstr ""
 
-#: includes/core/options.php:61 includes/core/options.php:407
+#: includes/core/options.php:61 includes/core/options.php:417
 msgctxt "default root slug"
 msgid "talks"
 msgstr ""
 
-#: includes/core/options.php:62 includes/core/options.php:440
+#: includes/core/options.php:62 includes/core/options.php:450
 msgctxt "default talk slug"
 msgid "talk"
 msgstr ""
 
-#: includes/core/options.php:63 includes/core/options.php:473
+#: includes/core/options.php:63 includes/core/options.php:483
 msgctxt "default category slug"
 msgid "category"
 msgstr ""
 
-#: includes/core/options.php:64 includes/core/options.php:506
+#: includes/core/options.php:64 includes/core/options.php:516
 msgctxt "default tag slug"
 msgid "tag"
 msgstr ""
 
-#: includes/core/options.php:65 includes/core/options.php:539
+#: includes/core/options.php:65 includes/core/options.php:549
 msgctxt "default user slug"
 msgid "user"
 msgstr ""
 
-#: includes/core/options.php:66 includes/core/options.php:615
+#: includes/core/options.php:66 includes/core/options.php:625
 msgctxt "default comments slug"
 msgid "comments"
 msgstr ""
 
-#: includes/core/options.php:67 includes/core/options.php:558
+#: includes/core/options.php:67 includes/core/options.php:568
 msgctxt "default ratings slug"
 msgid "ratings"
 msgstr ""
@@ -1618,32 +1630,32 @@ msgctxt "default to rate slug"
 msgid "to-rate"
 msgstr ""
 
-#: includes/core/options.php:69 includes/core/options.php:705
+#: includes/core/options.php:69 includes/core/options.php:715
 msgctxt "default sign-up action slug"
 msgid "sign-up"
 msgstr ""
 
-#: includes/core/options.php:70 includes/core/options.php:648
+#: includes/core/options.php:70 includes/core/options.php:658
 msgctxt "default action slug"
 msgid "action"
 msgstr ""
 
-#: includes/core/options.php:71 includes/core/options.php:667
+#: includes/core/options.php:71 includes/core/options.php:677
 msgctxt "default add talk action slug"
 msgid "add"
 msgstr ""
 
-#: includes/core/options.php:72 includes/core/options.php:686
+#: includes/core/options.php:72 includes/core/options.php:696
 msgctxt "default edit talk action slug"
 msgid "edit"
 msgstr ""
 
-#: includes/core/options.php:73 includes/core/options.php:724
+#: includes/core/options.php:73 includes/core/options.php:734
 msgctxt "default comments pagination slug"
 msgid "cpage"
 msgstr ""
 
-#: includes/core/options.php:577
+#: includes/core/options.php:587
 msgctxt "default user to rate slug"
 msgid "to-rate"
 msgstr ""
@@ -1733,7 +1745,7 @@ msgctxt "user talks profile slug"
 msgid "talks"
 msgstr ""
 
-#: includes/users/functions.php:1222
+#: includes/users/functions.php:1219
 msgctxt "Use the same translation as WP Core"
 msgid "[%s] Your username and password info"
 msgstr ""

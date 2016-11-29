@@ -594,39 +594,144 @@ function wct_get_form_url( $type = '', $talk_name = '' ) {
 /** Feedbacks *****************************************************************/
 
 /**
- * Add a new message to inform user
+ * Sanitize the feedback.
  *
- * Inspired by BuddyPress's bp_core_add_message() function
+ * NB: the strong tag is used by WordPress during signup.
+ *
+ * @param  string $text The text to sanitize.
+ * @return string       The sanitized text.
+ */
+function wct_sanitize_feedback( $text = '' ) {
+	$text = wp_kses( $text, array(
+		'a'      => array( 'href' => true ),
+		'strong' => array(),
+		'img'    => array(
+			'src'    => true,
+			'height' => true,
+			'width'  => true,
+			'class'  => true,
+			'alt'    => true
+		),
+	) );
+
+	return wp_unslash( $text );
+}
+
+/**
+ * Get the feedback message or the list of feedback messages to output to the user.
+ *
+ * @since 1.0.0
+ *
+ * @param string|array  $type  The type of the feedback (success, error or info) or
+ *                             An associative array keyed by the type of feedback and
+ *                             containing the list of message ids.
+ * @param  bool|int     $id    False or the ID of the feedback message to get.
+ * @return string|array        The feedback message or a list of feedback messages.
+ */
+function wct_get_feedback_messages( $type = '', $id = false ) {
+	$messages = apply_filters( 'wct_get_feedback_messages', array(
+		'success' => array(
+			1 => __( 'Saved successfully',                                'wordcamp-talks' ),
+			2 => __( 'Registration complete. Please check your mailbox.', 'wordcamp-talks' ),
+			3 => __( 'The talk was successfully created.',                'wordcamp-talks' ),
+			4 => __( 'The talk was successfully updated.',                'wordcamp-talks' ),
+		),
+		'error' => array(
+			1  => __( 'Something went wrong, please try again',                  'wordcamp-talks' ),
+			2  => __( 'You are not allowed to edit this talk.',                  'wordcamp-talks' ),
+			3  => __( 'You are not allowed to publish talks',                    'wordcamp-talks' ),
+			4  => __( 'Title and description are required fields.',              'wordcamp-talks' ),
+			5  => __( 'Something went wrong while trying to save your talk.',    'wordcamp-talks' ),
+			6  => __( 'There was a problem saving the featured image, sorry.',   'wordcamp-talks' ),
+			7  => __( 'Please choose a username having at least 4 characters.',  'wordcamp-talks' ),
+			8  => __( 'Please fill all required fields.',                        'wordcamp-talks' ),
+			9  => __( 'The talk you are trying to edit does not seem to exist.', 'wordcamp-talks' ),
+			10 => __( 'Something went wrong while trying to update your talk.',  'wordcamp-talks' ),
+		),
+		'info'  => array(
+			1 => __( 'This talk is already being edited by another user.', 'wordcamp-talks' ),
+			2 => __( 'Your talk is currently awaiting moderation.',        'wordcamp-talks' ),
+		),
+	) );
+
+	// Check for a custom pending message
+	$custom_pending_message = wct_moderation_message();
+	if ( ! empty( $custom_pending_message ) ) {
+		$messages['info'][2] = $custom_pending_message;
+	}
+
+	if ( empty( $type ) ) {
+		return $messages;
+	}
+
+	if ( ! is_array( $type ) && isset( $messages[ $type ] ) ) {
+		$messages = $messages[ $type ];
+
+		if ( false === $id || ! isset( $messages[ $type ][ $id ] ) ) {
+			return $messages;
+		}
+
+		return $messages[ $type ][ $id ];
+	}
+
+	foreach ( $type as $kt => $kv ) {
+		$message_ids = array_filter( wp_parse_id_list( $kv ) );
+
+		// If we have ids, get the corresponding messages.
+		if ( $message_ids ) {
+			$type[ $kt ] = array_intersect_key( $messages[ $kt ], array_flip( $message_ids ) );
+		}
+	}
+
+	return $type;
+}
+
+/**
+ * Explode arrays of values before using WordPress's add_query_arg() function.
+ *
+ * @since  1.0.0
+ *
+ * @param  array  $args The query arguments to add to the url.
+ * @param  string $url  The url.
+ * @return string       The url with query arguments.
+ */
+function wct_add_feedback_args( $args = array(), $url = '' ) {
+	foreach ( $args as $k => $v ) {
+		if ( ! is_array( $v ) ) {
+			continue;
+		}
+
+		$args[ $k ] = join( ',', $v );
+	}
+
+	return add_query_arg( $args, $url );
+}
+
+/**
+ * Add a new feedback message to inform the user.
  *
  * package WordCamp Talks
  * @subpackage core/functions
  *
  * @since 1.0.0
  *
- * @param  array  $message_data the type and content of the message
+ * @param  array $feedback_data A list of feedback message or message ids keyed by their type.
  */
-function wct_add_message( $message_data = array() ) {
+function wct_add_message( $feedback_data = array() ) {
 	// Success is the default
-	if ( empty( $type ) ) {
-		$type = 'success';
+	if ( empty( $feedback_data ) ) {
+		$feedback_data = array(
+			'success' => array( 1 ),
+		);
 	}
 
-	$r = wp_parse_args( $message_data, array(
-		'type'    => 'success',
-		'content' => __( 'Saved successfully', 'wordcamp-talks' ),
-	) );
-
-	// Send the values to the cookie for page reload display
-	@setcookie( 'wc-talks-feedback',      $r['content'], time() + 60 * 60 * 24, COOKIEPATH );
-	@setcookie( 'wc-talks-feedback-type', $r['type'],    time() + 60 * 60 * 24, COOKIEPATH );
-
-	wct_set_global( 'feedback', $r );
+	wct_set_global( 'feedback', $feedback_data );
 }
 
 /**
  * Sets a new message to inform user
  *
- * Inspired by BuddyPress's bp_core_setup_message() function
+ * Inspired by ClusterPress's cp_feedbacks() function.
  *
  * @package WordCamp Talks
  * @subpackage core/functions
@@ -634,50 +739,62 @@ function wct_add_message( $message_data = array() ) {
  * @since 1.0.0
  */
 function wct_set_user_feedback() {
-	// Check Global if any
-	$feedback = wct_get_global( 'feedback' );
+	// Check the URL query to find a feedback message
+	$current_url = parse_url( $_SERVER['REQUEST_URI'] );
 
-	// Check cookies if any
-	if ( empty( $feedback ) && ! empty( $_COOKIE['wc-talks-feedback'] ) ) {
-		wct_set_global( 'feedback', array(
-			'type'    => wp_unslash( $_COOKIE['wc-talks-feedback-type'] ),
-			'content' => wp_unslash( $_COOKIE['wc-talks-feedback'] ),
+	if ( ! empty( $current_url['query'] ) ) {
+		$vars = wp_parse_args( $current_url['query'] );
+
+		$feedback = array_intersect_key( $vars, array(
+			'error'   => true,
+			'success' => true,
+			'info'    => true,
 		) );
 	}
 
-	// Remove cookies if set.
-	if ( isset( $_COOKIE['wc-talks-feedback'] ) ) {
-		@setcookie( 'wc-talks-feedback', false, time() - 1000, COOKIEPATH );
+	if ( empty( $feedback ) ) {
+		return;
 	}
 
-	if ( isset( $_COOKIE['wc-talks-feedback-type'] ) ) {
-		@setcookie( 'wc-talks-feedback-type', false, time() - 1000, COOKIEPATH );
-	}
+	wct_set_global( 'feedback', $feedback );
 }
 
 /**
- * Displays the feedback message to user
- *
- * Inspired by BuddyPress's bp_core_render_message() function
+ * Displays the feedback message to the user.
  *
  * @package WordCamp Talks
  * @subpackage core/functions
  *
  * @since 1.0.0
+ *
+ * @return string HTML Output.
  */
 function wct_user_feedback() {
 	$feedback = wct_get_global( 'feedback' );
 
-	if ( empty( $feedback ) || ! empty( $feedback['admin_notices'] ) ) {
+	if ( empty( $feedback ) || ! is_array( $feedback ) || ! empty( $feedback['admin_notices'] ) ) {
 		return;
 	}
 
-	// Display the message
-	?>
-	<div class="message <?php echo esc_attr( $feedback['type'] ); ?>">
-		<p><?php echo esc_html( $feedback['content'] ); ?></p>
-	</div>
-	<?php
+	$messages = wct_get_feedback_messages( $feedback );
+
+	if ( empty( $messages ) ) {
+		return;
+	}
+
+	foreach ( (array) $messages as $class => $message ) : ?>
+		<div class="message <?php echo esc_attr( $class ); ?>">
+			<p>
+				<?php if ( is_array( $message ) ) :
+						echo( join( '</p><p>', array_map( 'wct_sanitize_feedback', $message ) ) );
+
+					else :
+						echo wct_sanitize_feedback( $message );
+
+				endif ; ?>
+			</p>
+		</div>
+	<?php endforeach;
 }
 
 /** Rating Talks **************************************************************/

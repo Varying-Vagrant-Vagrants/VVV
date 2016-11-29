@@ -976,9 +976,13 @@ function wct_users_signup_user( $exit = true ) {
 	$is_multisite = is_multisite();
 
 	/**
-	 * Before registering the user, check for required field
+	 * Set the feedback array.
 	 */
-	$required_errors = new WP_Error();
+	$feedback = array(
+		'error'   => array(),
+		'success' => array(),
+		'info'    => array(),
+	);
 
 	$user_login = false;
 
@@ -988,7 +992,7 @@ function wct_users_signup_user( $exit = true ) {
 
 	// Force the login to exist and to be at least 4 characters long
 	if ( 4 > mb_strlen( $user_login ) ) {
-		$required_errors->add( 'user_login_fourchars', __( 'Please choose a login having at least 4 characters.', 'wordcamp-talks' ) );
+		$feedback['error'][] = 7;
 	}
 
 	$user_email = false;
@@ -1009,11 +1013,14 @@ function wct_users_signup_user( $exit = true ) {
 	/**
 	 * Perform actions before the required fields check
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param  string $user_login the user login
 	 * @param  string $user_email the user email
 	 * @param  array  $edit_user  all extra user fields
+	 * @param  array  $feedback   the feedback array
 	 */
-	do_action( 'wct_users_before_signup_field_required', $user_login, $user_email, $edit_user );
+	do_action_ref_array( 'wct_users_before_signup_field_required', array( $user_login, $user_email, $edit_user, $feedback ) );
 
 	foreach ( $edit_user as $key => $value ) {
 
@@ -1021,18 +1028,15 @@ function wct_users_signup_user( $exit = true ) {
 			continue;
 		}
 
-		if ( empty( $value ) && 'empty_required_field' != $required_errors->get_error_code() ) {
-			$required_errors->add( 'empty_required_field', __( 'Please fill all required fields.', 'wordcamp-talks' ) );
+		if ( empty( $value ) && false === array_search( 8, $feedback['error'] ) ) {
+			$feedback['error'][] = 8;
 		}
 	}
 
 	// Stop the process and ask to fill all fields.
-	if ( $required_errors->get_error_code() ) {
+	if ( ! empty( $feedback['error'] ) ) {
 		//Add feedback to the user
-		wct_add_message( array(
-			'type'    => 'error',
-			'content' => join( ' ', array_map( 'strip_tags', $required_errors->get_error_messages() ) ),
-		) );
+		wct_add_message( array_filter( $feedback ) );
 		return;
 	}
 
@@ -1055,8 +1059,7 @@ function wct_users_signup_user( $exit = true ) {
 		if ( is_wp_error( $signup_array['errors'] ) && $signup_array['errors']->get_error_code() ) {
 			//Add feedback to the user
 			wct_add_message( array(
-				'type'    => 'error',
-				'content' => join( ' ', array_map( 'strip_tags', $signup_array['errors']->get_error_messages() ) ),
+				'error' => $signup_array['errors']->get_error_messages(),
 			) );
 			return;
 		}
@@ -1086,8 +1089,7 @@ function wct_users_signup_user( $exit = true ) {
 	if ( is_wp_error( $user ) ) {
 		//Add feedback to the user
 		wct_add_message( array(
-			'type'    => 'error',
-			'content' => join( ' ', array_map( 'strip_tags', $user->get_error_messages() ) ),
+			'error' => $user->get_error_messages(),
 		) );
 		return;
 
@@ -1130,12 +1132,7 @@ function wct_users_signup_user( $exit = true ) {
 		}
 
 		// Finally invite the user to check his email.
-		wct_add_message( array(
-			'type'    => 'success',
-			'content' => __( 'Registration complete. Please check your e-mail.', 'wordcamp-talks' ),
-		) );
-
-		wp_safe_redirect( $redirect );
+		wp_safe_redirect( add_query_arg( 'success', 2, $redirect ) );
 
 		if ( $exit ) {
 			exit();

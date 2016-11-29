@@ -773,6 +773,12 @@ function wct_talks_enqueue_scripts() {
 		return;
 	}
 
+	$deps    = array();
+	$url     = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	$js_vars = array(
+		'canonical' => remove_query_arg( array( 'success', 'error', 'info' ), $url ),
+	);
+
 	// Single talk > ratings
 	if ( wct_is_single_talk() && ! wct_is_edit() && ! wct_is_rating_disabled() ) {
 
@@ -780,7 +786,7 @@ function wct_talks_enqueue_scripts() {
 		$users_nb = count( $ratings['users'] );
 		$hintlist = (array) wct_get_hint_list();
 
-		$js_vars = array(
+		$js_vars = array_merge( $js_vars, array(
 			'raty_loaded'  => 1,
 			'ajaxurl'      => admin_url( 'admin-ajax.php', 'relative' ),
 			'wait_msg'     => esc_html__( 'Saving your rating; please wait', 'wordcamp-talks' ),
@@ -796,7 +802,7 @@ function wct_talks_enqueue_scripts() {
 			'hints'        => $hintlist,
 			'hints_nb'     => count( $hintlist ),
 			'wpnonce'      => wp_create_nonce( 'wct_rate' ),
-		);
+		) );
 
 		$user_id = wct_users_current_user_id();
 
@@ -804,8 +810,7 @@ function wct_talks_enqueue_scripts() {
 			$js_vars['readonly'] = ( 0 != $users_nb ) ? in_array( $user_id, $ratings['users'] ) : false;
 		}
 
-		wp_enqueue_script( 'wc-talks-script', wct_get_js_script( 'script' ), array( 'jquery-raty' ), wct_get_version(), true );
-		wp_localize_script( 'wc-talks-script', 'wct_vars', apply_filters( 'wct_talks_single_script', $js_vars ) );
+		$deps = array( 'jquery-raty' );
 	}
 
 	// Form > tags
@@ -814,13 +819,13 @@ function wct_talks_enqueue_scripts() {
 		$deps = array( 'tagging' );
 
 		// Defaul js vars
-		$js_vars = array(
+		$js_vars = array_merge( $js_vars, array(
 			'tagging_loaded'  => 1,
 			'taginput_name'   => 'wct[_the_tags][]',
 			'duplicate_tag'   => __( 'Duplicate tag:',       'wordcamp-talks' ),
 			'forbidden_chars' => __( 'Forbidden character:', 'wordcamp-talks' ),
 			'forbidden_words' => __( 'Forbidden word:',      'wordcamp-talks' ),
-		);
+		) );
 
 		// Add HeartBeat if talk is being edited
 		if ( wct_is_edit() ) {
@@ -832,10 +837,11 @@ function wct_talks_enqueue_scripts() {
 			) );
 		}
 
-		// Enqueue and localize script
-		wp_enqueue_script( 'wc-talks-script', wct_get_js_script( 'script' ), $deps, wct_get_version(), true );
-		wp_localize_script( 'wc-talks-script', 'wct_vars', apply_filters( 'wct_talks_form_script_vars', $js_vars ) );
+		$js_vars = apply_filters( 'wct_talks_form_script_vars', $js_vars );
 	}
+
+	wp_enqueue_script ( 'wc-talks-script', wct_get_js_script( 'script' ), $deps, wct_get_version(), true );
+	wp_localize_script( 'wc-talks-script', 'wct_vars', $js_vars );
 }
 
 /**
@@ -981,14 +987,8 @@ function wct_talks_post_talk() {
 
 	// Check capacity
 	if ( ! wct_user_can( 'publish_talks' ) ) {
-		// Add feedback to the user
-		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'You are not allowed to publish talks', 'wordcamp-talks' ),
-		) );
-
-		// Redirect to main archive page
-		wp_safe_redirect( $redirect );
+		// Redirect to main archive page and inform the user he cannot publish talks.
+		wp_safe_redirect( add_query_arg( 'error', 3, $redirect ) );
 		exit();
 	}
 
@@ -998,8 +998,7 @@ function wct_talks_post_talk() {
 	if ( empty( $posted['_the_title'] ) || empty( $posted['_the_content'] ) ) {
 		// Add feedback to the user
 		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'Title and description are required fields.', 'wordcamp-talks' ),
+			'error' => array( 4 ),
 		) );
 
 		// Simply stop, so that the user keeps the posted values.
@@ -1009,52 +1008,37 @@ function wct_talks_post_talk() {
 	$id = wct_talks_save_talk( $posted );
 
 	if ( empty( $id ) ) {
-		// Add feedback to the user
-		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'Something went wrong while trying to save your talk.', 'wordcamp-talks' ),
-		) );
-
-		// Redirect to an empty form
-		wp_safe_redirect( wct_get_form_url() );
+		// Redirect to an empty form and inform him the talk was not created.
+		wp_safe_redirect( add_query_arg( 'error', 5, wct_get_form_url() ) );
 		exit();
+
 	} else {
 		$talk             = get_post( $id );
-		$feedback_message = array();
+		$feedback_message = array(
+			'error'   => array(),
+			'success' => array( 3 ),
+			'info'    => array(),
+		);
 
 		if ( ! empty( $posted['_the_thumbnail'] ) ) {
 			$thumbnail = reset( $posted['_the_thumbnail'] );
 			$sideload = WordCamp_Talks_Talks_Thumbnail::start( $thumbnail, $id );
 
 			if ( is_wp_error( $sideload->result ) ) {
-				$feedback_message[] = __( 'There was a problem saving the featured image, sorry.', 'wordcamp-talks' );
+				$feedback_message['error'][] = 6;
 			}
 		}
 
 		if ( 'pending' == $talk->post_status ) {
 			// Build pending message.
-			$feedback_message['pending'] = __( 'Your talk is currently awaiting moderation.', 'wordcamp-talks' );
-
-			// Check for a custom pending message
-			$custom_pending_message = wct_moderation_message();
-			if ( ! empty( $custom_pending_message ) ) {
-				$feedback_message['pending'] = $custom_pending_message;
-			}
+			$feedback_message['info'][] = 2;
 
 		// redirect to the talk
 		} else {
 			$redirect = wct_talks_get_talk_permalink( $talk );
 		}
 
-		if ( ! empty( $feedback_message ) ) {
-			// Add feedback to the user
-			wct_add_message( array(
-				'type'    => 'info',
-				'content' => join( ' ', $feedback_message ),
-			) );
-		}
-
-		wp_safe_redirect( $redirect );
+		wp_safe_redirect( wct_add_feedback_args( array_filter( $feedback_message ), $redirect ) );
 		exit();
 	}
 }
@@ -1102,27 +1086,15 @@ function wct_talks_update_talk() {
 
 	// Found no talk, redirect and inform the user
 	if ( empty( $talk->ID ) ) {
-		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'The talk you are trying to edit does not seem to exist.', 'wordcamp-talks' ),
-		) );
-
 		// Redirect to main archive page
-		wp_safe_redirect( $redirect );
+		wp_safe_redirect( add_query_arg( 'error', 9, $redirect ) );
 		exit();
 	}
 
-
 	// Checks if the user can edit the talk
 	if ( ! wct_talks_can_edit( $talk ) ) {
-		// Add feedback to the user
-		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'You are not allowed to edit this talk.', 'wordcamp-talks' ),
-		) );
-
 		// Redirect to main archive page
-		wp_safe_redirect( $redirect );
+		wp_safe_redirect( add_query_arg( 'error', 2, $redirect ) );
 		exit();
 	}
 
@@ -1132,8 +1104,7 @@ function wct_talks_update_talk() {
 	if ( empty( $updated['_the_title'] ) || empty( $updated['_the_content'] ) ) {
 		// Add feedback to the user
 		wct_add_message( array(
-			'type'    => 'error',
-			'content' => __( 'Title and description are required fields.', 'wordcamp-talks' ),
+			'error' => array( 4 ),
 		) );
 
 		// Simply stop, so that the user keeps the posted values.
@@ -1142,9 +1113,11 @@ function wct_talks_update_talk() {
 
 	// Reset '_the_id' param to the ID of the talk found
 	$updated['_the_id'] = $talk->ID;
-	$feedback_message   = array();
-	$featured_error     = __( 'There was a problem saving the featured image, sorry.', 'wordcamp-talks' );
-	$featured_type      = 'info';
+	$feedback_message = array(
+		'error'   => array(),
+		'success' => array(),
+		'info'    => array(),
+	);
 
 	// Take care of the featured image
 	$thumbnail_id = (int) get_post_thumbnail_id( $talk );
@@ -1158,7 +1131,7 @@ function wct_talks_update_talk() {
 			if ( is_numeric( $thumbnail ) ) {
 				// validate the attachment
 				if ( ! get_post( $thumbnail ) ) {
-					$feedback_message[] = $featured_error;
+					$feedback_message['error'][] = 6;
 				// Set the new Featured image
 				} else {
 					set_post_thumbnail( $talk->ID, $thumbnail );
@@ -1167,7 +1140,7 @@ function wct_talks_update_talk() {
 				$sideload = WordCamp_Talks_Talks_Thumbnail::start( $thumbnail_src, $talk->ID );
 
 				if ( is_wp_error( $sideload->result ) ) {
-					$feedback_message[] = $featured_error;
+					$feedback_message['error'][] = 6;
 				}
 			}
 		}
@@ -1182,26 +1155,18 @@ function wct_talks_update_talk() {
 
 	if ( empty( $id ) ) {
 		// Set the feedback for the user
-		$featured_type    = 'error';
-		$feedback_message = __( 'Something went wrong while trying to update your talk.', 'wordcamp-talks' );
+		$feedback_message['error'][] = 10;
 
 		// Redirect to the form
 		$redirect = wct_get_form_url( wct_edit_slug(), $talk_name );
 
 	// Redirect to the talk
 	} else {
+		$feedback_message['success'][] = 4;
 		$redirect = wct_talks_get_talk_permalink( $id );
 	}
 
-	if ( ! empty( $feedback_message ) ) {
-		// Add feedback to the user
-		wct_add_message( array(
-			'type'    => $featured_type,
-			'content' => join( ' ', $feedback_message ),
-		) );
-	}
-
-	wp_safe_redirect( $redirect );
+	wp_safe_redirect( wct_add_feedback_args( array_filter( $feedback_message ), $redirect ) );
 	exit();
 }
 

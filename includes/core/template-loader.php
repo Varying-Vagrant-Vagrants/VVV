@@ -405,25 +405,15 @@ function wct_set_template( $template = '' ) {
 				$user_is_editing = wct_talks_lock_talk( $query_loop->talk->ID );
 
 				if ( ! empty( $user_is_editing ) ) {
-					wct_add_message( array(
-						'type'    => 'info',
-						'content' => sprintf( __( 'The talk: &#34;%s&#34; is already being edited by another user.', 'wordcamp-talks' ), $query_loop->talk->post_title ),
-					) );
-
-					// Redirect the user
-					wp_safe_redirect( wct_get_redirect_url() );
+					// Redirect the user and inform him the talk is being edited.
+					wp_safe_redirect( add_query_arg( 'info', 1, wct_get_redirect_url() ) );
 					exit();
 				}
 
 				// Bail if user can't edit the talk
 				if ( ! wct_talks_can_edit( $query_loop->talk ) ) {
-					wct_add_message( array(
-						'type'    => 'error',
-						'content' => __( 'You are not allowed to edit this talk.', 'wordcamp-talks' ),
-					) );
-
-					// Redirect the user
-					wp_safe_redirect( wct_get_redirect_url() );
+					// Redirect the user and inform him the talk cannot be edited by him.
+					wp_safe_redirect( add_query_arg( 'error', 2, wct_get_redirect_url() ) );
 					exit();
 				}
 
