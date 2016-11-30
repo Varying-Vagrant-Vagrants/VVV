@@ -198,6 +198,14 @@ function wct_get_settings_fields() {
 				'args'              => array()
 			),
 
+			// Signup fields (shown into the signup form)
+			'_wc_talks_autolog_enabled' => array(
+				'title'             => __( 'Signups Autolog', 'wordcamp-talks' ),
+				'callback'          => 'wct_autolog_signups_fields_setting_callback',
+				'sanitize_callback' => 'absint',
+				'args'              => array()
+			),
+
 			// Are users profiles embeddable ?
 			'_wc_talks_embed_profile' => array(
 				'title'             => __( 'Embed Profile', 'wordcamp-talks' ),
@@ -335,6 +343,7 @@ function wct_get_settings_fields() {
 	if ( ! wct_is_signup_allowed_for_current_blog() ) {
 		unset(
 			$setting_fields['wc_talks_settings_core']['_wc_talks_signup_fields'],
+			$setting_fields['wc_talks_settings_core']['_wc_talks_autolog_enabled'],
 			$setting_fields['wc_talks_settings_rewrite']['_wc_talks_signup_slug']
 		);
 	}
@@ -852,6 +861,22 @@ function wct_signup_fields_setting_callback() {
 
 		<?php endforeach; ?>
 	</ul>
+	<?php
+}
+
+/**
+ * Signups autolog callback
+ *
+ * @since 1.0.0
+ *
+ * @return string HTML output
+ */
+function wct_autolog_signups_fields_setting_callback() {
+	?>
+
+	<input name="_wc_talks_autolog_enabled" id="_wc_talks_autolog_enabled" type="checkbox" value="1" <?php checked( (bool) wct_user_autolog_after_signup() ); ?> />
+	<label for="_wc_talks_autolog_enabled"><?php esc_html_e( 'Automagically log in just signed up users.', 'wordcamp-talks' ); ?></label>
+
 	<?php
 }
 

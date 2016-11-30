@@ -631,10 +631,13 @@ function wct_sanitize_feedback( $text = '' ) {
 function wct_get_feedback_messages( $type = '', $id = false ) {
 	$messages = apply_filters( 'wct_get_feedback_messages', array(
 		'success' => array(
-			1 => __( 'Saved successfully',                                'wordcamp-talks' ),
-			2 => __( 'Registration complete. Please check your mailbox.', 'wordcamp-talks' ),
-			3 => __( 'The talk was successfully created.',                'wordcamp-talks' ),
-			4 => __( 'The talk was successfully updated.',                'wordcamp-talks' ),
+			1 => __( 'Saved successfully',                                                                     'wordcamp-talks' ),
+			2 => __( 'Registration complete. Please check your mailbox.',                                      'wordcamp-talks' ),
+			3 => __( 'The talk was successfully created.',                                                     'wordcamp-talks' ),
+			4 => __( 'The talk was successfully updated.',                                                     'wordcamp-talks' ),
+			5 => __( 'For your convenience, you have been automagically logged in.',                           'wordcamp-talks' ),
+			6 => __( 'Make sure to check you received the email we sent you to reset your password.',          'wordcamp-talks' ),
+			7 => __( 'Otherwise, edit your email and password from your profile before logging off the site.', 'wordcamp-talks' ),
 		),
 		'error' => array(
 			1  => __( 'Something went wrong, please try again',                  'wordcamp-talks' ),

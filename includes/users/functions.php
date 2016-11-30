@@ -949,6 +949,23 @@ function wct_users_update_signups_table( $user_id = 0 ) {
 }
 
 /**
+ * Reset a password by leaving the Activation key.
+ *
+ * @since 1.0.0
+ *
+ * @param string $password The Password to reset.
+ * @param int    $user_id  The User id to reset the password for.
+ */
+function wct_resset_password( $password, $user_id ) {
+	global $wpdb;
+
+	$hash = wp_hash_password( $password );
+	$wpdb->update( $wpdb->users, array( 'user_pass' => $hash ), array('ID' => $user_id ) );
+
+	wp_cache_delete( $user_id, 'users' );
+}
+
+/**
  * Signup a new user
  *
  * @package WordCamp Talks
@@ -1131,8 +1148,34 @@ function wct_users_signup_user( $exit = true ) {
 			wct_users_update_signups_table( $user );
 		}
 
+		// Set the default redirect.
+		$redirect = add_query_arg( 'success', 2, $redirect );
+
+		// If Autolog is on, Log the new user in and redirect him to the talk form.
+		if ( wct_user_autolog_after_signup() ) {
+			$loggedin_user = get_user_by( 'id', $user );
+
+			if ( isset( $loggedin_user->user_login ) ) {
+				$signon_data = array(
+					'user_login'    => $loggedin_user->user_login,
+					'user_password' => wp_generate_password( 12, false ),
+				);
+
+				// Reset Password without removing the activation key.
+				wct_resset_password( $signon_data['user_password'], $loggedin_user->ID );
+
+				// Log the user in
+				$signed_in = wp_signon( $signon_data );
+
+				// Redirect the loggedin user to the Submit form
+				if ( ! is_wp_error( $signed_in ) ) {
+					$redirect = add_query_arg( 'success', '5,6,7', wct_get_form_url() );
+				}
+			}
+		}
+
 		// Finally invite the user to check his email.
-		wp_safe_redirect( add_query_arg( 'success', 2, $redirect ) );
+		wp_safe_redirect( $redirect );
 
 		if ( $exit ) {
 			exit();

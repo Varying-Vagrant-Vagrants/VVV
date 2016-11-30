@@ -53,6 +53,7 @@ function wct_get_default_options() {
 		'_wc_talks_embed_profile'       => 0,
 		'_wc_talks_featured_images'     => 1,
 		'_wc_talks_to_rate_disabled'    => 0,
+		'_wc_talks_autolog_enabled'     => 0,
 	);
 
 	// Pretty links customization
@@ -304,6 +305,21 @@ function wct_user_public_fields_list( $default = array() ) {
  */
 function wct_user_signup_fields( $default = array() ) {
 	return (array) apply_filters( 'wct_user_signup_fields', get_option( '_wc_talks_signup_fields', $default ) );
+}
+
+/**
+ * Should the user be automagically logged in after a successful signup ?
+ *
+ * @package WordCamp Talks
+ * @subpackage core/options
+ *
+ * @since 1.0.0
+ *
+ * @param  bool $default default value
+ * @return bool         True if enabled, false otherwise
+ */
+function wct_user_autolog_after_signup( $default = 0 ) {
+	return (bool) apply_filters( 'wct_user_autolog_after_signup', (bool) get_option( '_wc_talks_autolog_enabled', $default ) );
 }
 
 /**
