@@ -329,6 +329,66 @@ function wct_comments_array( $comments = array(), $talk_id = 0 ) {
 }
 
 /**
+ * Filter the comments query in case of a private call for speakers
+ * (when the default talk status is private).
+ *
+ * @since 1.0.0
+ *
+ * @param  array $comment_query_args The Comments loop query arguments.
+ * @return array                     The Comments loop query arguments.
+ */
+function wct_comments_template_query_args( $comment_query_args = array() ) {
+	if ( ! wct_is_talks() || 'private' !== wct_default_talk_status() ) {
+		return $comment_query_args;
+	}
+
+	// This case should never happened as the talk is private.
+	if ( ! is_user_logged_in() ) {
+		$comment_query_args['type__not_in'] = array( 'comment' );
+
+	// if the user can't view any talk comments, only show him the ones he posted.
+	} elseif ( ! wct_user_can( 'view_talk_comments' ) ) {
+		$comment_query_args['user_id'] = get_current_user_id();
+	}
+
+	return $comment_query_args;
+}
+
+/**
+ * Filter the comments count in case of a private call for speakers
+ * (when the default talk status is private).
+ *
+ * @since 1.0.0
+ *
+ * @param  int $count   The comment count.
+ * @param  int $post_id The current Post ID.
+ * @return int          The comment count.
+ */
+function wct_edit_comments_number( $count = 0, $post_id = 0 ) {
+	if ( empty( $count ) || empty( $post_id ) ) {
+		return $count;
+	}
+
+	$post_type = get_post_type( $post_id );
+
+	if ( wct_get_post_type() !== $post_type ) {
+		return $count;
+	}
+
+	if ( 'private' !== wct_default_talk_status() || wct_user_can( 'view_talk_comments' ) ) {
+		return $count;
+	}
+
+	// When listing comments on a single post, we only fetch the current user comments.
+	if ( ! empty( $GLOBALS['wp_query']->comments ) ) {
+		return $GLOBALS['wp_query']->comment_count;
+	}
+
+	// Otherwise there are no comments the user can see.
+	return 0;
+}
+
+/**
  * Make sure user can see comment feeds.
  *
  * @package WordCamp Talks

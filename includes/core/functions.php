@@ -1052,6 +1052,11 @@ function wct_ajax_rate() {
 
 	$new_average_rate = wct_add_rate( $talk, $user_id, $rate );
 
+	// If the user can't see other ratings, simply return the rating he just gave.
+	if ( 'private' === wct_default_talk_status() && ! wct_user_can( 'view_talk_rates' ) ) {
+		$new_average_rate = number_format( $rate, 1 );
+	}
+
 	if ( empty( $new_average_rate ) ) {
 		exit( '0' );
 	} else {

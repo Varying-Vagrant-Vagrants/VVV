@@ -781,20 +781,43 @@ function wct_talks_enqueue_scripts() {
 
 	// Single talk > ratings
 	if ( wct_is_single_talk() && ! wct_is_edit() && ! wct_is_rating_disabled() ) {
+		$user_id = wct_users_current_user_id();
 
-		$ratings = (array) wct_count_ratings();
-		$users_nb = count( $ratings['users'] );
+		if ( 'private' === wct_default_talk_status() && ! wct_user_can( 'view_talk_rates' ) ) {
+			$talk_id = 0;
+
+			if ( ! empty( wct()->query_loop->talk->ID ) ) {
+				$talk_id = wct()->query_loop->talk->ID;
+			}
+
+			$ratings  = array( 'average' => wct_count_ratings( $talk_id, $user_id ), 'users' => array() );
+			$users_nb = (int) ! empty( $ratings['average'] );
+
+			if ( $users_nb ) {
+				$ratings['users'] = array( $user_id );
+			}
+
+			$one_rate    = '';
+			$success_msg = __( 'Thanks for your rating:', 'wordcamp-talks' );
+
+		} else {
+			$ratings     = (array) wct_count_ratings();
+			$users_nb    = count( $ratings['users'] );
+			$one_rate    = esc_html__( 'One rating', 'wordcamp-talks' );
+			$success_msg = esc_html__( 'Thanks! The average rating is now:', 'wordcamp-talks' );
+		}
+
 		$hintlist = (array) wct_get_hint_list();
 
 		$js_vars = array_merge( $js_vars, array(
 			'raty_loaded'  => 1,
 			'ajaxurl'      => admin_url( 'admin-ajax.php', 'relative' ),
 			'wait_msg'     => esc_html__( 'Saving your rating; please wait', 'wordcamp-talks' ),
-			'success_msg'  => esc_html__( 'Thanks! The average rating is now:', 'wordcamp-talks' ),
+			'success_msg'  => $success_msg,
 			'error_msg'    => esc_html__( 'Oops! Something went wrong', 'wordcamp-talks' ),
 			'average_rate' => $ratings['average'],
 			'rate_nb'      => $users_nb,
-			'one_rate'     => esc_html__( 'One rating', 'wordcamp-talks' ),
+			'one_rate'     => $one_rate,
 			'x_rate'       => esc_html__( '% ratings', 'wordcamp-talks' ),
 			'readonly'     => true,
 			'can_rate'     => wct_user_can( 'rate_talks' ),
@@ -803,8 +826,6 @@ function wct_talks_enqueue_scripts() {
 			'hints_nb'     => count( $hintlist ),
 			'wpnonce'      => wp_create_nonce( 'wct_rate' ),
 		) );
-
-		$user_id = wct_users_current_user_id();
 
 		if ( wct_user_can( 'rate_talks' ) ) {
 			$js_vars['readonly'] = ( 0 != $users_nb ) ? in_array( $user_id, $ratings['users'] ) : false;
@@ -890,11 +911,11 @@ function wct_talks_get_order_options() {
 	);
 
 	// Only if not disabled.
-	if ( ! wct_is_rating_disabled() && wct_user_can( 'rate_talks' ) ) {
+	if ( ! wct_is_rating_disabled() && wct_user_can( 'view_talk_rates' ) ) {
 		$order_options['rates_count'] = __( 'Highest Rating', 'wordcamp-talks' );
 	}
 
-	if ( ! wct_user_can( 'comment_talks' ) ) {
+	if ( ! wct_user_can( 'view_talk_comments' ) ) {
 		unset( $order_options['comment_count'] );
 	}
 

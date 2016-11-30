@@ -38,7 +38,9 @@ add_filter( 'posts_clauses', 'wct_set_rates_count_orderby', 10, 2 );
 add_filter( 'the_posts', 'wct_talks_stick_talks', 10, 2 );
 
 // Filter comment author urls
-add_filter( 'comments_array', 'wct_comments_array',  11, 2 );
+add_filter( 'comments_array',               'wct_comments_array',               11, 2 );
+add_filter( 'comments_template_query_args', 'wct_comments_template_query_args', 10, 1 );
+add_filter( 'get_comments_number',          'wct_edit_comments_number',         10, 2 );
 
 // Filter the comment approved for Raters & Blind Raters
 add_filter( 'pre_comment_approved', 'wct_users_raters_approved', 10,  2 );

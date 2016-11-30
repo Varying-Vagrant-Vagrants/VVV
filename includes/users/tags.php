@@ -302,6 +302,10 @@ function wct_users_embed_user_profile_description() {
  * @param int $user_id the user ID
  */
 function wct_users_the_user_talk_rating( $id = 0, $user_id = 0 ) {
+	if ( ! wct_user_can( 'view_talk_rates' ) ) {
+		return;
+	}
+
 	echo wct_users_get_user_talk_rating( $id, $user_id );
 }
 

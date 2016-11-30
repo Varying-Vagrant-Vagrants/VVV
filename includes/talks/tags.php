@@ -877,7 +877,11 @@ function wct_talks_the_average_rating() {
 			$id = wct()->query_loop->talk->ID;
 		}
 
-		$rating = get_post_meta( $id, '_wc_talks_average_rate', true );
+		if ( wct_user_can( 'view_talk_rates' ) ) {
+			$rating = get_post_meta( $id, '_wc_talks_average_rate', true );
+		} elseif ( is_user_logged_in() ) {
+			$rating = wct_count_ratings( $id, get_current_user_id() );
+		}
 
 		if ( ! empty( $rating ) && is_numeric( $rating ) ) {
 			$rating = number_format_i18n( $rating, 1 );
@@ -940,6 +944,11 @@ function wct_talks_the_rating_link( $zero = false, $more = false, $css_class = '
 		}
 		if ( false === $more ) {
 			$more = __( 'Average rating: %', 'wordcamp-talks' );
+		}
+
+		// Blind raters can only see their vote
+		if ( is_user_logged_in() && ! wct_user_can( 'view_talk_rates' ) ) {
+			$more = __( 'You rated: %', 'wordcamp-talks' );
 		}
 
 		$average = wct_talks_get_average_rating( $talk->ID );

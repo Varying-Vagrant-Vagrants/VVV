@@ -89,6 +89,8 @@ function wct_get_rater_caps() {
 		'view_other_profiles' => true,
 		'comment_talks'       => true,
 		'rate_talks'          => true,
+		'view_talk_rates'     => true,
+		'view_talk_comments'  => true,
 	);
 
 	$post_type_object = get_post_type_object( wct_get_post_type() );
@@ -135,7 +137,12 @@ function wct_register_roles() {
 
 	// Create the role if not already done.
 	if ( is_null( $blind_rater ) ) {
-		$caps = array_diff_key( $caps, array( 'view_other_profiles' => false ) );
+		$caps = array_diff_key( $caps, array(
+			'view_other_profiles' => false,
+			'view_talk_rates'     => false,
+			'view_talk_comments'  => false,
+		) );
+
 		add_role( 'blind_rater', __( 'Blind Rater', 'wordcamp-talks' ), $caps );
 	}
 }
@@ -244,6 +251,8 @@ function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = ar
 
 		case 'comment_talks'       :
 		case 'rate_talks'          :
+		case 'view_talk_rates'     :
+		case 'view_talk_comments'  :
 			if ( 'private' === wct_default_talk_status() ) {
 				$caps = array( 'manage_options' );
 			} elseif ( 'rate_talks' === $cap && empty( $user_id ) ) {
