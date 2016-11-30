@@ -635,16 +635,13 @@ function wct_users_public_empty_profile() {
 	$labels     = wct_get_global( 'public_profile_labels' );
 
 	if ( $empty_info && $empty_info === count( $labels ) ) {
-		$message = __( 'This user has not filled any public profile informations.', 'wordcamp-talks' );
+		$feedback = array( 'info' => array( 3 ) );
 
 		if ( wct_is_current_user_profile() ) {
-			$message = __( 'You have not filled any public profile informations. You can edit your profile to add some.', 'wordcamp-talks' );
+			$feedback = array( 'info' => array( 4 ) );
 		}
 
-		wct_set_global( 'feedback', array(
-			'type'    => 'info',
-			'content' => $message,
-		) );
+		wct_set_global( 'feedback', $feedback );
 
 		return true;
 	}

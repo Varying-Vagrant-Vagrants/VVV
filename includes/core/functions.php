@@ -652,8 +652,10 @@ function wct_get_feedback_messages( $type = '', $id = false ) {
 			10 => __( 'Something went wrong while trying to update your talk.',  'wordcamp-talks' ),
 		),
 		'info'  => array(
-			1 => __( 'This talk is already being edited by another user.', 'wordcamp-talks' ),
-			2 => __( 'Your talk is currently awaiting moderation.',        'wordcamp-talks' ),
+			1 => __( 'This talk is already being edited by another user.',                                          'wordcamp-talks' ),
+			2 => __( 'Your talk is currently awaiting moderation.',                                                 'wordcamp-talks' ),
+			3 => __( 'This user has not filled any public profile informations.',                                   'wordcamp-talks' ),
+			4 => __( 'You have not filled any public profile informations. You can edit your profile to add some.', 'wordcamp-talks' ),
 		),
 	) );
 
