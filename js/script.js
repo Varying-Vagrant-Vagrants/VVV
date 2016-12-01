@@ -91,7 +91,7 @@
 			'edit-on-delete'       : false,
 			'tag-char'             : '',
 			'forbidden-chars'      : [ '.', '_', '?', '<', '>' ],
-			'forbidden-words'      : ['script'],
+			'forbidden-words'      : [ '&lt;', '&gt;' ],
 			'no-duplicate-text'    : wct_vars.duplicate_tag,
 			'forbidden-chars-text' : wct_vars.forbidden_chars,
 			'forbidden-words-text' : wct_vars.forbidden_words
