@@ -418,7 +418,7 @@ function wct_comment_reply_link( $reply_link = '', $args = array(), $comment = n
 
 	if ( (int) $comment->user_id !== wct_users_current_user_id() ) {
 		$blind_rater_reply_link = sprintf(
-			esc_html__( '%1$s%2$s Blind raters can only view their own comments.%3$s' ),
+			esc_html__( '%1$s%2$s Blind raters can only view their own comments.%3$s', 'wordcamp-talks' ),
 			$args['before'] . '<span class="comment-reply-link">',
 			'<span class="dashicons dashicons-hidden"></span>',
 			'</span>' . $args['after']
