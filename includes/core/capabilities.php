@@ -36,6 +36,7 @@ function wct_get_post_type_caps() {
 		'delete_others_posts'    => 'delete_others_talks',
 		'edit_private_posts'     => 'edit_private_talks',
 		'edit_published_posts'   => 'edit_published_talks',
+		'create_posts'           => 'create_talks',
 	) );
 }
 
@@ -121,12 +122,13 @@ function wct_get_rater_caps() {
 function wct_register_roles() {
 	$rater       = get_role( 'rater' );
 	$blind_rater = get_role( 'blind_rater' );
+	$juror       = get_role( 'juror' );
 
 	$caps = array(
 		'read' => true,
 	);
 
-	if ( is_null( $rater ) && is_null( $blind_rater ) ) {
+	if ( is_null( $rater ) || is_null( $blind_rater || is_null( $juror ) ) ) {
 		$caps = $caps + wct_get_rater_caps();
 	}
 
@@ -137,13 +139,24 @@ function wct_register_roles() {
 
 	// Create the role if not already done.
 	if ( is_null( $blind_rater ) ) {
-		$caps = array_diff_key( $caps, array(
+		$blind_rater_caps = array_diff_key( $caps, array(
 			'view_other_profiles' => false,
 			'view_talk_rates'     => false,
 			'view_talk_comments'  => false,
 		) );
 
-		add_role( 'blind_rater', __( 'Blind Rater', 'wordcamp-talks' ), $caps );
+		add_role( 'blind_rater', __( 'Blind Rater', 'wordcamp-talks' ), $blind_rater_caps );
+	}
+
+	if ( is_null( $juror ) ) {
+		$juror_caps = array_fill_keys( wct_get_post_type_caps(), true );
+		$juror_caps = array_merge( $caps, $juror_caps, array(
+			'assign_talk_categories' => true,
+			'assign_talk_tags'       => true,
+			'select_talks'           => true,
+		) );
+
+		add_role( 'juror', __( 'Juror', 'wordcamp-talks' ), $juror_caps );
 	}
 }
 add_action( 'wct_admin_init', 'wct_register_roles' );
@@ -163,168 +176,162 @@ add_action( 'wct_admin_init', 'wct_register_roles' );
  * @return array Actual capabilities for meta capability
  */
 function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = array() ) {
-	// First take care of specific cases: raters
-
-	// 1. The rater is the loggedin user
 	$user = wp_get_current_user();
 
-	if ( ( ! empty( $user->allcaps['blind_rater'] ) || ! empty( $user->allcaps['rater'] ) ) && (int) $user_id === (int) $user->ID ) {
-
-		// Allow blind raters to view their profile.
-		if ( 'view_other_profiles' === $cap && isset( $user->allcaps['blind_rater'] ) ) {
-			if ( ! empty( $args[0] ) && ! empty( $user_id ) && (int) $args[0] === (int) $user_id ) {
-				$caps = array( 'exist' );
-			}
-		}
-
-		return $caps;
+	if ( $user->ID !== $user_id && $user_id ) {
+		$user = get_user_by( 'id', $user_id );
 	}
 
-	// 3. The rater is the displayed user
-	$displayed_user = wct_users_displayed_user();
-
-	if ( ! is_null( $displayed_user ) && ( ! empty( $displayed_user->allcaps['blind_rater'] ) || ! empty( $displayed_user->allcaps['rater'] ) ) && 'view_other_profiles' !== $cap ) {
-		if ( (int) $user_id !== (int) $displayed_user->ID ) {
-			return array( 'manage_options' );
+	// The user has the cap set (rater, blind_rater or juror)
+	if ( isset( $user->allcaps[ $cap ] ) ) {
+		if ( ! $user->allcaps[ $cap ] ) {
+			$caps = array( 'do_not_allow' );
 		}
-
-		return $caps;
-	}
 
 	// For any other cases, use the caps mapping!
-	switch ( $cap ) {
+	} else {
+		switch ( $cap ) {
 
-		case 'publish_talks' :
-			if ( ! empty( $user_id ) ) {
-				$closing   = (int) wct_get_closing_date( true );
-				$is_closed = false;
+			case 'publish_talks' :
+				if ( ! empty( $user_id ) ) {
+					$closing   = (int) wct_get_closing_date( true );
+					$is_closed = false;
 
-				// No closing date defined, free to post if you can!
-				if ( ! empty( $closing ) ) {
-					$now = strtotime( date_i18n( 'Y-m-d H:i' ) );
+					// No closing date defined, free to post if you can!
+					if ( ! empty( $closing ) ) {
+						$now = strtotime( date_i18n( 'Y-m-d H:i' ) );
 
-					if ( $closing < $now ) {
-						$is_closed = true;
+						if ( $closing < $now ) {
+							$is_closed = true;
+						}
 					}
-				}
 
-				if ( ! $is_closed ) {
-					$caps = array( 'exist' );
+					if ( ! $is_closed ) {
+						$caps = array( 'exist' );
+					} else {
+						$caps = array( 'manage_options' );
+					}
+
 				} else {
 					$caps = array( 'manage_options' );
 				}
 
-			} else {
+				break;
+
+			case 'read_talk' :
+			case 'edit_talk' :
+
+				// Get the post
+				$_post = get_post( $args[0] );
+
+				if ( ! empty( $_post ) ) {
+
+					$caps = array();
+
+					if ( ! is_admin() && ( (int) $user_id === (int) $_post->post_author ) ) {
+						$caps = array( 'exist' );
+
+					// Unknown, so map to manage_options
+					} else {
+						$caps[] = 'manage_options';
+					}
+				}
+
+				break;
+
+			case 'edit_talks'           :
+			case 'edit_others_talks'    :
+			case 'edit_private_talks'   :
+			case 'edit_published_talks' :
+			case 'read_private_talks'   :
+			case 'select_talks'         :
+			case 'create_talks'         :
 				$caps = array( 'manage_options' );
-			}
+				break;
 
-			break;
-
-		case 'read_talk' :
-		case 'edit_talk' :
-
-			// Get the post
-			$_post = get_post( $args[0] );
-
-			if ( ! empty( $_post ) ) {
-
-				$caps = array();
-
-				if ( ! is_admin() && ( (int) $user_id === (int) $_post->post_author ) ) {
-					$caps = array( 'exist' );
-
-				// Unknown, so map to manage_options
+			case 'comment_talks'       :
+			case 'rate_talks'          :
+			case 'view_talk_rates'     :
+			case 'view_talk_comments'  :
+				if ( 'private' === wct_default_talk_status() ) {
+					$caps = array( 'manage_options' );
+				} elseif ( 'rate_talks' === $cap && empty( $user_id ) ) {
+					$caps = array( 'do_not_allow' );
 				} else {
-					$caps[] = 'manage_options';
-				}
-			}
-
-			break;
-
-		case 'edit_talks'           :
-		case 'edit_others_talks'    :
-		case 'edit_private_talks'   :
-		case 'edit_published_talks' :
-		case 'read_private_talks'   :
-			$caps = array( 'manage_options' );
-			break;
-
-		case 'comment_talks'       :
-		case 'rate_talks'          :
-		case 'view_talk_rates'     :
-		case 'view_talk_comments'  :
-			if ( 'private' === wct_default_talk_status() ) {
-				$caps = array( 'manage_options' );
-			} elseif ( 'rate_talks' === $cap && empty( $user_id ) ) {
-				$caps = array( 'do_not_allow' );
-			} else {
-				$caps = array( 'exist' );
-			}
-
-			break;
-
-		case 'view_other_profiles' :
-			if ( 'private' === wct_default_talk_status() ) {
-				$caps = array( 'manage_options' );
-
-				if ( ! empty( $args[0] ) && ! empty( $user_id ) && (int) $args[0] === (int) $user_id ) {
 					$caps = array( 'exist' );
 				}
 
-			} else {
-				$caps = array( 'exist' );
-			}
+				break;
 
-			break;
+			case 'view_other_profiles' :
+				if ( 'private' === wct_default_talk_status() ) {
+					$caps = array( 'manage_options' );
 
-		case 'edit_comment' :
+					if ( ! empty( $args[0] ) && ! empty( $user_id ) && (int) $args[0] === (int) $user_id ) {
+						$caps = array( 'exist' );
+					}
 
-			if ( ! is_admin() ) {
+				} else {
+					$caps = array( 'exist' );
+				}
+
+				break;
+
+			case 'edit_comment' :
 
 				// Get the comment
 				$_comment = get_comment( $args[0] );
 
-				if ( ! empty( $_comment ) && wct_get_post_type() == get_post_type( $_comment->comment_post_ID ) ) {
+				if ( ! is_admin() ) {
+
+					if ( ! empty( $_comment ) && wct_get_post_type() == get_post_type( $_comment->comment_post_ID ) ) {
+						$caps = array( 'manage_options' );
+					}
+
+				// Specific case for jurors.
+				} elseif ( isset( $user->allcaps[ 'juror' ] ) ) {
+					if ( ! empty( $_comment ) && (int) $_comment->user_id !== (int) $user->ID ) {
+						$caps = array( 'do_not_allow' );
+					}
+				}
+
+				break;
+
+			case 'delete_talk'            :
+			case 'delete_talks'           :
+			case 'delete_others_talks'    :
+			case 'delete_private_talks'   :
+			case 'delete_published_talks' :
+				$caps = array( 'manage_options' );
+				break;
+
+			/** Taxonomies ****************************************************************/
+
+			case 'manage_talk_tags'       :
+			case 'edit_talk_tags'         :
+			case 'delete_talk_tags'       :
+			case 'manage_talk_categories' :
+			case 'edit_talk_categories'   :
+			case 'delete_talk_categories' :
+				$caps = array( 'manage_options' );
+				break;
+
+			// Open to all users that have an ID
+			case 'assign_talk_tags'       :
+			case 'assign_talk_categories' :
+				if ( ! empty( $user_id ) ) {
+					$caps = array( 'exist' );
+				} else {
 					$caps = array( 'manage_options' );
 				}
-			}
+				break;
 
-			break;
+			/** Admin *********************************************************************/
 
-		case 'delete_talk'            :
-		case 'delete_talks'           :
-		case 'delete_others_talks'    :
-		case 'delete_private_talks'   :
-		case 'delete_published_talks' :
-			$caps = array( 'manage_options' );
-			break;
-
-		/** Taxonomies ****************************************************************/
-
-		case 'manage_talk_tags'       :
-		case 'edit_talk_tags'         :
-		case 'delete_talk_tags'       :
-		case 'manage_talk_categories' :
-		case 'edit_talk_categories'   :
-		case 'delete_talk_categories' :
-			$caps = array( 'manage_options' );
-			break;
-
-		// Open to all users that have an ID
-		case 'assign_talk_tags'       :
-		case 'assign_talk_categories' :
-			if ( ! empty( $user_id ) ) {
-				$caps = array( 'exist' );
-			} else {
+			case 'wct_talks_admin' :
 				$caps = array( 'manage_options' );
-			}
-			break;
-
-		/** Admin *********************************************************************/
-
-		case 'wct_talks_admin' :
-			$caps = array( 'manage_options' );
-			break;
+				break;
+		}
 	}
 
 	/**

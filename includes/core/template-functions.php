@@ -130,7 +130,7 @@ function wct_parse_query( $posts_query = null ) {
 			$user_talks = $posts_query->get( wct_user_talks_rewrite_id() );
 		}
 
-		if ( wct_user_can( 'rate_talks' ) ) {
+		if ( user_can( $user->ID, 'rate_talks' ) ) {
 			// Are we requesting user rates
 			$user_rates    = $posts_query->get( wct_user_rates_rewrite_id() );
 
@@ -138,7 +138,7 @@ function wct_parse_query( $posts_query = null ) {
 			$user_to_rate  = $posts_query->get( wct_user_to_rate_rewrite_id() );
 		}
 
-		if ( wct_user_can( 'comment_talks' ) ) {
+		if ( user_can( $user->ID, 'comment_talks' ) ) {
 			// Or user comments ?
 			$user_comments = $posts_query->get( wct_user_comments_rewrite_id() );
 		}

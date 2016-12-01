@@ -172,7 +172,7 @@ class WordCamp_Talks_Admin_Comments {
 			'parent_slug'   => wct()->admin->parent_slug,
 			'page_title'    => esc_html__( 'Comments', 'wordcamp-talks' ),
 			'menu_title'    => $comments_menu_title,
-			'capability'    => 'edit_talks',
+			'capability'    => 'edit_posts', // Unfortunately We cannot use 'edit_talks' here see edit-comments.php.
 			'slug'          => add_query_arg( 'post_type', $this->post_type, 'edit-comments.php' ),
 			'function'      => '',
 			'alt_screen_id' => 'edit-comments.php',
@@ -382,7 +382,7 @@ class WordCamp_Talks_Admin_Comments {
 	 * @subpackage admin/comments
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string JS output
 	 */
 	public function disjoin_post_bubbles() {

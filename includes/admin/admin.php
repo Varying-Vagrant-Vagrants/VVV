@@ -386,6 +386,11 @@ class WordCamp_Talks_Admin {
 			return $id;
 		}
 
+		// Capability check
+		if ( ! wct_user_can( 'select_talks' ) ) {
+			return $id;
+		}
+
 		// Nonce check
 		if ( ! empty( $_POST['wct_workflow_metabox_metabox'] ) && check_admin_referer( 'wct_workflow_metabox_save', 'wct_workflow_metabox_metabox' ) ) {
 
