@@ -1296,7 +1296,7 @@ function wct_talks_the_talk_footer() {
 		$edit_url = '';
 
 		// Super admin will use the Administration screens
-		if ( wct_user_can( 'wct_talks_admin' ) ) {
+		if ( wct_user_can( 'select_talks' ) ) {
 			$edit_url = get_edit_post_link( $talk->ID );
 
 		// The author will use the front end edit form

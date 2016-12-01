@@ -389,6 +389,57 @@ function wct_edit_comments_number( $count = 0, $post_id = 0 ) {
 }
 
 /**
+ * Edit the comment reply link for blind raters, as they can only view their own comments.
+ *
+ * @since  1.0.0
+ *
+ * @param  string     $reply_link HTML output for the reply link.
+ * @param  array      $args       An array of arguments overriding the defaults.
+ * @param  WP_Comment $comment    The object of the comment being replied.
+ * @param  WP_Post    $post       The WP_Post object.
+ * @return string                 HTML output for the reply link.
+ */
+function wct_comment_reply_link( $reply_link = '', $args = array(), $comment = null, $post = null ) {
+	if ( empty( $comment->user_id ) ) {
+		return $reply_link;
+	}
+
+	$post_type = get_post_type( $post );
+
+	if ( wct_get_post_type() !== $post_type ) {
+		return $reply_link;
+	}
+
+	if ( 'private' !== wct_default_talk_status() || user_can( $comment->user_id, 'view_talk_comments' ) ) {
+		return $reply_link;
+	}
+
+	$blind_rater_reply_link = '';
+
+	if ( (int) $comment->user_id !== wct_users_current_user_id() ) {
+		$blind_rater_reply_link = sprintf(
+			esc_html__( '%1$s%2$s Blind raters can only view their own comments.%3$s' ),
+			$args['before'] . '<span class="comment-reply-link">',
+			'<span class="dashicons dashicons-hidden"></span>',
+			'</span>' . $args['after']
+		);
+	}
+
+	/**
+	 * Filter here if you want to edit the comment reply link for blind raters.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string     $blind_rater_reply_link HTML output for the reply link of the blind rater.
+	 * @param  string     $reply_link             Original HTML output for the reply link.
+	 * @param  array      $args                   An array of arguments overriding the defaults.
+	 * @param  WP_Comment $comment                The object of the comment being replied.
+	 * @param  WP_Post    $post                   The WP_Post object.
+	 */
+	return apply_filters( 'wct_comment_reply_link', $blind_rater_reply_link, $reply_link, $args, $comment, $post );
+}
+
+/**
  * Make sure user can see comment feeds.
  *
  * @package WordCamp Talks
