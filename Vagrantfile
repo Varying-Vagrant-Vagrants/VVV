@@ -5,7 +5,12 @@ require 'yaml'
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
-vvv_config_file = File.join(vagrant_dir, 'vvv-config.yml')
+if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) then
+  vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
+else
+  vvv_config_file = File.join(vagrant_dir, 'vvv-config.yml')
+end
+
 vvv_config = YAML.load_file(vvv_config_file)
 
 vvv_config['sites'].each do |site, args|
