@@ -100,6 +100,20 @@ apt_package_check_list=(
 )
 
 ### FUNCTIONS
+vvv_download() {
+  EXTRA="";
+  if [ $(which wget) ]; then
+    if [ "$2" != "" ];
+      then EXTRA="-O \"$2\"";
+    fi
+    wget -q $EXTRA "$1"
+  elif [ $(which curl) ]; then
+    if [ "$2" != "" -a "$2" != "-" ]; then
+      EXTRA="-o \"$2\""
+    fi
+    curl -L -s $EXTRA "$1"
+  fi
+}
 
 network_detection() {
   # Network Detection
@@ -107,21 +121,32 @@ network_detection() {
   # Make an HTTP request to google.com to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=5 --spider http://google.com 2>&1 | grep 'connected')" ]]; then
-    echo "Network connection detected..."
-    ping_result="Connected"
-  else
-    echo "Network connection not detected. Unable to reach google.com..."
-    ping_result="Not Connected"
+  if [ $(which wget) ]; then
+    wget --tries=3 --timeout=5 --spider http://google.com
+    if [ "$?" -eq 0 ]; then
+      ping_result="Connected"
+    fi
+  elif [ $(which curl) ]; then
+    curl --retry 3 --connect-timeout 5 --head http://google.com
+    if [ "$?" -eq 0 ]; then
+      ping_result="Connected"
+      return
+    fi
   fi
+
+  echo "Network connection not detected. Unable to reach google.com..."
+  ping_result="Not Connected"
 }
 
 network_check() {
   network_detection
-  if [[ ! "$ping_result" == "Connected" ]]; then
-    echo -e "\nNo network connection available, skipping package installation"
-    exit 0
+  if [ "$ping_result" == "Connected" ]; then
+    echo "Network connection detected..."
+    return
   fi
+
+  echo -e "\nNo network connection available, skipping package installation"
+  exit 0
 }
 
 git_ppa_check() {
@@ -256,7 +281,7 @@ package_install() {
 
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
-    wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
+    vvv_download "http://nginx.org/keys/nginx_signing.key" - | apt-key add -
 
     # Apply the PHP signing key
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
@@ -604,7 +629,7 @@ memcached_admin() {
   if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
     echo -e "\nDownloading phpMemcachedAdmin, see https://github.com/wp-cloud/phpmemcacheadmin"
     cd /srv/www/default
-    wget -q -O phpmemcachedadmin.tar.gz "https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.2.1.tar.gz"
+    vvv_download "https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.2.1.tar.gz" phpmemcachedadmin.tar.gz
     tar -xf phpmemcachedadmin.tar.gz
     mv phpmemcacheadmin* memcached-admin
     rm phpmemcachedadmin.tar.gz
@@ -684,7 +709,9 @@ phpmyadmin_setup() {
   if [[ ! -d /srv/www/default/database-admin ]]; then
     echo "Downloading phpMyAdmin..."
     cd /srv/www/default
-    wget -q -O phpmyadmin.tar.gz "https://files.phpmyadmin.net/phpMyAdmin/4.6.0/phpMyAdmin-4.6.0-all-languages.tar.gz"
+    PMA_URL=
+    PMA_FILE=
+    vvv_download "https://files.phpmyadmin.net/phpMyAdmin/4.6.0/phpMyAdmin-4.6.0-all-languages.tar.gz" "phpmyadmin.tar.gz"
     tar -xf phpmyadmin.tar.gz
     mv phpMyAdmin-4.6.0-all-languages database-admin
     rm phpmyadmin.tar.gz
