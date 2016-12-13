@@ -23,7 +23,7 @@ sites:
   #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git
 
 utilities:
-  official:
+  core:
     - memcached-admin
     - opcache-status
     - phpmyadmin
