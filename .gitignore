@@ -15,6 +15,7 @@
 /provision/provision-pre.sh
 /provision/provision-post.sh
 /provision/github.token
+/provision/resources/
 
 # Ignore custom trigger scripts in config/homebin.
 /config/homebin/vagrant_up_custom

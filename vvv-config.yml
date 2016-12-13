@@ -20,5 +20,11 @@ sites:
   #    - local.wordpress-trunk.dev
 
   #multisite: https://github.com/Varying-Vagrant-Vagrants/vvv-multisite.git
-  
   #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git
+
+utilities:
+  core:
+    - memcached-admin
+    - opcache-status
+    - phpmyadmin
+    - webgrind

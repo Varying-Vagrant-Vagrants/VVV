@@ -56,6 +56,15 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site].delete('hosts')
 end
 
+if ! vvv_config['utility-sources'].kind_of? Hash then
+  vvv_config['utility-sources'] = Hash.new
+end
+vvv_config['utility-sources']['core'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+
+if ! vvv_config['utilities'].kind_of? Hash then
+  vvv_config['utilities'] = Hash.new
+end
+
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
 Vagrant.configure("2") do |config|
@@ -343,6 +352,32 @@ Vagrant.configure("2") do |config|
     config.vm.provision "custom", type: "shell", path: File.join( "provision", "provision-custom.sh" )
   else
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
+  end
+
+  vvv_config['utility-sources'].each do |name, repo|
+    config.vm.provision "utility-source-#{name}",
+      type: "shell",
+      path: File.join( "provision", "provision-utility-source.sh" ),
+      args: [
+          name,
+          repo
+      ]
+  end
+
+  vvv_config['utilities'].each do |name, utilities|
+
+    if ! utilities.kind_of? Array then
+      utilities = Hash.new
+    end
+    utilities.each do |utility|
+        config.vm.provision "utility-#{name}-#{utility}",
+          type: "shell",
+          path: File.join( "provision", "provision-utility.sh" ),
+          args: [
+              name,
+              utility
+          ]
+      end
   end
 
   vvv_config['sites'].each do |site, args|

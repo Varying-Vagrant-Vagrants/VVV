@@ -598,48 +598,6 @@ wp_cli() {
   ln -sf "/srv/www/wp-cli/bin/wp" "/usr/local/bin/wp"
 }
 
-memcached_admin() {
-  # Download and extract phpMemcachedAdmin to provide a dashboard view and
-  # admin interface to the goings on of memcached when running
-  if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
-    echo -e "\nDownloading phpMemcachedAdmin, see https://github.com/wp-cloud/phpmemcacheadmin"
-    cd /srv/www/default
-    wget -q -O phpmemcachedadmin.tar.gz "https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.2.1.tar.gz"
-    tar -xf phpmemcachedadmin.tar.gz
-    mv phpmemcacheadmin* memcached-admin
-    rm phpmemcachedadmin.tar.gz
-  else
-    echo "phpMemcachedAdmin already installed."
-  fi
-}
-
-opcached_status(){
-  # Checkout Opcache Status to provide a dashboard for viewing statistics
-  # about PHP's built in opcache.
-  if [[ ! -d "/srv/www/default/opcache-status" ]]; then
-    echo -e "\nDownloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
-    cd /srv/www/default
-    git clone "https://github.com/rlerdorf/opcache-status.git" opcache-status
-  else
-    echo -e "\nUpdating Opcache Status"
-    cd /srv/www/default/opcache-status
-    git pull --rebase origin master
-  fi
-}
-
-webgrind_install() {
-  # Webgrind install (for viewing callgrind/cachegrind files produced by
-  # xdebug profiler)
-  if [[ ! -d "/srv/www/default/webgrind" ]]; then
-    echo -e "\nDownloading webgrind, see https://github.com/michaelschiller/webgrind.git"
-    git clone "https://github.com/michaelschiller/webgrind.git" "/srv/www/default/webgrind"
-  else
-    echo -e "\nUpdating webgrind..."
-    cd /srv/www/default/webgrind
-    git pull --rebase origin master
-  fi
-}
-
 php_codesniff() {
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
   if [[ ! -d "/srv/www/phpcs" ]]; then
@@ -677,21 +635,6 @@ php_codesniff() {
   phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
   phpcs --config-set default_standard WordPress-Core
   phpcs -i
-}
-
-phpmyadmin_setup() {
-  # Download phpMyAdmin
-  if [[ ! -d /srv/www/default/database-admin ]]; then
-    echo "Downloading phpMyAdmin..."
-    cd /srv/www/default
-    wget -q -O phpmyadmin.tar.gz "https://files.phpmyadmin.net/phpMyAdmin/4.6.0/phpMyAdmin-4.6.0-all-languages.tar.gz"
-    tar -xf phpmyadmin.tar.gz
-    mv phpMyAdmin-4.6.0-all-languages database-admin
-    rm phpmyadmin.tar.gz
-  else
-    echo "PHPMyAdmin already installed."
-  fi
-  cp "/srv/config/phpmyadmin-config/config.inc.php" "/srv/www/default/database-admin/"
 }
 
 wpsvn_check() {
@@ -750,11 +693,7 @@ echo " "
 echo "Installing/updating wp-cli and debugging tools"
 
 wp_cli
-memcached_admin
-opcached_status
-webgrind_install
 php_codesniff
-phpmyadmin_setup
 
 network_check
 # Time for WordPress!
