@@ -13,6 +13,23 @@ end
 
 vvv_config = YAML.load_file(vvv_config_file)
 
+if ! vvv_config['sites'].kind_of? Hash then
+  vvv_config['sites'] = Hash.new
+end
+
+if ! vvv_config['hosts'].kind_of? Hash then
+  vvv_config['hosts'] = Array.new
+end
+
+vvv_config['hosts'] += ['vvv.dev']
+
+host_paths = Dir[File.join(vagrant_dir, 'www', '**', 'vvv-hosts')]
+
+vvv_config['hosts'] += host_paths.map do |path|
+  lines = File.readlines(path).map(&:chomp)
+  lines.grep(/\A[^#]/)
+end.flatten
+
 vvv_config['sites'].each do |site, args|
   if args.kind_of? String then
       repo = args
@@ -31,18 +48,24 @@ vvv_config['sites'].each do |site, args|
   defaults['branch'] = 'master'
   defaults['skip_provisioning'] = false
   defaults['allow_customfile'] = false
+  defaults['hosts'] = Array.new
 
   vvv_config['sites'][site] = defaults.merge(args)
+
+  vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+  vvv_config['sites'][site].delete('hosts')
 end
 
 if ! vvv_config['utility-repos'].kind_of? Hash then
   vvv_config['utility-repos'] = Hash.new
 end
-vvv_config['utility-repos']['official'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+  vvv_config['utility-repos']['official'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
 
 if ! vvv_config['utilities'].kind_of? Hash then
   vvv_config['utilities'] = Hash.new
 end
+
+vvv_config['hosts'] = vvv_config['hosts'].uniq
 
 Vagrant.configure("2") do |config|
 
@@ -125,26 +148,11 @@ Vagrant.configure("2") do |config|
   # enter a password for Vagrant to access your hosts file.
   #
   # By default, we'll include the domains set up by VVV through the vvv-hosts file
-  # located in the www/ directory.
-  #
-  # Other domains can be automatically added by including a vvv-hosts file containing
-  # individual domains separated by whitespace in subdirectories of www/.
+  # located in the www/ directory and in vvv-config.yml.
   if defined?(VagrantPlugins::HostsUpdater)
-    # Recursively fetch the paths to all vvv-hosts files under the www/ directory.
-    paths = Dir[File.join(vagrant_dir, 'www', '**', 'vvv-hosts')]
-
-    # Parse the found vvv-hosts files for host names.
-    hosts = paths.map do |path|
-      # Read line from file and remove line breaks
-      lines = File.readlines(path).map(&:chomp)
-      # Filter out comments starting with "#"
-      lines.grep(/\A[^#]/)
-    end.flatten.uniq # Remove duplicate entries
-
-    hosts += ['vvv.dev']
 
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
-    config.hostsupdater.aliases = hosts
+    config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
   end
 
