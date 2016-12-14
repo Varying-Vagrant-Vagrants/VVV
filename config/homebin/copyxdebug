@@ -1,0 +1,13 @@
+#!/bin/bash
+sudo cp /srv/config/php-config/xdebug.ini /etc/php/7.0/mods-available/xdebug.ini
+sudo cp "/srv/config/php-config/php-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
+
+  # Find the path to Xdebug and prepend it to xdebug.ini
+XDEBUG_PATH=$( find /usr/lib/php/ -name 'xdebug.so' | head -1 )
+sudo sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php/7.0/mods-available/xdebug.ini"
+
+sudo service php7.0-fpm restart
+
+# Ensure the log file for xdebug is group writeable.
+sudo touch /srv/log/xdebug-remote.log
+sudo chmod 664 /srv/log/xdebug-remote.log
