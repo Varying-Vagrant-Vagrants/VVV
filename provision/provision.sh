@@ -318,7 +318,7 @@ tools_install() {
       tar -xf xdebug-2.4.0.tgz
       cd xdebug-2.4.0
       # Create a build environment for Xdebug based on our PHP configuration.
-      phpize
+      phpize7.0
       # Complete configuration of the Xdebug build.
       ./configure -q
       # Build the Xdebug module for use with PHP.
