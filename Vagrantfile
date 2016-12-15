@@ -48,7 +48,7 @@ vvv_config['sites'].each do |site, args|
   defaults['branch'] = 'master'
   defaults['skip_provisioning'] = false
   defaults['allow_customfile'] = false
-  defaults['upstream'] = 'php'
+  defaults['nginx_upstream'] = 'php'
   defaults['hosts'] = Array.new
 
   vvv_config['sites'][site] = defaults.merge(args)
@@ -391,7 +391,7 @@ Vagrant.configure("2") do |config|
         args['branch'],
         args['vm_dir'],
         args['skip_provisioning'].to_s,
-        args['upstream']
+        args['nginx_upstream']
       ]
   end
 
