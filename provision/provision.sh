@@ -559,19 +559,27 @@ services_restart() {
 
 wp_cli() {
   # WP-CLI Install
-  if [[ ! -d "/srv/www/wp-cli" ]]; then
+  local exists_wpcli
+
+  # Remove old wp-cli symlink, if it exists.
+  if [[ -L "/usr/local/bin/wp" ]]; then
+    echo "\nRemoving old wp-cli"
+    rm -f /usr/local/bin/wp
+  fi
+
+  exists_wpcli="$(which wp)"
+  if [[ "/usr/local/bin/wp" != "${exists_wpcli}" ]]; then
     echo -e "\nDownloading wp-cli, see http://wp-cli.org"
-    git clone "https://github.com/wp-cli/wp-cli.git" "/srv/www/wp-cli"
-    cd /srv/www/wp-cli
-    composer install
+    curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
+    chmod +x wp-cli-nightly.phar
+    sudo mv wp-cli-nightly.phar /usr/local/bin/wp
+
+    # Install bash completions
+    curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
   else
     echo -e "\nUpdating wp-cli..."
-    cd /srv/www/wp-cli
-    git pull --rebase origin master
-    composer install
+    wp --allow-root cli update --nightly --yes
   fi
-  # Link `wp` to the `/usr/local/bin` directory
-  ln -sf "/srv/www/wp-cli/bin/wp" "/usr/local/bin/wp"
 }
 
 php_codesniff() {
