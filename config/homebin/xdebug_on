@@ -2,6 +2,14 @@
 sudo phpenmod xdebug
 sudo service php7.0-fpm restart
 
+if [ -f "/etc/init.d/php5.6-fpm" ]; then
+    sudo service php5.6-fpm restart
+fi
+
+if [ -f "/etc/init.d/php7.1-fpm" ]; then
+    sudo service php7.1-fpm restart
+fi
+
 # Ensure the log file for xdebug is group writeable.
 sudo touch /srv/log/xdebug-remote.log
 sudo chmod 664 /srv/log/xdebug-remote.log
