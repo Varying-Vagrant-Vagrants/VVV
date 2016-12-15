@@ -38,9 +38,9 @@ apt_package_check_list=(
   php7.0-dev
 
   # Extra PHP modules that we find useful
-  php-imagick
-  php-memcache
   php-pear
+  php7.0-imagick
+  php7.0-memcache
   php7.0-bcmath
   php7.0-curl
   php7.0-gd
@@ -51,6 +51,7 @@ apt_package_check_list=(
   php7.0-json
   php7.0-soap
   php7.0-ssh2
+  php7.0-xdebug
   php7.0-xml
   php7.0-zip
 
@@ -304,33 +305,6 @@ tools_install() {
   npm install -g npm
   npm install -g npm-check-updates
 
-  # Xdebug
-  #
-  # The version of Xdebug 2.4.0 that is available for our Ubuntu installation
-  # is not compatible with PHP 7.0. We instead retrieve the source package and
-  # go through the manual installation steps.
-  if [[ -f /usr/lib/php/20151012/xdebug.so ]]; then
-      echo "Xdebug already installed"
-  else
-      echo "Installing Xdebug"
-      # Download and extract Xdebug.
-      curl -L -O --silent https://xdebug.org/files/xdebug-2.4.0.tgz
-      tar -xf xdebug-2.4.0.tgz
-      cd xdebug-2.4.0
-      # Create a build environment for Xdebug based on our PHP configuration.
-      phpize
-      # Complete configuration of the Xdebug build.
-      ./configure -q
-      # Build the Xdebug module for use with PHP.
-      make -s > /dev/null
-      # Install the module.
-      cp modules/xdebug.so /usr/lib/php/20151012/xdebug.so
-      # Clean up.
-      cd ..
-      rm -rf xdebug-2.4.0*
-      echo "Xdebug installed"
-  fi
-
   # ack-grep
   #
   # Install ack-rep directory from the version hosted at beyondgrep.com as the
@@ -423,6 +397,12 @@ nginx_setup() {
   # Copy nginx configuration from local
   cp "/srv/config/nginx-config/nginx.conf" "/etc/nginx/nginx.conf"
   cp "/srv/config/nginx-config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
+
+  if [[ ! -d "/etc/nginx/upstreams" ]]; then
+    mkdir "/etc/nginx/upstreams/"
+  fi
+  cp "/srv/config/nginx-config/php7.0-upstream.conf" "/etc/nginx/upstreams/php70.conf"
+
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir "/etc/nginx/custom-sites/"
   fi
@@ -435,19 +415,15 @@ nginx_setup() {
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php-config/php7-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
-  cp "/srv/config/php-config/www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
-  cp "/srv/config/php-config/php-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php-config/php7.0-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
+  cp "/srv/config/php-config/php7.0-www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
+  cp "/srv/config/php-config/php7.0-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
   cp "/srv/config/php-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
   cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
 
-  # Find the path to Xdebug and prepend it to xdebug.ini
-  XDEBUG_PATH=$( find /usr/lib/php/ -name 'xdebug.so' | head -1 )
-  sed -i "1izend_extension=\"$XDEBUG_PATH\"" "/etc/php/7.0/mods-available/xdebug.ini"
-
-  echo " * Copied /srv/config/php-config/php7-fpm.conf     to /etc/php/7.0/fpm/php-fpm.conf"
-  echo " * Copied /srv/config/php-config/www.conf          to /etc/php/7.0/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php-config/php-custom.ini    to /etc/php/7.0/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php-config/php7.0-fpm.conf   to /etc/php/7.0/fpm/php-fpm.conf"
+  echo " * Copied /srv/config/php-config/php7.0-www.conf   to /etc/php/7.0/fpm/pool.d/www.conf"
+  echo " * Copied /srv/config/php-config/php7.0-custom.ini to /etc/php/7.0/fpm/conf.d/php-custom.ini"
   echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
   echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
 

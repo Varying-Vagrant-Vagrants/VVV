@@ -5,6 +5,7 @@ REPO=$2
 BRANCH=$3
 VM_DIR=$4
 SKIP_PROVISIONING=$5
+NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR}
 VVV_SITE_NAME=${SITE}
 
@@ -56,6 +57,7 @@ if [[ -d ${VM_DIR} ]]; then
     sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
     sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
     sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+    sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
 
     # Resolve relative paths since not supported in Nginx root.
     while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"; do

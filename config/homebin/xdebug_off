@@ -2,3 +2,11 @@
 sudo phpdismod xdebug
 sudo service php7.0-fpm restart
 
+if [ -f "/etc/init.d/php5.6-fpm" ]; then
+    sudo service php5.6-fpm restart
+fi
+
+if [ -f "/etc/init.d/php7.1-fpm" ]; then
+    sudo service php7.1-fpm restart
+fi
+
