@@ -423,6 +423,12 @@ nginx_setup() {
   # Copy nginx configuration from local
   cp "/srv/config/nginx-config/nginx.conf" "/etc/nginx/nginx.conf"
   cp "/srv/config/nginx-config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
+
+  if [[ ! -d "/etc/nginx/upstreams" ]]; then
+    mkdir "/etc/nginx/upstreams/"
+  fi
+  cp "/srv/config/nginx-config/php7.0-upstream.conf" "/etc/nginx/upstreams/php70.conf"
+
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir "/etc/nginx/custom-sites/"
   fi
