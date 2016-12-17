@@ -36,7 +36,7 @@ export WP_CORE_DIR=/srv/www/wordpress-develop/src/
 eval "$(grunt --completion=bash)"
 
 # add autocomplete for wp-cli
-. /srv/www/wp-cli/utils/wp-completion.bash
+. /srv/config/wp-cli/wp-completion.bash
 
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
