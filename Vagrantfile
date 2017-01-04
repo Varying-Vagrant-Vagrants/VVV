@@ -215,7 +215,7 @@ Vagrant.configure("2") do |config|
   # If a database directory exists in the same directory as your Vagrantfile,
   # a mapped directory inside the VM will be created that contains these files.
   # This directory is used to maintain default database scripts as well as backed
-  # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
+  # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/", "/srv/database"
 
   # If the mysql_upgrade_info file from a previous persistent database mapping is detected,
@@ -404,7 +404,7 @@ Vagrant.configure("2") do |config|
     config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
   end
 
-  # Always start MySQL on boot, even when not running the full provisioner
+  # Always start MariaDB/MySQL on boot, even when not running the full provisioner
   # (run: "always" support added in 1.6.0)
   if vagrant_version >= "1.6.0"
     config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
