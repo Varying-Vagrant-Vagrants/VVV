@@ -39,6 +39,7 @@ apt_package_check_list=(
 
   # Extra PHP modules that we find useful
   php-pear
+  php-memcached
   php7.0-imagick
   php7.0-memcache
   php7.0-bcmath
