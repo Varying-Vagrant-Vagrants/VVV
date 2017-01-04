@@ -9,6 +9,11 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR}
 VVV_SITE_NAME=${SITE}
 
+VVV_CONFIG=/vagrant/vvv-config.yml
+if [[ -f /vagrant/vvv-custom.yml ]]; then
+	VVV_CONFIG=/vagrant/vvv-custom.yml
+fi
+
 noroot() {
   sudo -EH -u "vagrant" "$@";
 }
@@ -90,6 +95,12 @@ if [[ -d ${VM_DIR} ]]; then
       fi
     done < "$hostfile"
   done
-fi
 
+  for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE}.hosts`; do
+  	if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+	  echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
+	  echo " * Added $line from ${VVV_CONFIG}"
+	fi
+  done
+fi
 service nginx restart
