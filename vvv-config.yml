@@ -2,23 +2,16 @@
 sites:
   wordpress-default:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
-    vm_dir: '/srv/www/wordpress-default-provisioner'
     hosts:
       - local.wordpress.dev
 
   wordpress-develop:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
-    vm_dir: '/srv/www/wordpress-develop-provisioner'
     hosts:
       - src.wordpress-develop.dev
       - build.wordpress-develop.dev
 
-  #wordpress-trunk:
-  #  repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-trunk.git
-  #  vm_dir: /srv/www/wordpress-trunk-provisioner
-  #  hosts:
-  #    - local.wordpress-trunk.dev
-
+  #wordpress-trunk: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-trunk.git
   #multisite: https://github.com/Varying-Vagrant-Vagrants/vvv-multisite.git
   #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git
 
