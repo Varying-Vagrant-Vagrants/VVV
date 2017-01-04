@@ -80,3 +80,5 @@ if [[ -d ${VM_DIR} ]]; then
     done < "$hostfile"
   done
 fi
+
+service nginx restart
