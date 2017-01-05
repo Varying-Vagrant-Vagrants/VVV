@@ -15,7 +15,7 @@ noroot() {
 
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo `customvalue 'key' 'defaultvalue'`
-customvalue() {
+get_config_key() {
   local config=/vagrant/vvv-config.yml
   if [[ -f /vagrant/vvv-custom.yml ]]; then
     config=/vagrant/vvv-custom.yml
