@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SITE=$1
+SITE_ESCAPED=`echo ${SITE} | sed 's/\./\\\\./g'`
 REPO=$2
 BRANCH=$3
 VM_DIR=$4
@@ -96,7 +97,7 @@ if [[ -d ${VM_DIR} ]]; then
     done < "$hostfile"
   done
 
-  for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE}.hosts`; do
+  for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts`; do
   	if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
 	  echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
 	  echo " * Added $line from ${VVV_CONFIG}"
