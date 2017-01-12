@@ -34,7 +34,7 @@ VVV requires recent versions of both Vagrant and VirtualBox to be installed.
 
 [Vagrant](https://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](https://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
 
-Provider support is included for VirtualBox, Parallels, Hyper-V, VMWare Fusion, and VMWare Workstation.
+Provider support is included for VirtualBox, Parallels, Hyper-V, VMWare Fusion, VMWare Workstation, and Docker.
 
 #### VVV as a MAMP/XAMPP Replacement
 
@@ -229,6 +229,18 @@ To enable Git for core development, use `vagrant ssh` to access the virtual mach
 * Provide an approachable development environment with a modern server configuration.
 * Continue to work towards a stable state of software and configuration included in the default provisioning.
 * Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
+
+### Native Docker Support on Windows and macOS ###
+
+Docker on Windows and macOS is currently available in two versions. Originally the Docker project used a virtual machine installed into VirtualBox called boot2docker. The newer system, sometimes referred-to as "Native Docker" no-longer uses VirtualBox but instead uses macOS' Hypervisor.framework or Windows Professional's Hyper-V to run the Docker Virtual Machine.
+
+By default Vagrant tries to run a new boot2docker-style virtual machine, which means if you want to use Native Docker on your non-Linux system you will need to create a file called `Customfile` with contents similar to below. This will tell Vagrant to not spawn a new virtual machine but to use Docker commands directly anyway.
+
+```ruby
+config.vm.provider :docker do |v|
+  v.force_host_vm = false
+end
+```
 
 ## [Copyright / License](#license)
 
