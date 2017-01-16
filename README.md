@@ -2,8 +2,8 @@
 
 Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) configuration focused on [WordPress](https://wordpress.org) development.
 
-* **Version**: 1.4.0
-* **Latest Stable**: [1.4.0](https://github.com/Varying-Vagrant-Vagrants/VVV/releases/tag/1.4.0)
+* **Version**: 1.4.1
+* **Latest Stable**: [1.4.1](https://github.com/Varying-Vagrant-Vagrants/VVV/releases/tag/1.4.1)
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/CONTRIBUTING.md). Thanks!
 
