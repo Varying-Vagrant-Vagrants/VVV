@@ -77,6 +77,7 @@ apt_package_check_list=(
   vim
   colordiff
   postfix
+  python-pip
 
   # ntp service to keep clock current
   ntp
@@ -372,6 +373,12 @@ tools_install() {
   # config and actual path.
   echo "Adding graphviz symlink for Webgrind..."
   ln -sf "/usr/bin/dot" "/usr/local/bin/dot"
+
+  # Shyaml
+  #
+  # Used for passing custom parameters to the bash provisioning scripts
+  echo "Installing Shyaml for bash provisioning.."
+  sudo pip install shyaml
 }
 
 nginx_setup() {

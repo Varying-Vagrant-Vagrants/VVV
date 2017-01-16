@@ -13,6 +13,17 @@ noroot() {
   sudo -EH -u "vagrant" "$@";
 }
 
+# Takes 2 values, a key to fetch a value for, and an optional default value
+# e.g. echo `get_config_value 'key' 'defaultvalue'`
+get_config_value() {
+  local config=/vagrant/vvv-config.yml
+  if [[ -f /vagrant/vvv-custom.yml ]]; then
+    config=/vagrant/vvv-custom.yml
+  fi
+  local value=`cat ${config} | shyaml get-value sites.${SITE}.custom.${1} 2> /dev/null`
+  echo ${value:-$2}
+}
+
 if [[ true == $SKIP_PROVISIONING ]]; then
     REPO=false
 fi
