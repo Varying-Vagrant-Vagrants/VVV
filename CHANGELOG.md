@@ -1,5 +1,9 @@
 # Varying Vagrant Vagrants Changelog
 
+## 1.4.1 (January 16, 2017)
+
+* Introduce a documentation structure for future releases.
+
 ## 1.4.0 (November 2, 2016)
 
 ### Bug fixes and Enhancements
