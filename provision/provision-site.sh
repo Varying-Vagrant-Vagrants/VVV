@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SITE=$1
+SITE_ESCAPED=`echo ${SITE} | sed 's/\./\\\\./g'`
 REPO=$2
 BRANCH=$3
 VM_DIR=$4
@@ -9,6 +10,11 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR}
 VVV_SITE_NAME=${SITE}
 
+VVV_CONFIG=/vagrant/vvv-config.yml
+if [[ -f /vagrant/vvv-custom.yml ]]; then
+	VVV_CONFIG=/vagrant/vvv-custom.yml
+fi
+
 noroot() {
   sudo -EH -u "vagrant" "$@";
 }
@@ -16,11 +22,7 @@ noroot() {
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo `get_config_value 'key' 'defaultvalue'`
 get_config_value() {
-  local config=/vagrant/vvv-config.yml
-  if [[ -f /vagrant/vvv-custom.yml ]]; then
-    config=/vagrant/vvv-custom.yml
-  fi
-  local value=`cat ${config} | shyaml get-value sites.${SITE}.custom.${1} 2> /dev/null`
+  local value=`cat ${VVV_CONFIG} | shyaml get-value sites.${SITE_ESCAPED}.custom.${1} 2> /dev/null`
   echo ${value:-$2}
 }
 
@@ -90,6 +92,12 @@ if [[ -d ${VM_DIR} ]]; then
       fi
     done < "$hostfile"
   done
-fi
 
+  for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`; do
+  	if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+	  echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
+	  echo " * Added $line from ${VVV_CONFIG}"
+	fi
+  done
+fi
 service nginx restart
