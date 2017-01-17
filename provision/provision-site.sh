@@ -93,7 +93,7 @@ if [[ -d ${VM_DIR} ]]; then
     done < "$hostfile"
   done
 
-  for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts`; do
+  for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`; do
   	if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
 	  echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
 	  echo " * Added $line from ${VVV_CONFIG}"
