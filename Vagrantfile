@@ -3,6 +3,25 @@
 
 require 'yaml'
 
+if ! ENV['VVV_SKIP_LOGO'] then
+  puts ""
+  puts ""
+  puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;220m ____    "
+  puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;220m|___ \\   "
+  puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;220m  __) |  "
+  puts "  \033[38;5;196m  \\ V / \033[38;5;118m  \\ V / \033[38;5;33m  \\ V /   \033[38;5;220m / __/   "
+  puts "  \033[38;5;196m   \\_/  \033[38;5;118m   \\_/  \033[38;5;33m   \\_/    \033[38;5;220m|_____|  "
+  puts ""
+  puts "  \033[38;5;206mVarying Vagrant Vagrants 2"
+  puts ""
+  puts "  \033[38;5;220mhttps://varyingvagrantvagrants.org/"
+  puts "  \033[38;5;220mhttps://github.com/varying-vagrant-vagrants/vvv"
+  puts ""
+  puts "  \033[38;5;220mLooking for VVV 1? run: \033[38;5;118mgit checkout master"
+  puts ""
+  puts "\033[0m"
+end
+
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) then
@@ -422,22 +441,22 @@ Vagrant.configure("2") do |config|
   # scripting. See the individual files in config/homebin/ for details.
   if defined? VagrantPlugins::Triggers
     config.trigger.after :up, :stdout => true do
-      run "vagrant ssh -c 'vagrant_up'"
+      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_up'")
     end
     config.trigger.before :reload, :stdout => true do
-      run "vagrant ssh -c 'vagrant_halt'"
+      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_halt'")
     end
     config.trigger.after :reload, :stdout => true do
-      run "vagrant ssh -c 'vagrant_up'"
+      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_up'")
     end
     config.trigger.before :halt, :stdout => true do
-      run "vagrant ssh -c 'vagrant_halt'"
+      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_halt'")
     end
     config.trigger.before :suspend, :stdout => true do
-      run "vagrant ssh -c 'vagrant_suspend'"
+      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_suspend'")
     end
     config.trigger.before :destroy, :stdout => true do
-      run "vagrant ssh -c 'vagrant_destroy'"
+      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_destroy'")
     end
   end
 end
