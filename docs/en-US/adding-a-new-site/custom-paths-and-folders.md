@@ -24,7 +24,7 @@ In this example, VVV is told to use a site stored outside of the main VVV folder
 ```
     example-site:
     	vm_dir: /srv/www/example-site
-    	local_dir: /Users/tarendai/Documents/example-site
+    	local_dir: /Users/janesmith/Documents/example-site
     	hosts:
     		examplesite.com
 ```
