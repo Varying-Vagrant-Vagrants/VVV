@@ -1,1 +1,44 @@
 # Changing PHP Version
+
+You can set the PHP version in `vvv-custom.yml` when defining a site. To do this, use the `nginx_upstream` option to specify the PHP version. VVV also needs to be told to install that version of PHP using the `utilities:` section.
+
+Here’s an example that uses PHP v7.1:
+
+```
+sites:
+  example:
+    nginx_upstream: php71
+
+utilities:
+    core:
+      - php71
+```
+
+This will not work if `set $upstream {upstream};` is removed from the nginx config.
+
+In this example, we have changed the `wordpress-default` site to use PHP 7.1, and the `wordpress-develop` site to use PHP 5.6:
+
+```
+sites:
+  wordpress-default:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+    nginx_upstream: php71
+    hosts:
+      - local.wordpress.dev
+
+  wordpress-develop:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
+    nginx_upstream: php56
+    hosts:
+      - src.wordpress-develop.dev
+      - build.wordpress-develop.dev
+
+utilities:
+  core:
+    - memcached-admin
+    - opcache-status
+    - phpmyadmin
+    - webgrind
+    - php56
+    - php71
+```
