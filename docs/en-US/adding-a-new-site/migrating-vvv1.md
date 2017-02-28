@@ -35,17 +35,33 @@ This can also be done via the `repo` key, allowing extra options, such as hosts 
 
 ### VVV 1 Sites in Non-Standard Folders
 
-A site in a non-standard folder can still be used via the `vm_dir` key. For example, if we put our test sites in a subfolder, we can specify each site like this in the `sites` section:
+A site in a non-standard folder can still be used via the `vm_dir` and `local_dir` keys. `local_dir` tells VVV where the site is located on the host machine, and `vm_dir` tells VVV where the site is located inside the Virtual machine.
+
+For example, if we put our test sites in a subfolder, we can specify each site like this in the `sites` section:
 
 ```
     test-site-1:
     	vm_dir: www/test-sites/test-site-1
+    	local_dir: www/test-sites/test-site-1
     	hosts:
     		testsite1.com
     test-site-2:
     	vm_dir: www/test-sites/test-site-2
+    	local_dir: www/test-sites/test-site-2
     	hosts:
     		testsite2.com
+```
+
+In the above example, the `vm_dir` and `local_dir` folders are relative paths that match, however, this doesn't have to be the case.
+
+In this example, VVV is told to use a site stored outside of the main VVV folder, and mapped to an absolute path in the virtual machine:
+
+```
+    example-site:
+    	vm_dir: /srv/www/example-site
+    	local_dir: /Users/tarendai/Documents/example-site
+    	hosts:
+    		examplesite.com
 ```
 
 ## Why is This Needed?
