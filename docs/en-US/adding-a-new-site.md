@@ -1,1 +1,23 @@
 # Adding a New Site
+
+Adding a new site is as simple as adding it under the sites section of `vvv-custom.yml`.
+
+To add a site:
+
+```
+	example:
+```
+
+To add a site with a repository:
+
+```
+	example: https://github.com/example/example.git
+```
+To add a site with a repository and a domain/host:
+
+```
+example:
+  repo: https://github.com/example/example.git
+  hosts:
+  - example.local
+```
