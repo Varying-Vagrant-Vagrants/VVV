@@ -2,11 +2,11 @@
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.
     * For Windows 8 or higher it is recommended that you run the cmd window as Administrator
-1. Install [VirtualBox 5.1.x](https://www.virtualbox.org/wiki/Downloads)
-1. Install [Vagrant 1.8.x](https://www.vagrantup.com/downloads.html)
+1. Install [VirtualBox 5.x](https://www.virtualbox.org/wiki/Downloads)
+1. Install [Vagrant 1.x](https://www.vagrantup.com/downloads.html)
     * `vagrant` will now be available as a command in your terminal, try it out.
     * ***Note:*** If Vagrant is already installed, use `vagrant -v` to check the version. You may want to consider upgrading if a much older version is in use.
-1. Optionally, install some convenient Vagrant plugins:
+1. Install some these Vagrant plugins:
     1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
         * Note: This step is not a requirement, though it does make the process of starting up a virtual machine nicer by automating the entries needed in your local machine's `hosts` file to access the provisioned VVV domains in your browser.
         * If you choose not to install this plugin, a manual entry should be added to your local `hosts` file that looks like this: `192.168.50.4  vvv.dev local.wordpress.dev src.wordpress-develop.dev build.wordpress-develop.dev`
