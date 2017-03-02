@@ -45,3 +45,15 @@ On future runs of `vagrant up`, the packaged box will be cached on your local ma
 * ***Preferred:*** If the virtual machine has been powered off with `vagrant halt`, `vagrant up` will quickly power on the machine without provisioning.
 * ***Rare:*** If you would like to reapply the provisioning scripts with `vagrant up --provision` or `vagrant provision`, some time will be taken to check for updates and packages that have not been installed.
 * ***Very Rare:*** If the virtual machine has been destroyed with `vagrant destroy`, it will need to download the full 100MB of package data on the next `vagrant up`.
+
+## Now What?
+
+Now that you're up and running, start poking around and modifying things.
+
+1. Access the server via the command line with `vagrant ssh` from your `vagrant-local` directory. You can do almost anything you would do with a standard Ubuntu installation on a full server.
+    * **MS Windows users:** An SSH client is generally not distributed with Windows PCs by default. However, a terminal emulator such as [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) will provide access immediately. For detailed instructions on connecting with PuTTY, consult the [VVV Wiki](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY).
+1. Power off the box with `vagrant halt` and turn it back on with `vagrant up`.
+1. Suspend the box's state in memory with `vagrant suspend` and bring it right back with `vagrant resume`.
+1. Reapply provisioning to a running box with `vagrant provision`.
+1. Destroy the box with `vagrant destroy`. Files added in the `www` directory will persist on the next `vagrant up`.
+1. Start modifying and adding local files to fit your needs. Take a look at [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) for tips on adding new projects.
