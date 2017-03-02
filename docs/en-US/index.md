@@ -24,18 +24,6 @@ Entirely different server configurations can be created by modifying the files i
 
 [Read how to install VVV here](installation.md)
 
-### Now What?
-
-Now that you're up and running, start poking around and modifying things.
-
-1. Access the server via the command line with `vagrant ssh` from your `vagrant-local` directory. You can do almost anything you would do with a standard Ubuntu installation on a full server.
-    * **MS Windows users:** An SSH client is generally not distributed with Windows PCs by default. However, a terminal emulator such as [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) will provide access immediately. For detailed instructions on connecting with PuTTY, consult the [VVV Wiki](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY).
-1. Power off the box with `vagrant halt` and turn it back on with `vagrant up`.
-1. Suspend the box's state in memory with `vagrant suspend` and bring it right back with `vagrant resume`.
-1. Reapply provisioning to a running box with `vagrant provision`.
-1. Destroy the box with `vagrant destroy`. Files added in the `www` directory will persist on the next `vagrant up`.
-1. Start modifying and adding local files to fit your needs. Take a look at [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) for tips on adding new projects.
-
 #### Caveats
 
 See [Troubleshooting](troubleshooting.md)
