@@ -24,7 +24,9 @@ server {
 
 ## nginx-wp-common.conf
 
-@TODO:
+This is an Nginx config file provided by VVV. Including it pulls in a number of useful rules, such as PHP Fast CGI and rules for using Nginx with permalinks.
+
+While not required, it's strongly recommended that this config file is included.
 
 ## Nginx Variable Replacements
 
