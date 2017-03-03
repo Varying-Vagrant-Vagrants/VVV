@@ -36,4 +36,12 @@ The config at the top of this page contains several examples. E.g. `{vvv_site_na
 
 ## Nginx Upstream
 
-@TODO:
+You may have noticed this line in the example above:
+
+```
+ set $upstream {upstream};
+```
+
+The `{upstream}` variable is set from `vvv-custom.yml`, and is used to determine the version of PHP to use. Removing this will disable that functionality.
+
+It may be desirable to force a site to use a particular version of PHP, for details see the [changing PHP versions])(../changing-php-version.md) documentation.
