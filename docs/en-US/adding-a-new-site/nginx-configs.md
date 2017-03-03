@@ -30,7 +30,9 @@ While not required, it's strongly recommended that this config file is included.
 
 ## Nginx Variable Replacements
 
-@TODO:
+Before VVV copies the configs to there final location, it runs a search replace routine. This allows variables containing information about the site to be used inside the Nginx config.
+
+The config at the top of this page contains several examples. E.g. `{vvv_site_name}` is used to set the domain used, and `{vvv_path_to_site}` is used to set the root and log locations.
 
 ## Nginx Upstream
 
