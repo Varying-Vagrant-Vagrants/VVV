@@ -45,3 +45,21 @@ You may have noticed this line in the example above:
 The `{upstream}` variable is set from `vvv-custom.yml`, and is used to determine the version of PHP to use. Removing this will disable that functionality.
 
 It may be desirable to force a site to use a particular version of PHP, for details see the [changing PHP versions])(../changing-php-version.md) documentation.
+
+## PHP Error Logs
+
+```
+ error_log {vvv_path_to_site}/log/error.log;
+ access_log {vvv_path_to_site}/log/access.log;
+```
+
+These two lines tell Nginx where to log errors and requests to the site. In this example, the logs for the `example` site are located at `www/example/log/error.log`
+
+Because the logs are being saved in a subfolder, it will be necessary to create the `log` folder and initial log files during provision. To do this, add these lines to `vvv-init.sh`:
+
+```
+# Nginx Logs
+mkdir -p ${VVV_PATH_TO_SITE}/log
+touch ${VVV_PATH_TO_SITE}/log/error.log
+touch ${VVV_PATH_TO_SITE}/log/access.log
+```
