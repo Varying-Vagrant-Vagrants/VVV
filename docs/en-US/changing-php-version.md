@@ -1,6 +1,6 @@
 # Changing PHP Version
 
-You can set the PHP version in `vvv-custom.yml` when defining a site. To do this, use the `nginx_upstream` option to specify the PHP version. VVV also needs to be told to install that version of PHP using the `utilities:` section.
+You can set the PHP version in `vvv-custom.yml` when defining a site. To do this, use the `nginx_upstream` option to specify the PHP version. VVV also needs to be told to install that version of PHP using the `utilities` section.
 
 Here’s an example that uses PHP v7.1:
 
@@ -42,3 +42,21 @@ utilities:
     - php56
     - php71
 ```
+
+## Forcing a Version of PHP
+
+It may be desirable to force a site to use a particular version of PHP, even if `vvv-custom.yml` disagrees.
+
+This is done by overriding the nginx upstream value inside `vvv-nginx.conf`. To do this change this:
+
+```
+ set $upstream {upstream};
+```
+
+To this:
+
+```
+ set $upstream php71;
+```
+
+That site is now using PHP 7.1. It may still be necessary though to add the version of PHP to the `utilities` section of `vvv-custom.yml`
