@@ -5,6 +5,27 @@ Need help?
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.
 * The [VVV Wiki](https://github.com/varying-vagrant-vagrants/vvv/wiki) also contains documentation that may help.
 
+## Starting from Fresh
+
+Sometimes, a clean fresh start fixes things, to do this, run the following commands:
+
+```
+# make sure this is the latest VVV
+git pull
+# Turn off the machine
+vagrant halt
+# Destroy the machine
+vagrant destroy
+# Make sure we use the latest version of the base box§
+vagrant box update
+# Make sure the recommended vagrant plugins are installed
+vagrant plugin install vagrant-triggers vagrant-vbguest vagrant-hostsupdater
+# And that they're all up to date
+vagrant plugin update
+# Start VVV and create the VM from scratch
+vagrant up --provision
+```
+
 ## Common Problems
 
 ### SSH Timeout During Provision
@@ -35,6 +56,14 @@ For more information on backups, see the [backups](#backups) section below.
 
 
 ## Common Causes of Problems
+
+### Typos in `vvv-custom.yml`
+
+If there's a typo or syntax error in `vvv-custom.yml` the provisioner will fail. Make sure the file is valid YAML when making changes to this file.
+
+### Out of Date VVV
+
+VVV is an active project, but if it isn't up to date you might suffer from bugs that have already been fixed. Do a `git pull` and restart/reprovision VVV.
 
 ### Out of Date Software
 
