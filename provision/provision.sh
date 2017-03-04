@@ -239,9 +239,6 @@ package_install() {
   echo postfix postfix/main_mailer_type select Internet Site | debconf-set-selections
   echo postfix postfix/mailname string vvv | debconf-set-selections
 
-  # Disable ipv6 as some ISPs/mail servers have problems with it
-  echo "inet_protocols = ipv4" >> "/etc/postfix/main.cf"
-
   # Provide our custom apt sources before running `apt-get update`
   ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
   echo "Linked custom apt sources"
