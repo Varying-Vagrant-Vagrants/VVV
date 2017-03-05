@@ -227,8 +227,8 @@ package_install() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-5.5 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-5.5 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.1 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.1 mysql-server/root_password_again password "root" | debconf-set-selections
 
   # Postfix
   #
@@ -261,8 +261,13 @@ package_install() {
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
 
     # Apply the PHP signing key
+    echo "Applying the PHP signing key..."
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
     apt-key export E5267A6C | apt-key add -
+
+    # Apply the MariaDB signing key
+    echo "Applying the MariaDB signing key..."
+    apt-key adv --quiet --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."

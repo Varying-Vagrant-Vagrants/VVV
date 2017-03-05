@@ -22,7 +22,7 @@ VVV is ideal for developing themes and plugins as well as for [contributing to W
 VVV is built on a Ubuntu 14.04 LTS (Trusty) base VM and provisions the server with current versions of several software packages, including:
 
 1. [nginx](http://nginx.org/) ([mainline](http://nginx.com/blog/nginx-1-6-1-7-released/) version)
-1. [MariaDB](https://mariadb.org/) 5.5.x (drop-in replacement for MySQL)
+1. [MariaDB](https://mariadb.org/) 10.1.x (drop-in replacement for MySQL)
 1. [php-fpm](http://php-fpm.org/) 7.0.x
 1. [WP-CLI](http://wp-cli.org/) (master branch)
 1. [memcached](http://memcached.org/)
