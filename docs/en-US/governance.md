@@ -45,6 +45,10 @@ Contributors who [show good judgement](http://producingoss.com/en/committers.htm
 
 ### Contributors
 
+Contributors are vital to the success of open source software. VVV is fortunate to have a large community of contributors that have provided support in one way or another over the last several years. Please see the [contributing guide](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/develop/.github/CONTRIBUTING.md) for information on how you can become a contributor.
+
+A list of [people who have contributed code to VVV](https://github.com/Varying-Vagrant-Vagrants/VVV/graphs/contributors) is maintained by GitHub.
+
 ## Project Founders
 
 VVV is a [10up](https://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
