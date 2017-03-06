@@ -55,8 +55,6 @@ VVV is a [10up](https://10up.com) creation. [Jeremy Felt](https://jeremyfelt.com
 
 ## Project Administration
 
-As VVV has grown, so has the number of tools used to administer the project.
-
 ### GitHub organization
 
 The [Varying Vagrant Vagrants GitHub organization](https://github.com/Varying-Vagrant-Vagrants) is owned by Jeremy Felt in that it's his email address that is assigned as the "Billing email". Lorelei Aurora's membership level is also set to "Owner". All lead developers and committers have permissions to create new repositories. The organization is currently configured under the free plan and there are no private repositories.
