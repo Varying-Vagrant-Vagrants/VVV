@@ -51,7 +51,7 @@ A list of [people who have contributed code to VVV](https://github.com/Varying-V
 
 ## Project Founders
 
-VVV is a [10up](https://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
+VVV is a [10up](https://10up.com) creation. [Jeremy Felt](https://jeremyfelt.com/) is the founding developer. [VVV transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.  The [first draft of VVV](https://jeremyfelt.com/2012/12/11/varying-vagrant-vagrants/) was released on December 11, 2012.
 
 ## Project Administration
 
