@@ -55,14 +55,28 @@ VVV is a [10up](https://10up.com) creation. [Jeremy Felt](https://jeremyfelt.com
 
 ## Project Administration
 
+As VVV has grown, so has the number of tools used to administer the project.
+
 ### GitHub organization
+
+The [Varying Vagrant Vagrants GitHub organization](https://github.com/Varying-Vagrant-Vagrants) is owned by Jeremy Felt in that it's his email address that is assigned as the "Billing email". Lorelei Aurora's membership level is also set to "Owner". All lead developers and committers have permissions to create new repositories. The organization is currently configured under the free plan and there are no private repositories.
 
 ### VVV Website
 
+The VVV website is located at [https://varyingvagrantvagrants.org](https://varyingvagrantvagrants.org).
+
 #### Domain name
+
+The `varyingvagrantvagrants.org` and `varyingvagrantvagrants.com` domains are owned by Jeremy Felt.
 
 #### Server
 
+The `varyingvagrantvagrants.org` domain is assigned to a virtual machine, hosted with Linode. That server is managed and paid for by Jeremy Felt.
+
 #### S3 account
 
+Documentation from VVV's repositories is deployed directly to an S3 bucket. That buck is managed and paid for by Jeremy Felt.
+
 #### Google Analytics
+
+Google Analytics is used to track visitors on the `varyingvagrantvagrants.org` domain. That account is managed by Jeremy Felt.
