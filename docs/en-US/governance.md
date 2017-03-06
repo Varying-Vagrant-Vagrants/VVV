@@ -4,13 +4,13 @@
 
 The [VVV core project](https://github.com/Varying-Vagrant-Vagrants/VVV/) and its individual modules, collectively organized as [Varying Vagrant Vagrants](https://github.com/Varying-Vagrant-Vagrants/) (VVV), are governed with a [benevolent dictator governance model](http://producingoss.com/en/benevolent-dictator.html).
 
-In general, this means that VVV is maintained by a community of active contributors. Most decisions are made in this context and contributions are always welcome. The benevolent dictator performs a role of project leadership and architectural oversight.
+In general, this means that VVV is maintained by a community of active contributors. Most decisions are made in this context and contributions are always welcome. The project lead performs a role of project leadership and architectural oversight.
 
 VVV is copyright (c) 2014-2017 the contributors of the VVV project under the [MIT License](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/develop/LICENSE). A [guide to contributing](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/develop/.github/CONTRIBUTING.md) is also available.
 
 ## Roles and Responsibilities
 
-### Project Lead (benevolent dictator)
+### Project Lead
 
 The project lead is trusted to set an overall strategic direction and, as necessary, to provide a final say in any arguments or disputes. They have full access to repositories, servers, and other services associated with project management. With the input of lead developers, they coordinate project maintenance and assign roles within the community.
 
