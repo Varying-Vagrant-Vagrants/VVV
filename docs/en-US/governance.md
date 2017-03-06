@@ -36,9 +36,12 @@ Committers are trusted to make changes to project code by merging the pull reque
 
 Current committers:
 
-* There are no additional committers at this time.
+* [Weston Ruter](https://github.com/westonruter)
+* [Simon Wheatley](https://github.com/simonwheatley)
+* [Luke Woodward](https://github.com/lkwdwrd)
+* [Christian Foellman](https://github.com/cfoellmann)
 
-Committers are selected by consensus between the project lead and lead developers.
+Contributors who [show good judgement](http://producingoss.com/en/committers.html#choosing-committers) may be selected as committers for one or more project repositories. The decision to promote a contributor to a committer will be made by consensus between the project lead and lead developers. This decision should be based on meritocratic criteria including, but not limited to, consistent and quality pull requests, bug gardening, support answers, and general community participation.
 
 ### Contributors
 
