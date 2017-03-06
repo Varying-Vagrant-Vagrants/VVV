@@ -73,7 +73,7 @@ The `varyingvagrantvagrants.org` domain is assigned to a virtual machine, hosted
 
 #### S3 account
 
-Documentation from VVV's repositories is deployed directly to an S3 bucket. That buck is managed and paid for by Jeremy Felt.
+Documentation from VVV's repositories is deployed directly to an S3 bucket. That bucket is managed and paid for by Jeremy Felt.
 
 #### Google Analytics
 
