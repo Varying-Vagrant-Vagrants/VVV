@@ -11,6 +11,14 @@ sites:
       - src.wordpress-develop.dev
       - build.wordpress-develop.dev
 
+  # This would create a standard WordPress site in www/example-site available
+  # at http;//my-example-site.dev
+
+  #example-site:
+  #  repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+  #  hosts:
+  #    - my-example-site.dev
+
   #wordpress-trunk: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-trunk.git
   #multisite: https://github.com/Varying-Vagrant-Vagrants/vvv-multisite.git
   #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git
