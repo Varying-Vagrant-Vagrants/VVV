@@ -49,7 +49,7 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 
 </p>
 
-<p><strong>Varying Vagrant Vagrants</strong> develop branch</p>
+<p><strong>Varying Vagrant Vagrants</strong></p>
 
 <ul class="nav">
 	<li class="active"><a href="#">Home</a></li>
