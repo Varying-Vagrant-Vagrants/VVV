@@ -13,6 +13,7 @@ sites:
 
   # This would create a standard WordPress site in www/example-site available
   # at http;//my-example-site.dev
+  # Remember to copy this file to vvv-custom.yml before making changes
 
   #example-site:
   #  repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
