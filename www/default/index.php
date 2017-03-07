@@ -31,6 +31,7 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 		#vvv_logo {
 			white-space: pre;
 		}
+		strong { color: #eff1f5; }
 		.v1 { color: rgb( 246, 60, 37 ); }
 		.v2 { color: rgb( 130, 255, 27 ); }
 		.v3 { color: rgb( 76, 155, 250 ); }
@@ -44,9 +45,11 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 <span class="v1">\ \   / </span><span class="v2">\ \   / </span><span class="v3">\ \   / /</span> <span class="v4">|___ \ </span>
 <span class="v1"> \ \ / /</span><span class="v2"> \ \ / /</span><span class="v3"> \ \ / / </span> <span class="v4">  __) |</span>
 <span class="v1">  \ V / </span><span class="v2">  \ V / </span><span class="v3">  \ V /  </span> <span class="v4"> / __/ </span>
-<span class="v1">   \_/  </span><span class="v2">   \_/  </span><span class="v3">   \_/   </span> <span class="v4">|_____|</span></p>
+<span class="v1">   \_/  </span><span class="v2">   \_/  </span><span class="v3">   \_/   </span> <span class="v4">|_____|</span>
 
-<p>Varying Vagrant Vagrants develop branch</p>
+</p>
+
+<p><strong>Varying Vagrant Vagrants</strong> develop branch</p>
 
 <ul class="nav">
 	<li class="active"><a href="#">Home</a></li>
