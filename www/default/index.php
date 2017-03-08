@@ -76,6 +76,10 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	<li><a href="http://build.wordpress-develop.dev/">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
 </ul>
 <style>
+/**
+ * Source Code Pro License and Copyright:
+ * https://github.com/adobe-fonts/source-code-pro/blob/master/LICENSE.txt
+ */
 /* latin-ext */
 @font-face {
   font-family: 'Source Code Pro';
