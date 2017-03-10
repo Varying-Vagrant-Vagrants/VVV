@@ -59,4 +59,4 @@ To this:
  set $upstream php71;
 ```
 
-That site is now using PHP 7.1. It may still be necessary though to add the version of PHP to the `utilities` section of `vvv-custom.yml`
+That site is now using PHP 7.1
