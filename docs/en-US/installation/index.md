@@ -52,4 +52,4 @@ Now that you're up and running, start poking around and modifying things.
 1. Suspend the box's state in memory with `vagrant suspend` and bring it right back with `vagrant resume`.
 1. Reapply provisioning to a running box with `vagrant provision`.
 1. Destroy the box with `vagrant destroy`. Files added in the `www` directory will persist on the next `vagrant up`.
-1. Start modifying and adding local files to fit your needs. Take a look at [Adding a New Site](adding-a-new-site/index.md), or [Adding an Existing Site](adding-an-existing-site.md) for tips on adding new projects.
+1. Start modifying and adding local files to fit your needs. Take a look at [Adding a Site](adding-a-new-site/index.md) for tips on adding new projects.

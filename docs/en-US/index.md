@@ -12,7 +12,6 @@
 
 * [Read how to install VVV here](installation/index.md)
 * [Adding New Sites](adding-a-new-site/index.md)
-* [Adding and Existing Site](adding-an-existing-site.md)
 * [Need usernames and passwords? Find out the default credentials for the built in sites here](default-credentials.md)
 
 ### Other
