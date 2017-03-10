@@ -106,7 +106,7 @@ It's recommend that instead the `utilities` section be used when possible. Writi
 
 ### nginx_upstream
 
-This option sets where Nginx passes requests to, and is primarily for setting the PHP version used. [You can read more about it here](changing-php-version.md)
+This option sets where Nginx passes requests to, and is primarily for setting the PHP version used. [You can read more about it here](adding-a-new-site/changing-php-version.md)
 
 ### hosts
 
