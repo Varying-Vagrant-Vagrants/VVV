@@ -35,15 +35,3 @@ example.com
 example.net
 ```
 
-## vvv-init.sh
-
-Sometimes, it's useful to generate domains automatically. We can do this by piping to /etc/hosts inside the Virtual Machine via `vvv-init.sh`.
-
-In this example, we dynamically add a domain generated via the name given to the site:
-
-```
-# Add the site name to the hosts file
-echo "127.0.0.1 ${VVV_SITE_NAME}.local # vvv-auto" >> "/etc/hosts"
-```
-
-For a site named example, this would generate the domain http://example.local
