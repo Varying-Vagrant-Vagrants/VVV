@@ -32,4 +32,4 @@ This will do a restart of the Virtual Machine, and is the same as running `vagra
 
 ## Reloading `vvv-custom.yml`
 
-If you make any changes to your config file, they won't take immediate effect. For changes to take hold, restart VVV using `vagrant reload`
+If you make any changes to your config file, they won't take immediate effect. For changes to take hold, restart VVV using `vagrant reload --provision`
