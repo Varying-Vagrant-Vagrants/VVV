@@ -45,11 +45,6 @@ The dashboard provided by VVV allows for easy replacement by looking for a `www/
 * @stevenkword's [VVV Dashboard Custom](https://github.com/stevenkword/vvv-dashboard-custom)
 * @goblindegook's [VVV Material Dashboard](https://github.com/goblindegook/vvv-material-dashboard)
 
-
-## History
-
-[Read about the history of the VVV project here](history.md)
-
 ## [Copyright / License](#license)
 
 VVV is copyright (c), the contributors of the VVV project under the [MIT License](LICENSE).
