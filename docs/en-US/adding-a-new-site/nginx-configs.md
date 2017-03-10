@@ -44,7 +44,7 @@ You may have noticed this line in the example above:
 
 The `{upstream}` variable is set from `vvv-custom.yml`, and is used to determine the version of PHP to use. Removing this will disable that functionality.
 
-It may be desirable to force a site to use a particular version of PHP, for details see the [changing PHP versions])(../changing-php-version.md) documentation.
+It may be desirable to force a site to use a particular version of PHP, for details see the [changing PHP versions](../changing-php-version.md) documentation.
 
 ## PHP Error Logs
 
