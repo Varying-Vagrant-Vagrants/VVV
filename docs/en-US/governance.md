@@ -1,4 +1,4 @@
-# Varying Vagrant Vagrants Governance
+# Governance
 
 ## Overview
 
@@ -6,7 +6,7 @@ The [VVV core project](https://github.com/Varying-Vagrant-Vagrants/VVV/) and its
 
 In general, this means that VVV is maintained by a community of active contributors. Most decisions are made in this context and contributions are always welcome. The project lead performs a role of project leadership and architectural oversight.
 
-VVV is copyright (c) 2014-2017 the contributors of the VVV project under the [MIT License](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/develop/LICENSE). A [guide to contributing](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/develop/.github/CONTRIBUTING.md) is also available.
+VVV is copyright the contributors of the VVV project under the [MIT License](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/develop/LICENSE). A [guide to contributing](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/develop/.github/CONTRIBUTING.md) is also available.
 
 ## Roles and Responsibilities
 
@@ -16,7 +16,7 @@ The project lead is trusted to set an overall strategic direction and, as necess
 
 Current project lead:
 
-* [Jeremy Felt](https://jeremyfelt.com/)
+* [Jeremy Felt](https://github.com/jeremyfelt)
 
 The current project lead assumed the role as founder of the project. When they transition out of the project lead role, a steering committee will be formed of trusted stakeholders and community members. This committee will select a new project lead or leads. When this committee is formed, 10up will be offered at least one seat on that group.
 
