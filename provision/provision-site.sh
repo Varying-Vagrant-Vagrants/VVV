@@ -26,6 +26,16 @@ get_config_value() {
   echo ${value:-$2}
 }
 
+get_hosts() {
+  local value=`cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`
+  echo ${value:-$@}
+}
+
+get_primary_host() {
+  local value=`cat ${VVV_CONFIG} | shyaml get-value sites.${SITE_ESCAPED}.hosts.0 2> /dev/null`
+  echo ${value:-$1}
+}
+
 if [[ true == $SKIP_PROVISIONING ]]; then
     REPO=false
 fi
