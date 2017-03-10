@@ -1,8 +1,5 @@
 # Varying Vagrant Vagrants
 
-
-[How to Contribute](contributing.md)
-
 ## Table of Content ##
 * [Overview](#overview)
 * [Installation](installation.md)
@@ -10,18 +7,9 @@
 * [Extensions](#helpful-extensions)
 * [Copyright](#copyright--license)
 
+### [Installation](#installation)
 
-#### Software Requirements
-
-[Requirements](installation/software-requirements.md)
-
-
-#### VVV as a Scaffold
-
-Entirely different server configurations can be created by modifying the files included with VVV and through the use of additional [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) provisioning scripts. Check this project out and use it as a base to learn about server provisioning or change everything to make it your own.
-
-### [Installation - The First Vagrant Up](#installation)
-
+[Software Requirements](installation/software-requirements.md)
 [Read how to install VVV here](installation.md)
 
 #### Caveats
@@ -64,5 +52,5 @@ The dashboard provided by VVV allows for easy replacement by looking for a `www/
 
 ## [Copyright / License](#license)
 
-VVV is copyright (c) 2014-2016, the contributors of the VVV project under the [MIT License](LICENSE).
+VVV is copyright (c), the contributors of the VVV project under the [MIT License](LICENSE).
 
