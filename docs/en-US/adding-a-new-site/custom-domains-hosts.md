@@ -16,7 +16,7 @@ When changing hosts, the Nginx config will need updating so that Nginx knows to 
 
 When adding a site in `vvv-custom.yml`, add a hosts section listing the domains of that site. For example:
 
-```
+```YAML
   example:
     hosts:
       - example.com
@@ -30,7 +30,7 @@ VVV 1 added hosts using a file named `vvv-hosts`, and VVV 2 continues support fo
 
 Here's an example that adds 2 domains:
 
-```
+```YAML
 example.com
 example.net
 ```
