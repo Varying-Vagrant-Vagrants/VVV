@@ -10,7 +10,7 @@
 
 ### [Installation](#installation)
 
-* [Read how to install VVV here](installation/index.md)
+* [Read how to install VVV](installation/index.md)
 * [Adding New Sites](adding-a-new-site/index.md)
 * [Need usernames and passwords? Find out the default credentials for the built in sites here](default-credentials.md)
 
