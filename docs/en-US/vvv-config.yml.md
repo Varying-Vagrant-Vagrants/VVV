@@ -27,14 +27,18 @@ sites:
       hosts:
         - develop.wordpress.dev
 
-  utilities:
-    core:
+vm_config:
+  memory: 1024
+  cores: 1
+
+utilities:
+  core:
       - memcached-admin
       - opcache-status
       - phpmyadmin
       - webgrind
-  utility-sources:
-    core: https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git
+utility-sources:
+  core: https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git
 ```
 
 ## Anatomy of a Site config
@@ -116,3 +120,11 @@ This defines the domains and hosts for VVV to listen on. If the vagrant host plu
     hosts:
       - local.wordpress.dev
 ```
+
+## vm_config
+
+These settings control the Virtual Machine that Vagrant creates. By default this is 1024MB of RAM and 1 core. For more information see the [vm_config page](vm_config.md)
+
+## Utilities
+
+These are repositories and packages VVV pulls in to provide services, such as MySQL, PHPMyAdmin, or Memcached. Additional versions of PHP may be added here.
