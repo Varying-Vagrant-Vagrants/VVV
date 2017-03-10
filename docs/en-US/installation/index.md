@@ -24,11 +24,7 @@
 1. Start the Vagrant environment with `vagrant up`
     * Be patient as the magic happens. This could take a while on the first run as your local machine downloads the required files.
     * Watch as the script ends, as an administrator or `su` ***password may be required*** to properly modify the hosts file on your local machine.
-1. Visit any of the following default sites in your browser:
-    * [http://local.wordpress.dev/](http://local.wordpress.dev/) for WordPress stable
-    * [http://src.wordpress-develop.dev/](http://src.wordpress-develop.dev/) for trunk WordPress development files
-    * [http://build.wordpress-develop.dev/](http://build.wordpress-develop.dev/) for the version of those development files built with Grunt
-    * [http://vvv.dev/](http://vvv.dev/) for a default dashboard containing several useful tools
+1. Visit any of the [built in WordPress sites](built-in-wp-installs.md) or the VVV Dashboard at [http://vvv.dev](http://vvv.dev)
 
 Fancy, yeah?
 
@@ -56,4 +52,4 @@ Now that you're up and running, start poking around and modifying things.
 1. Suspend the box's state in memory with `vagrant suspend` and bring it right back with `vagrant resume`.
 1. Reapply provisioning to a running box with `vagrant provision`.
 1. Destroy the box with `vagrant destroy`. Files added in the `www` directory will persist on the next `vagrant up`.
-1. Start modifying and adding local files to fit your needs. Take a look at [Auto Site Setup](https://github.com/varying-vagrant-vagrants/vvv/wiki/Auto-site-Setup) for tips on adding new projects.
+1. Start modifying and adding local files to fit your needs. Take a look at [Adding a New Site](adding-a-new-site/index.md), or [Adding an Existing Site](adding-an-existing-site.md) for tips on adding new projects.
