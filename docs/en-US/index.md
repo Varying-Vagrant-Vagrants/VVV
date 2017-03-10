@@ -17,7 +17,6 @@
 ### Other
 
  * [History](history.md)
- * [The VVV Provisioner](the-vvv2-provisioner.md)
  * [VM Options](vm_config.md)
  * [vvv-custom.yml reference](vvv-config.yml.md)
 
