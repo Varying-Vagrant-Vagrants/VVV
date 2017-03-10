@@ -8,7 +8,7 @@ VVV 2 uses a config file to discover sites. Adding your site to this file will a
 
 If, for example, you have a site at `www/my-test-site`, you can migrate it to VVV2 by adding this to the `sites` section of `vvv-custom.yml`:
 
-```
+```YAML
     my-test-site:
 ```
 
@@ -18,7 +18,7 @@ Turn your VVV instance off and on to reload the config, and VVV will now look in
 
 It's possible to specify a git repository rather than a folder, and VVV2 will clone it and provision the contents automatically, for example:
 
-```
+```YAML
     my-test-site: https://github.com/etc.....
 ```
 
@@ -26,7 +26,7 @@ This will clone the git repository into `www/my-test-site` and provision the con
 
 This can also be done via the `repo` key, allowing extra options, such as hosts to be defined:
 
-```
+```YAML
     my-test-site:
     	repo: https://github.com/etc.....
     	hosts:

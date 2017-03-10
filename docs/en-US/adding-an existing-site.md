@@ -14,7 +14,7 @@ I'm going to walk through setting up a blog named vvvtest.com locally using VVV,
 
 First we need to tell VVV about the site. I'm going to give the site the name `vvvtest`, and update the sites list in `vvv-custom.yml`:
 
-```
+```YAML
 	vvvtest:
 		hosts:
 			vvvtest.com
@@ -34,7 +34,7 @@ With this, you can automate a large chunk of the work for new users when working
 
 For example:
 
-```
+```YAML
 	vvvtest:
 		repo: https://github.com/example/site.git
 		hosts:
@@ -66,7 +66,7 @@ Your script might:
 
 Here is an example script that will work for a basic WordPress multisite install:
 
-```
+```shell
 #!/usr/bin/env bash
 
 # Add the site name to the hosts file
@@ -105,7 +105,7 @@ VVV uses Nginx as a web server, but Nginx needs to know how to serve a WP site. 
 
 For our example, we only need to change the domain/host and copy paste the result into `provision/vvv-nginx.conf`:
 
-```
+```nginx
 server {
  listen 80;
  listen 443 ssl;
@@ -140,3 +140,4 @@ There are several ways to do this:
  - Connect directly to the MySQL server using the default credentials
  - Restore a backup via a plugin
  - Automatically import an sql file in vvv-init.sh if the database is empty using the `mysql` command
+ 

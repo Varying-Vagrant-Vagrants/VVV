@@ -8,7 +8,7 @@ Note: Until you provision VVV for the first time, Vagrant Manager will not pick 
 
 ## Turning VVV On
 
-```
+```shell
 vagrant up
 ```
 
@@ -16,7 +16,7 @@ If Vagrant triggers are installed, and the VVV machine is turned off, this will 
 
 ## Turning VVV Off
 
-```
+```shell
 vagrant halt
 ```
 
@@ -24,7 +24,7 @@ This will shut down the virtual machine. If the machine is frozen for whatever r
 
 ## Restarting VVV
 
-```
+```shell
 vagrant reload
 ```
 

@@ -4,7 +4,7 @@
 
 Here's the full default config file, with every key and option that VVV supports:
 
-```
+```yaml
 sites:
     wordpress-default:
       repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
@@ -41,7 +41,7 @@ sites:
 
 Lets break apart the `wordpress-default` site:
 
-```
+```yaml
 sites:
     wordpress-default:
       repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
@@ -56,7 +56,7 @@ sites:
 
 When defining a site, the only required item is the name of the site. This single line would be a perfectly valid site definition:
 
-```
+```yaml
   example-site:
 ```
 
@@ -67,7 +67,7 @@ This specifies a git repository that contains the site to be provisioned. If set
 
 There's also a shorthand version:
 
-```
+```yaml
   example-site: https://github.com/Varying-Vagrant-Vagrants/...
 ```
 
@@ -89,7 +89,7 @@ For example, a site named `test` would be inside the `www/test` folder.
 
 If there are a lot of sites in `vvv-custom.yml`, you may want to skip several sites that aren't in use. To do this, set the `skip_provisioning` key, for example:
 
-```
+```yaml
 sites:
     wordpress-default:
       repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
@@ -112,7 +112,7 @@ This option sets where Nginx passes requests to, and is primarily for setting th
 
 This defines the domains and hosts for VVV to listen on. If the vagrant host plugin is installed, your hosts file will automatically be updated when the machine is turned on and off
 
-```
+```yaml
     hosts:
       - local.wordpress.dev
 ```

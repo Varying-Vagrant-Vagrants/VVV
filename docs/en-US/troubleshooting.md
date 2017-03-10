@@ -9,7 +9,7 @@ Need help?
 
 Sometimes, a clean fresh start fixes things, to do this, run the following commands:
 
-```
+```shell
 # make sure this is the latest VVV
 git pull
 # Turn off the machine
@@ -67,11 +67,11 @@ VVV is an active project, but if it isn't up to date you might suffer from bugs 
 
 ### Out of Date Software
 
-Mismatched Virtualbox and Guest additions can cause problems, as can older versions of Vagrant. When troubleshooting a problem, update to the latest versions of software, then verify the problem still exists after a `vagrant halt;vagrant up`
+Mismatched Virtualbox and Guest additions can cause problems, as can older versions of Vagrant. When troubleshooting a problem, update to the latest versions of software, then verify the problem still exists after a `vagrant halt;vagrant up --provision`
 
 ### Local Network IP Clashes
 
-The network configuration picks an IP of 192.168.50.4. It could cause conflicts on your existing network if you *are* on a 192.168.50.x subnet already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up`
+The network configuration picks an IP of 192.168.50.4. It could cause conflicts on your existing network if you *are* on a 192.168.50.x subnet already. You can configure any IP address in the `Vagrantfile` and it will be used on the next `vagrant up --provision`
 
 ### Vagrant and VirtualBox
 
@@ -83,7 +83,7 @@ VVV relies on the stability of both Vagrant and VirtualBox. These caveats are co
 
 ### Memory Allotment
 
-The default memory allotment for the VVV virtual machine is 1024MB. If you would like to raise or lower this value to better match your system requirements, a [guide to changing memory size](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Customising-your-Vagrant's-attributes-and-parameters) is in the wiki.
+The default memory allotment for the VVV virtual machine is 1024MB. If you would like to raise or lower this value to better match your system requirements, a [you can do so with the vm_config section of `vvv-custom.yml`](vm_config.md) is in the wiki.
 
 ### 64bit Ubuntu and Older CPUs
 
