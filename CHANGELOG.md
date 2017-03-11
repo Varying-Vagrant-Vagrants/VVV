@@ -8,11 +8,11 @@ A full `vagrant destroy` and `vagrant up` are recommended for best results. Runn
 
 It is possible to make the transition from VVV 1.4.x to 2.0.0 without a `vagrant destroy`, but the process will involve restructuring several things. Primarily, project directories are now expected to contain a `public_html/` directory. This requires not only file changes, but new Nginx configurations. Please see the migration documentation for tips on how to manage this process. If you need help troubleshooting, don't hesitate to open a new issue.
 
-[Note with links to documentation, blog post, etc....]
+The decision to include breaking changes in a release is not made lightly. The new ability to configure your installation of VVV with a `vvv-custom.yml` file will make VVV entirely more flexible and maintainable than it has ever been. Please see the release blog post and new documentation for more details.
 
 ### Features & Enhancements
 
-* Introduce a YAML configuration for VVV. See [#980](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/980).
+* Introduce a YAML configuration for VVV. It is now possible to customize your configuration of VVV with a `vvv-custom.yml` file that defines which projects, hosts, and utilities are provisioned. See [#980](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/980).
 * Introduce a new [VVV Utilities repository](https://github.com/Varying-Vagrant-Vagrants/vvv-utilities). This works with the new YAML configuration to provide the ability to customize what utilities are provisioned with VVV. See [#1021](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1021).
 * Introduce a new [VVV Custom Site Template repository](https://github.com/Varying-Vagrant-Vagrants/custom-site-template). This can be used in `vvv-custom.yml` to quickly add new sites to VVV.
 * Introduce a new [VVV WordPress Develop repository](https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop). This is used in the default `vvv-config.yml` and can be used in (or excluded from) custom configurations.
