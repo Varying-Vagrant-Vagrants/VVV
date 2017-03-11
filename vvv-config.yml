@@ -12,7 +12,6 @@ sites:
       - build.wordpress-develop.dev
 
   #wordpress-trunk: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-trunk.git
-  #multisite: https://github.com/Varying-Vagrant-Vagrants/vvv-multisite.git
   #wordpress-meta-environment: https://github.com/WordPress/meta-environment.git
 
 utilities:
