@@ -19,15 +19,15 @@ If you're migrating a site from VVV 1, read this page, then visit the [migration
 First we need to tell VVV about the site. I'm going to give the site the name `vvvtest`, and update the sites list in `vvv-custom.yml`:
 
 ```YAML
-	vvvtest:
+vvvtest:
 ```
 
 We also want to specify the host as vvvtest.com:
 
 ```YAML
-	vvvtest:
-		hosts:
-			vvvtest.com
+vvvtest:
+  hosts:
+    - vvvtest.com
 ```
 
 Read here for [more information about Domains and hosts](custom-domains-hosts.md)
@@ -49,10 +49,10 @@ With this, you can automate a large chunk of the work for new users when working
 For example:
 
 ```YAML
-	vvvtest:
-		repo: https://github.com/example/site.git
-		hosts:
-			vvvtest.com
+vvvtest:
+  repo: https://github.com/example/site.git
+  hosts:
+    - vvvtest.com
 ```
 
 We **strongly** recommend this.
@@ -73,17 +73,17 @@ For our example, we only need to change the domain/host and copy paste the resul
 
 ```nginx
 server {
- listen 80;
- listen 443 ssl;
- server_name vvvtest.com;
- root {vvv_path_to_site};
+  listen 80;
+  listen 443 ssl;
+  server_name vvvtest.com;
+  root {vvv_path_to_site};
 
- error_log {vvv_path_to_site}/log/error.log;
- access_log {vvv_path_to_site}/log/access.log;
+  error_log {vvv_path_to_site}/log/error.log;
+  access_log {vvv_path_to_site}/log/access.log;
 
- set $upstream {upstream};
+  set $upstream {upstream};
 
- include /etc/nginx/nginx-wp-common.conf;
+  include /etc/nginx/nginx-wp-common.conf;
 }
 ```
 

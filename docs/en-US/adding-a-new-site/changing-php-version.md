@@ -10,8 +10,8 @@ sites:
     nginx_upstream: php71
 
 utilities:
-    core:
-      - php71
+  core:
+    - php71
 ```
 
 This will not work if `set $upstream {upstream};` is removed from the nginx config.
@@ -49,13 +49,13 @@ It may be desirable to force a site to use a particular version of PHP, even if 
 
 This is done by overriding the nginx upstream value inside `vvv-nginx.conf`. To do this change this:
 
-```YAML
+```nginx
  set $upstream {upstream};
 ```
 
 To this:
 
-```YAML
+```nginx
  set $upstream php71;
 ```
 

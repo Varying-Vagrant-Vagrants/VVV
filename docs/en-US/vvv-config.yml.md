@@ -6,26 +6,27 @@ Here's the full default config file, with every key and option that VVV supports
 
 ```yaml
 sites:
-    wordpress-default:
-      repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
-      vm_dir: /srv/www/wordpress-default
-      local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
-      branch: "master
-      skip_provisioning: false
-      allow_customfile: false
-      nginx_upstream: php
-      hosts:
-        - local.wordpress.dev
-    wordpress-develop:
-      repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
-      vm_dir: /srv/www/wordpress-develop
-      local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-develop
-      branch: master
-      skip_provisioning: true
-      allow_customfile: false
-      nginx_upstream: php
-      hosts:
-        - develop.wordpress.dev
+  wordpress-default:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+    vm_dir: /srv/www/wordpress-default
+    local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
+    branch: "master
+    skip_provisioning: false
+    allow_customfile: false
+    nginx_upstream: php
+    hosts:
+      - local.wordpress.dev
+
+  wordpress-develop:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
+    vm_dir: /srv/www/wordpress-develop
+    local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-develop
+    branch: master
+    skip_provisioning: true
+    allow_customfile: false
+    nginx_upstream: php
+    hosts:
+      - develop.wordpress.dev
 
 vm_config:
   memory: 1024
@@ -33,10 +34,10 @@ vm_config:
 
 utilities:
   core:
-      - memcached-admin
-      - opcache-status
-      - phpmyadmin
-      - webgrind
+    - memcached-admin
+    - opcache-status
+    - phpmyadmin
+    - webgrind
 utility-sources:
   core: https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git
 ```
@@ -47,21 +48,21 @@ Lets break apart the `wordpress-default` site:
 
 ```yaml
 sites:
-    wordpress-default:
-      repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
-      vm_dir: /srv/www/wordpress-default
-      local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
-      branch: "master
-      skip_provisioning: false
-      allow_customfile: false
-      nginx_upstream: php
-      hosts:
+  wordpress-default:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+    vm_dir: /srv/www/wordpress-default
+    local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
+    branch: "master
+    skip_provisioning: false
+    allow_customfile: false
+    nginx_upstream: php
+    hosts:
 ```
 
 When defining a site, the only required item is the name of the site. This single line would be a perfectly valid site definition:
 
 ```yaml
-  example-site:
+example-site:
 ```
 
 
@@ -72,7 +73,7 @@ This specifies a git repository that contains the site to be provisioned. If set
 There's also a shorthand version:
 
 ```yaml
-  example-site: https://github.com/Varying-Vagrant-Vagrants/...
+example-site: https://github.com/Varying-Vagrant-Vagrants/...
 ```
 
 ### branch
@@ -95,9 +96,9 @@ If there are a lot of sites in `vvv-custom.yml`, you may want to skip several si
 
 ```yaml
 sites:
-    wordpress-default:
-      repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
-      skip_provisioning: true
+  wordpress-default:
+    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+    skip_provisioning: true
 ```
 
 Now VVV will skip that site when running the provisioner. This means that the hosts, nginx config, and `vvv-init.sh` script will not be copied or ran.
@@ -117,8 +118,8 @@ This option sets where Nginx passes requests to, and is primarily for setting th
 This defines the domains and hosts for VVV to listen on. If the vagrant host plugin is installed, your hosts file will automatically be updated when the machine is turned on and off
 
 ```yaml
-    hosts:
-      - local.wordpress.dev
+hosts:
+  - local.wordpress.dev
 ```
 
 ## vm_config

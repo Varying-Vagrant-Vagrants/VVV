@@ -8,17 +8,17 @@ For most WordPress sites, this NGINX configuration will suffice:
 
 ```Nginx
 server {
- listen 80;
- listen 443 ssl;
- server_name {vvv_site_name}.local;
- root {vvv_path_to_site};
+  listen 80;
+  listen 443 ssl;
+  server_name {vvv_site_name}.local;
+  root {vvv_path_to_site};
 
- error_log {vvv_path_to_site}/log/error.log;
- access_log {vvv_path_to_site}/log/access.log;
+  error_log {vvv_path_to_site}/log/error.log;
+  access_log {vvv_path_to_site}/log/access.log;
 
- set $upstream {upstream};
+  set $upstream {upstream};
 
- include /etc/nginx/nginx-wp-common.conf;
+  include /etc/nginx/nginx-wp-common.conf;
 }
 ```
 
@@ -39,7 +39,7 @@ The config at the top of this page contains several examples. E.g. `{vvv_site_na
 You may have noticed this line in the example above:
 
 ```Nginx
- set $upstream {upstream};
+set $upstream {upstream};
 ```
 
 The `{upstream}` variable is set from `vvv-custom.yml`, and is used to determine the version of PHP to use. Removing this will disable that functionality.
@@ -49,8 +49,8 @@ It may be desirable to force a site to use a particular version of PHP, for deta
 ## PHP Error Logs
 
 ```Nginx
- error_log {vvv_path_to_site}/log/error.log;
- access_log {vvv_path_to_site}/log/access.log;
+error_log {vvv_path_to_site}/log/error.log;
+access_log {vvv_path_to_site}/log/access.log;
 ```
 
 These two lines tell Nginx where to log errors and requests to the site. In this example, the logs for the `example` site are located at `www/example/log/error.log`
