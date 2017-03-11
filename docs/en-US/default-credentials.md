@@ -7,7 +7,7 @@ __Password:__ `wp`
 
 All WordPress admin usernames and passwords for WordPress installations included by default are:
 
-__User:__ `admin`  
+__User:__ `admin` 
 __Password:__ `password`
 
 MySQL Root:
