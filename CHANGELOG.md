@@ -1,3 +1,9 @@
+---
+layout: page
+title: Changelog
+permalink: /docs/en-US/changelog/
+---
+
 # Varying Vagrant Vagrants Changelog
 
 ## 1.4.1 (January 16, 2017)
