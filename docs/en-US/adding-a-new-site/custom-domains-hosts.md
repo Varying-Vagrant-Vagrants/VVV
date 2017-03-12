@@ -1,3 +1,9 @@
+---
+layout: page
+title: Custom Domains and Hosts
+permalink: /docs/en-US/adding-a-new-site/custom-domains-hosts
+---
+
 # Custom Domains and Hosts
 
 There are 3 ways to define hosts
@@ -34,4 +40,3 @@ Here's an example that adds 2 domains:
 example.com
 example.net
 ```
-

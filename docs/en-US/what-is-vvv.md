@@ -1,3 +1,9 @@
+---
+layout: page
+title: What is VVV?
+permalink: /docs/en-US/what-is-vvv
+---
+
 # What is VVV?
 
 Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) configuration focused on [WordPress](https://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).

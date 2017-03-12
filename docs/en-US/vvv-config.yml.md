@@ -1,3 +1,9 @@
+---
+layout: page
+title: vvv-config.yml
+permalink: /docs/en-US/vvv-config
+---
+
 # vvv-config.yml
 
 `vvv-config.yml` is the default config file that VVV uses to set itself up. Copy this file to `vvv-custom.yml` to make changes and add your own site.

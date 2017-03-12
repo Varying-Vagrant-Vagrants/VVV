@@ -1,3 +1,9 @@
+---
+layout: page
+title: Installation
+permalink: /docs/en-US/installation/
+---
+
 # Installation
 
 1. Start with any local operating system such as Mac OS X, Linux, or Windows.

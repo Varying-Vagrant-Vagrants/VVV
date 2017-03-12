@@ -1,3 +1,9 @@
+---
+layout: page
+title: Built in WordPress installs
+permalink: /docs/en-US/built-in-wordpress-installs
+---
+
 # Built in WordPress installs
 
 #### VVV as a MAMP/XAMPP Replacement

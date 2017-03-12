@@ -1,3 +1,9 @@
+---
+layout: page
+title: Setup Script
+permalink: /docs/en-US/adding-a-new-site/setup-script
+---
+
 # Setup script
 
 `vvv-init.sh` is ran when VVV sets up the site, and gives you an opportunity to execute shell commands, including WP CLI commands. This file is optional, but when combined with a git repository this becomes very powerful.

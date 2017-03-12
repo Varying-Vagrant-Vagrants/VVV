@@ -1,3 +1,9 @@
+---
+layout: page
+title: Basic Usage
+permalink: /docs/en-US/references/basic-usage
+---
+
 # Basic Usage
 
 ## Using a GUI
