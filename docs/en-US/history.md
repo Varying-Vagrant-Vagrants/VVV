@@ -1,7 +1,7 @@
 ---
 layout: page
 title: History
-permalink: /docs/en-US/history
+permalink: /docs/en-US/history/
 ---
 
 # History

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Changelog
-permalink: /docs/en-US/changelog
+permalink: /docs/en-US/changelog/
 ---
 
 # Varying Vagrant Vagrants Changelog

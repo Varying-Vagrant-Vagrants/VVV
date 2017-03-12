@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Nginx Configuration
-permalink: /docs/en-US/adding-a-new-site/nginx-configuration
+permalink: /docs/en-US/adding-a-new-site/nginx-configuration/
 ---
 
 # Nginx configs

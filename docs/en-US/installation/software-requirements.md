@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Software Requirements
-permalink: /docs/en-US/installation/software-requirements
+permalink: /docs/en-US/installation/software-requirements/
 ---
 
 # Software Requirements

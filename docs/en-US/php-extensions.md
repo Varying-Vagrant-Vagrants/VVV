@@ -1,7 +1,7 @@
 ---
 layout: page
 title: PHP Extensions
-permalink: /docs/en-US/references/php-extensions
+permalink: /docs/en-US/references/php-extensions/
 ---
 
 This page lists all the PHP Modules bundled with VVV.

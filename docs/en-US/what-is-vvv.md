@@ -1,7 +1,7 @@
 ---
 layout: page
 title: What is VVV?
-permalink: /docs/en-US/what-is-vvv
+permalink: /docs/en-US/what-is-vvv/
 ---
 
 # What is VVV?

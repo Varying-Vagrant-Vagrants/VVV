@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Default Credentials
-permalink: /docs/en-US/default-credentials
+permalink: /docs/en-US/default-credentials/
 ---
 
 # Default Credentials

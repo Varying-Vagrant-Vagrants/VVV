@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Contributing to VVV
-permalink: /docs/en-US/contributing
+permalink: /docs/en-US/contributing/
 ---
 
 # Contributing to VVV

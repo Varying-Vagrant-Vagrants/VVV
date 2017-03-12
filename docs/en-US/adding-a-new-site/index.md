@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Adding a New Site
-permalink: /docs/en-US/adding-a-new-site
+permalink: /docs/en-US/adding-a-new-site/
 ---
 
 # Adding a New Site

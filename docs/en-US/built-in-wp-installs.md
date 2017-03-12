@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Built in WordPress installs
-permalink: /docs/en-US/built-in-wordpress-installs
+permalink: /docs/en-US/built-in-wordpress-installs/
 ---
 
 # Built in WordPress installs
