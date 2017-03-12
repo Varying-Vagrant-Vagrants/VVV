@@ -8,7 +8,7 @@ A full `vagrant destroy` and `vagrant up` are recommended for best results. Runn
 
 It is possible to make the transition from VVV 1.4.x to 2.0.0 without a `vagrant destroy`, but the process will involve restructuring several things. Primarily, project directories are now expected to contain a `public_html/` directory. This requires not only file changes, but new Nginx configurations. Please see the migration documentation for tips on how to manage this process. If you need help troubleshooting, don't hesitate to open a new issue.
 
-The decision to include breaking changes in a release is not made lightly. The new ability to configure your installation of VVV with a `vvv-custom.yml` file will make VVV entirely more flexible and maintainable than it has ever been. Please see the release blog post and new documentation for more details.
+The decision to include breaking changes in a release is not made lightly. The new ability to configure your installation of VVV with a `vvv-custom.yml` file will make VVV entirely more flexible and maintainable than it has ever been. Please see the release blog post and [new documentation](https://varyingvagrantvagrants.org/docs/en-US/) for more details.
 
 ### Features & Enhancements
 
