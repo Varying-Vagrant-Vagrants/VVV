@@ -1,3 +1,9 @@
+---
+layout: page
+title: History
+permalink: /docs/en-US/history
+---
+
 # History
 
 VVV is a [10up](http://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.

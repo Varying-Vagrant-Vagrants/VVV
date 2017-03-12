@@ -1,3 +1,9 @@
+---
+layout: page
+title: Adding a New Site
+permalink: /docs/en-US/adding-a-new-site
+---
+
 # Adding a New Site
 
 Adding a new site is as simple as adding it under the sites section of `vvv-custom.yml`.
@@ -106,4 +112,3 @@ There are several ways to do this:
  - Connect directly to the MySQL server using the default credentials
  - Restore a backup via a plugin
  - Automatically import an sql file in vvv-init.sh if the database is empty using the `mysql` command
- 

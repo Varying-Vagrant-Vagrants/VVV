@@ -1,3 +1,9 @@
+---
+layout: page
+title: Troubleshooting
+permalink: /docs/en-US/troubleshooting
+---
+
 # Troubleshooting
 
 Need help?

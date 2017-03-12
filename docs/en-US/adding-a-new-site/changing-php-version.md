@@ -1,3 +1,9 @@
+---
+layout: page
+title: Changing PHP Version
+permalink: /docs/en-US/adding-a-new-site/changing-php-version
+---
+
 # Changing PHP Version
 
 You can set the PHP version in `vvv-custom.yml` when defining a site. To do this, use the `nginx_upstream` option to specify the PHP version. VVV also needs to be told to install that version of PHP using the `utilities` section.

@@ -1,3 +1,9 @@
+---
+layout: page
+title: Migrating from VVV 1.4.x
+permalink: /docs/en-US/adding-a-new-site/migrating-from-vvv-1-4-x
+---
+
 # Migrating from VVV 1
 
 VVV 1 sites still work, but they require an additional step.

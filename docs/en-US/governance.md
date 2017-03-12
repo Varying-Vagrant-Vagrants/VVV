@@ -1,3 +1,9 @@
+---
+layout: page
+title: Governance
+permalink: /docs/en-US/governance
+---
+
 # Governance
 
 ## Overview

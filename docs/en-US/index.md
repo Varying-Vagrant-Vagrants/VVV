@@ -1,3 +1,9 @@
+---
+layout: page
+title: VVV Documentation
+permalink: /docs/en-US/
+---
+
 # Varying Vagrant Vagrants
 
 ### Varying Vagrant Vagrants Objectives
@@ -46,4 +52,3 @@ The dashboard provided by VVV allows for easy replacement by looking for a `www/
 ## [Copyright / License](#license)
 
 VVV is copyright (c), the contributors of the VVV project under the [MIT License](LICENSE).
-

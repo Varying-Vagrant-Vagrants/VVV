@@ -1,3 +1,9 @@
+---
+layout: page
+title: vm_config
+permalink: /docs/en-US/vm-config
+---
+
 # vm_config
 
 This is an optional section of the VVV configuration file that allows setting virtual machine parameters.
