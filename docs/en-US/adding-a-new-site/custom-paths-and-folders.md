@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Custom Paths and Folders
-permalink: /docs/en-US/adding-a-new-site/custom-paths-and-folders
+permalink: /docs/en-US/adding-a-new-site/custom-paths-and-folders/
 ---
 
 # Custom Paths and Folders

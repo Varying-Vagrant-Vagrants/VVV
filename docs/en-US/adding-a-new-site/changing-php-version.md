@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Changing PHP Version
-permalink: /docs/en-US/adding-a-new-site/changing-php-version
+permalink: /docs/en-US/adding-a-new-site/changing-php-version/
 ---
 
 # Changing PHP Version

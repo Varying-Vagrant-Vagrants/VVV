@@ -1,7 +1,7 @@
 ---
 layout: page
 title: vm_config
-permalink: /docs/en-US/vm-config
+permalink: /docs/en-US/vm-config/
 ---
 
 # vm_config

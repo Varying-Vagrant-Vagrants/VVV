@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Custom Domains and Hosts
-permalink: /docs/en-US/adding-a-new-site/custom-domains-hosts
+permalink: /docs/en-US/adding-a-new-site/custom-domains-hosts/
 ---
 
 # Custom Domains and Hosts

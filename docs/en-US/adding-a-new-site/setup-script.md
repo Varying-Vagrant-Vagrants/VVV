@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Setup Script
-permalink: /docs/en-US/adding-a-new-site/setup-script
+permalink: /docs/en-US/adding-a-new-site/setup-script/
 ---
 
 # Setup script

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: vvv-config.yml
-permalink: /docs/en-US/vvv-config
+permalink: /docs/en-US/vvv-config/
 ---
 
 # vvv-config.yml
