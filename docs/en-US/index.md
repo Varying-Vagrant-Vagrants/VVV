@@ -1,46 +1,34 @@
 ---
 layout: page
-title: VVV Documentation
+title: VVV 2.0.0 Documentation
 permalink: /docs/en-US/
 ---
 
-# Varying Vagrant Vagrants
+## Getting Started
 
-### Varying Vagrant Vagrants Objectives
+These guides are intended to help with the initial installation of VVV as well as to provide ongoing support as you get familiar with its configuration.
 
-* Provide an approachable development environment with a modern server configuration.
-* Continue to work towards a stable state of software and configuration included in the default provisioning.
-* Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
-
-[Read more about What VVV is here](what-is-vvv.md), and [how to contribute](contributing.md)
-
-### [Installation](#installation)
-
-* [Read how to install VVV](installation/index.md)
-* [Adding New Sites](adding-a-new-site/index.md)
+* [Install VVV](installation/index.md)
+* [Add New Sites](adding-a-new-site/index.md)
 * [Need usernames and passwords? Find out the default credentials for the built in sites here](default-credentials.md)
 
-### Other
+## Other
 
- * [History](history.md)
- * [VM Options](vm_config.md)
- * [vvv-custom.yml reference](vvv-config.yml.md)
+* [VM Options](vm_config.md)
+* [vvv-custom.yml reference](vvv-config.yml.md)
 
-### Help
+## Help
 
 See [Troubleshooting](troubleshooting.md)
 
-
-### [Helpful Extensions](#extensions)
+## Helpful Extensions
 
 Supporting init scripts during provisioning allows for some great extensions of VVV core.
 
 * [Variable VVV](https://github.com/bradp/vv) automates setting up new sites, setting up deployments, and more.
-* [HHVVVM](https://github.com/johnjamesjacoby/hhvvvm) is an HHVM configuration for VVV.
-* The [WordPress Meta Environment](https://github.com/iandunn/wordpress-meta-environment) is a "collection of scripts that provision the official WordPress.org websites into a Varying Vagrant Vagrants installation."
-* [VVV Provision Flipper] (https://github.com/bradp/vvv-provision-flipper) allows for easy toggling between VVV provisioning scripts.
+* [WordPress Meta Environment](https://github.com/WordPress/meta-environment) is a "collection of scripts that provision the official WordPress.org websites into a Varying Vagrant Vagrants installation."
 
-#### Custom Dashboards
+## Custom Dashboards
 
 The dashboard provided by VVV allows for easy replacement by looking for a `www/default/dashboard-custom.php` file. The community has built several great dashboards that may be more useful than the bare info provided by default:
 
@@ -49,6 +37,6 @@ The dashboard provided by VVV allows for easy replacement by looking for a `www/
 * @stevenkword's [VVV Dashboard Custom](https://github.com/stevenkword/vvv-dashboard-custom)
 * @goblindegook's [VVV Material Dashboard](https://github.com/goblindegook/vvv-material-dashboard)
 
-## [Copyright / License](#license)
+## Copyright / License
 
 VVV is copyright (c), the contributors of the VVV project under the [MIT License](LICENSE).
