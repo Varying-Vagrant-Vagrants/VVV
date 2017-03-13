@@ -4,8 +4,6 @@ title: Basic Usage
 permalink: /docs/en-US/references/basic-usage/
 ---
 
-# Basic Usage
-
 ## Using a GUI
 
 This documentation assumes some very basic terminal/command line knowledge to run simple commands. However, some people prefer the convenience of a visual UI. If you fall into this category then consider the [Vagrant Manager](http://vagrantmanager.com/)  project.
