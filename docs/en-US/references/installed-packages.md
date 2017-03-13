@@ -1,20 +1,10 @@
 ---
 layout: page
-title: What is VVV?
-permalink: /docs/en-US/what-is-vvv/
+title: Packages installed in VVV
+permalink: /docs/en-US/installed-packages/
 ---
 
-Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) configuration focused on [WordPress](https://wordpress.org) development. VVV is [MIT Licensed](https://github.com/varying-vagrant-vagrants/vvv/blob/master/LICENSE).
-
-### The Purpose of Varying Vagrant Vagrants
-
-The primary goal of Varying Vagrant Vagrants (VVV) is to provide an approachable development environment with a modern server configuration.
-
-VVV is ideal for developing themes and plugins as well as for [contributing to WordPress core](https://make.wordpress.org/core/).
-
-### What do you get?
-
-A bunch of stuff!
+These packages are installed by default in VVV:
 
 1. [Ubuntu](http://www.ubuntu.com/) 14.04 LTS (Trusty Tahr)
 1. [WordPress Develop](https://develop.svn.wordpress.org/trunk/)

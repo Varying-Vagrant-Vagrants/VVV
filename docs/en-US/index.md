@@ -15,6 +15,7 @@ These guides are intended to help with the initial installation of VVV as well a
 
 * [Default credentials](references/default-credentials.md) is a list of the default usernames and passwords provsioned in VVV.
 * [PHP Extensions](references/php-extensions.md) is a list of the PHP extensions provisioned by default.
+* [Installed packages](references/installed-packages.md) is a list of packages installed during default provisioning.
 
 ## Other
 
