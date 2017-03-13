@@ -4,7 +4,13 @@ title: Migrate VVV 1.4.x to 2.0.0
 permalink: /docs/en-US/adding-a-new-site/migrate-vvv-1/
 ---
 
+## Overview
+
 Sites configured in VVV 1.4.x and earlier will still work, but require additional setup after upgrading to VVV 2.0.0. For best results, a complete `vagrant destroy` is recommended, but a migration without data loss is still possible. Please be sure to backup critical files and databases.
+
+A full provision should be run at least once during this process.
+
+If you'd like, run `vagrant provision` before making the changes to configuration described in this document. This will ensure that core packages are updated and allow you to use `vagrant provision --with-provision` for individual sites. You can also wait until custom sites have been configured before running a full `vagrant provision` to handle everything at once.
 
 ## Preparation
 
