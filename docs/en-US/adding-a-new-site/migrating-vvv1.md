@@ -6,7 +6,7 @@ permalink: /docs/en-US/adding-a-new-site/migrate-vvv-1/
 
 ## Overview
 
-Sites configured in VVV 1.4.x and earlier will still work, but require additional setup after upgrading to VVV 2.0.0. For best results, a complete `vagrant destroy` is recommended, but a migration without data loss is still possible. Please be sure to backup critical files and databases.
+Sites configured in VVV 1.4.x and earlier require additional setup after upgrading to VVV 2.0.0. For best results, a complete `vagrant destroy` is recommended, but a migration without data loss is still possible. Please be sure to backup critical files and databases.
 
 A full provision should be run at least once during this process.
 
@@ -16,11 +16,11 @@ If you'd like, run `vagrant provision` before making the changes to configuratio
 
 The `vvv-config.yml` (default) or `vvv-custom.yml` (custom) configuration files are used by VVV to discover sites. Adding existing sites to one of these files will allow VVV to see and provision them.
 
-First, copy the default `vvv-config.yml` file to `vvv-custom.yml`. This allows for a custom configuration while keeping the repository clear for future changes to VVV.
+First, copy the default `vvv-config.yml` file to `vvv-custom.yml`. This creates a custom configuration and keeps the VVV repository clear for future changes.
 
 ## Migrate a custom site
 
-The sites configured in `vvv-custom.yml` map directly to project directories in `vvv/www/`. If, for example, a custom site's files are in `vvv/www/my-test-site`, migrate it from 1.4.x to 2.0.0 by adding it as `my-test-site:` to the `sites` section of `vvv-custom.yml`:
+The sites configured in `vvv-custom.yml` map directly to project directories in `vvv/www/`. If, for example, a custom site's files are in `vvv/www/my-test-site`, migrate it from 1.4.x to 2.0.0 by adding `my-test-site:` to the `sites` section of `vvv-custom.yml`:
 
 ```YAML
 sites:
@@ -50,7 +50,7 @@ utilities:
     - memcached-admin
 ```
 
-This will cause any changes to be pulled from the repository when `vagrant provision --with-provision site-my-test-site` is run.
+This will cause any changes to be pulled from the repository when `vagrant provision` or `vagrant provision --with-provision site-my-test-site` is run.
 
 See the [full YAML configuration documentation](vvv-config.yml.md) for details on other available options.
 
@@ -60,11 +60,11 @@ VVV 1.4.x provides a handful of sites by default. These sites were provisioned d
 
 The easiest route will be to delete the `vvv/www/wordpress-develop` and `vvv/www/wordpress-default` directories. Be sure to back up any crucial files in these directories beforehand.
 
-Once these directories are deleted, run `vagrant provision --provision-with site-wordpress-develop` and `vagrant provision --provsion-with site-wordpress-default`. The configuration in the `vvv-config.yml` or `vvv-custom.yml` files will provide the provisioner with the information it needs to reconfigure these sites using the same databases as before.
+Once these directories are deleted, run `vagrant provisiono` or `vagrant provision --provision-with site-wordpress-develop` and `vagrant provision --provsion-with site-wordpress-default`. The configuration in the `vvv-config.yml` or `vvv-custom.yml` files will provide the provisioner with the information it needs to reconfigure these sites using the same databases as before.
 
 ## Custom sites in non-standard folders
 
-Some sites are in nested or non-standard folder structures. These are still supported. See the [custom paths and folders](custom-paths-and-folders.md) documentation for how to configure these sites.
+Some sites are in nested or non-standard folder structures. See the [custom paths and folders](custom-paths-and-folders.md) documentation for how to configure these sites.
 
 ## Why is this necessary?
 
