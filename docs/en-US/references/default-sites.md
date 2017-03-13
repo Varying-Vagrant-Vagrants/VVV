@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Built in WordPress installs
-permalink: /docs/en-US/built-in-wordpress-installs/
+title: Default sites configured in VVV
+permalink: /docs/en-US/references/default-sites/
 ---
 
 #### VVV as a MAMP/XAMPP Replacement
