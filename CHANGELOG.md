@@ -6,6 +6,44 @@ permalink: /docs/en-US/changelog/
 
 # Varying Vagrant Vagrants Changelog
 
+## 2.0.0 (Scheduled March 13, 2017)
+
+VVV 2.0.0 introduces **breaking changes** in how files are organized and introduces an entirely new method of configuration.
+
+A full `vagrant destroy` and `vagrant up` are recommended for best results. Running `vagrant destroy` will remove your virtual machine entirely and all data stored on the VM will be lost. Please be sure to backup your databases and any files stored in the VM. Files on your local file system will remain, but will still benefit (as always) from a backup.
+
+It is possible to make the from VVV 1.4.x to 2.0.0 without a `vagrant destroy`, but the process will involve restructuring several things. Primarily, default project directories are now expected to contain a `public_html/` directory. This requires not only file changes, but new Nginx configurations. If you need help troubleshooting, don't hesitate to open a new issue.
+
+Please see the [migration documentation](https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/migrate-vvv-1/) for tips on how to manage this process.
+
+The decision to include breaking changes in a release is not made lightly. The new ability to configure your installation of VVV with a `vvv-custom.yml` file will make VVV entirely more flexible and maintainable than it has ever been. Please see the [release blog post](https://varyingvagrantvagrants.org/blog/2017/03/13/varying-vagrant-vagrants-2-0-0.html) and [documentation](https://varyingvagrantvagrants.org/docs/en-US/) for more details.
+
+### Features & Enhancements
+
+* Introduce a YAML configuration for VVV. It is now possible to customize your configuration of VVV with a `vvv-custom.yml` file that defines which projects, hosts, and utilities are provisioned. See [#980](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/980).
+* Introduce a new [VVV Utilities repository](https://github.com/Varying-Vagrant-Vagrants/vvv-utilities). This works with the new YAML configuration to provide the ability to customize what utilities are provisioned with VVV. See [#1021](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1021).
+* Introduce a new [VVV Custom Site Template repository](https://github.com/Varying-Vagrant-Vagrants/custom-site-template). This can be used in `vvv-custom.yml` to quickly add new sites to VVV.
+* Introduce a new [VVV WordPress Develop repository](https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop). This is used in the default `vvv-config.yml` and can be used in (or excluded from) custom configurations.
+* Introduce a new [VVV WordPress Default repository](https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default). This is used in the default `vvv-config.yml` and can be used in (or excluded from) custom configurations.
+* Introduce a new [VVV WordPress Trunk repository](https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-trunk). This can be used in custom configurations if you'd like a checkout of WordPress trunk.
+* Add support for custom keys in the YAML configuration. These are available to individual site provisioning scripts. See [#1071](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1071).
+* Add support for PHP 5.6, 7.0, and 7.1 via the VVV YAML configuration. See [#1055](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1055).
+* Introduce a new documentation structure and an entire set of new documentation. See [#1073](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1073) and, more importantly, [#1112](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1112).
+* Introduce documentation explaining the governance of VVV. See [#1118](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1118).
+* Install MariaDB 10.1 instead of MySQL 5.5 as part of default provisioning. See [#1005](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1005) and [#1115](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1115).
+* Install and update WP-CLI with its PHAR file rather than with a git clone. See [#1057](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1057).
+* Add the `php-memcached` package to default provisioning as an alternative to `php-memcache` that works with PHP 7.0. See [#1076](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1076).
+* Set `colordiff` as the default `svn diff` command tool. See [#1077](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1077).
+* Add a VVV logo to provisioning. See [#1110](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1110).
+* Add some style to the default VVV dashboard. See [#1122](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1122).
+
+### Bugs
+
+* Remove old, unused `mu-plugins` directory. See [#1027](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1027).
+* Follow redirects when detecting a network connection. See [#1048](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1048).
+* Include `$is_args` with `try_files` in Nginx configuration. See [#1075](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1075).
+* Remove an attempt to enforce `ipv4` in Postfix as it was not working. See [#1116](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1116).
+
 ## 1.4.1 (January 16, 2017)
 
 * Introduce a documentation structure for future releases.
