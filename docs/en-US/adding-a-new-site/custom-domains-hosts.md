@@ -4,8 +4,6 @@ title: Custom Domains and Hosts
 permalink: /docs/en-US/adding-a-new-site/custom-domains-hosts/
 ---
 
-# Custom Domains and Hosts
-
 There are 3 ways to define hosts
 
  - The main `vvv-custom.yml` config file

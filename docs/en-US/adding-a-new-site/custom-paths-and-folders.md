@@ -4,8 +4,6 @@ title: Custom Paths and Folders
 permalink: /docs/en-US/adding-a-new-site/custom-paths-and-folders/
 ---
 
-# Custom Paths and Folders
-
 A site in a non-standard folder can still be used via the `vm_dir` and `local_dir` keys. `local_dir` tells VVV where the site is located on the host machine, and `vm_dir` tells VVV where the site is located inside the Virtual machine.
 
 For example, if we put our test sites in a subfolder, we can specify each site like this in the `sites` section:
