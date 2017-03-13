@@ -4,6 +4,8 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 2.x.x (TBD)
+
 ## 2.0.0 (March 13, 2017)
 
 VVV 2.0.0 introduces **breaking changes** in how files are organized and introduces an entirely new method of configuration.
