@@ -4,8 +4,6 @@ title: Troubleshooting
 permalink: /docs/en-US/troubleshooting/
 ---
 
-# Troubleshooting
-
 Need help?
 
 * Let us have it! Don't hesitate to open a new issue on GitHub if you run into trouble or have any tips that we need to know.

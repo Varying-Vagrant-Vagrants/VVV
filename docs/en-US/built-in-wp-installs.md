@@ -4,8 +4,6 @@ title: Built in WordPress installs
 permalink: /docs/en-US/built-in-wordpress-installs/
 ---
 
-# Built in WordPress installs
-
 #### VVV as a MAMP/XAMPP Replacement
 
 Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagrant up --provision` to automatically build a virtualized Ubuntu server on your computer. See our section on [The First Vagrant Up](#installation---the-first-vagrant-up) for detailed instructions.

@@ -4,8 +4,6 @@ title: Nginx Configuration
 permalink: /docs/en-US/adding-a-new-site/nginx-configuration/
 ---
 
-# Nginx configs
-
 @TODO: Higher level notes and introduction to `vvv-nginx.conf`
 
 ## A Standard WordPress Nginx Configuration

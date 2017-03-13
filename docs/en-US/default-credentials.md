@@ -4,8 +4,6 @@ title: Default Credentials
 permalink: /docs/en-US/default-credentials/
 ---
 
-# Default Credentials
-
 All database usernames and passwords for WordPress installations included by default are:
 
 __User:__ `wp`
