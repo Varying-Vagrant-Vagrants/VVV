@@ -20,20 +20,34 @@ First, copy the default `vvv-config.yml` file to `vvv-custom.yml`. This allows f
 
 ## Migrate a custom site
 
-The sites configured in `vvv-custom.yml` map directly to project directories in `vvv/www/`. If, for example, a custom site's files are in `vvv/www/my-test-site`, migrate it from 1.4.x to 2.0.0 by adding this to the `sites` section of `vvv-custom.yml`:
+The sites configured in `vvv-custom.yml` map directly to project directories in `vvv/www/`. If, for example, a custom site's files are in `vvv/www/my-test-site`, migrate it from 1.4.x to 2.0.0 by adding it as `my-test-site:` to the `sites` section of `vvv-custom.yml`:
 
 ```YAML
-my-test-site:
+sites:
+  # Full default configuration clipped for length.
+
+  my-test-site:
+
+utilities:
+  core:
+    - memcached-admin
 ```
 
-Now `vagrant provision` or `vagrant provision --provision-with site-my-test-site` will process the `vvv-init.sh`, `vvv-nginx.conf`, and `vvv-hosts` files in the custom site's directory.
+Now `vagrant provision` or `vagrant provision --provision-with site-my-test-site` will process the `vvv-init.sh`, `vvv-nginx.conf`, and `vvv-hosts` files in the custom site's directory, `vvv/www/my-test-site/`.
 
 ### Using a git repository
 
 If the `my-test-site` project also exists as a git repository with `vvv-init.sh`, `vvv-nginx.conf`, and `vvv-hosts` files, this can also be configured.
 
 ```YAML
-my-test-site: https://github.com/username/my-test-site.git
+sites:
+  # Full default configuration clipped for length.
+
+  my-test-site: https://github.com/username/my-test-site.git
+
+utilities:
+  core:
+    - memcached-admin
 ```
 
 This will cause any changes to be pulled from the repository when `vagrant provision --with-provision site-my-test-site` is run.
