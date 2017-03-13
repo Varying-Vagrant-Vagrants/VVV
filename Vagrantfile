@@ -12,7 +12,7 @@ if ! ENV['VVV_SKIP_LOGO'] then
   puts "  \033[38;5;196m  \\ V / \033[38;5;118m  \\ V / \033[38;5;33m  \\ V /   \033[38;5;220m / __/   "
   puts "  \033[38;5;196m   \\_/  \033[38;5;118m   \\_/  \033[38;5;33m   \\_/    \033[38;5;220m|_____|  "
   puts ""
-  puts "  \033[38;5;206mVarying Vagrant Vagrants \033[38;5;118mdevelop branch"
+  puts "  \033[38;5;206mVarying Vagrant Vagrants \033[38;5;118m2.0.0"
   puts ""
   puts "  \033[38;5;220mDocs:       https://varyingvagrantvagrants.org/"
   puts "  \033[38;5;220mContribute: https://github.com/varying-vagrant-vagrants/vvv"
