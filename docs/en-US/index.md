@@ -8,7 +8,7 @@ permalink: /docs/en-US/
 
 These guides are intended to help with the initial installation of VVV as well as to provide ongoing support as you get familiar with its configuration.
 
-* [Install VVV](installation/index.md)
+* [Install VVV](installation.md)
 * [Add New Sites](adding-a-new-site/index.md)
 
 ## Reference documents
