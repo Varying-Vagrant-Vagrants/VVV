@@ -8,7 +8,7 @@ permalink: /docs/en-US/references/basic-usage/
 
 This documentation assumes some very basic terminal/command line knowledge to run simple commands. However, some people prefer the convenience of a visual UI. If you fall into this category then consider the [Vagrant Manager](http://vagrantmanager.com/)  project.
 
-Note: Until you provision VVV for the first time, Vagrant Manager will not pick up VVV. Running `vagrant up --provision`  inside the VVV folder and allowing it to succesfully finish should be enough.
+Note: Until you provision VVV for the first time, Vagrant Manager will not pick up VVV. Running `vagrant up --provision`  inside the VVV folder and allowing it to successfully finish should be enough.
 
 ## Turning VVV On
 
@@ -24,7 +24,7 @@ If Vagrant triggers are installed, and the VVV machine is turned off, this will 
 vagrant halt
 ```
 
-This will shut down the virtual machine. If the machine is frozen for whatever reason, add the ` --force` parameter. If it still refuses to power off, open Virtualbox and manually power the VM off.
+This will shut down the virtual machine. If the machine is frozen for whatever reason, add the ` --force` parameter. If it still refuses to power off, open VirtualBox and manually power the VM off.
 
 ## Restarting VVV
 
@@ -32,7 +32,7 @@ This will shut down the virtual machine. If the machine is frozen for whatever r
 vagrant reload
 ```
 
-This will do a restart of the Virtual Machine, and is the same as running `vagrant halt;vagrant up`
+This will do a restart of the Virtual Machine, and is the same as running `vagrant halt; vagrant up`
 
 ## Reloading `vvv-custom.yml`
 

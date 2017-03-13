@@ -18,6 +18,7 @@ These guides are intended to help with the initial installation of VVV as well a
 * [PHP Extensions](references/php-extensions.md) is a list of the PHP extensions provisioned by default.
 * [Installed packages](references/installed-packages.md) is a list of packages installed during default provisioning.
 * [Default sites](references/default-sites.md) installed with VVV.
+* [Basic usage](references/basic-usage.md) provides the basics of using Vagrant to manage a VM.
 
 ## Help
 
