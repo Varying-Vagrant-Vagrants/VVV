@@ -4,46 +4,46 @@ Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) 
 
 VVV is a [10up](https://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
-* **Version**: develop
-* **Latest Stable**: [1.4.1](https://github.com/Varying-Vagrant-Vagrants/VVV/releases/tag/1.4.1)
+* **Version**: 2.0.0
+* **Latest Stable**: [2.0.0](https://github.com/Varying-Vagrant-Vagrants/VVV/releases/tag/2.0.0)
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
-* **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/CONTRIBUTING.md). Thanks!
+* **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
 VVV is copyright (c) 2014-2017, the contributors of the VVV project under the [MIT License](LICENSE).
 
-## Project Objectives
+## Objectives
 
-* Provide an approachable development environment with a modern server configuration.
-* Continue to work towards a stable state of software and configuration included in the default provisioning.
-* Provide excellent and clear documentation throughout VVV to aid in both learning and scaffolding.
+* Approachable development environment with a modern server configuration.
+* Stable state of software and configuration in default provisioning.
+* Excellent and clear documentation to aid in learning and scaffolding.
 
 VVV is ideal for developing themes and plugins as well as for [contributing to WordPress core](https://make.wordpress.org/core/).
 
-### Software included with Varying Vagrant Vagrants
+## Software included
 
 VVV is built on a Ubuntu 14.04 LTS (Trusty) base VM and provisions the server with current versions of several software packages, including:
 
 1. [nginx](http://nginx.org/) ([mainline](http://nginx.com/blog/nginx-1-6-1-7-released/) version)
 1. [MariaDB](https://mariadb.org/) 10.1.x (drop-in replacement for MySQL)
 1. [php-fpm](http://php-fpm.org/) 7.0.x
-1. [WP-CLI](http://wp-cli.org/) (master branch)
+1. [WP-CLI](http://wp-cli.org/)
 1. [memcached](http://memcached.org/)
 1. [PHPUnit](https://phpunit.de/)
 1. [Composer](https://github.com/composer/composer)
 1. [NodeJs](https://nodejs.org/)
 1. [Mailcatcher](http://mailcatcher.me/)
 
-For a more comprehensive list, please see the [full documentation](https://varyingvagrantvagrants.org).
+For a more comprehensive list, please see the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).
 
-### How to Use Varying Vagrant Vagrants
-
-Full documentation can be found in the `docs/` directory of this repository and on the [varyingvagrantvagrants.org](https://varyingvagrantvagrants.org) website.
+## How to Use Varying Vagrant Vagrants
 
 VVV requires recent versions of both Vagrant and VirtualBox.
 
 [Vagrant](https://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](https://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
 
 Besides VirtualBox, provider support is also included for Parallels, Hyper-V, VMWare Fusion, and VMWare Workstation.
+
+Full documentation can be found in the `docs/` directory of this repository and on the [varyingvagrantvagrants.org](https://varyingvagrantvagrants.org) website.
 
 ## Contributors
 
