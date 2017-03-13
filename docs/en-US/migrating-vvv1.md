@@ -60,7 +60,7 @@ VVV 1.4.x provides a handful of sites by default. These sites were provisioned d
 
 The easiest route will be to delete the `vvv/www/wordpress-develop` and `vvv/www/wordpress-default` directories. Be sure to back up any crucial files in these directories beforehand.
 
-Once these directories are deleted, run `vagrant provisiono` or `vagrant provision --provision-with site-wordpress-develop` and `vagrant provision --provsion-with site-wordpress-default`. The configuration in the `vvv-config.yml` or `vvv-custom.yml` files will provide the provisioner with the information it needs to reconfigure these sites using the same databases as before.
+Once these directories are deleted, run `vagrant provision` or `vagrant provision --provision-with site-wordpress-develop` and `vagrant provision --provsion-with site-wordpress-default`. The configuration in the `vvv-config.yml` or `vvv-custom.yml` files will provide the provisioner with the information it needs to reconfigure these sites using the same databases as before.
 
 ## Custom sites in non-standard folders
 
