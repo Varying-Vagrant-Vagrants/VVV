@@ -4,9 +4,7 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-# Varying Vagrant Vagrants Changelog
-
-## 2.0.0 (Scheduled March 13, 2017)
+## 2.0.0 (March 13, 2017)
 
 VVV 2.0.0 introduces **breaking changes** in how files are organized and introduces an entirely new method of configuration.
 

@@ -4,8 +4,6 @@ title: Contributing to VVV
 permalink: /docs/en-US/contributing/
 ---
 
-# Contributing to VVV
-
 Contributions to the VVV project are more than welcome.
 
 ## License
