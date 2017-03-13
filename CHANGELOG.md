@@ -6,9 +6,11 @@ VVV 2.0.0 introduces **breaking changes** in how files are organized and introdu
 
 A full `vagrant destroy` and `vagrant up` are recommended for best results. Running `vagrant destroy` will remove your virtual machine entirely and all data stored on the VM will be lost. Please be sure to backup your databases and any files stored in the VM. Files on your local file system will remain, but will still benefit (as always) from a backup.
 
-It is possible to make the transition from VVV 1.4.x to 2.0.0 without a `vagrant destroy`, but the process will involve restructuring several things. Primarily, project directories are now expected to contain a `public_html/` directory. This requires not only file changes, but new Nginx configurations. Please see the migration documentation for tips on how to manage this process. If you need help troubleshooting, don't hesitate to open a new issue.
+It is possible to make the from VVV 1.4.x to 2.0.0 without a `vagrant destroy`, but the process will involve restructuring several things. Primarily, default project directories are now expected to contain a `public_html/` directory. This requires not only file changes, but new Nginx configurations. If you need help troubleshooting, don't hesitate to open a new issue.
 
-The decision to include breaking changes in a release is not made lightly. The new ability to configure your installation of VVV with a `vvv-custom.yml` file will make VVV entirely more flexible and maintainable than it has ever been. Please see the release blog post and [new documentation](https://varyingvagrantvagrants.org/docs/en-US/) for more details.
+Please see the [migration documentation](https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/migrate-vvv-1/) for tips on how to manage this process.
+
+The decision to include breaking changes in a release is not made lightly. The new ability to configure your installation of VVV with a `vvv-custom.yml` file will make VVV entirely more flexible and maintainable than it has ever been. Please see the [release blog post](https://varyingvagrantvagrants.org/blog/2017/03/13/varying-vagrant-vagrants-2-0-0.html) and [documentation](https://varyingvagrantvagrants.org/docs/en-US/) for more details.
 
 ### Features & Enhancements
 
