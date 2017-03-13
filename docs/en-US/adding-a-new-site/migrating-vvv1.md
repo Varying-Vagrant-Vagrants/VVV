@@ -46,7 +46,7 @@ Once these directories are deleted, run `vagrant provision --provision-with site
 
 Some sites are in nested or non-standard folder structures. These are still supported. See the [custom paths and folders](custom-paths-and-folders.md) documentation for how to configure these sites.
 
-## Why is This Needed?
+## Why is this necessary?
 
 VVV sites work the same way in 1.4.x and 2.0.0, but with one major difference. VVV 2.0.0 uses a YAML configuration file, and VVV 1.4.x scanned for sites automatically.
 
@@ -56,6 +56,6 @@ When the 1.4.x provisioner ran, it scanned the contents of the entire VVV folder
 
 Among other things, this caused performance problems. Folder scans could be very slow with some file systems, and there was no way to control which sites were provisioned. If you wanted to provision a site quickly, larger sites had to be moved out of the `www` folder.
 
-### How 2.0.0 Detects Sites
+### How 2.0.0 detects sites
 
 VVV 2.0.0 does away with site auto-detection. Instead VVV uses a YAML configuration file named `vvv-config.yml` (default) or `vvv-custom.yml` (custom) that lists all sites. A series of options are available to customize the environment and location of each site. This makes provisioning significantly faster, allowing for the provisioning of individual sites or the entire VM.
