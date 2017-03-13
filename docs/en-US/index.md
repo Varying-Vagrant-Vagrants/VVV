@@ -10,6 +10,7 @@ These guides are intended to help with the initial installation of VVV as well a
 
 * [Install VVV](installation.md)
 * [Add New Sites](adding-a-new-site/index.md)
+* [Guide to vvv-custom.yml](vvv-config.yml.md)
 
 ## Reference documents
 
@@ -17,11 +18,6 @@ These guides are intended to help with the initial installation of VVV as well a
 * [PHP Extensions](references/php-extensions.md) is a list of the PHP extensions provisioned by default.
 * [Installed packages](references/installed-packages.md) is a list of packages installed during default provisioning.
 * [Default sites](references/default-sites.md) installed with VVV.
-
-## Other
-
-* [VM Options](vm_config.md)
-* [vvv-custom.yml reference](vvv-config.yml.md)
 
 ## Help
 
