@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Migrate VVV 1.4.x to 2.0.0
-permalink: /docs/en-US/adding-a-new-site/migrate-vvv-1/
+permalink: /docs/en-US/migrate-vvv-1/
 ---
 
 ## Overview

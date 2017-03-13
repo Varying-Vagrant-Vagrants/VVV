@@ -10,7 +10,11 @@ These guides are intended to help with the initial installation of VVV as well a
 
 * [Install VVV](installation/index.md)
 * [Add New Sites](adding-a-new-site/index.md)
-* [Need usernames and passwords? Find out the default credentials for the built in sites here](default-credentials.md)
+
+## Reference documents
+
+* [Default credentials](references/default-credentials.md) is a list of the default usernames and passwords provsioned in VVV.
+* [PHP Extensions](references/php-extensions.md) is a list of the PHP extensions provisioned by default.
 
 ## Other
 
@@ -19,11 +23,12 @@ These guides are intended to help with the initial installation of VVV as well a
 
 ## Help
 
-See [Troubleshooting](troubleshooting.md)
+* [Troubleshooting](troubleshooting.md)
+* [Migrating from 1.4.1 to 2.0.0](migrating-vvv1.md)
 
 ## Helpful Extensions
 
-Supporting init scripts during provisioning allows for some great extensions of VVV core.
+Support for custom init scripts and site configurations allows for some great extensions of VVV core.
 
 * [Variable VVV](https://github.com/bradp/vv) automates setting up new sites, setting up deployments, and more.
 * [WordPress Meta Environment](https://github.com/WordPress/meta-environment) is a "collection of scripts that provision the official WordPress.org websites into a Varying Vagrant Vagrants installation."
