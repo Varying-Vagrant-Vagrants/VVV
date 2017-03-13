@@ -4,8 +4,6 @@ title: Governance
 permalink: /docs/en-US/governance/
 ---
 
-# Governance
-
 ## Overview
 
 The [VVV core project](https://github.com/Varying-Vagrant-Vagrants/VVV/) and its individual modules, collectively organized as [Varying Vagrant Vagrants](https://github.com/Varying-Vagrant-Vagrants/) (VVV), are governed with a [benevolent dictator governance model](http://producingoss.com/en/benevolent-dictator.html).
