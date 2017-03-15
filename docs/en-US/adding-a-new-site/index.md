@@ -67,7 +67,7 @@ We **strongly** recommend this.
  - vvv-init.sh ( optional )
  - vvv-nginx.conf
 
-The site will require a `vvv-init.sh` to download, install, and setup WordPress. [Read about `vvv-init.sh` and an example here](setup-script.sh)
+The site will require a `vvv-init.sh` to download, install, and setup WordPress. [Read about `vvv-init.sh` and an example here](setup-script.md)
 
 ### Nginx config
 
