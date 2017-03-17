@@ -228,6 +228,7 @@ Vagrant.configure("2") do |config|
   # Please see VVV and Vagrant documentation for additional details.
   #
   # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 9200, host: 9200
 
   # Drive mapping
   #
