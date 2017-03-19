@@ -44,12 +44,12 @@ if [[ false != "${REPO}" ]]; then
   # Clone or pull the site repository
   if [[ ! -d ${VM_DIR}/.git ]]; then
     echo -e "\nDownloading ${SITE}, see ${REPO}"
-    git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR}
+    noroot git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR}
   else
     echo -e "\nUpdating ${SITE}..."
     cd ${VM_DIR}
-    git pull origin ${BRANCH}
-    git checkout ${BRANCH}
+    noroot git pull origin ${BRANCH}
+    noroot git checkout ${BRANCH}
   fi
 fi
 

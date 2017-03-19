@@ -4,18 +4,22 @@ NAME=$1
 REPO=$2
 DIR="/vagrant/provision/resources/${NAME}"
 
+noroot() {
+  sudo -EH -u "vagrant" "$@";
+}
+
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the resources repository
   if [[ ! -d ${DIR}/.git ]]; then
     echo -e "\nDownloading ${NAME} resources, see ${REPO}"
-    git clone ${REPO} ${DIR}
+    noroot git clone ${REPO} ${DIR}
     cd ${DIR}
-    git checkout master
+    noroot git checkout master
   else
     echo -e "\nUpdating ${NAME} resources..."
     cd ${DIR}
-    git pull origin master
-    git checkout master
+    noroot git pull origin master
+    noroot git checkout master
   fi
 fi
 
