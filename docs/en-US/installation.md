@@ -43,5 +43,5 @@ Now that you're up and running, start poking around and modifying things.
     * **MS Windows users:** An SSH client is generally not distributed with Windows PCs by default. However, a terminal emulator such as [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) will provide access immediately. For detailed instructions on connecting with PuTTY, consult the [VVV Wiki](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY).
 * Power off the box with `vagrant halt` and turn it back on with `vagrant up`.
 * Reapply provisioning to a running box with `vagrant provision`.
-* Destroy the box with `vagrant destroy`. Any data stored in the virtual machine, includding databases, will be deleted. Files added in the `www` directory will persist on the next `vagrant up`.
+* Destroy the box with `vagrant destroy`. Any data stored in the virtual machine, including databases, will be deleted. Files added in the `www` directory will persist on the next `vagrant up`.
 * Start modifying and adding local files to fit your needs. Take a look at [Adding a Site](adding-a-new-site/index.md) for tips on adding new projects.
