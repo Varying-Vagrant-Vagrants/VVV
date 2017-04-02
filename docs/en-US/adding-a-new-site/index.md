@@ -6,7 +6,7 @@ permalink: /docs/en-US/adding-a-new-site/
 
 Adding a new site is as simple as adding it under the sites section of `vvv-custom.yml`.
 
-To do this there are 3 steps:
+To do this there are five steps:
 
  - `vvv-custom.yml` and the sites folder
  - Files
@@ -18,7 +18,7 @@ I'm going to walk through setting up a blog named vvvtest.com locally using VVV,
 
 If you're migrating a site from VVV 1, read this page, then visit the [migration page](migrating-vvv1.md) for further details.
 
-## `vvv-custom.yml` and The Main Folder
+## `vvv-custom.yml` and the Sites Folder
 
 First we need to tell VVV about the site. I'm going to give the site the name `vvvtest`, and update the sites list in `vvv-custom.yml`:
 
@@ -26,7 +26,7 @@ First we need to tell VVV about the site. I'm going to give the site the name `v
 vvvtest:
 ```
 
-We also want to specify the host as vvvtest.com:
+We also want to specify the host as `vvvtest.com`:
 
 ```YAML
 vvvtest:
