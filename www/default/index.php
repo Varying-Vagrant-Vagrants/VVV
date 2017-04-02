@@ -53,27 +53,27 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 
 <ul class="nav">
 	<li class="active"><a href="#">Home</a></li>
-	<li><a href="https://varyingvagrantvagrants.org/">Documentation</a></li>
-	<li><a href="https://github.com/varying-vagrant-vagrants/vvv/">Repository</a></li>
+	<li><a href="https://varyingvagrantvagrants.org/" target="_blank">Documentation</a></li>
+	<li><a href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">Repository</a></li>
 </ul>
 
 <h3>Bundled Tools</h3>
 <ul class="nav">
-	<li><a href="database-admin/">phpMyAdmin</a></li>
-	<li><a href="memcached-admin/">phpMemcachedAdmin</a></li>
-	<li><a href="opcache-status/opcache.php">Opcache Status</a></li>
-	<li><a href="http://vvv.dev:1080">Mailcatcher</a></li>
-	<li><a href="webgrind/">Webgrind</a></li>
-	<li><a href="phpinfo/">PHP Info</a></li>
-	<li><a href="php-status?html&amp;full">PHP Status</a></li>
+	<li><a href="database-admin/" target="_blank">phpMyAdmin</a></li>
+	<li><a href="memcached-admin/" target="_blank">phpMemcachedAdmin</a></li>
+	<li><a href="opcache-status/opcache.php" target="_blank">Opcache Status</a></li>
+	<li><a href="http://vvv.dev:1080" target="_blank">Mailcatcher</a></li>
+	<li><a href="webgrind/" target="_blank">Webgrind</a></li>
+	<li><a href="phpinfo/" target="_blank">PHP Info</a></li>
+	<li><a href="php-status?html&amp;full" target="_blank">PHP Status</a></li>
 </ul>
 
 <h3>Bundled Environments</h3>
 
 <ul class="nav">
-	<li><a href="http://local.wordpress.dev/">http://local.wordpress.dev</a> for WordPress stable (www/wordpress-default)</li>
-	<li><a href="http://src.wordpress-develop.dev/">http://src.wordpress-develop.dev</a> for trunk WordPress development files (www/wordpress-develop/src)</li>
-	<li><a href="http://build.wordpress-develop.dev/">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
+	<li><a href="http://local.wordpress.dev/" target="_blank">http://local.wordpress.dev</a> for WordPress stable (www/wordpress-default)</li>
+	<li><a href="http://src.wordpress-develop.dev/" target="_blank">http://src.wordpress-develop.dev</a> for trunk WordPress development files (www/wordpress-develop/src)</li>
+	<li><a href="http://build.wordpress-develop.dev/" target="_blank">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
 </ul>
 <style>
 /**
