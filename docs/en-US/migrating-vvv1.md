@@ -64,7 +64,7 @@ Once these directories are deleted, run `vagrant provision` or `vagrant provisio
 
 ## Custom sites in non-standard folders
 
-Some sites are in nested or non-standard folder structures. See the [custom paths and folders](custom-paths-and-folders.md) documentation for how to configure these sites.
+Some sites are in nested or non-standard folder structures. See the [custom paths and folders](adding-a-new-site/custom-paths-and-folders.md) documentation for how to configure these sites.
 
 ## Why is this necessary?
 
