@@ -91,7 +91,7 @@ server {
 }
 ```
 
-For more information about Nginx and VVV, read the [Nginx Configs page](adding-a-new-site/nginx-configs.md) of adding a new site.
+For more information about Nginx and VVV, read the [Nginx Configs page](nginx-configs.md) of adding a new site.
 
 ## Reprovision
 
