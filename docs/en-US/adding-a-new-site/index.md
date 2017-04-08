@@ -16,7 +16,7 @@ To do this there are 3 steps:
 
 I'm going to walk through setting up a blog named vvvtest.com locally using VVV, but this could be a site currently hosted in MAMP.
 
-If you're migrating a site from VVV 1, read this page, then visit the [migration page](migrating-vvv1.md) for further details.
+If you're migrating a site from VVV 1, read this page, then visit the [migration page](../migrating-vvv1.md) for further details.
 
 ## `vvv-custom.yml` and The Main Folder
 
