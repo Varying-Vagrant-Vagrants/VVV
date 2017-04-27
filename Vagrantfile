@@ -41,7 +41,7 @@ end
 
 vvv_config['hosts'] += ['vvv.dev']
 
-host_paths = Dir[File.join(vagrant_dir, 'www', '*', 'vvv-hosts'), File.join(vagrant_dir, 'www', '*', 'provision', 'vvv-hosts')]
+host_paths = Dir[File.join(vagrant_dir, 'www', '*', 'vvv-hosts'), File.join(vagrant_dir, 'www', '*', '*', 'vvv-hosts'), File.join(vagrant_dir, 'www', '*', '*', '*', 'vvv-hosts'), File.join(vagrant_dir, 'www', '*', '*', '*', '*', 'vvv-hosts')]
 
 vvv_config['hosts'] += host_paths.map do |path|
   lines = File.readlines(path).map(&:chomp)
