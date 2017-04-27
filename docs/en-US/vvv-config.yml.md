@@ -14,7 +14,7 @@ sites:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
     vm_dir: /srv/www/wordpress-default
     local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
-    branch: "master
+    branch: master
     skip_provisioning: false
     allow_customfile: false
     nginx_upstream: php
@@ -56,7 +56,7 @@ sites:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
     vm_dir: /srv/www/wordpress-default
     local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
-    branch: "master
+    branch: master
     skip_provisioning: false
     allow_customfile: false
     nginx_upstream: php
