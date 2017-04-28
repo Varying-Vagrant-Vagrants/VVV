@@ -64,8 +64,7 @@ vvv_config['sites'].each do |site, args|
 
   vvv_config['sites'][site] = defaults.merge(args)
 
-  site_local_dir = vvv_config['sites'][site]['local_dir']
-  site_host_paths = Dir[File.join(site_local_dir, '*', 'vvv-hosts'), File.join(site_local_dir, '*', '*', 'vvv-hosts'), File.join(site_local_dir, '*', '*', '*', 'vvv-hosts'), File.join(site_local_dir, '*', '*', '*', '*', 'vvv-hosts')]
+  site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
 
   vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
     lines = File.readlines(path).map(&:chomp)
