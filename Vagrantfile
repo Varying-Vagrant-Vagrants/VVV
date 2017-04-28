@@ -41,13 +41,6 @@ end
 
 vvv_config['hosts'] += ['vvv.dev']
 
-host_paths = Dir[File.join(vagrant_dir, 'www', '*', 'vvv-hosts'), File.join(vagrant_dir, 'www', '*', '*', 'vvv-hosts'), File.join(vagrant_dir, 'www', '*', '*', '*', 'vvv-hosts'), File.join(vagrant_dir, 'www', '*', '*', '*', '*', 'vvv-hosts')]
-
-vvv_config['hosts'] += host_paths.map do |path|
-  lines = File.readlines(path).map(&:chomp)
-  lines.grep(/\A[^#]/)
-end.flatten
-
 vvv_config['sites'].each do |site, args|
   if args.kind_of? String then
       repo = args
@@ -70,6 +63,14 @@ vvv_config['sites'].each do |site, args|
   defaults['hosts'] = Array.new
 
   vvv_config['sites'][site] = defaults.merge(args)
+
+  site_local_dir = vvv_config['sites'][site]['local_dir']
+  site_host_paths = Dir[File.join(site_local_dir, '*', 'vvv-hosts'), File.join(site_local_dir, '*', '*', 'vvv-hosts'), File.join(site_local_dir, '*', '*', '*', 'vvv-hosts'), File.join(site_local_dir, '*', '*', '*', '*', 'vvv-hosts')]
+
+  vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
+    lines = File.readlines(path).map(&:chomp)
+    lines.grep(/\A[^#]/)
+  end.flatten
 
   vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
   vvv_config['sites'][site].delete('hosts')
