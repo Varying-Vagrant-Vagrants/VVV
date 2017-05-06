@@ -10,7 +10,7 @@ permalink: /docs/en-US/adding-a-new-site/nginx-configuration/
    * [Nginx Configs](adding-a-new-site/nginx-configs.md)
    * [Setup Scripts](adding-a-new-site/setup-script.md)
 
-@TODO: Higher level notes and introduction to `vvv-nginx.conf`
+Some sites use Apache or IIS to serve pages, but VVV uses the popular Nginx. VVV provides an include for setting up WordPress easily, and a file for setting your own Nginx configuration on a per site basis named `vvv-nginx.conf`
 
 ## A Standard WordPress Nginx Configuration
 
@@ -21,7 +21,7 @@ server {
   listen 80;
   listen 443 ssl;
   server_name {vvv_site_name}.local;
-  root {vvv_path_to_site};
+  root {vvv_path_to_site}/public_html;
 
   error_log {vvv_path_to_site}/log/error.log;
   access_log {vvv_path_to_site}/log/access.log;
@@ -31,6 +31,14 @@ server {
   include /etc/nginx/nginx-wp-common.conf;
 }
 ```
+
+This will give you:
+
+ - a webroot folder `public_html`
+ - that serves sitename.local, where sitename is the name of your site in `vvv-custom.yml`
+ - Error and access logs in `log/error.log` and `log/access.log`
+
+You will need to create the `public_html` and `log` folders if they don't exist
 
 ## nginx-wp-common.conf
 
