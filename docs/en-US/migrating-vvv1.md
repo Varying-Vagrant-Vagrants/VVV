@@ -10,7 +10,7 @@ Sites configured in VVV 1.4.x and earlier require additional setup after upgradi
 
 A full provision should be run at least once during this process.
 
-If you'd like, run `vagrant provision` before making the changes to configuration described in this document. This will ensure that core packages are updated and allow you to use `vagrant provision --with-provision` for individual sites. You can also wait until custom sites have been configured before running a full `vagrant provision` to handle everything at once.
+If you'd like, run `vagrant provision` before making the changes to configuration described in this document. This will ensure that core packages are updated and allow you to use `vagrant provision --provision-with` for individual sites. You can also wait until custom sites have been configured before running a full `vagrant provision` to handle everything at once.
 
 ## Preparation
 
@@ -50,7 +50,7 @@ utilities:
     - memcached-admin
 ```
 
-This will cause any changes to be pulled from the repository when `vagrant provision` or `vagrant provision --with-provision site-my-test-site` is run.
+This will cause any changes to be pulled from the repository when `vagrant provision` or `vagrant provision --provision-with site-my-test-site` is run.
 
 See the [full YAML configuration documentation](vvv-config.yml.md) for details on other available options.
 
@@ -60,7 +60,7 @@ VVV 1.4.x provides a handful of sites by default. These sites were provisioned d
 
 The easiest route will be to delete the `vvv/www/wordpress-develop` and `vvv/www/wordpress-default` directories. Be sure to back up any crucial files in these directories beforehand.
 
-Once these directories are deleted, run `vagrant provision` or `vagrant provision --provision-with site-wordpress-develop` and `vagrant provision --provsion-with site-wordpress-default`. The configuration in the `vvv-config.yml` or `vvv-custom.yml` files will provide the provisioner with the information it needs to reconfigure these sites using the same databases as before.
+Once these directories are deleted, run `vagrant provision` or `vagrant provision --provision-with site-wordpress-develop` and `vagrant provision --provision-with site-wordpress-default`. The configuration in the `vvv-config.yml` or `vvv-custom.yml` files will provide the provisioner with the information it needs to reconfigure these sites using the same databases as before.
 
 ## Custom sites in non-standard folders
 
