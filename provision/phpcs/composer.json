@@ -1,0 +1,15 @@
+{
+    "name": "VVV/phpcs",
+    "type": "project",
+    "require": {
+        "oomphinc/composer-installers-extender": "^1.1",
+        "wp-coding-standards/wpcs": "*"
+    },
+    "extra": {
+        "installer-types": ["library"],
+        "installer-paths": {
+            "/srv/www/phpcs/": ["squizlabs/php_codesniffer"],
+            "/srv/www/phpcs/CodeSniffer/Standards/WordPress/": ["wp-coding-standards/wpcs"]
+        }
+    }
+}

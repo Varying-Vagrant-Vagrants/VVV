@@ -596,36 +596,15 @@ wp_cli() {
 
 php_codesniff() {
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
-  if [[ ! -d "/srv/www/phpcs" ]]; then
-    echo -e "\nDownloading PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
-    git clone -b master "https://github.com/squizlabs/PHP_CodeSniffer.git" "/srv/www/phpcs"
-  else
-    cd /srv/www/phpcs
-    if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-      echo -e "\nUpdating PHP_CodeSniffer (phpcs)..."
-      git pull --no-edit origin master
-    else
-      echo -e "\nSkipped updating PHP_CodeSniffer since not on master branch"
-    fi
-  fi
+  # Sniffs WordPress Coding Standards
+  echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
+  echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
+  cd /vagrant/provision/phpcs
+  composer update --no-autoloader
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
   ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
   ln -sf "/srv/www/phpcs/scripts/phpcs" "/usr/local/bin/phpcs"
-
-  # Sniffs WordPress Coding Standards
-  if [[ ! -d "/srv/www/phpcs/CodeSniffer/Standards/WordPress" ]]; then
-    echo -e "\nDownloading WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
-    git clone -b master "https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git" "/srv/www/phpcs/CodeSniffer/Standards/WordPress"
-  else
-    cd /srv/www/phpcs/CodeSniffer/Standards/WordPress
-    if [[ $(git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-      echo -e "\nUpdating PHP_CodeSniffer WordPress Coding Standards..."
-      git pull --no-edit origin master
-    else
-      echo -e "\nSkipped updating PHPCS WordPress Coding Standards since not on master branch"
-    fi
-  fi
 
   # Install the standards in PHPCS
   phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
