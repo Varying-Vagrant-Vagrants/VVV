@@ -610,8 +610,8 @@ php_codesniff() {
   fi
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
-  ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
-  ln -sf "/srv/www/phpcs/scripts/phpcs" "/usr/local/bin/phpcs"
+  ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
+  ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
   # Sniffs WordPress Coding Standards
   if [[ ! -d "/srv/www/phpcs/CodeSniffer/Standards/WordPress" ]]; then
