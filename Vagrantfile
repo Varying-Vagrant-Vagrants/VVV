@@ -114,6 +114,7 @@ Vagrant.configure("2") do |config|
     # Set the box name in VirtualBox to match the working directory.
     vvv_pwd = Dir.pwd
     v.name = File.basename(vvv_pwd)
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
   # Configuration options for the Parallels provider.
