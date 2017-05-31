@@ -166,7 +166,7 @@ Vagrant.configure("2") do |config|
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
-    override.vm.box = "ericmann/trusty64"
+    override.vm.box = "giseongeom/trusty64"
   end
 
   config.vm.hostname = "vvv"
