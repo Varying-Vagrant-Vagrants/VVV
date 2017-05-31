@@ -11,5 +11,8 @@
             "/srv/www/phpcs/": ["squizlabs/php_codesniffer"],
             "/srv/www/phpcs/CodeSniffer/Standards/WordPress/": ["wp-coding-standards/wpcs"]
         }
+    },
+    "config": {
+        "bin-dir": "scripts"
     }
 }
