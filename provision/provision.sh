@@ -487,6 +487,14 @@ mysql_setup() {
     mysql -u "root" -p"root" < "/srv/database/init.sql"
     echo "Initial MySQL prep..."
 
+    #Setup AppArmor to allow mysql to write log files to srv
+    cp "/srv/config/mysql-config/usr.sbin.mysqld" "/etc/apparmor.d/local/usr.sbin.mysqld"
+    echo " * Copied /srv/config/mysql-config/usr.sbin.mysqld          to /etc/apparmor.d/local/usr.sbin.mysqld"
+
+    #Reload AppArmor with new configuration
+    echo "service apparmor reload"
+    service apparmor reload
+
     # Process each mysqldump SQL file in database/backups to import
     # an initial data set for MySQL.
     "/srv/database/import-sql.sh"
