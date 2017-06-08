@@ -147,7 +147,7 @@ Vagrant.configure("2") do |config|
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (276MB)
   # box containing the Ubuntu 16.04 Xenial 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "bento/ubuntu-16.04"
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
