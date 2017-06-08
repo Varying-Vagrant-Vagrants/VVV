@@ -267,7 +267,7 @@ package_install() {
 
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
-    apt-key adv --quiet --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+    apt-key adv --quiet --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
