@@ -19,7 +19,7 @@ MySQL Root:
 __User:__ `root`
 __Password:__ `root`
 
-See: [Connecting to MySQL](https://github.com/varying-vagrant-vagrants/vvv/wiki/Connecting-to-MySQL) from your local machine
+See: [Connecting to MariaDB/MySQL](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connecting-to-MySQL-MariaDB) from your local machine
 
 Vagrant Box Ubuntu Root:
 
