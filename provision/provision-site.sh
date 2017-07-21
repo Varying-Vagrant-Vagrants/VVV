@@ -7,6 +7,12 @@ BRANCH=$3
 VM_DIR=$4
 SKIP_PROVISIONING=$5
 NGINX_UPSTREAM=$6
+if [[ $7 != http* ]]; then
+	LIVE_URL=''
+else
+	LIVE_URL="\n\n    # Directives to send expires headers and turn off 404 error logging.\n    location ~* .(js|css|png|jpg|jpeg|gif|ico)$ {\n         expires 24h;\n         log_not_found off;\n         try_files \$uri \$uri\/ @production;\n    }\n\n    location @production {\n        resolver 8.8.8.8;\n        proxy_pass $7\/\$uri;\n    }\n"
+fi
+
 VVV_PATH_TO_SITE=${VM_DIR}
 VVV_SITE_NAME=${SITE}
 
@@ -78,6 +84,8 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
       sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
       sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
       sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+			sed -i "s,nginx-wp-common.conf;,nginx-wp-common.conf;$LIVE_URL,g" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+
 
       # Resolve relative paths since not supported in Nginx root.
       while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"; do

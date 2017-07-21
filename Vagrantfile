@@ -421,7 +421,8 @@ Vagrant.configure("2") do |config|
         args['branch'],
         args['vm_dir'],
         args['skip_provisioning'].to_s,
-        args['nginx_upstream']
+        args['nginx_upstream'],
+        args['live_url'].to_s
       ]
   end
 
