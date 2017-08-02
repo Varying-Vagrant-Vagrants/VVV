@@ -41,6 +41,11 @@ VVV requires recent versions of both Vagrant and VirtualBox.
 
 [Vagrant](https://www.vagrantup.com) is a "tool for building and distributing development environments". It works with [virtualization](https://en.wikipedia.org/wiki/X86_virtualization) software such as [VirtualBox](https://www.virtualbox.org/) to provide a virtual machine sandboxed from your local environment.
 
+There are also several Vagrant plugins that VVV recommends you to install:
+
+* [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) – Automatically updates your hosts file to access the provisioned VVV domains in your browser.
+* [vagrant-triggers](https://github.com/emyl/vagrant-triggers) – Allows for various scripts to fire (such as database backups) when issuing commands such as `vagrant halt` and `vagrant destroy`.
+
 Besides VirtualBox, provider support is also included for Parallels, Hyper-V, VMWare Fusion, and VMWare Workstation.
 
 Full documentation can be found in the `docs/` directory of this repository and on the [varyingvagrantvagrants.org](https://varyingvagrantvagrants.org) website.
