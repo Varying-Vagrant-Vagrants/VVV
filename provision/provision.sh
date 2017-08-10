@@ -24,6 +24,8 @@ apt_package_install_list=()
 # virtual machine. We'll then loop through each of these and check individual
 # status before adding them to the apt_package_install_list array.
 apt_package_check_list=(
+  # Please avoid apostrophes in these comments - they break vim syntax
+  # highlighting.
 
   # PHP7
   #
@@ -82,22 +84,22 @@ apt_package_check_list=(
   # ntp service to keep clock current
   ntp
 
-  # Req'd for i18n tools
+  # Required for i18n tools
   gettext
 
-  # Req'd for Webgrind
+  # Required for Webgrind
   graphviz
 
   # dos2unix
-  # Allows conversion of DOS style line endings to something we'll have less
-  # trouble with in Linux.
+  # Allows conversion of DOS style line endings to something less troublesome
+  # in Linux.
   dos2unix
 
   # nodejs for use by grunt
   g++
   nodejs
 
-  #Mailcatcher requirement
+  # Mailcatcher requirement
   libsqlite3-dev
 
 )
@@ -308,7 +310,9 @@ tools_install() {
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
+  echo "Installing/updating npm..."
   npm install -g npm
+  echo "Installing/updating npm-check-updates..."
   npm install -g npm-check-updates
 
   # ack-grep
@@ -342,13 +346,13 @@ tools_install() {
   # the master branch on its GitHub repository.
   if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
-    COMPOSER_HOME=/usr/local/src/composer composer self-update
-    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/phpunit:5.*
-    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update phpunit/php-invoker:1.1.*
-    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update mockery/mockery:0.9.*
-    COMPOSER_HOME=/usr/local/src/composer composer -q global require --no-update d11wtq/boris:v1.0.8
-    COMPOSER_HOME=/usr/local/src/composer composer -q global config bin-dir /usr/local/bin
-    COMPOSER_HOME=/usr/local/src/composer composer global update
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi self-update
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update phpunit/phpunit:5.*
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update phpunit/php-invoker:1.1.*
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update mockery/mockery:0.9.*
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update d11wtq/boris:v1.0.8
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global config bin-dir /usr/local/bin
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global update
   fi
 
   # Grunt
@@ -515,7 +519,7 @@ mailcatcher_setup() {
     gpg -q --no-tty --batch --keyserver "hkp://keyserver.ubuntu.com:80" --recv-keys BF04FF17
 
     printf " * RVM [not installed]\n Installing from source"
-    curl --silent -L "https://raw.githubusercontent.com/rvm/rvm/stable/binscripts/rvm-installer" | sudo bash -s stable --ruby
+    curl --silent -L "https://raw.githubusercontent.com/rvm/rvm/stable/binscripts/rvm-installer" | sudo bash -s stable --ruby --quiet-curl
     source "/usr/local/rvm/scripts/rvm"
   fi
 
@@ -600,7 +604,7 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /vagrant/provision/phpcs
-  composer update --no-autoloader
+  composer update --no-ansi --no-autoloader
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
   ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
