@@ -355,19 +355,37 @@ tools_install() {
   #
   # Install or Update Grunt based on current state.  Updates are direct
   # from NPM
+  function hack_avoid_gyp_errors() {
+    # Without this, we get a bunch of errors when installing `grunt-sass`:
+    # > node scripts/install.js
+    # Unable to save binary /usr/lib/node_modules/.../node-sass/.../linux-x64-48 :
+    # { Error: EACCES: permission denied, mkdir '/usr/lib/node_modules/... }
+    # Then, node-gyp generates tons of errors like:
+    # WARN EACCES user "root" does not have permission to access the dev dir
+    # "/usr/lib/node_modules/grunt-sass/node_modules/node-sass/.node-gyp/6.11.2"
+    # TODO: Why do child processes of `npm` run as `nobody`?
+    while [ ! -f /tmp/stop_gyp_hack ]; do
+      if [ -d /usr/lib/node_modules/grunt-sass/ ]; then
+        chown -R nobody:vagrant /usr/lib/node_modules/grunt-sass/
+      fi
+      sleep .2
+    done
+    rm /tmp/stop_gyp_hack
+  }
   if [[ "$(grunt --version)" ]]; then
     echo "Updating Grunt CLI"
-    npm update -g grunt-cli &>/dev/null
-    npm update -g grunt-sass &>/dev/null
-    npm update -g grunt-cssjanus &>/dev/null
-    npm update -g grunt-rtlcss &>/dev/null
+    npm update -g grunt-cli
+    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm update -g grunt-cssjanus
+    npm update -g grunt-rtlcss
   else
     echo "Installing Grunt CLI"
-    npm install -g grunt-cli &>/dev/null
-    npm install -g grunt-sass &>/dev/null
-    npm install -g grunt-cssjanus &>/dev/null
-    npm install -g grunt-rtlcss &>/dev/null
+    npm install -g grunt-cli
+    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm install -g grunt-cssjanus
+    npm install -g grunt-rtlcss
   fi
+  chown -R vagrant:vagrant /usr/lib/node_modules/
 
   # Graphviz
   #
