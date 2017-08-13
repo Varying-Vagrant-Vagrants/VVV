@@ -4,7 +4,13 @@ title: Default sites configured in VVV
 permalink: /docs/en-US/references/default-sites/
 ---
 
-#### VVV as a MAMP/XAMPP Replacement
+* [Basic usage](basic-usage.md) provides the basics of using Vagrant to manage a VM.
+* [Default credentials](default-credentials.md) is a list of the default usernames and passwords provsioned in VVV.
+* [Default sites](default-sites.md) installed with VVV.
+* [Installed packages](installed-packages.md) is a list of packages installed during default provisioning.
+* [PHP Extensions](php-extensions.md) is a list of the PHP extensions provisioned by default.
+
+## VVV as a MAMP/XAMPP Replacement
 
 Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagrant up --provision` to automatically build a virtualized Ubuntu server on your computer. See our section on [The First Vagrant Up](#installation---the-first-vagrant-up) for detailed instructions.
 
@@ -19,7 +25,7 @@ VVV's `config`, `database`, `log` and `www` directories are shared with the virt
 
 These shared directories allow you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/srv/www/`, you'll immediately see those changes in your local file system.
 
-## Use Git instead of Subversion for WordPress core development
+## Using Git instead of Subversion for WordPress core development
 
 By default, VVV provisions WordPress into `/www/wordpress-develop/` from the [WordPress Subversion repository](https://develop.svn.wordpress.org/).
 
