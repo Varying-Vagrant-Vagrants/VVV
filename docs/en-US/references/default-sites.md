@@ -17,6 +17,8 @@ VVV creates and sets up several WordPress installs for you automatically, these 
  - [http://local.wordpress.dev](http://local.wordpress.dev) - a standard WordPress install
  - [http://src.wordpress-develop.dev](http://src.wordpress-develop.dev) and [http://build.wordpress-develop.dev](http://build.wordpress-develop.dev) - a copy of the develop branch of WordPress
 
+You can see these in your VVV config, allowing you to make new sites, or remove the built in sites if you so choose.
+
 ## VVV as a MAMP/XAMPP Replacement
 
 Multiple projects can be developed at once in the same environment.
