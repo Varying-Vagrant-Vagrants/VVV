@@ -10,9 +10,14 @@ permalink: /docs/en-US/references/default-sites/
 * [Installed packages](installed-packages.md) is a list of packages installed during default provisioning.
 * [PHP Extensions](php-extensions.md) is a list of the PHP extensions provisioned by default.
 
-## VVV as a MAMP/XAMPP Replacement
+## What are the Default Sites?
 
-Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagrant up --provision` to automatically build a virtualized Ubuntu server on your computer. See our section on [The First Vagrant Up](#installation---the-first-vagrant-up) for detailed instructions.
+VVV creates and sets up several WordPress installs for you automatically, these are:
+
+ - [http://local.wordpress.dev](http://local.wordpress.dev) - a standard WordPress install
+ - [http://src.wordpress-develop.dev](http://src.wordpress-develop.dev) and [http://build.wordpress-develop.dev](http://build.wordpress-develop.dev) - a copy of the develop branch of WordPress
+
+## VVV as a MAMP/XAMPP Replacement
 
 Multiple projects can be developed at once in the same environment.
 
