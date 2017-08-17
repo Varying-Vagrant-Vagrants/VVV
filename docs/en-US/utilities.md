@@ -44,11 +44,11 @@ A utility repo contains folders, and each folder has a provisioner script inside
 With this in mind, I would expect the java repository mentioned earlier to have this folder structure:
 
  - java6/
- 	- provision.sh
+   - provision.sh
  - java7/
- 	- provision.sh
+   - provision.sh
  - java8/
- 	- provision.sh
+   - provision.sh
  - readme.md
 
 The name of the subfolder maps directly on to what is put in `vvv-custom.yml`. VVV will run the `provision.sh` file, at which point it can do as it pleases. This could be installing a package via `apt-get` or something else. Other files can be included in these folders for `provision.sh` to make use of.
