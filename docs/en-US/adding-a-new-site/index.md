@@ -8,7 +8,7 @@ Adding a new site is as simple as adding it under the sites section of `vvv-cust
 
 To do this there are five steps:
 
- - `vvv-custom.yml` and the sites folder
+ - `vvv-custom.yml` and the root folder ( the VVV folder )
  - Files
  - Provisioner files
  - Restart/reprovision VVV
@@ -18,7 +18,7 @@ I'm going to walk through setting up a blog named vvvtest.com locally using VVV,
 
 If you're migrating a site from VVV 1, read this page, then visit the [migration page](migrating-vvv1.md) for further details.
 
-## `vvv-custom.yml` and the Sites Folder
+## `vvv-custom.yml` and the Root Folder
 
 First we need to tell VVV about the site. I'm going to give the site the name `vvvtest`, and update the sites list in `vvv-custom.yml`:
 
