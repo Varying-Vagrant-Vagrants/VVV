@@ -32,10 +32,3 @@ VVV's `config`, `database`, `log` and `www` directories are shared with the virt
 
 These shared directories allow you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/srv/www/`, you'll immediately see those changes in your local file system.
 
-## Using Git instead of Subversion for WordPress core development
-
-By default, VVV provisions WordPress into `/www/wordpress-develop/` from the [WordPress Subversion repository](https://develop.svn.wordpress.org/).
-
-If you prefer to use Git, there is a [bundled script](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/config/homebin/develop_git) that converts to using the [Git mirror](https://develop.git.wordpress.org).
-
-To enable Git for core development, use `vagrant ssh` to access the virtual machine and then run `develop_git`. Alternatively, do this in one line with: `vagrant ssh -c /srv/config/homebin/develop_git`.
