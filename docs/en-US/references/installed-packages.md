@@ -4,6 +4,12 @@ title: Packages installed in VVV
 permalink: /docs/en-US/installed-packages/
 ---
 
+* [Basic usage](basic-usage.md) provides the basics of using Vagrant to manage a VM.
+* [Default credentials](default-credentials.md) is a list of the default usernames and passwords provsioned in VVV.
+* [Default sites](default-sites.md) installed with VVV.
+* [Installed packages](installed-packages.md) is a list of packages installed during default provisioning.
+* [PHP Extensions](php-extensions.md) is a list of the PHP extensions provisioned by default.
+
 These packages are installed by default in VVV:
 
 1. [Ubuntu](http://www.ubuntu.com/) 14.04 LTS (Trusty Tahr)

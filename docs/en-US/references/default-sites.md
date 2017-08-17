@@ -4,9 +4,22 @@ title: Default sites configured in VVV
 permalink: /docs/en-US/references/default-sites/
 ---
 
-#### VVV as a MAMP/XAMPP Replacement
+* [Basic usage](basic-usage.md) provides the basics of using Vagrant to manage a VM.
+* [Default credentials](default-credentials.md) is a list of the default usernames and passwords provsioned in VVV.
+* [Default sites](default-sites.md) installed with VVV.
+* [Installed packages](installed-packages.md) is a list of packages installed during default provisioning.
+* [PHP Extensions](php-extensions.md) is a list of the PHP extensions provisioned by default.
 
-Once Vagrant and VirtualBox are installed, download or clone VVV and type `vagrant up --provision` to automatically build a virtualized Ubuntu server on your computer. See our section on [The First Vagrant Up](#installation---the-first-vagrant-up) for detailed instructions.
+## What are the Default Sites?
+
+VVV creates and sets up several WordPress installs for you automatically, these are:
+
+ - [http://local.wordpress.dev](http://local.wordpress.dev) - a standard WordPress install
+ - [http://src.wordpress-develop.dev](http://src.wordpress-develop.dev) and [http://build.wordpress-develop.dev](http://build.wordpress-develop.dev) - a copy of the develop branch of WordPress
+
+You can see these in your VVV config, allowing you to make new sites, or remove the built in sites if you so choose.
+
+## VVV as a MAMP/XAMPP Replacement
 
 Multiple projects can be developed at once in the same environment.
 
@@ -19,7 +32,7 @@ VVV's `config`, `database`, `log` and `www` directories are shared with the virt
 
 These shared directories allow you to work, for example, in `vagrant-local/www/wordpress-default` in your local file system and have those changes immediately reflected in the virtualized server's file system and http://local.wordpress.dev/. Likewise, if you `vagrant ssh` and make modifications to the files in `/srv/www/`, you'll immediately see those changes in your local file system.
 
-## Use Git instead of Subversion for WordPress core development
+## Using Git instead of Subversion for WordPress core development
 
 By default, VVV provisions WordPress into `/www/wordpress-develop/` from the [WordPress Subversion repository](https://develop.svn.wordpress.org/).
 
