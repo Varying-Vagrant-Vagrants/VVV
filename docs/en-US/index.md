@@ -16,6 +16,7 @@ These guides are intended to help with the initial installation of VVV as well a
    * [Nginx Configs](adding-a-new-site/nginx-configs.md)
    * [Setup Scripts](adding-a-new-site/setup-script.md)
 * [Migrating from VVV1](migrating-vvv1.md)
+* [Utilities](utilities.md)
 * [Troubleshooting](troubleshooting.md)
 * [Guide to vvv-custom.yml](vvv-config.yml.md)
 * [History](history.md)
