@@ -3,12 +3,13 @@ layout: page
 title: Setup Script
 permalink: /docs/en-US/adding-a-new-site/setup-script/
 ---
-* [Add New Sites](adding-a-new-site/index.md)
-   * [Changing a sites PHP Version](adding-a-new-site/changing-php-version.md)
-   * [Custom Domains and Hosts](adding-a-new-site/custom-domains-host.md)
-   * [Custom Paths and Folders](adding-a-new-site/custom-paths-and-folders.md)
-   * [Nginx Configs](adding-a-new-site/nginx-configs.md)
-   * [Setup Scripts](adding-a-new-site/setup-script.md)
+
+* [Add New Sites](index.md)
+   * [Changing a sites PHP Version](changing-php-version.md)
+   * [Custom Domains and Hosts](custom-domains-host.md)
+   * [Custom Paths and Folders](custom-paths-and-folders.md)
+   * [Nginx Configs](nginx-configs.md)
+   * [Setup Scripts](setup-script.md)
 
 `vvv-init.sh` is ran when VVV sets up the site, and gives you an opportunity to execute shell commands, including WP CLI commands. This file is optional, but when combined with a git repository this becomes very powerful.
 
