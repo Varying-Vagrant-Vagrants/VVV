@@ -27,12 +27,12 @@ Lets say that I want to run Java 7 inside a VVV installation. In order to instal
 
 ```
 utilities:
-	core:
-		- php56
-	java:
-		- java7
+  core:
+    - php56
+  java:
+    - java7
 utility-sources:
-	java: https://github.com/example/java-utilities.git
+  java: https://github.com/example/java-utilities.git
 ```
 
 My hypothetical utility defines how to install different versions of Java, and is located in a git repository. I might have defined how to install java 8, or java 6, but here I used java 7.
