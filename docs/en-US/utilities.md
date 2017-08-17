@@ -8,7 +8,7 @@ Utilities are packages for VVV that install system level functionality. For exam
 
 Here are the default utilities as they would be defined in `vvv-custom.yml` in full:
 
-```
+```YAML
 utilities:
   core:
     - memcached-admin
@@ -25,7 +25,7 @@ Utilities are defined at the end of the file, outside of the sites section. The 
 
 Lets say that I want to run Java 7 inside a VVV installation. In order to install java, I'll need a utility. Lets name it `java` and include it:
 
-```
+```YAML
 utilities:
   core:
     - php56
