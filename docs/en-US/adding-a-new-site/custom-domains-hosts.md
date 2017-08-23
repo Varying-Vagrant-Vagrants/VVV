@@ -6,7 +6,7 @@ permalink: /docs/en-US/adding-a-new-site/custom-domains-hosts/
 
 * [Add New Sites](index.md)
    * [Changing a sites PHP Version](changing-php-version.md)
-   * [Custom Domains and Hosts](custom-domains-host.md)
+   * [Custom Domains and Hosts](custom-domains-hosts.md)
    * [Custom Paths and Folders](custom-paths-and-folders.md)
    * [Nginx Configs](nginx-configs.md)
    * [Setup Scripts](setup-script.md)

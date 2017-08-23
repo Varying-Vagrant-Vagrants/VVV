@@ -11,7 +11,7 @@ These guides are intended to help with the initial installation of VVV as well a
 * [Installing VVV 2](installation.md)
 * [Add New Sites](adding-a-new-site/index.md)
    * [Changing a sites PHP Version](adding-a-new-site/changing-php-version.md)
-   * [Custom Domains and Hosts](adding-a-new-site/custom-domains-host.md)
+   * [Custom Domains and Hosts](adding-a-new-site/custom-domains-hosts.md)
    * [Custom Paths and Folders](adding-a-new-site/custom-paths-and-folders.md)
    * [Nginx Configs](adding-a-new-site/nginx-configs.md)
    * [Setup Scripts](adding-a-new-site/setup-script.md)
