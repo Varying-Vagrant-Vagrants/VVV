@@ -13,9 +13,7 @@ permalink: /docs/en-US/installation/
 1. Install some these Vagrant plugins:
     1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
     1. Install the [vagrant-triggers](https://github.com/emyl/vagrant-triggers) plugin with `vagrant plugin install vagrant-triggers`
-        * Note: This step is not a requirement. When installed, it allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
-        * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
-        * If vagrant-triggers is not installed, VVV will not provide automated database backups.
+        * Triggers allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`. a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone -b master git://github.com/Varying-Vagrant-Vagrants/VVV.git vagrant-local`
     * OR download and extract a [stable release](https://github.com/varying-vagrant-vagrants/vvv/releases) zip or tar.
@@ -23,7 +21,7 @@ permalink: /docs/en-US/installation/
 	* For Windows 8 or higher it is recommended that you run the cmd window as Administrator.
     * Be patient as the magic happens. This could take a while on the first run as your local machine downloads the required files.
     * Watch as the virtual machine starts. Your machine ***password may be required*** to properly modify the hosts file on your local machine.
-1. Visit any of the [built in WordPress sites](built-in-wp-installs.md) or the VVV Dashboard at [http://vvv.dev](http://vvv.dev)
+1. Visit any of the [built in WordPress sites](references/default-sites.md) or the VVV Dashboard at [http://vvv.dev](http://vvv.dev)
 
 ## What did that do?
 

@@ -75,6 +75,7 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	<li><a href="http://src.wordpress-develop.dev/" target="_blank">http://src.wordpress-develop.dev</a> for trunk WordPress development files (www/wordpress-develop/src)</li>
 	<li><a href="http://build.wordpress-develop.dev/" target="_blank">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
 </ul>
+<p>Want to add your own site? <a href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">Learn how to add a new site in VVV</a></p>
 <style>
 /**
  * Source Code Pro License and Copyright:

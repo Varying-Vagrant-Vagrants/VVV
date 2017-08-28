@@ -113,7 +113,7 @@ Vagrant.configure("2") do |config|
 
     # Set the box name in VirtualBox to match the working directory.
     vvv_pwd = Dir.pwd
-    v.name = File.basename(vvv_pwd)
+    v.name = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
   end
 
   # Configuration options for the Parallels provider.
