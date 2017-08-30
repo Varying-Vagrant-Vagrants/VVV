@@ -13,9 +13,7 @@ permalink: /docs/en-US/installation/
 1. Install some these Vagrant plugins:
     1. Install the [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin with `vagrant plugin install vagrant-hostsupdater`
     1. Install the [vagrant-triggers](https://github.com/emyl/vagrant-triggers) plugin with `vagrant plugin install vagrant-triggers`
-        * Note: This step is not a requirement. When installed, it allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`.
-        * By default, if vagrant-triggers is installed, a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
-        * If vagrant-triggers is not installed, VVV will not provide automated database backups.
+        * Triggers allows for various scripts to fire when issuing commands such as `vagrant halt` and `vagrant destroy`. a `db_backup` script will run on halt, suspend, and destroy that backs up each database to a `dbname.sql` file in the `{vvv}/database/backups/` directory. These will then be imported automatically if starting from scratch. Custom scripts can be added to override this default behavior.
 1. Clone or extract the Varying Vagrant Vagrants project into a local directory
     * `git clone -b master git://github.com/Varying-Vagrant-Vagrants/VVV.git vagrant-local`
     * OR download and extract a [stable release](https://github.com/varying-vagrant-vagrants/vvv/releases) zip or tar.
@@ -23,7 +21,7 @@ permalink: /docs/en-US/installation/
 	* For Windows 8 or higher it is recommended that you run the cmd window as Administrator.
     * Be patient as the magic happens. This could take a while on the first run as your local machine downloads the required files.
     * Watch as the virtual machine starts. Your machine ***password may be required*** to properly modify the hosts file on your local machine.
-1. Visit any of the [built in WordPress sites](built-in-wp-installs.md) or the VVV Dashboard at [http://vvv.dev](http://vvv.dev)
+1. Visit any of the [built in WordPress sites](references/default-sites.md) or the VVV Dashboard at [http://vvv.dev](http://vvv.dev)
 
 ## What did that do?
 
@@ -43,5 +41,5 @@ Now that you're up and running, start poking around and modifying things.
     * **MS Windows users:** An SSH client is generally not distributed with Windows PCs by default. However, a terminal emulator such as [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) will provide access immediately. For detailed instructions on connecting with PuTTY, consult the [VVV Wiki](https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY).
 * Power off the box with `vagrant halt` and turn it back on with `vagrant up`.
 * Reapply provisioning to a running box with `vagrant provision`.
-* Destroy the box with `vagrant destroy`. Any data stored in the virtual machine, includding databases, will be deleted. Files added in the `www` directory will persist on the next `vagrant up`.
+* Destroy the box with `vagrant destroy`. Any data stored in the virtual machine, including databases, will be deleted. Files added in the `www` directory will persist on the next `vagrant up`.
 * Start modifying and adding local files to fit your needs. Take a look at [Adding a Site](adding-a-new-site/index.md) for tips on adding new projects.

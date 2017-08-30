@@ -41,6 +41,7 @@ Committers are trusted to make changes to project code by merging the pull reque
 Current committers:
 
 * [Weston Ruter](https://github.com/westonruter)
+* [Tom Nowell](https://github.com/tomjn)
 * [Simon Wheatley](https://github.com/simonwheatley)
 * [Luke Woodward](https://github.com/lkwdwrd)
 * [Christian Foellman](https://github.com/cfoellmann)

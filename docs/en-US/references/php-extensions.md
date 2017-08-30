@@ -4,6 +4,12 @@ title: PHP Extensions
 permalink: /docs/en-US/references/php-extensions/
 ---
 
+* [Basic usage](basic-usage.md) provides the basics of using Vagrant to manage a VM.
+* [Default credentials](default-credentials.md) is a list of the default usernames and passwords provsioned in VVV.
+* [Default sites](default-sites.md) installed with VVV.
+* [Installed packages](installed-packages.md) is a list of packages installed during default provisioning.
+* [PHP Extensions](php-extensions.md) is a list of the PHP extensions provisioned by default.
+
 This page lists all the PHP Modules bundled with VVV.
 
 PHP & all modules listed below are installed from [this PPA](https://launchpad.net/~ondrej/+archive/ubuntu/php) maintained by  

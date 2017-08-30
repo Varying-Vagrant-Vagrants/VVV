@@ -41,13 +41,6 @@ end
 
 vvv_config['hosts'] += ['vvv.dev']
 
-host_paths = Dir[File.join(vagrant_dir, 'www', '**', 'vvv-hosts')]
-
-vvv_config['hosts'] += host_paths.map do |path|
-  lines = File.readlines(path).map(&:chomp)
-  lines.grep(/\A[^#]/)
-end.flatten
-
 vvv_config['sites'].each do |site, args|
   if args.kind_of? String then
       repo = args
@@ -70,6 +63,13 @@ vvv_config['sites'].each do |site, args|
   defaults['hosts'] = Array.new
 
   vvv_config['sites'][site] = defaults.merge(args)
+
+  site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
+
+  vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
+    lines = File.readlines(path).map(&:chomp)
+    lines.grep(/\A[^#]/)
+  end.flatten
 
   vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
   vvv_config['sites'][site].delete('hosts')
@@ -108,10 +108,12 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--cpus", vvv_config['vm_config']['cores']]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    v.customize ["modifyvm", :id, "--rtcuseutc", "on"]
+    v.customize ["modifyvm", :id, "--audio", "none"]
 
     # Set the box name in VirtualBox to match the working directory.
     vvv_pwd = Dir.pwd
-    v.name = File.basename(vvv_pwd)
+    v.name = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
   end
 
   # Configuration options for the Parallels provider.

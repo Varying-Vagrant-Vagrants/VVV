@@ -4,11 +4,18 @@ title: Adding a New Site
 permalink: /docs/en-US/adding-a-new-site/
 ---
 
-Adding a new site is as simple as adding it under the sites section of `vvv-custom.yml`.
+* [Add New Sites](index.md)
+   * [Changing a sites PHP Version](changing-php-version.md)
+   * [Custom Domains and Hosts](custom-domains-hosts.md)
+   * [Custom Paths and Folders](custom-paths-and-folders.md)
+   * [Nginx Configs](nginx-configs.md)
+   * [Setup Scripts](setup-script.md)
 
-To do this there are 3 steps:
+Adding a new site is as simple as adding it under the sites section of `vvv-custom.yml`. If `vvv-custom.yml` does not exist, you can create it by copying `vvv-config.yml` to `vvv-custom.yml`.
 
- - `vvv-custom.yml` and the sites folder
+To do this there are five steps:
+
+ - `vvv-custom.yml` and the root folder ( the VVV folder )
  - Files
  - Provisioner files
  - Restart/reprovision VVV
@@ -16,11 +23,13 @@ To do this there are 3 steps:
 
 I'm going to walk through setting up a blog named vvvtest.com locally using VVV, but this could be a site currently hosted in MAMP.
 
-If you're migrating a site from VVV 1, read this page, then visit the [migration page](migrating-vvv1.md) for further details.
+If you're migrating a site from VVV 1, read this page, then visit the [migration page](../migrating-vvv1.md) for further details.
+
+You may also find that the default sites created by VVV are enough for what you need. [Read about the default sites here](../references/default-sites.md)
 
 **Remember: Always reprovision after making changes to `vvv-custom.yml`**
 
-## `vvv-custom.yml` and The Main Folder
+## `vvv-custom.yml` and the Root Folder
 
 First we need to tell VVV about the site. I'm going to give the site the name `vvvtest`, and update the sites list in `vvv-custom.yml`:
 
@@ -28,7 +37,7 @@ First we need to tell VVV about the site. I'm going to give the site the name `v
 vvvtest:
 ```
 
-We also want to specify the host as vvvtest.com:
+We also want to specify the host as `vvvtest.com`:
 
 ```YAML
 vvvtest:
@@ -99,7 +108,7 @@ server {
 }
 ```
 
-For more information about Nginx and VVV, read the [Nginx Configs page](adding-a-new-site/nginx-configs.md) of adding a new site.
+For more information about Nginx and VVV, read the [Nginx Configs page](nginx-configs.md) of adding a new site.
 
 ## Reprovision
 

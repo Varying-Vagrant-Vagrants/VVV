@@ -14,7 +14,7 @@ sites:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
     vm_dir: /srv/www/wordpress-default
     local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
-    branch: "master
+    branch: master
     skip_provisioning: false
     allow_customfile: false
     nginx_upstream: php
@@ -48,7 +48,7 @@ utility-sources:
 
 ## Anatomy of a Site config
 
-Lets break apart the `wordpress-default` site:
+Let's break apart the `wordpress-default` site:
 
 ```yaml
 sites:
@@ -56,7 +56,7 @@ sites:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
     vm_dir: /srv/www/wordpress-default
     local_dir: /Users/janesmith/dev/www/vvv/www/wordpress-default
-    branch: "master
+    branch: master
     skip_provisioning: false
     allow_customfile: false
     nginx_upstream: php
@@ -82,7 +82,7 @@ example-site: https://github.com/Varying-Vagrant-Vagrants/...
 
 ### branch
 
-If the `repo` key is being ued, and the `branch` key is set, VVV will checkout that branch instead of `master`.
+If the `repo` key is being used, and the `branch` key is set, VVV will checkout that branch instead of `master`.
 
 ### vm_dir
 
