@@ -18,6 +18,8 @@ I'm going to walk through setting up a blog named vvvtest.com locally using VVV,
 
 If you're migrating a site from VVV 1, read this page, then visit the [migration page](migrating-vvv1.md) for further details.
 
+**Remember: Always reprovision after making changes to `vvv-custom.yml`**
+
 ## `vvv-custom.yml` and The Main Folder
 
 First we need to tell VVV about the site. I'm going to give the site the name `vvvtest`, and update the sites list in `vvv-custom.yml`:
@@ -46,7 +48,7 @@ If you'd like to change the folders VVV uses, [read here for more information](c
 
 ### Copying In Site Files
 
-If you have an existing site you want to work with, you will be able to manually copy the site files into the `public_html` subdirectory created when the site is provisioned.
+If you have an existing site you want to work with, you will be able to manually copy the site files into the `public_html` or equivalent subdirectory created when the site is provisioned.
 
 As an alternative, rather than manually copying files into the folder, copy them into a git repository, and use the `repo` key to tell VVV where to find it.
 
@@ -56,7 +58,7 @@ For example:
 
 ```YAML
 vvvtest:
-  repo: https://github.com/example/site.git
+  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
   hosts:
     - vvvtest.com
 ```
