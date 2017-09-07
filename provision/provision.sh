@@ -625,8 +625,8 @@ php_codesniff() {
   composer update --no-ansi --no-autoloader
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
-  ln -sf "/srv/www/phpcs/scripts/phpcbf" "/usr/local/bin/phpcbf"
-  ln -sf "/srv/www/phpcs/scripts/phpcs" "/usr/local/bin/phpcs"
+  ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
+  ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
   # Install the standards in PHPCS
   phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/
