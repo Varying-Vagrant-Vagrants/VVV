@@ -13,6 +13,22 @@ a:hover {
 	color:#d08770;
 	text-decoration: default;
 }
+
+pre, code {
+	background: #2b303b;
+    border-radius: 4px;
+    border: 1px solid #4f5b66;
+}
+
+code {
+	color: #a3be8c;
+	padding: 0.25em 0.5em;
+}
+pre {
+    padding: 2em 1em;
+    overflow-x: scroll;
+}
+
 #vvv_logo {
 	white-space: pre;
 }
@@ -48,6 +64,7 @@ strong { color: #eff1f5; }
 	border-radius:4px;
 	display: inline-block;
 	width:auto;
+	margin-bottom: 1em;
 }
 .button:hover {
 	border-color:#d08770;

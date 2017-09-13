@@ -36,11 +36,8 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	<div class="column">
 		<div class="box">
 			<h2>Varying Vagrant Vagrants</h2>
-			<ul class="nav">
-				<li class="active"><a href="#">Home</a></li>
-				<li><a href="https://varyingvagrantvagrants.org/" target="_blank">Documentation</a></li>
-				<li><a href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">Repository</a></li>
-			</ul>
+			<p>VVV is a local web development environment powered by Vagrant and Virtual Machines.</p>
+			<p>To add, remove, or change sites, modify <code>vvv-custom.yml</code> then reprovision using <code>vagrant reload --provision</code></p>
 		</div>
 		<div class="box">
 			<h3>Bundled Tools</h3>
@@ -62,11 +59,30 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 				<li><a href="http://build.wordpress-develop.dev/" target="_blank">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
 			</ul>
 		</div>
+		<div class="box">
+			<h3>Adding a New Site</h3>
+			<p>Modify <code>vvv-custom.yml</code> under the sites section to add a site, here's an example:</p>
+<pre>
+  # Add a new WordPress single install
+  newsite:
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+    skip_provisioning: false
+    hosts:
+      - newsite.localhost
+</pre>
+			<p>This will create a site in <code>www/newsite</code> at <code>http://newsite.localhost</code></p>
+			<p><em>Remember</em>, in YAML whitespace matters, and you need to reprovision on changes, so run <code>vagrant reload --provision</code></p>
+		</div>
 	</div>
 	<div class="column">
 		<div class="box">
+			<p>Find out more about VVV</p>
+			<a class="button" href="https://varyingvagrantvagrants.org/" target="_blank">Help &amp; Documentation</a>
+			<a class="button" href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">View the code on GitHub</a>
+		</div>
+		<div class="box">
 			<p>Want to add your own site?</p>
-			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">Docs: How to add a new site in VVV</a></p>
+			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">How to add a new site</a></p>
 		</div>
 	</div>
 </div>
