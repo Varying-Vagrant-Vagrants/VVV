@@ -36,10 +36,16 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 		.v2 { color: rgb( 130, 255, 27 ); }
 		.v3 { color: rgb( 76, 155, 250 ); }
 		.v4 { color: rgb( 255, 224, 27 ); }
+		#vvv_provision_fail {
+			background: #bf616a;
+			/*color: white;*/
+			padding:2em;
+			margin:1em;
+		}
 	</style>
 </head>
 <body>
-
+<p id="vvv_provision_fail" style="display:none"><strong>Problem:</strong> Provisioning this site failed, please check there were no errors during provisioning, and reprovision</p>
 <p id="vvv_logo">
 <span class="v1">__     _</span><span class="v2">__     _</span><span class="v3">__     __</span> <span class="v4"> ____  </span>
 <span class="v1">\ \   / </span><span class="v2">\ \   / </span><span class="v3">\ \   / /</span> <span class="v4">|___ \ </span>
@@ -114,5 +120,12 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 </style>
+<script>
+// If it's not vvv.dev then this site has failed to provision, let the user know
+if ( location.hostname != "vvv.dev" ){
+	var notice = document.getElementById( 'vvv_provision_fail' );
+	notice.style.display = 'block';
+}
+</script>
 </body>
 </html>
