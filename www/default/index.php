@@ -30,8 +30,6 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 
 </p>
 
-
-
 <div class="grid">
 	<div class="column">
 		<div class="box">
@@ -72,17 +70,20 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 </pre>
 			<p>This will create a site in <code>www/newsite</code> at <code>http://newsite.localhost</code></p>
 			<p><em>Remember</em>, in YAML whitespace matters, and you need to reprovision on changes, so run <code>vagrant reload --provision</code></p>
+			<p>For more information, visit our docs:</p>
+			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">How to add a new site</a></p>
 		</div>
 	</div>
 	<div class="column">
 		<div class="box">
-			<p>Find out more about VVV</p>
+			<h3>Find out more about VVV</h3>
 			<a class="button" href="https://varyingvagrantvagrants.org/" target="_blank">Help &amp; Documentation</a>
 			<a class="button" href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">View the code on GitHub</a>
 		</div>
 		<div class="box">
-			<p>Want to add your own site?</p>
-			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">How to add a new site</a></p>
+			<h3>VVV 1.x Sites not Showing?</h3>
+			<p>Sites need to be listed in <code>vvv-custom.yml</code> for VVV to find them, luckily it's super easy and fast to add them back! click below to find out how to migrate your sites.</p>
+			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/migrate-vvv-1/">Migrating VVV 1 sites</a>
 		</div>
 	</div>
 </div>
