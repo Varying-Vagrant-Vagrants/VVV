@@ -9,6 +9,10 @@ a {
 	color: #ebcb8b;
 	text-decoration: none;
 }
+a:hover {
+	color:#d08770;
+	text-decoration: default;
+}
 #vvv_logo {
 	white-space: pre;
 }
@@ -22,7 +26,33 @@ strong { color: #eff1f5; }
 	padding:2em;
 }
 
+.grid {
+	display: grid;
+	grid-template-columns: 66.667% 33.334%;	
+}
+.column {
+		//
+}
 
+.box {
+	border-radius:4px;
+	padding:1em;
+	background: #343d46;
+	margin-right: 1em;
+	margin-bottom:1em;
+}
+
+.button {
+	padding:0.5em 1em;
+	border:1px solid #ebcb8b;
+	border-radius:4px;
+	display: inline-block;
+	width:auto;
+}
+.button:hover {
+	border-color:#d08770;
+	text-decoration: none;
+}
 /**
  * Source Code Pro License and Copyright:
  * https://github.com/adobe-fonts/source-code-pro/blob/master/LICENSE.txt

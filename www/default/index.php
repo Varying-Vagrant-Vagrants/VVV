@@ -30,35 +30,48 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 
 </p>
 
-<p><strong>Varying Vagrant Vagrants</strong></p>
 
-<div>
+
+<div class="grid">
+	<div class="column">
+		<div class="box">
+			<h2>Varying Vagrant Vagrants</h2>
+			<ul class="nav">
+				<li class="active"><a href="#">Home</a></li>
+				<li><a href="https://varyingvagrantvagrants.org/" target="_blank">Documentation</a></li>
+				<li><a href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">Repository</a></li>
+			</ul>
+		</div>
+		<div class="box">
+			<h3>Bundled Tools</h3>
+			<ul class="nav">
+				<li><a href="database-admin/" target="_blank">phpMyAdmin</a></li>
+				<li><a href="memcached-admin/" target="_blank">phpMemcachedAdmin</a></li>
+				<li><a href="opcache-status/opcache.php" target="_blank">Opcache Status</a></li>
+				<li><a href="http://vvv.dev:1080" target="_blank">Mailcatcher</a></li>
+				<li><a href="webgrind/" target="_blank">Webgrind</a></li>
+				<li><a href="phpinfo/" target="_blank">PHP Info</a></li>
+				<li><a href="php-status?html&amp;full" target="_blank">PHP Status</a></li>
+			</ul>
+		</div>
+		<div class="box">
+			<h3>Bundled Environments</h3>
+			<ul class="nav">
+				<li><a href="http://local.wordpress.dev/" target="_blank">http://local.wordpress.dev</a> for WordPress stable (www/wordpress-default)</li>
+				<li><a href="http://src.wordpress-develop.dev/" target="_blank">http://src.wordpress-develop.dev</a> for trunk WordPress development files (www/wordpress-develop/src)</li>
+				<li><a href="http://build.wordpress-develop.dev/" target="_blank">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
+			</ul>
+		</div>
+	</div>
+	<div class="column">
+		<div class="box">
+			<p>Want to add your own site?</p>
+			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">Docs: How to add a new site in VVV</a></p>
+		</div>
+	</div>
 </div>
-<ul class="nav">
-	<li class="active"><a href="#">Home</a></li>
-	<li><a href="https://varyingvagrantvagrants.org/" target="_blank">Documentation</a></li>
-	<li><a href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">Repository</a></li>
-</ul>
 
-<h3>Bundled Tools</h3>
-<ul class="nav">
-	<li><a href="database-admin/" target="_blank">phpMyAdmin</a></li>
-	<li><a href="memcached-admin/" target="_blank">phpMemcachedAdmin</a></li>
-	<li><a href="opcache-status/opcache.php" target="_blank">Opcache Status</a></li>
-	<li><a href="http://vvv.dev:1080" target="_blank">Mailcatcher</a></li>
-	<li><a href="webgrind/" target="_blank">Webgrind</a></li>
-	<li><a href="phpinfo/" target="_blank">PHP Info</a></li>
-	<li><a href="php-status?html&amp;full" target="_blank">PHP Status</a></li>
-</ul>
 
-<h3>Bundled Environments</h3>
-
-<ul class="nav">
-	<li><a href="http://local.wordpress.dev/" target="_blank">http://local.wordpress.dev</a> for WordPress stable (www/wordpress-default)</li>
-	<li><a href="http://src.wordpress-develop.dev/" target="_blank">http://src.wordpress-develop.dev</a> for trunk WordPress development files (www/wordpress-develop/src)</li>
-	<li><a href="http://build.wordpress-develop.dev/" target="_blank">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
-</ul>
-<p>Want to add your own site? <a href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">Learn how to add a new site in VVV</a></p>
 <script>
 // If it's not vvv.dev then this site has failed to provision, let the user know
 if ( location.hostname != "vvv.dev" ){
