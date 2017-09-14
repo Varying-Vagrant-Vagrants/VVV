@@ -39,15 +39,14 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 		</div>
 		<div class="box">
 			<h3>Bundled Tools</h3>
-			<ul class="nav">
-				<li><a href="database-admin/" target="_blank">phpMyAdmin</a></li>
-				<li><a href="memcached-admin/" target="_blank">phpMemcachedAdmin</a></li>
-				<li><a href="opcache-status/opcache.php" target="_blank">Opcache Status</a></li>
-				<li><a href="http://vvv.dev:1080" target="_blank">Mailcatcher</a></li>
-				<li><a href="webgrind/" target="_blank">Webgrind</a></li>
-				<li><a href="phpinfo/" target="_blank">PHP Info</a></li>
-				<li><a href="php-status?html&amp;full" target="_blank">PHP Status</a></li>
-			</ul>
+
+			<a class="button" href="database-admin/" target="_blank">phpMyAdmin</a>
+			<a class="button" href="memcached-admin/" target="_blank">phpMemcachedAdmin</a>
+			<a class="button" href="opcache-status/opcache.php" target="_blank">Opcache Status</a>
+			<a class="button" href="http://vvv.dev:1080" target="_blank">Mailcatcher</a>
+			<a class="button" href="webgrind/" target="_blank">Webgrind</a>
+			<a class="button" href="phpinfo/" target="_blank">PHP Info</a>
+			<a class="button" href="php-status?html&amp;full" target="_blank">PHP Status</a>
 		</div>
 		<div class="box">
 			<h3>Bundled Environments</h3>
