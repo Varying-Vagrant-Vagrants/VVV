@@ -58,17 +58,35 @@ strong { color: #eff1f5; }
 	margin-bottom:1em;
 }
 
+input,
 .button {
 	padding:0.5em 1em;
 	border:1px solid #ebcb8b;
 	border-radius:4px;
-	display: inline-block;
-	width:auto;
+	background: #343d46;
+	color: #ebcb8b;
+	font-family:'Source Code Pro', monospace;
+	font-size:16px;
 	margin-bottom: 1em;
 }
+
+input[type="submit"]:hover {
+	cursor: pointer;
+}
+
+.button {
+	display: inline-block;
+	width:auto;
+	
+}
+input:hover,
+input:active,
+input:focus,
 .button:hover {
 	border-color:#d08770;
+	color:#d08770;
 	text-decoration: none;
+	outline: none;
 }
 /**
  * Source Code Pro License and Copyright:
