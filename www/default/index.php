@@ -69,7 +69,7 @@ require( __DIR__. '/yaml.php' );
 					<h4><?php
 					echo $name;
 					if ( true == $skip_provisioning ) {
-						echo '<br><small>provisioning, skipped</small>';
+						echo '<br><a target="_blank" href="https://varyingvagrantvagrants.org/docs/en-US/vvv-config/#skip_provisioning"><small class="site_badge">skipped</small></a>';
 					}
 					?></h4>
 					<p><?php echo $description; ?></p>
