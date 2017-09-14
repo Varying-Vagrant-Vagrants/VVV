@@ -129,6 +129,15 @@ require( __DIR__. '/yaml.php' );
 			<p>Sites need to be listed in <code>vvv-custom.yml</code> for VVV to find them, luckily it's super easy and fast to add them back! click below to find out how to migrate your sites.</p>
 			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/migrate-vvv-1/">Migrating VVV 1 sites</a>
 		</div>
+		<div class="box">
+			<h3>Contribute to WordPress</h3>
+			<p>Wether you're at a contributor day, or just feel like giving back, you can add the WordPress.org Meta environment. This will give you everything from WordCamp to buddypress.org test sites</p>
+			<a class="button" href="https://github.com/WordPress/meta-environment">Find out more</a>
+		</div>
+		<div class="box">
+			<h3>Terminal Power!</h3>
+			<p>VVV has powerful commands preinstalled, if you need WP CLI or PHP Codesniffer, run <code>vagrant ssh</code> to enter the virtual machine, and get a full command line experience</p>
+		</div>
 	</div>
 </div>
 
