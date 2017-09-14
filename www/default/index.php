@@ -38,17 +38,6 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 			<p>To add, remove, or change sites, modify <code>vvv-custom.yml</code> then reprovision using <code>vagrant reload --provision</code></p>
 		</div>
 		<div class="box">
-			<h3>Bundled Tools</h3>
-
-			<a class="button" href="database-admin/" target="_blank">phpMyAdmin</a>
-			<a class="button" href="memcached-admin/" target="_blank">phpMemcachedAdmin</a>
-			<a class="button" href="opcache-status/opcache.php" target="_blank">Opcache Status</a>
-			<a class="button" href="http://vvv.dev:1080" target="_blank">Mailcatcher</a>
-			<a class="button" href="webgrind/" target="_blank">Webgrind</a>
-			<a class="button" href="phpinfo/" target="_blank">PHP Info</a>
-			<a class="button" href="php-status?html&amp;full" target="_blank">PHP Status</a>
-		</div>
-		<div class="box">
 			<h3>Bundled Environments</h3>
 			<ul class="nav">
 				<li><a href="http://local.wordpress.dev/" target="_blank">http://local.wordpress.dev</a> for WordPress stable (www/wordpress-default)</li>
@@ -74,17 +63,30 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 		</div>
 	</div>
 	<div class="column">
+		<?php /*
 		<div class="box">
 			<h3>Search the Documentation</h3>
 			<form method="get" action="https://tomjn.github.io/varyingvagrantvagrants.org/search/" >
 				<input type="text" name="q" placeholder="search query"/>
 				<input type="submit" value="Search"/>
 			</form>
-		</div>
+		</div> */ ?>
 		<div class="box">
 			<h3>Find out more about VVV</h3>
 			<a class="button" href="https://varyingvagrantvagrants.org/" target="_blank">Help &amp; Documentation</a>
 			<a class="button" href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">View the code on GitHub</a>
+		</div>
+		
+		<div class="box">
+			<h3>Bundled Tools</h3>
+
+			<a class="button" href="database-admin/" target="_blank">phpMyAdmin</a>
+			<a class="button" href="memcached-admin/" target="_blank">phpMemcachedAdmin</a>
+			<a class="button" href="opcache-status/opcache.php" target="_blank">Opcache Status</a>
+			<a class="button" href="http://vvv.dev:1080" target="_blank">Mailcatcher</a>
+			<a class="button" href="webgrind/" target="_blank">Webgrind</a>
+			<a class="button" href="phpinfo/" target="_blank">PHP Info</a>
+			<a class="button" href="php-status?html&amp;full" target="_blank">PHP Status</a>
 		</div>
 		<div class="box">
 			<h3>VVV 1.x Sites not Showing?</h3>
