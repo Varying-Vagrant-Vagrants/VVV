@@ -9,6 +9,8 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	exit;
 }
 
+require( __DIR__. '/yaml.php' );
+
 // Begin default dashboard.
 ?>
 <!DOCTYPE html>
@@ -39,11 +41,45 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 		</div>
 		<div class="box">
 			<h3>Bundled Environments</h3>
-			<ul class="nav">
-				<li><a href="http://local.wordpress.dev/" target="_blank">http://local.wordpress.dev</a> for WordPress stable (www/wordpress-default)</li>
-				<li><a href="http://src.wordpress-develop.dev/" target="_blank">http://src.wordpress-develop.dev</a> for trunk WordPress development files (www/wordpress-develop/src)</li>
-				<li><a href="http://build.wordpress-develop.dev/" target="_blank">http://build.wordpress-develop.dev</a> for a Grunt build of those development files (www/wordpress-develop/build)</li>
-			</ul>
+			<p>VVV reads a config file to discover and provision sites named <code>vvv-custom.yml</code>. If it doesn't exist, it falls back to <code>vvv-config.yml</code>. Below is a list of the sites in <code>vvv-custom.yml</code>, remember to reprovision if you change it!</p>
+		</div>
+		<div class="grid50">
+			<?php
+			$yaml = new Alchemy\Component\Yaml\Yaml();
+			$data = $yaml->load('/vagrant/vvv-custom.yml');
+			foreach ( $data['sites'] as $name => $site ) {
+
+				$classes = [];
+				$description = 'A WordPress installation';
+				if ( 'wordpress-default' === $name ) {
+					$description = 'WordPress stable';
+				} else if ( 'wordpress-develop' === $name ) {
+					$description = 'A dev build of WordPress, with a trunk build in the <code>src</code> subfolder, and a grunt build in the <code>build</code> folder';
+				}
+				if ( !empty( $site['description'] ) ) {
+					$description = $site['description'];
+				}
+				$skip_provisioning = false;
+				if ( !empty( $site['skip_provisioning'] ) ) {
+					$skip_provisioning = $site['skip_provisioning'];
+					$classes[] = 'site_skip_provision';
+				}
+				?>
+				<div class="column box <?php echo implode( ',', $classes ); ?>">
+					<h4><?php
+					echo $name;
+					if ( true == $skip_provisioning ) {
+						echo '<br><small>provisioning, skipped</small>';
+					}
+					?></h4>
+					<p><?php echo $description; ?></p>
+					<p><strong>URL:</strong> <a href="<?php echo 'http://'.$site['hosts'][0]; ?>" target="_blank"><?php echo 'http://'.$site['hosts'][0]; ?></a><br/>
+					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
+				</div>
+				<?php
+			}
+			//yaml_parse_file( '' );
+			?>
 		</div>
 		<div class="box">
 			<h3>Adding a New Site</h3>
@@ -76,7 +112,7 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 			<a class="button" href="https://varyingvagrantvagrants.org/" target="_blank">Help &amp; Documentation</a>
 			<a class="button" href="https://github.com/varying-vagrant-vagrants/vvv/" target="_blank">View the code on GitHub</a>
 		</div>
-		
+
 		<div class="box">
 			<h3>Bundled Tools</h3>
 
