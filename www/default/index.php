@@ -65,7 +65,7 @@ require( __DIR__. '/yaml.php' );
 					$classes[] = 'site_skip_provision';
 				}
 				?>
-				<div class="column box <?php echo implode( ',', $classes ); ?>">
+				<div class="box <?php echo implode( ',', $classes ); ?>">
 					<h4><?php
 					echo $name;
 					if ( true == $skip_provisioning ) {
@@ -78,7 +78,6 @@ require( __DIR__. '/yaml.php' );
 				</div>
 				<?php
 			}
-			//yaml_parse_file( '' );
 			?>
 		</div>
 		<div class="box">
