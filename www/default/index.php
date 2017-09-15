@@ -84,12 +84,14 @@ require( __DIR__. '/yaml.php' );
 			<h3>Adding a New Site</h3>
 			<p>Modify <code>vvv-custom.yml</code> under the sites section to add a site, here's an example:</p>
 <pre>
-  # Add a new WordPress single install
   newsite:
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+    description: "A WordPress subdir multisite install"
     skip_provisioning: false
     hosts:
       - newsite.localhost
+    custom:
+      wp_type: subdirectory
 </pre>
 			<p>This will create a site in <code>www/newsite</code> at <code>http://newsite.localhost</code></p>
 			<p><em>Remember</em>, in YAML whitespace matters, and you need to reprovision on changes, so run <code>vagrant reload --provision</code></p>
