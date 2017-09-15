@@ -45,24 +45,30 @@ strong { color: #eff1f5; }
 	padding:2em;
 }
 
-.grid {
+.grid, .grid50 {
 	display: grid;
-	grid-template-columns: 66.667% 33.334%;	
+	grid-gap: 1em;
+	margin-bottom: 1em;
+}
+.grid {
+	grid-template-columns: 66.667% 33.333%;	
 }
 
 .grid50 {
-	display: grid;
-	grid-template-columns: 50% 50%;	
-}
-.column {
-		//
+	/*grid-auto-columns: 50% 50%;*/
+	grid-template-columns: repeat(2, 1fr);
+	grid-gap: 1em;
+	grid-auto-flow: dense;
 }
 
+.grid50 .box {
+	margin-bottom: 0;
+}
 .box {
 	border-radius:4px;
 	padding:2em;
 	background: #343d46;
-	margin-right: 1em;
+	box-sizing: border-box;
 	margin-bottom:1em;
 }
 
