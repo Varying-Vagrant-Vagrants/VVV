@@ -70,6 +70,7 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
       DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
       DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
       DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< "$SITE_CONFIG_FILE" | cut -c1-32).conf"
+      VVV_HOSTS=$(get_hosts)
       # We allow the replacement of the {vvv_path_to_folder} token with
       # whatever you want, allowing flexible placement of the site folder
       # while still having an Nginx config which works.
@@ -77,6 +78,7 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
       sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
       sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
       sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+      sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
       sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
 
       # Resolve relative paths since not supported in Nginx root.
