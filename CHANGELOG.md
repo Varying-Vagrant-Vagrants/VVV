@@ -4,7 +4,29 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.x.x (TBD)
+## 2.1.0 (September 22, 2017)
+
+### Enhancements
+
+* Add cosmetic improvements to provisioning. This cleans up quite a bit of the junk that displayed on many lines when it should have displayed on one. See [#1247](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1247).
+* Update ack-grep to 2.16 See [#1148](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1148).
+* Dashboard (`vvv.dev`) links now open in new tabs. See [#1168](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1168).
+* Speed up checking for `vvv-hosts` files in `Vagrantfile`. See [#1182](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1182).
+* Pass more configuration data to the VirtualBox VM on boot. See [#1197](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1197).
+* Link to `varyingvagrantvagrants.org`'s Add New Site in the `vvv.dev` dashboard. See [#1220](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1220).
+* Build the VirtualBox VM name from the Vagrant directory and path hash. See [#1236](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1236).
+
+### Bugs
+
+* Fix a wrong path for phpcs and phpcbf executables. See [#1200](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1200).
+* Force Composer to use the `scripts` directory instead of `bin`. See [#1202](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1202).
+* Fix bug installing `rvm` (which broke MailCatcher). See [#1235](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1235).
+* Add `phpcodesniffer-standard` to PHPCS's `composer.json`. See [#1239](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1239).
+* Ignore provision generated PHPCS files in Git. See [#1276](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1276).
+
+### Documentation
+
+Many updates to VVV's documentation were made between the release of 2.0.0 and now. As of 2.1.0, the process to contributing to documentation has changed to use the [varyingvagrantvagrants.org](https://github.com/Varying-Vagrant-Vagrants/varyingvagrantvagrants.org) repository. This allows the workflow for shipping documentation changes to proceed separately from shipping VVV releases.
 
 ## 2.0.0 (March 13, 2017)
 
