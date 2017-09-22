@@ -1,15 +1,23 @@
 {
     "name": "VVV/phpcs",
     "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/Automattic/VIP-Coding-Standards.git"
+        }
+    ],
     "require": {
         "oomphinc/composer-installers-extender": "^1.1",
-        "wp-coding-standards/wpcs": "*"
+        "wp-coding-standards/wpcs": "*",
+        "automattic/vipwpcs": "dev-master"
     },
     "extra": {
         "installer-types": ["library", "phpcodesniffer-standard"],
         "installer-paths": {
             "/srv/www/phpcs/": ["squizlabs/php_codesniffer"],
-            "/srv/www/phpcs/CodeSniffer/Standards/WordPress/": ["wp-coding-standards/wpcs"]
+            "/srv/www/phpcs/CodeSniffer/Standards/WordPress/": ["wp-coding-standards/wpcs"],
+            "/srv/www/phpcs/CodeSniffer/Standards/VIP-Coding-Standards/": ["automattic/vipwpcs"]
         }
     },
     "config": {
