@@ -1,4 +1,17 @@
 ---
+
+# This file is a YAML formatted file. YAML indenting is done in spaces not
+# tabs, and whitespace is significant. If you don't stick to this, it will
+# fail on provision
+
+#
+# IMPORTANT, if you change this file, you have to reprovision,  no exceptions
+# vagrant reload --provision
+#
+
+# These are your websites, and their names map on to the folders they're
+# located in. See the docs for how to define these, and what all the keys
+# and options are
 sites:
   # The wordpress-default configuration provides a default installation of the
   # latest version of WordPress.
@@ -16,6 +29,7 @@ sites:
 
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.dev.
+  # Remember, whitespace is significant! Tabs and spaces mean different things
 
   #example-site:
   #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
@@ -28,6 +42,9 @@ sites:
   #wordpress-meta-environment:
   #  repo: https://github.com/WordPress/meta-environment.git
 
+
+# Utilities are system level items rather than sites, that install tools or packages
+# the core utilities install tools such as phpmyadmin
 utilities:
   core:
     - memcached-admin

@@ -4,12 +4,12 @@ title: Custom Paths and Folders
 permalink: /docs/en-US/adding-a-new-site/custom-paths-and-folders/
 ---
 
-* [Add New Sites](adding-a-new-site/index.md)
-   * [Changing a sites PHP Version](adding-a-new-site/changing-php-version.md)
-   * [Custom Domains and Hosts](adding-a-new-site/custom-domains-host.md)
-   * [Custom Paths and Folders](adding-a-new-site/custom-paths-and-folders.md)
-   * [Nginx Configs](adding-a-new-site/nginx-configs.md)
-   * [Setup Scripts](adding-a-new-site/setup-script.md)
+* [Add New Sites](index.md)
+   * [Changing a sites PHP Version](changing-php-version.md)
+   * [Custom Domains and Hosts](custom-domains-hosts.md)
+   * [Custom Paths and Folders](custom-paths-and-folders.md)
+   * [Nginx Configs](nginx-configs.md)
+   * [Setup Scripts](setup-script.md)
 
 A site in a non-standard folder can still be used via the `vm_dir` and `local_dir` keys. `local_dir` tells VVV where the site is located on the host machine, and `vm_dir` tells VVV where the site is located inside the Virtual machine.
 

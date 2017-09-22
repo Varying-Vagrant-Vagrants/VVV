@@ -4,12 +4,12 @@ title: Changing PHP Version
 permalink: /docs/en-US/adding-a-new-site/changing-php-version/
 ---
 
-* [Add New Sites](adding-a-new-site/index.md)
-   * [Changing a sites PHP Version](adding-a-new-site/changing-php-version.md)
-   * [Custom Domains and Hosts](adding-a-new-site/custom-domains-host.md)
-   * [Custom Paths and Folders](adding-a-new-site/custom-paths-and-folders.md)
-   * [Nginx Configs](adding-a-new-site/nginx-configs.md)
-   * [Setup Scripts](adding-a-new-site/setup-script.md)
+* [Add New Sites](index.md)
+   * [Changing a sites PHP Version](changing-php-version.md)
+   * [Custom Domains and Hosts](custom-domains-hosts.md)
+   * [Custom Paths and Folders](custom-paths-and-folders.md)
+   * [Nginx Configs](nginx-configs.md)
+   * [Setup Scripts](setup-script.md)
 
 You can set the PHP version in `vvv-custom.yml` when defining a site. To do this, use the `nginx_upstream` option to specify the PHP version. VVV also needs to be told to install that version of PHP using the `utilities` section.
 
