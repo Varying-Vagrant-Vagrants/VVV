@@ -710,4 +710,4 @@ cleanup_vvv
 end_seconds="$(date +%s)"
 echo "-----------------------------"
 echo "Provisioning complete in "$(( end_seconds - start_seconds ))" seconds"
-echo "For further setup instructions, visit http://vvv.dev"
+echo "For further setup instructions, visit http://vvv.test"
