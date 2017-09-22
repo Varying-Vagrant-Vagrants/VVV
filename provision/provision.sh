@@ -660,6 +660,9 @@ cleanup_vvv(){
   echo "Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
   echo "127.0.0.1 vvv.dev # vvv-auto" >> "/etc/hosts"
+  echo "127.0.0.1 vvv.local # vvv-auto" >> "/etc/hosts"
+  echo "127.0.0.1 vvv.localhost # vvv-auto" >> "/etc/hosts"
+  echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
   mv /tmp/hosts /etc/hosts
 }
 
