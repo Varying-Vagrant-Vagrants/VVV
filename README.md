@@ -4,8 +4,8 @@ Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) 
 
 VVV is a [10up](https://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
-* **Version**: develop
-* **Latest Stable**: [2.0.0](https://github.com/Varying-Vagrant-Vagrants/VVV/releases/tag/2.0.0)
+* **Version**: 2.1.0
+* **Latest Stable**: [2.1.0](https://github.com/Varying-Vagrant-Vagrants/VVV/releases/tag/2.1.0)
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
