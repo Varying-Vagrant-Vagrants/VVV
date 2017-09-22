@@ -9,6 +9,13 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	exit;
 }
 
+function endsWith( $haystack, $needle ) {
+    $length = strlen( $needle );
+
+    return $length === 0 || 
+    ( substr( $haystack, -$length ) === $needle );
+}
+
 require( __DIR__. '/yaml.php' );
 
 // Begin default dashboard.
@@ -73,8 +80,26 @@ require( __DIR__. '/yaml.php' );
 					}
 					?></h4>
 					<p><?php echo $description; ?></p>
-					<p><strong>URL:</strong> <a href="<?php echo 'http://'.$site['hosts'][0]; ?>" target="_blank"><?php echo 'http://'.$site['hosts'][0]; ?></a><br/>
+					<p><strong>URL:</strong> <?php
+					$has_dev = false;
+					foreach( $site['hosts'] as $host ) {
+
+						?>
+						<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
+						<?php
+						if ( $has_dev ){
+							continue;
+						}
+						$has_dev = endsWith( $host, '.dev' );
+					}
+					?><br/>
 					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
+					<?php if ( $has_dev ) {
+						?>
+						<p class="warning"><strong>Warning:</strong> the .dev TLD is owned by Google, you should migrate to .test</p>
+						<?php
+					}
+					?>
 				</div>
 				<?php
 			}
