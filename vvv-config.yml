@@ -18,14 +18,14 @@ sites:
   wordpress-default:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
     hosts:
-      - local.wordpress.dev
+      - local.wordpress.test
 
   # The wordpress-develop configuration is useful for contributing to WordPress.
   wordpress-develop:
     repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
     hosts:
-      - src.wordpress-develop.dev
-      - build.wordpress-develop.dev
+      - src.wordpress-develop.test
+      - build.wordpress-develop.test
 
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.dev.
@@ -34,7 +34,7 @@ sites:
   #example-site:
   #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
   #  hosts:
-  #    - my-example-site.dev
+  #    - my-example-site.test
 
   # The following commented out site configuration will create a environment useful
   # for contributions to the WordPress meta team:
