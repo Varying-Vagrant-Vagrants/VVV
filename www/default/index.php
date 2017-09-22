@@ -9,6 +9,13 @@ if ( file_exists( 'dashboard-custom.php' ) ) {
 	exit;
 }
 
+function endsWith( $haystack, $needle ) {
+    $length = strlen( $needle );
+
+    return $length === 0 || 
+    ( substr( $haystack, -$length ) === $needle );
+}
+
 require( __DIR__. '/yaml.php' );
 
 // Begin default dashboard.
@@ -18,7 +25,7 @@ require( __DIR__. '/yaml.php' );
 <head>
 	<title>Varying Vagrant Vagrants Dashboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="http://vvv.dev/style.css">
+	<link rel="stylesheet" type="text/css" href="http://vvv.test/style.css">
 </head>
 <body>
 <p id="vvv_provision_fail" style="display:none"><strong>Problem:</strong> Could not load the site, this implies that provisioning the site failed, please check there were no errors during provisioning, and reprovision.<br><br>
@@ -73,8 +80,26 @@ require( __DIR__. '/yaml.php' );
 					}
 					?></h4>
 					<p><?php echo $description; ?></p>
-					<p><strong>URL:</strong> <a href="<?php echo 'http://'.$site['hosts'][0]; ?>" target="_blank"><?php echo 'http://'.$site['hosts'][0]; ?></a><br/>
+					<p><strong>URL:</strong> <?php
+					$has_dev = false;
+					foreach( $site['hosts'] as $host ) {
+
+						?>
+						<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
+						<?php
+						if ( $has_dev ){
+							continue;
+						}
+						$has_dev = endsWith( $host, '.dev' );
+					}
+					?><br/>
 					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
+					<?php if ( $has_dev ) {
+						?>
+						<p class="warning"><strong>Warning:</strong> the .dev TLD is owned by Google, you should migrate to .test</p>
+						<?php
+					}
+					?>
 				</div>
 				<?php
 			}
@@ -120,7 +145,7 @@ require( __DIR__. '/yaml.php' );
 			<a class="button" href="database-admin/" target="_blank">phpMyAdmin</a>
 			<a class="button" href="memcached-admin/" target="_blank">phpMemcachedAdmin</a>
 			<a class="button" href="opcache-status/opcache.php" target="_blank">Opcache Status</a>
-			<a class="button" href="http://vvv.dev:1080" target="_blank">Mailcatcher</a>
+			<a class="button" href="http://vvv.test:1080" target="_blank">Mailcatcher</a>
 			<a class="button" href="webgrind/" target="_blank">Webgrind</a>
 			<a class="button" href="phpinfo/" target="_blank">PHP Info</a>
 			<a class="button" href="php-status?html&amp;full" target="_blank">PHP Status</a>
@@ -144,8 +169,12 @@ require( __DIR__. '/yaml.php' );
 
 
 <script>
-// If it's not vvv.dev then this site has failed to provision, let the user know
-if ( location.hostname != "vvv.dev" ){
+// If it's not vvv.test then this site has failed to provision, let the user know
+if ( ( location.hostname != "vvv.dev" )
+	&& ( location.hostname != "vvv.test" )
+	&& ( location.hostname != "vvv.local" )
+	&& ( location.hostname != "vvv.localhost" ) )
+{
 	var notice = document.getElementById( 'vvv_provision_fail' );
 	notice.style.display = 'block';
 }

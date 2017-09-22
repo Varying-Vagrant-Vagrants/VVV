@@ -112,6 +112,12 @@ input:focus,
 	text-decoration: none;
 	outline: none;
 }
+
+.warning {
+	color: #d08770;
+	font-style: italic;
+}
+
 /**
  * Source Code Pro License and Copyright:
  * https://github.com/adobe-fonts/source-code-pro/blob/master/LICENSE.txt
