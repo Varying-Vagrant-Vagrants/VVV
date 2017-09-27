@@ -438,7 +438,7 @@ class Yaml
     private function loadFromFile($file)
     {
         if (!file_exists($file)) {
-            throw new Exception("Error: yaml file does not exist: $file");
+            throw new \Exception("Error: yaml file does not exist: $file");
         }
 
         return file($file);
