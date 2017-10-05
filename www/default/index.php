@@ -29,14 +29,13 @@ require( __DIR__. '/dashboard/yaml.php' );
 </head>
 <body>
 
-<p id="vvv_logo"><img src="http://vvv.test/dashboard/vvv-tight.png"/> Varying Vagrant Vagrants</p>
+<h2 id="vvv_logo"><img src="http://vvv.test/dashboard/vvv-tight.png"/> Varying Vagrant Vagrants</h2>
 
 <p id="vvv_provision_fail" style="display:none"><strong>Problem:</strong> Could not load the site, this implies that provisioning the site failed, please check there were no errors during provisioning, and reprovision.<br><br>
 <em><strong>Note</strong>, sometimes this is because provisioning hasn't finished yet, if it's still running, wait and refresh the page.</em> If that doesn't fix the issue, <a href="https://varyingvagrantvagrants.org/docs/en-US/troubleshooting/">see here for troubleshooting steps</a></p>
 <div class="grid">
 	<div class="column">
 		<div class="box">
-			<h2>Varying Vagrant Vagrants</h2>
 			<p>VVV is a local web development environment powered by Vagrant and Virtual Machines.</p>
 			<p>To add, remove, or change sites, modify <code>vvv-custom.yml</code> then reprovision using <code>vagrant reload --provision</code></p>
 		</div>
