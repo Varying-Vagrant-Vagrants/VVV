@@ -149,7 +149,16 @@ noroot() {
 }
 
 profile_setup() {
+
+  # Make sure .bash_login is loaded in TTY and non-TTY.
+  if ! grep -q "bash_login" /home/vagrant/.bashrc; then
+    echo "if [ -e ~/.bash_login ]; then . ~/.bash_login; fi" >> /home/vagrant/.bashrc~
+    cat /home/vagrant/.bashrc >> /home/vagrant/.bashrc~
+    mv /home/vagrant/.bashrc~ /home/vagrant/.bashrc
+  fi
+
   # Copy custom dotfiles and bin file for the vagrant user from local
+  cp "/srv/config/bash_login" "/home/vagrant/.bash_login"
   cp "/srv/config/bash_profile" "/home/vagrant/.bash_profile"
   cp "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
   cp "/srv/config/vimrc" "/home/vagrant/.vimrc"
@@ -167,6 +176,8 @@ profile_setup() {
 
   rsync -rvzh --delete "/srv/config/homebin/" "/home/vagrant/bin/"
 
+  echo " * Ensured .bash_login loading is prepended to .bashrc"
+  echo " * Copied /srv/config/bash_login                        to /home/vagrant/.bash_login"
   echo " * Copied /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
   echo " * Copied /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
   echo " * Copied /srv/config/vimrc                             to /home/vagrant/.vimrc"
