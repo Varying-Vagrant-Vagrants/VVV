@@ -4,8 +4,6 @@
 require 'yaml'
 
 if ! ENV['VVV_SKIP_LOGO'] then
-  puts ""
-  puts ""
   puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;129m ____    "
   puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;129m|___ \\   "
   puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;129m  __) |  "
@@ -17,8 +15,6 @@ if ! ENV['VVV_SKIP_LOGO'] then
   puts "  \033[0mDocs:       https://varyingvagrantvagrants.org/"
   puts "  \033[0mContribute: https://github.com/varying-vagrant-vagrants/vvv"
   puts "  \033[0mDashboard:  http://vvv.test"
-  puts ""
-  puts ""
   puts "\033[0m"
 end
 
