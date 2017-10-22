@@ -44,3 +44,7 @@ export PATH="$PATH:/srv/www/phpcs/scripts/"
 # nvm path
 export NVM_DIR="/srv/config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+
+# switch to the appropriate starting directory
+new_cwd=`cat /vagrant/config/.vvv_temp_ssh_cwd`
+cd "$new_cwd"
