@@ -33,13 +33,16 @@ pre {
 }
 
 #vvv_logo {
-	white-space: pre;
+	font-size:3em;
+	font-weight: normal;
+	color: white;
+}
+#vvv_logo > img {
+	max-height: 1.1em;
+    vertical-align: sub;
 }
 strong { color: #eff1f5; }
-.v1 { color: rgb( 246, 60, 37 ); }
-.v2 { color: rgb( 130, 255, 27 ); }
-.v3 { color: rgb( 76, 155, 250 ); }
-.v4 { color: rgb( 255, 224, 27 ); }
+
 #vvv_provision_fail {
 	background: #bf616a;
 	padding:2em;
