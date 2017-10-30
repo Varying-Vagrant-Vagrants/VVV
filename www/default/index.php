@@ -25,11 +25,11 @@ require( __DIR__. '/dashboard/yaml.php' );
 <head>
 	<title>Varying Vagrant Vagrants Dashboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="http://vvv.test/dashboard/style.css">
+	<link rel="stylesheet" type="text/css" href="//vvv.test/dashboard/style.css">
 </head>
 <body>
 
-<h2 id="vvv_logo"><img src="http://vvv.test/dashboard/vvv-tight.png"/> Varying Vagrant Vagrants</h2>
+<h2 id="vvv_logo"><img src="//vvv.test/dashboard/vvv-tight.png"/> Varying Vagrant Vagrants</h2>
 
 <p id="vvv_provision_fail" style="display:none"><strong>Problem:</strong> Could not load the site, this implies that provisioning the site failed, please check there were no errors during provisioning, and reprovision.<br><br>
 <em><strong>Note</strong>, sometimes this is because provisioning hasn't finished yet, if it's still running, wait and refresh the page.</em> If that doesn't fix the issue, <a href="https://varyingvagrantvagrants.org/docs/en-US/troubleshooting/">see here for troubleshooting steps</a></p>
