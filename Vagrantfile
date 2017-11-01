@@ -6,7 +6,7 @@ require 'yaml'
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
 if ! ENV['VVV_SKIP_LOGO'] then
-  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; fi`
+  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
   puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;129m ____    "
   puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;129m|___ \\   "
   puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;129m  __) |  "
