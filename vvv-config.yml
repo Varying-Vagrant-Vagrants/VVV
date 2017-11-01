@@ -14,34 +14,37 @@
 # and options are
 sites:
   # The wordpress-default configuration provides a default installation of the
-  # latest version of WordPress.
-  wordpress-default:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+  # latest version of WordPress in www/example-site/ in aviable at 
+  # http://example-site.local.
+  example-site.local:
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
-      - local.wordpress.test
+      - example-site.local
 
-  # The wordpress-develop configuration is useful for contributing to WordPress.
-  wordpress-develop:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
-    hosts:
-      - src.wordpress-develop.test
-      - build.wordpress-develop.test
-
-  # The following commented out site configuration will create a standard WordPress
-  # site in www/example-site/ available at http://my-example-site.dev.
+  # The following commented out site configuration will create a WordPress
+  # Multisite in subdirectory mode site in www/example-site/ available at 
+  # http://example-multisite.local
   # Remember, whitespace is significant! Tabs and spaces mean different things
 
-  #example-site:
+  #example-multisite.local:
   #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
   #  hosts:
-  #    - my-example-site.test
+  #    - example-multisite.local
+  #  custom:
+  #    wp_type: subdirectory
+
+  # The wordpress-develop configuration is useful for contributing to WordPress.
+  #wordpress-develop:
+  #  repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
+  #  hosts:
+  #    - src.wordpress-develop.test
+  #    - build.wordpress-develop.test
 
   # The following commented out site configuration will create a environment useful
   # for contributions to the WordPress meta team:
   
   #wordpress-meta-environment:
   #  repo: https://github.com/WordPress/meta-environment.git
-
 
 # Utilities are system level items rather than sites, that install tools or packages
 # the core utilities install tools such as phpmyadmin
