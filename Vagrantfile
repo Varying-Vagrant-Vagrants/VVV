@@ -3,22 +3,24 @@
 
 require 'yaml'
 
+vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
 if ! ENV['VVV_SKIP_LOGO'] then
+  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
   puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;129m ____    "
   puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;129m|___ \\   "
   puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;129m  __) |  "
   puts "  \033[38;5;196m  \\ V / \033[38;5;118m  \\ V / \033[38;5;33m  \\ V /   \033[38;5;129m / __/   "
   puts "  \033[38;5;196m   \\_/  \033[38;5;118m   \\_/  \033[38;5;33m   \\_/    \033[38;5;129m|_____|  "
   puts ""
-  puts "  \033[38;5;196mVarying \033[38;5;118mVagrant \033[38;5;33mVagrants \033[38;5;129m2.0.0"
-  #puts ""
+  puts "  \033[38;5;196mVarying \033[38;5;118mVagrant \033[38;5;33mVagrants \033[38;5;129mv2.1.0-" + branch
   puts "  \033[0mDocs:       https://varyingvagrantvagrants.org/"
   puts "  \033[0mContribute: https://github.com/varying-vagrant-vagrants/vvv"
   puts "  \033[0mDashboard:  http://vvv.test"
   puts "\033[0m"
 end
 
-vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) then
   vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
