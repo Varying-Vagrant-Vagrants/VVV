@@ -14,7 +14,7 @@
 # and options are
 sites:
   # The wordpress-default configuration provides a default installation of the
-  # latest version of WordPress in www/example-site/ in aviable at 
+  # latest version of WordPress in www/example-site/ aviable at 
   # http://example-site.local.
   example-site.local:
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
