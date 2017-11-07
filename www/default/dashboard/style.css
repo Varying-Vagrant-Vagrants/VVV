@@ -4,6 +4,7 @@ body {
 	color: #c0c5ce;
 	padding: 1em;
 	font-size: 16px;
+	line-height: 1.6;
 }
 
 a {
@@ -28,7 +29,7 @@ pre, code {
 
 code {
 	color: #a3be8c;
-	padding: .25em .5em;
+	padding: .1em .2em;
 }
 
 pre {
