@@ -4,7 +4,7 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.1.0 (September 22, 2017)
+## 2.1.0 (November 7, 2017)
 
 ### Enhancements
 
