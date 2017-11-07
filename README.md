@@ -43,9 +43,9 @@ VVV requires recent versions of both Vagrant and VirtualBox.
 
 Besides VirtualBox, provider support is also included for Parallels, Hyper-V, VMWare Fusion, and VMWare Workstation.
 
-Installation instructions can be found [here](https://varyingvagrantvagrants.org/docs/en-US/installation/).
+The online documentation contains detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 
-Full documentation can be found in the `docs/` directory of this repository and on the [varyingvagrantvagrants.org](https://varyingvagrantvagrants.org) website.
+Full documentation can be found on the [varyingvagrantvagrants.org](https://varyingvagrantvagrants.org) website.
 
 ## Contributors
 
