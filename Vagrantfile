@@ -5,7 +5,16 @@ require 'yaml'
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
-if ! ENV['VVV_SKIP_LOGO'] then
+show_logo = false
+
+# whitelist when we show the logo, else it'll show on global Vagrant commands
+if [ 'up', 'halt', 'resume', 'suspend', 'status', 'provision', 'reload' ].include? ARGV[0] then
+  show_logo = true
+end
+if ENV['VVV_SKIP_LOGO'] then
+  show_logo = false
+end
+if show_logo then
   branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
   branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
   red="\033[38;5;196m"
