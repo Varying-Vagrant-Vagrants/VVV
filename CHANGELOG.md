@@ -4,7 +4,7 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.1.0 (November 7, 2017)
+## 2.1.0 (November 8, 2017)
 
 ### Enhancements
 
@@ -15,9 +15,9 @@ permalink: /docs/en-US/changelog/
 * Pass more configuration data to the VirtualBox VM on boot. See [#1197](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1197).
 * Link to `varyingvagrantvagrants.org`'s Add New Site in the `http://vvv.test` dashboard. See [#1220](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1220).
 * Build the VirtualBox VM name from the Vagrant directory and path hash. See [#1236](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1236).
-* PHPCS is now installed via Composer
-* VVV now uses .test instead of .dev for new installs and the dashboard
-* Added the VIP minimum coding standards to PHPCS. See [#1279](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1279)
+* PHPCS is now installed via Composer. See [#922](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/922).
+* VVV now uses .test instead of .dev for new installs and the dashboard. See [#583](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/583).
+* Added the VIP minimum coding standards to PHPCS. See [#1279](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1279).
 
 ### Bugs
 
