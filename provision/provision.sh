@@ -463,8 +463,9 @@ phpfpm_setup() {
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
+  cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 
-  echo " * Copied /srv/config/memcached-config/memcached.conf   to /etc/memcached.conf"
+  echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
 }
 
 mysql_setup() {
