@@ -3,25 +3,24 @@
 
 require 'yaml'
 
+vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
 if ! ENV['VVV_SKIP_LOGO'] then
+  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
+  puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;129m ____    "
+  puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;129m|___ \\   "
+  puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;129m  __) |  "
+  puts "  \033[38;5;196m  \\ V / \033[38;5;118m  \\ V / \033[38;5;33m  \\ V /   \033[38;5;129m / __/   "
+  puts "  \033[38;5;196m   \\_/  \033[38;5;118m   \\_/  \033[38;5;33m   \\_/    \033[38;5;129m|_____|  "
   puts ""
-  puts ""
-  puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;220m ____    "
-  puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;220m|___ \\   "
-  puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;220m  __) |  "
-  puts "  \033[38;5;196m  \\ V / \033[38;5;118m  \\ V / \033[38;5;33m  \\ V /   \033[38;5;220m / __/   "
-  puts "  \033[38;5;196m   \\_/  \033[38;5;118m   \\_/  \033[38;5;33m   \\_/    \033[38;5;220m|_____|  "
-  puts ""
-  puts "  \033[38;5;206mVarying Vagrant Vagrants \033[38;5;118m2.0.0"
-  puts ""
-  puts "  \033[38;5;220mDocs:       https://varyingvagrantvagrants.org/"
-  puts "  \033[38;5;220mContribute: https://github.com/varying-vagrant-vagrants/vvv"
-  puts ""
-  puts ""
+  puts "  \033[38;5;196mVarying \033[38;5;118mVagrant \033[38;5;33mVagrants \033[38;5;129mv2.1.0-" + branch
+  puts "  \033[0mDocs:       https://varyingvagrantvagrants.org/"
+  puts "  \033[0mContribute: https://github.com/varying-vagrant-vagrants/vvv"
+  puts "  \033[0mDashboard:  http://vvv.test"
   puts "\033[0m"
 end
 
-vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) then
   vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
@@ -40,13 +39,9 @@ if ! vvv_config['hosts'].kind_of? Hash then
 end
 
 vvv_config['hosts'] += ['vvv.dev']
-
-host_paths = Dir[File.join(vagrant_dir, 'www', '**', 'vvv-hosts')]
-
-vvv_config['hosts'] += host_paths.map do |path|
-  lines = File.readlines(path).map(&:chomp)
-  lines.grep(/\A[^#]/)
-end.flatten
+vvv_config['hosts'] += ['vvv.test']
+vvv_config['hosts'] += ['vvv.local']
+vvv_config['hosts'] += ['vvv.localhost']
 
 vvv_config['sites'].each do |site, args|
   if args.kind_of? String then
@@ -70,6 +65,13 @@ vvv_config['sites'].each do |site, args|
   defaults['hosts'] = Array.new
 
   vvv_config['sites'][site] = defaults.merge(args)
+
+  site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
+
+  vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
+    lines = File.readlines(path).map(&:chomp)
+    lines.grep(/\A[^#]/)
+  end.flatten
 
   vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
   vvv_config['sites'][site].delete('hosts')
@@ -108,10 +110,13 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--cpus", vvv_config['vm_config']['cores']]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    v.customize ["modifyvm", :id, "--rtcuseutc", "on"]
+    v.customize ["modifyvm", :id, "--audio", "none"]
+    v.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
 
     # Set the box name in VirtualBox to match the working directory.
     vvv_pwd = Dir.pwd
-    v.name = File.basename(vvv_pwd)
+    v.name = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
   end
 
   # Configuration options for the Parallels provider.
