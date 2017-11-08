@@ -9,7 +9,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Add cosmetic improvements to provisioning. This cleans up quite a bit of the junk that displayed on many lines when it should have displayed on one. See [#1247](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1247).
-* Update ack-grep to 2.16 See [#1148](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1148).
+* Update ack-grep to 2.16. See [#1148](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1148).
 * Dashboard (`http://vvv.test`) links now open in new tabs. See [#1168](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1168).
 * Speed up checking for `vvv-hosts` files in `Vagrantfile`. See [#1182](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1182).
 * Pass more configuration data to the VirtualBox VM on boot. See [#1197](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1197).
