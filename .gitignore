@@ -31,7 +31,7 @@
 /config/custom/*
 
 # Ignore the nvm git clone in the 'nvm' directory in config
-/config/nvm/*
+/config/nvm/
 
 # Ignore a custom bash_prompt if it exists
 /config/bash_prompt
