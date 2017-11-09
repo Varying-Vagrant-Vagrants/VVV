@@ -27,7 +27,7 @@ STARS
   splash = <<-HEREDOC
 #{red}__   _#{green}__   #{blue}___   __ 
 #{red}\\ \\ / #{green}\\ \\ / #{blue}\\ \\ / / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\ \V /#{green} \\ \V /#{blue} \\ \V /  #{purple}v2.1.0-#{branch}
+#{red} \\ \V /#{green} \\ \V /#{blue} \\ \V /  #{purple}v2.2.0-#{branch}
 #{red}  \\_/  #{green} \\_/   #{blue}\\_/   #{stars}
 \033[0mDocs:       https://varyingvagrantvagrants.org/
 \033[0mContribute: https://github.com/varying-vagrant-vagrants/vvv
