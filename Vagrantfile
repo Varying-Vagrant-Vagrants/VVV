@@ -109,9 +109,11 @@ else
   end
 end
 
-vvv_config['utility-sources']['core'] = Hash.new
-vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
-vvv_config['utility-sources']['core']['branch'] = 'master'
+if ! vvv_config['utility-sources'].key?('core')
+  vvv_config['utility-sources']['core'] = Hash.new
+  vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+  vvv_config['utility-sources']['core']['branch'] = 'master'
+end
 
 if ! vvv_config['utilities'].kind_of? Hash then
   vvv_config['utilities'] = Hash.new
