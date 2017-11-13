@@ -297,12 +297,12 @@ tools_install() {
     echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
     git clone "https://github.com/creationix/nvm.git" "/srv/config/nvm"
     cd /srv/config/nvm
-    git checkout `git describe --abbrev=0 --tags`
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
   else
     echo -e "\nUpdating nvm..."
     cd /srv/config/nvm
-    git pull origin master
-    git checkout `git describe --abbrev=0 --tags`
+    git fetch origin
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin` -q
   fi
   # Activate nvm
   source /srv/config/nvm/nvm.sh
