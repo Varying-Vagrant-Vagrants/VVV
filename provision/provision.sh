@@ -585,7 +585,8 @@ services_restart() {
   # Enable PHP mailcatcher sendmail settings by default
   phpenmod mailcatcher
 
-  service php7.0-fpm restart
+  # Restart all php-fpm versions
+  find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
