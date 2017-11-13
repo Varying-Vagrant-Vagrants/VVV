@@ -25,7 +25,7 @@ if show_logo then
 \033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
 STARS
   splash = <<-HEREDOC
-#{red}__   _#{green}__   #{blue}___   __ 
+#{red}__   _#{green}__   #{blue}___   __
 #{red}\\ \\ / #{green}\\ \\ / #{blue}\\ \\ / / #{red}Varying #{green}Vagrant #{blue}Vagrants
 #{red} \\ \V /#{green} \\ \V /#{blue} \\ \V /  #{purple}v2.2.0-#{branch}
 #{red}  \\_/  #{green} \\_/   #{blue}\\_/   #{stars}
@@ -96,8 +96,24 @@ end
 
 if ! vvv_config['utility-sources'].kind_of? Hash then
   vvv_config['utility-sources'] = Hash.new
+else
+  vvv_config['utility-sources'].each do |name, args|
+    if args.kind_of? String then
+        repo = args
+        args = Hash.new
+        args['repo'] = repo
+        args['branch'] = 'master'
+
+        vvv_config['utility-sources'][name] = args
+    end
+  end
 end
-vvv_config['utility-sources']['core'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+
+if ! vvv_config['utility-sources'].key?('core')
+  vvv_config['utility-sources']['core'] = Hash.new
+  vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+  vvv_config['utility-sources']['core']['branch'] = 'master'
+end
 
 if ! vvv_config['utilities'].kind_of? Hash then
   vvv_config['utilities'] = Hash.new
@@ -405,13 +421,14 @@ Vagrant.configure("2") do |config|
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
 
-  vvv_config['utility-sources'].each do |name, repo|
+  vvv_config['utility-sources'].each do |name, args|
     config.vm.provision "utility-source-#{name}",
       type: "shell",
       path: File.join( "provision", "provision-utility-source.sh" ),
       args: [
           name,
-          repo
+          args['repo'].to_s,
+          args['branch'],
       ]
   end
 
