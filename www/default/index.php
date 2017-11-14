@@ -113,11 +113,11 @@ require( __DIR__. '/dashboard/yaml.php' );
     description: "A WordPress subdir multisite install"
     skip_provisioning: false
     hosts:
-      - newsite.localhost
+      - newsite.test
     custom:
       wp_type: subdirectory
 </pre>
-			<p>This will create a site in <code>www/newsite</code> at <code>http://newsite.localhost</code></p>
+			<p>This will create a site in <code>www/newsite</code> at <code>http://newsite.test</code></p>
 			<p><em>Remember</em>, in YAML whitespace matters, and you need to reprovision on changes, so run <code>vagrant reload --provision</code></p>
 			<p>For more information, visit our docs:</p>
 			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">How to add a new site</a></p>
