@@ -124,7 +124,7 @@ if ! vvv_config['vm_config'].kind_of? Hash then
 end
 
 defaults = Hash.new
-defaults['memory'] = 1024
+defaults['memory'] = 2048
 defaults['cores'] = 1
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
