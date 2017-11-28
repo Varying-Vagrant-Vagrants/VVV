@@ -81,7 +81,7 @@ require( __DIR__. '/dashboard/yaml.php' );
 					<p><?php echo $description; ?></p>
 					<p><strong>URL:</strong> <?php
 					$has_dev = false;
-					if ( !empty( $site['hosts'] ) {
+					if ( !empty( $site['hosts'] ) ) {
 						foreach( $site['hosts'] as $host ) {
 							?>
 							<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
