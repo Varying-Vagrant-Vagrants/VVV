@@ -81,21 +81,22 @@ require( __DIR__. '/dashboard/yaml.php' );
 					<p><?php echo $description; ?></p>
 					<p><strong>URL:</strong> <?php
 					$has_dev = false;
-					foreach( $site['hosts'] as $host ) {
-
-						?>
-						<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
-						<?php
-						if ( $has_dev ){
-							continue;
+					if ( !empty( $site['hosts'] ) {
+						foreach( $site['hosts'] as $host ) {
+							?>
+							<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
+							<?php
+							if ( $has_dev ){
+								continue;
+							}
+							$has_dev = endsWith( $host, '.dev' );
 						}
-						$has_dev = endsWith( $host, '.dev' );
 					}
 					?><br/>
 					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
 					<?php if ( $has_dev ) {
 						?>
-						<p class="warning"><strong>Warning:</strong> the .dev TLD is owned by Google, you should migrate to .test</p>
+					<p class="warning"><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, you should migrate to <code>.test</code></p>
 						<?php
 					}
 					?>
