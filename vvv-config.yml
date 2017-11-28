@@ -56,3 +56,10 @@ utilities:
     - phpmyadmin
     - webgrind
     - trusted-hosts
+
+# vm_config controls how Vagrant provisions the virtual machine, and can be used to
+# increase the memory given to VVV and the number of CPU cores. For WP core development
+# we recommend at least 2GB ( 2048 )
+vm_config:
+  memory: 2048
+  cores: 1
