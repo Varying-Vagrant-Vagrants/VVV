@@ -3,25 +3,41 @@
 
 require 'yaml'
 
-if ! ENV['VVV_SKIP_LOGO'] then
-  puts ""
-  puts ""
-  puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;220m ____    "
-  puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;220m|___ \\   "
-  puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;220m  __) |  "
-  puts "  \033[38;5;196m  \\ V / \033[38;5;118m  \\ V / \033[38;5;33m  \\ V /   \033[38;5;220m / __/   "
-  puts "  \033[38;5;196m   \\_/  \033[38;5;118m   \\_/  \033[38;5;33m   \\_/    \033[38;5;220m|_____|  "
-  puts ""
-  puts "  \033[38;5;206mVarying Vagrant Vagrants \033[38;5;118m2.0.0"
-  puts ""
-  puts "  \033[38;5;220mDocs:       https://varyingvagrantvagrants.org/"
-  puts "  \033[38;5;220mContribute: https://github.com/varying-vagrant-vagrants/vvv"
-  puts ""
-  puts ""
-  puts "\033[0m"
+vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
+show_logo = false
+
+# whitelist when we show the logo, else it'll show on global Vagrant commands
+if [ 'up', 'halt', 'resume', 'suspend', 'status', 'provision', 'reload' ].include? ARGV[0] then
+  show_logo = true
+end
+if ENV['VVV_SKIP_LOGO'] then
+  show_logo = false
+end
+if show_logo then
+  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
+  branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
+  red="\033[38;5;196m"
+  green="\033[38;5;118m"
+  blue="\033[38;5;33m"
+  purple="\033[38;5;129m"
+  stars = <<-STARS
+\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
+STARS
+  splash = <<-HEREDOC
+#{red}__   _#{green}__   #{blue}___   __
+#{red}\\ \\ / #{green}\\ \\ / #{blue}\\ \\ / / #{red}Varying #{green}Vagrant #{blue}Vagrants
+#{red} \\ \V /#{green} \\ \V /#{blue} \\ \V /  #{purple}v2.2.0-#{branch}
+#{red}  \\_/  #{green} \\_/   #{blue}\\_/   #{stars}
+\033[0mDocs:       https://varyingvagrantvagrants.org/
+\033[0mContribute: https://github.com/varying-vagrant-vagrants/vvv
+\033[0mDashboard:  http://vvv.test
+\033[0m
+  HEREDOC
+  puts splash
 end
 
-vagrant_dir = File.expand_path(File.dirname(__FILE__))
+
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) then
   vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
@@ -80,8 +96,24 @@ end
 
 if ! vvv_config['utility-sources'].kind_of? Hash then
   vvv_config['utility-sources'] = Hash.new
+else
+  vvv_config['utility-sources'].each do |name, args|
+    if args.kind_of? String then
+        repo = args
+        args = Hash.new
+        args['repo'] = repo
+        args['branch'] = 'master'
+
+        vvv_config['utility-sources'][name] = args
+    end
+  end
 end
-vvv_config['utility-sources']['core'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+
+if ! vvv_config['utility-sources'].key?('core')
+  vvv_config['utility-sources']['core'] = Hash.new
+  vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+  vvv_config['utility-sources']['core']['branch'] = 'master'
+end
 
 if ! vvv_config['utilities'].kind_of? Hash then
   vvv_config['utilities'] = Hash.new
@@ -92,7 +124,7 @@ if ! vvv_config['vm_config'].kind_of? Hash then
 end
 
 defaults = Hash.new
-defaults['memory'] = 1024
+defaults['memory'] = 2048
 defaults['cores'] = 1
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
@@ -389,13 +421,14 @@ Vagrant.configure("2") do |config|
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
 
-  vvv_config['utility-sources'].each do |name, repo|
+  vvv_config['utility-sources'].each do |name, args|
     config.vm.provision "utility-source-#{name}",
       type: "shell",
       path: File.join( "provision", "provision-utility-source.sh" ),
       args: [
           name,
-          repo
+          args['repo'].to_s,
+          args['branch'],
       ]
   end
 

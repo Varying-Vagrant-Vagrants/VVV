@@ -16,7 +16,7 @@ function endsWith( $haystack, $needle ) {
     ( substr( $haystack, -$length ) === $needle );
 }
 
-require( __DIR__. '/yaml.php' );
+require( __DIR__. '/dashboard/yaml.php' );
 
 // Begin default dashboard.
 ?>
@@ -25,24 +25,17 @@ require( __DIR__. '/yaml.php' );
 <head>
 	<title>Varying Vagrant Vagrants Dashboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="http://vvv.test/style.css">
+	<link rel="stylesheet" type="text/css" href="//vvv.test/dashboard/style.css">
 </head>
 <body>
+
+<h2 id="vvv_logo"><img src="//vvv.test/dashboard/vvv-tight.png"/> Varying Vagrant Vagrants</h2>
+
 <p id="vvv_provision_fail" style="display:none"><strong>Problem:</strong> Could not load the site, this implies that provisioning the site failed, please check there were no errors during provisioning, and reprovision.<br><br>
 <em><strong>Note</strong>, sometimes this is because provisioning hasn't finished yet, if it's still running, wait and refresh the page.</em> If that doesn't fix the issue, <a href="https://varyingvagrantvagrants.org/docs/en-US/troubleshooting/">see here for troubleshooting steps</a></p>
-<p id="vvv_logo">
-<span class="v1">__     _</span><span class="v2">__     _</span><span class="v3">__     __</span> <span class="v4"> ____  </span>
-<span class="v1">\ \   / </span><span class="v2">\ \   / </span><span class="v3">\ \   / /</span> <span class="v4">|___ \ </span>
-<span class="v1"> \ \ / /</span><span class="v2"> \ \ / /</span><span class="v3"> \ \ / / </span> <span class="v4">  __) |</span>
-<span class="v1">  \ V / </span><span class="v2">  \ V / </span><span class="v3">  \ V /  </span> <span class="v4"> / __/ </span>
-<span class="v1">   \_/  </span><span class="v2">   \_/  </span><span class="v3">   \_/   </span> <span class="v4">|_____|</span>
-
-</p>
-
 <div class="grid">
 	<div class="column">
 		<div class="box">
-			<h2>Varying Vagrant Vagrants</h2>
 			<p>VVV is a local web development environment powered by Vagrant and Virtual Machines.</p>
 			<p>To add, remove, or change sites, modify <code>vvv-custom.yml</code> then reprovision using <code>vagrant reload --provision</code></p>
 		</div>
@@ -88,21 +81,22 @@ require( __DIR__. '/yaml.php' );
 					<p><?php echo $description; ?></p>
 					<p><strong>URL:</strong> <?php
 					$has_dev = false;
-					foreach( $site['hosts'] as $host ) {
-
-						?>
-						<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
-						<?php
-						if ( $has_dev ){
-							continue;
+					if ( !empty( $site['hosts'] ) ) {
+						foreach( $site['hosts'] as $host ) {
+							?>
+							<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
+							<?php
+							if ( $has_dev ){
+								continue;
+							}
+							$has_dev = endsWith( $host, '.dev' );
 						}
-						$has_dev = endsWith( $host, '.dev' );
 					}
 					?><br/>
 					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
 					<?php if ( $has_dev ) {
 						?>
-						<p class="warning"><strong>Warning:</strong> the .dev TLD is owned by Google, you should migrate to .test</p>
+					<p class="warning"><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, you should migrate to <code>.test</code></p>
 						<?php
 					}
 					?>
@@ -120,11 +114,11 @@ require( __DIR__. '/yaml.php' );
     description: "A WordPress subdir multisite install"
     skip_provisioning: false
     hosts:
-      - newsite.localhost
+      - newsite.test
     custom:
       wp_type: subdirectory
 </pre>
-			<p>This will create a site in <code>www/newsite</code> at <code>http://newsite.localhost</code></p>
+			<p>This will create a site in <code>www/newsite</code> at <code>http://newsite.test</code></p>
 			<p><em>Remember</em>, in YAML whitespace matters, and you need to reprovision on changes, so run <code>vagrant reload --provision</code></p>
 			<p>For more information, visit our docs:</p>
 			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">How to add a new site</a></p>
@@ -158,11 +152,11 @@ require( __DIR__. '/yaml.php' );
 		<div class="box">
 			<h3>VVV 1.x Sites not Showing?</h3>
 			<p>Sites need to be listed in <code>vvv-custom.yml</code> for VVV to find them, luckily it's super easy and fast to add them back! click below to find out how to migrate your sites.</p>
-			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/migrate-vvv-1/">Migrating VVV 1 sites</a>
+			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/migrating-from-vvv-1-4-x/">Migrating VVV 1 sites</a>
 		</div>
 		<div class="box">
 			<h3>Contribute to WordPress</h3>
-			<p>Wether you're at a contributor day, or just feel like giving back, you can add the WordPress.org Meta environment. This will give you everything from WordCamp to buddypress.org test sites</p>
+			<p>Whether you're at a contributor day, or just feel like giving back, you can add the WordPress.org Meta environment. This will give you everything from WordCamp to buddypress.org test sites</p>
 			<a class="button" href="https://github.com/WordPress/meta-environment">Find out more</a>
 		</div>
 		<div class="box">

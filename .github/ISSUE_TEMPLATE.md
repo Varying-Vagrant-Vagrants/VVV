@@ -36,7 +36,8 @@ log into a gist at gist.github.com and paste the link here. -->
 
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
-* VVV version:
+* VVV version: <!-- don't forget the point releases -->
+* VVV Git Branch: <!-- master, develop, zip download? -->
 * Vagrant version:
 * VM Provider name: <!-- This is likely VirtualBox, but VVV supports Parallels and VMWare Fusion as well. -->
 * VM Provider version:

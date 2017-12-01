@@ -297,12 +297,12 @@ tools_install() {
     echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
     git clone "https://github.com/creationix/nvm.git" "/srv/config/nvm"
     cd /srv/config/nvm
-    git checkout `git describe --abbrev=0 --tags`
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
   else
     echo -e "\nUpdating nvm..."
     cd /srv/config/nvm
-    git pull origin master
-    git checkout `git describe --abbrev=0 --tags`
+    git fetch origin
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin` -q
   fi
   # Activate nvm
   source /srv/config/nvm/nvm.sh
@@ -346,13 +346,13 @@ tools_install() {
   # the master branch on its GitHub repository.
   if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi self-update
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update phpunit/phpunit:5.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update phpunit/php-invoker:1.1.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update mockery/mockery:0.9.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update d11wtq/boris:v1.0.8
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi self-update --no-progress --no-interaction
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:6.*
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/php-invoker:1.1.*
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction mockery/mockery:0.9.*
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction d11wtq/boris:v1.0.8
     COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global config bin-dir /usr/local/bin
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global update
+    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global update --no-progress --no-interaction
   fi
 
   # Grunt
@@ -407,18 +407,18 @@ tools_install() {
 
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
-  if [[ ! -e /etc/nginx/server.key ]]; then
+  if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
 	  echo "Generate Nginx server private key..."
-	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server.key 2048 2>&1)"
+	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
 	  echo "$vvvgenrsa"
   fi
-  if [[ ! -e /etc/nginx/server.crt ]]; then
+  if [[ ! -e /etc/nginx/server-2.1.0.crt ]]; then
 	  echo "Sign the certificate using the above private key..."
 	  vvvsigncert="$(openssl req -new -x509 \
-            -key /etc/nginx/server.key \
-            -out /etc/nginx/server.crt \
+            -key /etc/nginx/server-2.1.0.key \
+            -out /etc/nginx/server-2.1.0.crt \
             -days 3650 \
-            -subj /CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.vvv.local/CN=*.vvv.localhost/CN=*.vvv.test 2>&1)"
+            -subj /CN=*.wordpress-develop.test/CN=*.wordpress.test/CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.vvv.local/CN=*.vvv.localhost/CN=*.vvv.test 2>&1)"
 	  echo "$vvvsigncert"
   fi
 
@@ -463,8 +463,9 @@ phpfpm_setup() {
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
+  cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 
-  echo " * Copied /srv/config/memcached-config/memcached.conf   to /etc/memcached.conf"
+  echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
 }
 
 mysql_setup() {
@@ -584,7 +585,8 @@ services_restart() {
   # Enable PHP mailcatcher sendmail settings by default
   phpenmod mailcatcher
 
-  service php7.0-fpm restart
+  # Restart all php-fpm versions
+  find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
