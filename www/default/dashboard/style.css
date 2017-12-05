@@ -2,7 +2,7 @@ body {
 	font-family: 'Source Code Pro', monospace;
 	background-color: #2b303b;
 	color: #c0c5ce;
-	padding: 1em;
+	padding: 3em;
 	font-size: 16px;
 	line-height: 1.6;
 }
@@ -52,9 +52,9 @@ strong {
 	color: #eff1f5;
 }
 
-#vvv_provision_fail {
+#vvv_provision_fail,
+#vvv_hosts_fail {
 	background: #bf616a;
-	padding: 2em;
 }
 
 .grid, .grid50 {
@@ -64,7 +64,7 @@ strong {
 }
 
 .grid {
-	grid-template-columns: 66.667% 33.333%;
+	grid-template-columns: 70% 30%;
 }
 
 .grid50 {
@@ -131,6 +131,21 @@ input:focus,
 	color: #d08770;
 	font-style: italic;
 }
+
+
+.right-column > .box,
+.alt-box {
+	background: #272b35;
+	border: 1px solid #343d46;
+}
+
+.right-column > .box input,
+.right-column >.box .button,
+.alt-box input,
+.alt-box .button {
+	background: #272b35;
+}
+
 
 /**
  * Source Code Pro License and Copyright:
