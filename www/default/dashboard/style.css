@@ -53,8 +53,10 @@ strong {
 }
 
 #vvv_provision_fail,
-#vvv_hosts_fail {
+#vvv_hosts_fail,
+.top-notice-box.box {
 	background: #bf616a;
+	border: 1px solid #ebcb8b;
 }
 
 .grid, .grid50 {
