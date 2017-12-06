@@ -61,7 +61,6 @@ strong {
 
 .grid, .grid50 {
 	display: grid;
-	grid-gap: 1em;
 	margin-bottom: 1em;
 }
 
@@ -86,6 +85,10 @@ strong {
 	background: #343d46;
 	box-sizing: border-box;
 	margin-bottom:1em;
+}
+
+.left-column {
+	margin-right: 1em;
 }
 
 .site_item {
