@@ -81,22 +81,31 @@ require( __DIR__. '/dashboard/yaml.php' );
 					<p><?php echo $description; ?></p>
 					<p><strong>URL:</strong> <?php
 					$has_dev = false;
+					$has_local = false;
 					if ( !empty( $site['hosts'] ) ) {
 						foreach( $site['hosts'] as $host ) {
 							?>
 							<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
 							<?php
-							if ( $has_dev ){
-								continue;
+							if ( false === $has_dev ){
+								$has_dev = endsWith( $host, '.dev' );
 							}
-							$has_dev = endsWith( $host, '.dev' );
+							if ( false === $has_local ){
+								$has_local = endsWith( $host, '.local' );
+							}
 						}
 					}
 					?><br/>
 					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
-					<?php if ( $has_dev ) {
+					<?php
+					if ( $has_dev ) {
 						?>
-					<p class="warning"><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, you should migrate to <code>.test</code></p>
+						<p class="warning"><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, and will not work in Chrome 58+, you should migrate to URLs ending with <code>.test</code></p>
+						<?php
+					}
+					if ( $has_local ) {
+						?>
+						<p class="warning"><strong>Warning:</strong> the <code>.local</code> TLD is used by Macs/Bonjour/Zeroconf as quick access to a local machine, this can cause clashes that prevent the loading of sites in VVV. E.g. a macbook named <code>test</code> can be reached at <code>test.local</code>. You should migrate to URLs ending with <code>.test</code></p>
 						<?php
 					}
 					?>
