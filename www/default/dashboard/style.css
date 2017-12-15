@@ -151,6 +151,15 @@ input:focus,
 	margin-bottom: -1.5em;
 }
 
+.warning .button {
+    background: #913b44;
+    color: white;
+}
+
+.warning .button:hover {
+    color: #d08770;
+}
+
 
 .right-column > .box,
 .alt-box {

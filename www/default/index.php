@@ -107,6 +107,9 @@ require( __DIR__. '/dashboard/yaml.php' );
 						$warnings[] = '
 						<p><strong>Warning:</strong> the <code>.local</code> TLD is used by Macs/Bonjour/Zeroconf as quick access to a local machine, this can cause clashes that prevent the loading of sites in VVV. E.g. a macbook named <code>test</code> can be reached at <code>test.local</code>. You should migrate to URLs ending with <code>.test</code></p>';
 					}
+					if ( $has_dev || $has_local ) {
+						$warnings[] = '<p><a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/troubleshooting/dev-tld/">Click here for instructions for switching to .test</a></p>';
+					}
 					if ( ! empty( $warnings ) ) {
 						echo '<div class="warning">';
 						echo implode('',$warnings );
