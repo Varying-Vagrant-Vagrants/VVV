@@ -96,17 +96,21 @@ require( __DIR__. '/dashboard/yaml.php' );
 						}
 					}
 					?><br/>
-					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
+					<strong>Folder:</strong> <code>www/<?php echo $name; ?></code></p>
 					<?php
+					$warnings = [];
 					if ( $has_dev ) {
-						?>
-						<p class="warning"><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, and will not work in Chrome 58+, you should migrate to URLs ending with <code>.test</code></p>
-						<?php
+						$warnings[] = '
+						<p><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, and will not work in Chrome 58+, you should migrate to URLs ending with <code>.test</code></p>';
 					}
 					if ( $has_local ) {
-						?>
-						<p class="warning"><strong>Warning:</strong> the <code>.local</code> TLD is used by Macs/Bonjour/Zeroconf as quick access to a local machine, this can cause clashes that prevent the loading of sites in VVV. E.g. a macbook named <code>test</code> can be reached at <code>test.local</code>. You should migrate to URLs ending with <code>.test</code></p>
-						<?php
+						$warnings[] = '
+						<p><strong>Warning:</strong> the <code>.local</code> TLD is used by Macs/Bonjour/Zeroconf as quick access to a local machine, this can cause clashes that prevent the loading of sites in VVV. E.g. a macbook named <code>test</code> can be reached at <code>test.local</code>. You should migrate to URLs ending with <code>.test</code></p>';
+					}
+					if ( ! empty( $warnings ) ) {
+						echo '<div class="warning">';
+						echo implode('',$warnings );
+						echo '</div>';
 					}
 					?>
 				</div>
