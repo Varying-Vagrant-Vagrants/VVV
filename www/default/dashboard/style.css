@@ -7,6 +7,13 @@ body {
 	line-height: 1.6;
 }
 
+p:first-child {
+    margin-top: 0;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
 a {
 	color: #ebcb8b;
 	text-decoration: none;
@@ -133,8 +140,15 @@ input:focus,
 }
 
 .warning {
-	color: #d08770;
 	font-style: italic;
+
+	background: #b54a55;
+	color: white;
+
+	padding: 1.5em;
+	margin-left: -1.5em;
+	margin-right: -1.5em;
+	margin-bottom: -1.5em;
 }
 
 
