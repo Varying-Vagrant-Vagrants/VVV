@@ -25,20 +25,20 @@ require( __DIR__. '/dashboard/yaml.php' );
 <head>
 	<title>Varying Vagrant Vagrants Dashboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="//vvv.test/dashboard/style.css">
+	<link rel="stylesheet" type="text/css" href="//vvv.test/dashboard/style.css?t=<?php echo filemtime('dashboard/style.css' ); ?>">
 </head>
 <body>
 
 <h2 id="vvv_logo"><img src="//vvv.test/dashboard/vvv-tight.png"/> Varying Vagrant Vagrants</h2>
 
-<p id="vvv_provision_fail" style="display:none"><strong>Problem:</strong> Could not load the site, this implies that provisioning the site failed, please check there were no errors during provisioning, and reprovision.<br><br>
-<em><strong>Note</strong>, sometimes this is because provisioning hasn't finished yet, if it's still running, wait and refresh the page.</em> If that doesn't fix the issue, <a href="https://varyingvagrantvagrants.org/docs/en-US/troubleshooting/">see here for troubleshooting steps</a></p>
+<?php require_once( 'dashboard/dashboard-notices.php' ); ?>
+<div class="box alt-box">
+	<p>VVV is a local web development environment powered by Vagrant and Virtual Machines.</p>
+	<p>To add, remove, or change sites, modify <code>vvv-custom.yml</code> then reprovision using <code>vagrant reload --provision</code></p>
+</div>
 <div class="grid">
-	<div class="column">
-		<div class="box">
-			<p>VVV is a local web development environment powered by Vagrant and Virtual Machines.</p>
-			<p>To add, remove, or change sites, modify <code>vvv-custom.yml</code> then reprovision using <code>vagrant reload --provision</code></p>
-		</div>
+	<div class="column left-column">
+		
 		<div class="box">
 			<h3>Bundled Environments</h3>
 			<p>VVV reads a config file to discover and provision sites named <code>vvv-custom.yml</code>. If it doesn't exist, it falls back to <code>vvv-config.yml</code>.
@@ -75,29 +75,45 @@ require( __DIR__. '/dashboard/yaml.php' );
 					<h4><?php
 					echo $name;
 					if ( true == $skip_provisioning ) {
-						echo '<br><a target="_blank" href="https://varyingvagrantvagrants.org/docs/en-US/vvv-config/#skip_provisioning"><small class="site_badge">skipped</small></a>';
+						echo ' <a target="_blank" href="https://varyingvagrantvagrants.org/docs/en-US/vvv-config/#skip_provisioning"><small class="site_badge">provisioning skipped</small></a>';
 					}
 					?></h4>
 					<p><?php echo $description; ?></p>
 					<p><strong>URL:</strong> <?php
 					$has_dev = false;
+					$has_local = false;
 					if ( !empty( $site['hosts'] ) ) {
 						foreach( $site['hosts'] as $host ) {
 							?>
 							<a href="<?php echo 'http://'.$host; ?>" target="_blank"><?php echo 'http://'.$host; ?></a>,
 							<?php
-							if ( $has_dev ){
-								continue;
+							if ( false === $has_dev ){
+								$has_dev = endsWith( $host, '.dev' );
 							}
-							$has_dev = endsWith( $host, '.dev' );
+							if ( false === $has_local ){
+								$has_local = endsWith( $host, '.local' );
+							}
 						}
 					}
 					?><br/>
-					<strong>Folder:</strong> <code>www/<?php echo $name;?></code></p>
-					<?php if ( $has_dev ) {
-						?>
-					<p class="warning"><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, you should migrate to <code>.test</code></p>
-						<?php
+					<strong>Folder:</strong> <code>www/<?php echo $name; ?></code></p>
+					<?php
+					$warnings = [];
+					if ( $has_dev ) {
+						$warnings[] = '
+						<p><strong>Warning:</strong> the <code>.dev</code> TLD is owned by Google, and will not work in Chrome 58+, you should migrate to URLs ending with <code>.test</code></p>';
+					}
+					if ( $has_local ) {
+						$warnings[] = '
+						<p><strong>Warning:</strong> the <code>.local</code> TLD is used by Macs/Bonjour/Zeroconf as quick access to a local machine, this can cause clashes that prevent the loading of sites in VVV. E.g. a MacBook named <code>test</code> can be reached at <code>test.local</code>. You should migrate to URLs ending with <code>.test</code></p>';
+					}
+					if ( $has_dev || $has_local ) {
+						$warnings[] = '<p><a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/troubleshooting/dev-tld/">Click here for instructions for switching to .test</a></p>';
+					}
+					if ( ! empty( $warnings ) ) {
+						echo '<div class="warning">';
+						echo implode('',$warnings );
+						echo '</div>';
 					}
 					?>
 				</div>
@@ -105,7 +121,7 @@ require( __DIR__. '/dashboard/yaml.php' );
 			}
 			?>
 		</div>
-		<div class="box">
+		<div class="box alt-box">
 			<h3>Adding a New Site</h3>
 			<p>Modify <code>vvv-custom.yml</code> under the sites section to add a site, here's an example:</p>
 <pre>
@@ -124,7 +140,7 @@ require( __DIR__. '/dashboard/yaml.php' );
 			<a class="button" href="https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/">How to add a new site</a></p>
 		</div>
 	</div>
-	<div class="column">
+	<div class="column right-column">
 		<div class="box">
 			<h3>Search the Documentation</h3>
 			<form method="get" action="https://varyingvagrantvagrants.org/search/" >
@@ -165,18 +181,5 @@ require( __DIR__. '/dashboard/yaml.php' );
 		</div>
 	</div>
 </div>
-
-
-<script>
-// If it's not vvv.test then this site has failed to provision, let the user know
-if ( ( location.hostname != "vvv.dev" )
-	&& ( location.hostname != "vvv.test" )
-	&& ( location.hostname != "vvv.local" )
-	&& ( location.hostname != "vvv.localhost" ) )
-{
-	var notice = document.getElementById( 'vvv_provision_fail' );
-	notice.style.display = 'block';
-}
-</script>
 </body>
 </html>

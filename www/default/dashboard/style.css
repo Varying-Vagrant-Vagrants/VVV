@@ -2,11 +2,18 @@ body {
 	font-family: 'Source Code Pro', monospace;
 	background-color: #2b303b;
 	color: #c0c5ce;
-	padding: 1em;
+	padding: 3em;
 	font-size: 16px;
 	line-height: 1.6;
 }
 
+p:first-child {
+    margin-top: 0;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
 a {
 	color: #ebcb8b;
 	text-decoration: none;
@@ -52,19 +59,20 @@ strong {
 	color: #eff1f5;
 }
 
-#vvv_provision_fail {
+#vvv_provision_fail,
+#vvv_hosts_fail,
+.top-notice-box.box {
 	background: #bf616a;
-	padding: 2em;
+	border: 1px solid #ebcb8b;
 }
 
 .grid, .grid50 {
 	display: grid;
-	grid-gap: 1em;
 	margin-bottom: 1em;
 }
 
 .grid {
-	grid-template-columns: 66.667% 33.333%;
+	grid-template-columns: 70% 30%;
 }
 
 .grid50 {
@@ -80,10 +88,14 @@ strong {
 
 .box {
 	border-radius:4px;
-	padding: 2em;
+	padding: 1.5em;
 	background: #343d46;
 	box-sizing: border-box;
 	margin-bottom:1em;
+}
+
+.left-column {
+	margin-right: 1em;
 }
 
 .site_item {
@@ -128,9 +140,40 @@ input:focus,
 }
 
 .warning {
-	color: #d08770;
 	font-style: italic;
+
+	background: #b54a55;
+	color: white;
+
+	padding: 1.5em;
+	margin-left: -1.5em;
+	margin-right: -1.5em;
+	margin-bottom: -1.5em;
 }
+
+.warning .button {
+    background: #913b44;
+    color: white;
+}
+
+.warning .button:hover {
+    color: #d08770;
+}
+
+
+.right-column > .box,
+.alt-box {
+	background: #272b35;
+	border: 1px solid #343d46;
+}
+
+.right-column > .box input,
+.right-column >.box .button,
+.alt-box input,
+.alt-box .button {
+	background: #272b35;
+}
+
 
 /**
  * Source Code Pro License and Copyright:
