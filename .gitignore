@@ -62,7 +62,7 @@
 !/database/init.sql
 
 # Allow the dashboard
-!/www/default/*
+!/www/default/dashboard/
 
 # And we provide our default host names in a dat file.
 !/www/vvv-hosts
