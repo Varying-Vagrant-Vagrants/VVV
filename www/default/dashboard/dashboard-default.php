@@ -7,7 +7,7 @@ function endsWith( $haystack, $needle ) {
     ( substr( $haystack, -$length ) === $needle );
 }
 
-require( __DIR__. '/yaml.php' );
+require( __DIR__. '/php/yaml.php' );
 
 // Begin default dashboard.
 ?>
@@ -16,7 +16,7 @@ require( __DIR__. '/yaml.php' );
 <head>
 	<title>Varying Vagrant Vagrants Dashboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="//vvv.test/dashboard/style.css?t=<?php echo filemtime( __DIR__.'/style.css' ); ?>">
+	<link rel="stylesheet" type="text/css" href="//vvv.test/dashboard/style.css?t=<?php echo intval( filemtime( __DIR__.'/style.css' ) ); ?>">
 </head>
 <body>
 
@@ -66,12 +66,12 @@ require_once( __DIR__.'/php/notices.php' );
 				?>
 				<div class="box <?php echo implode( ',', $classes ); ?>">
 					<h4><?php
-					echo $name;
+					echo strip_tags( $name );
 					if ( true == $skip_provisioning ) {
 						echo ' <a target="_blank" href="https://varyingvagrantvagrants.org/docs/en-US/vvv-config/#skip_provisioning"><small class="site_badge">provisioning skipped</small></a>';
 					}
 					?></h4>
-					<p><?php echo $description; ?></p>
+					<p><?php echo strip_tags( $description ); ?></p>
 					<p><strong>URL:</strong> <?php
 					$has_dev = false;
 					$has_local = false;
@@ -89,7 +89,7 @@ require_once( __DIR__.'/php/notices.php' );
 						}
 					}
 					?><br/>
-					<strong>Folder:</strong> <code>www/<?php echo $name; ?></code></p>
+					<strong>Folder:</strong> <code>www/<?php echo strip_tags( $name ); ?></code></p>
 					<?php
 					$warnings = [];
 					if ( $has_dev ) {
