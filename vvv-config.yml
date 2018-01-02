@@ -17,10 +17,10 @@
 # located in. See the docs for how to define these, and what all the keys
 # and options are
 sites:
-  # The wordpress-default configuration provides a default installation of the
+  # The wordpress-default configuration provides an installation of the
   # latest version of WordPress.
   wordpress-default:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
       - local.wordpress.test
 
