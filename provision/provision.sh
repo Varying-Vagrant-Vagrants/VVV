@@ -149,10 +149,14 @@ noroot() {
 }
 
 profile_setup() {
-  # Copy custom dotfiles and bin file for the vagrant user from local
+  # Copy custom dotfiles and bin file for the vagrant and root user from local
   cp "/srv/config/bash_profile" "/home/vagrant/.bash_profile"
   cp "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
   cp "/srv/config/vimrc" "/home/vagrant/.vimrc"
+
+  cp "/srv/config/bash_profile" "/root/.bash_profile"
+  cp "/srv/config/bash_aliases" "/root/.bash_aliases"
+  cp "/srv/config/vimrc" "/root/.vimrc"
 
   if [[ ! -d "/home/vagrant/.subversion" ]]; then
     mkdir "/home/vagrant/.subversion"
@@ -167,9 +171,9 @@ profile_setup() {
 
   rsync -rvzh --delete "/srv/config/homebin/" "/home/vagrant/bin/"
 
-  echo " * Copied /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
-  echo " * Copied /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
-  echo " * Copied /srv/config/vimrc                             to /home/vagrant/.vimrc"
+  echo " * Copied /srv/config/bash_profile                      to /home/vagrant/.bash_profile and /root/.bash_profile"
+  echo " * Copied /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases and /root/.bash_aliases"
+  echo " * Copied /srv/config/vimrc                             to /home/vagrant/.vimrc and /root/.vimrc"
   echo " * Copied /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
   echo " * Copied /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
   echo " * rsync'd /srv/config/homebin                          to /home/vagrant/bin"
@@ -177,7 +181,8 @@ profile_setup() {
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
     cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
-    echo " * Copied /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
+    cp "/srv/config/bash_prompt" "/root/.bash_prompt"
+    echo " * Copied /srv/config/bash_prompt to /home/vagrant/.bash_prompt and /root/.bash_prompt"
   fi
 }
 
