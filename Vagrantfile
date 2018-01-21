@@ -126,8 +126,15 @@ end
 defaults = Hash.new
 defaults['memory'] = 2048
 defaults['cores'] = 1
+# This should rarely be overridden, so it's not included in the default vvv-config.yml file.
+defaults['private_network_ip'] = '192.168.50.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
+
+if defined? vvv_config['vm_config']['provider'] then
+  # Override or set the vagrant provider.
+  ENV['VAGRANT_DEFAULT_PROVIDER'] = vvv_config['vm_config']['provider']
+end
 
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
@@ -237,7 +244,7 @@ Vagrant.configure("2") do |config|
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
-  config.vm.network :private_network, id: "vvv_primary", ip: "192.168.50.4"
+  config.vm.network :private_network, id: "vvv_primary", ip: vvv_config['vm_config']['private_network_ip']
 
   config.vm.provider :hyperv do |v, override|
     override.vm.network :private_network, id: "vvv_primary", ip: nil

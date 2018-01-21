@@ -60,6 +60,11 @@ utilities:
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
 # increase the memory given to VVV and the number of CPU cores. For WP core development
 # we recommend at least 2GB ( 2048 )
+# It can also be used to override the default provider being used within Vagrant.
+# Due to a limitation within Vagrant, the specified provider is only respected on a clean `vagrant up`
+# as Vagrant currently restricts you to one provider per machine
+# https://www.vagrantup.com/docs/providers/basic_usage.html#vagrant-up
 vm_config:
   memory: 2048
   cores: 1
+  # provider: vmware_workstation
