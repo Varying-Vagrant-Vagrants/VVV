@@ -192,12 +192,12 @@ Vagrant.configure("2") do |config|
 
   # The VMware Fusion Provider uses a different naming scheme.
   config.vm.provider :vmware_fusion do |v, override|
-    override.vm.box = "netsensia/ubuntu-trusty64"
+    override.vm.box = "puphpet/ubuntu1404-x64"
   end
 
   # VMWare Workstation can use the same package as Fusion
   config.vm.provider :vmware_workstation do |v, override|
-    override.vm.box = "netsensia/ubuntu-trusty64"
+    override.vm.box = "puphpet/ubuntu1404-x64"
   end
 
   # Hyper-V uses a different base box.
