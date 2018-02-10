@@ -9,7 +9,7 @@ VVV is a [10up](https://10up.com) creation and [transitioned](http://10up.com/bl
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
-VVV is copyright (c) 2014-2017, the contributors of the VVV project under the [MIT License](LICENSE).
+VVV is copyright (c) 2014-present, the contributors of the VVV project under the [MIT License](LICENSE).
 
 ## Objectives
 
