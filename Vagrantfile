@@ -4,7 +4,6 @@
 require 'yaml'
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
-
 show_logo = false
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
@@ -15,12 +14,13 @@ if ENV['VVV_SKIP_LOGO'] then
   show_logo = false
 end
 if show_logo then
-  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
+  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
   branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
   red="\033[38;5;196m"
   green="\033[38;5;118m"
   blue="\033[38;5;33m"
   purple="\033[38;5;129m"
+  docs="\033[0m"
   stars = <<-STARS
 \033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
 STARS
@@ -29,9 +29,10 @@ STARS
 #{red}\\ \\ / #{green}\\ \\ / #{blue}\\ \\ / / #{red}Varying #{green}Vagrant #{blue}Vagrants
 #{red} \\ \V /#{green} \\ \V /#{blue} \\ \V /  #{purple}v2.2.0-#{branch}
 #{red}  \\_/  #{green} \\_/   #{blue}\\_/   #{stars}
-\033[0mDocs:       https://varyingvagrantvagrants.org/
-\033[0mContribute: https://github.com/varying-vagrant-vagrants/vvv
-\033[0mDashboard:  http://vvv.test
+
+#{docs}Docs:       https://varyingvagrantvagrants.org/
+#{docs}Contribute: https://github.com/varying-vagrant-vagrants/vvv
+#{docs}Dashboard:  http://vvv.test
 \033[0m
   HEREDOC
   puts splash
