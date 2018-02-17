@@ -16,24 +16,27 @@ end
 if show_logo then
   branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
   branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
-  red="\033[38;5;196m"
-  green="\033[38;5;118m"
-  blue="\033[38;5;33m"
-  purple="\033[38;5;129m"
+  branch_c = "\033[38;5;6m"#111m"
+  red="\033[38;5;9m"#124m"
+  green="\033[1;38;5;2m"#22m"
+  blue="\033[38;5;4m"#33m"
+  purple="\033[38;5;5m"#129m"
   docs="\033[0m"
+  url="\033[4m"
+  url="\033[4;38;5;3m"#136m"
+  creset="\033[0m"
   stars = <<-STARS
 \033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
 STARS
   splash = <<-HEREDOC
-#{red}__   _#{green}__   #{blue}___   __
-#{red}\\ \\ / #{green}\\ \\ / #{blue}\\ \\ / / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\ \V /#{green} \\ \V /#{blue} \\ \V /  #{purple}v2.2.0-#{branch}
-#{red}  \\_/  #{green} \\_/   #{blue}\\_/   #{stars}
+\033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
+#{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v2.2.0#{creset}-#{branch_c}#{branch}
+ 
+#{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
+#{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
+#{docs}Dashboard:  #{url}http://vvv.test#{creset}
 
-#{docs}Docs:       https://varyingvagrantvagrants.org/
-#{docs}Contribute: https://github.com/varying-vagrant-vagrants/vvv
-#{docs}Dashboard:  http://vvv.test
-\033[0m
   HEREDOC
   puts splash
 end
