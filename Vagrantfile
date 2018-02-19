@@ -437,7 +437,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Provision the dashboard that appears when you visit vvv.test
-  config.vm.provision "custom",
+  config.vm.provision "dashboard",
       type: "shell",
       path: File.join( "provision", "provision-dashboard.sh" ),
       args: [
