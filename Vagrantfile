@@ -109,6 +109,14 @@ else
   end
 end
 
+if ! vvv_config['dashboard']
+  vvv_config['dashboard'] = Hash.new
+end
+dashboard_defaults = Hash.new
+dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashboard.git'
+dashboard_defaults['branch'] = 'master'
+vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
+
 if ! vvv_config['utility-sources'].key?('core')
   vvv_config['utility-sources']['core'] = Hash.new
   vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
@@ -427,6 +435,15 @@ Vagrant.configure("2") do |config|
   else
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
+
+  # Provision the dashboard that appears when you visit vvv.test
+  config.vm.provision "custom",
+      type: "shell",
+      path: File.join( "provision", "provision-dashboard.sh" ),
+      args: [
+        vvv_config['dashboard']['repo'],
+        vvv_config['dashboard']['branch']
+      ]
 
   vvv_config['utility-sources'].each do |name, args|
     config.vm.provision "utility-source-#{name}",
