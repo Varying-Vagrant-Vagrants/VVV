@@ -36,6 +36,16 @@ get_primary_host() {
   echo ${value:-$1}
 }
 
+is_utility_installed() {
+  local utilities=`cat ${VVV_CONFIG} | shyaml get-values utilities.${1} 2> /dev/null`
+  for utility in ${utilities}; do
+    if [[ "${utility}" == "${2}" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 if [[ true == $SKIP_PROVISIONING ]]; then
     REPO=false
 fi
