@@ -4,7 +4,8 @@
     "repositories": [
         {
             "type": "github",
-            "url":  "https://github.com/Automattic/VIP-Coding-Standards.git"
+            "url":  "https://github.com/Automattic/VIP-Coding-Standards.git",
+            "no-api": true
         }
     ],
     "require": {

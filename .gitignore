@@ -61,11 +61,9 @@
 # And we do have a default SQL file that should be included
 !/database/init.sql
 
-# Allow the dashboard
-!/www/default/dashboard/
-
 # And we provide our default host names in a dat file.
 !/www/vvv-hosts
 
 # But not the custom phpMyAdmin config in the database-admin directory.
 /www/default/database-admin/config.inc.custom.php
+/certificates
