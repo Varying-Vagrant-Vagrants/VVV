@@ -305,6 +305,15 @@ Vagrant.configure("2") do |config|
         config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :extra => 'dmode=775,fmode=774'
       end
     end
+    if args.include? 'shared'
+      args['shared'].each do |local, guest|
+        if vagrant_version >= "1.3.0"
+          config.vm.synced_folder local, guest, :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+        else
+          config.vm.synced_folder local, guest, :owner => "www-data", :extra => 'dmode=775,fmode=774'
+        end
+      end
+    end
   end
 
   config.vm.provision "fix-no-tty", type: "shell" do |s|
