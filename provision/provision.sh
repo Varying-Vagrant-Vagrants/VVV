@@ -631,7 +631,7 @@ php_codesniff() {
   ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
   # Install the standards in PHPCS
-  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/,./CodeSniffer/Standards/VIP-Coding-Standards/
+  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/,./CodeSniffer/Standards/VIP-Coding-Standards/,./CodeSniffer/Standards/PHPCompatibility/
   phpcs --config-set default_standard WordPress-Core
   phpcs -i
 }
