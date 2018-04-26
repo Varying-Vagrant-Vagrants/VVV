@@ -26,7 +26,7 @@ sites:
 
   # The wordpress-develop configuration is useful for contributing to WordPress.
   wordpress-develop:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
     hosts:
       - src.wordpress-develop.test
       - build.wordpress-develop.test
