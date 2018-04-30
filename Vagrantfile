@@ -14,8 +14,13 @@ if ENV['VVV_SKIP_LOGO'] then
   show_logo = false
 end
 if show_logo then
-  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
-  branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
+  git_or_zip = "zip-no-vcs"
+  branch = ''
+  if File.directory?("#{vagrant_dir}/.git") then
+    git_or_zip = "git::"
+    branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
+    branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
+  end
   branch_c = "\033[38;5;6m"#111m"
   red="\033[38;5;9m"#124m"
   green="\033[1;38;5;2m"#22m"
@@ -31,7 +36,7 @@ STARS
   splash = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v2.2.0#{creset}-#{branch_c}#{branch}
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v2.2.0#{creset}-#{branch_c}#{git_or_zip}#{branch}
  
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
