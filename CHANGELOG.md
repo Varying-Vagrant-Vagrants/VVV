@@ -4,7 +4,30 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## TBD (TBD)
+## 2.2.1 (May, 2018)
+
+### Enhancements
+
+* Added the TLS CA authority, making HTTPS TLS/SSL connections to VVV sites easier, see [our docs on how to set this up](https://varyingvagrantvagrants.org/docs/en-US/references/https/)
+* The VVV terminal splash is now smaller, with better support for lighter colour schemes.
+* The dashboard is now a separate git repo cloned on provision, that can be overriden in `vvv-custom.yml`
+* PHPCompatibility PHPCS standards are now installed
+* VVV now has a `version` file
+* Private network IP can now be changed via `vvv-custom.yml`, see [#1407](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1407)
+* Default VM RAM bumped up to `2048` from `1024`, [see #1370](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1370)
+* The `src` subdomain of the WP develop site was disabled in line with changes to WP core
+
+### Bugs
+
+* Fixed the unexpected `-f` error on Windows
+* Fixed the splash not reporting git vs zip and branch on Windows
+* Fixes to PHPCS installation
+* Updated the box used for VMWare [see #1406](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1406)
+
+### Deprecations
+
+* `vvv-wordpress-develop` has been replaced by `custom-site-template-develop`
+* `vvv-wordpress` has been replaced by `custom-site-template`
 
 ## 2.1.0 (November 8, 2017)
 
