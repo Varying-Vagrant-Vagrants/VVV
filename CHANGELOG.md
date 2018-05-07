@@ -28,6 +28,7 @@ permalink: /docs/en-US/changelog/
 
 * `vvv-wordpress-develop` has been replaced by `custom-site-template-develop`
 * `vvv-wordpress` has been replaced by `custom-site-template`
+* Legacy TLS certificate generation for vvv.test was removed, it was broken, use the TLS-CA utility instead
 
 ## 2.1.0 (November 8, 2017)
 
