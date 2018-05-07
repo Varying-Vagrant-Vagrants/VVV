@@ -406,22 +406,6 @@ tools_install() {
 }
 
 nginx_setup() {
-  # Create an SSL key and certificate for HTTPS support.
-  if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
-	  echo "Generate Nginx server private key..."
-	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
-	  echo "$vvvgenrsa"
-  fi
-  if [[ ! -e /etc/nginx/server-2.1.0.crt ]]; then
-	  echo "Sign the certificate using the above private key..."
-	  vvvsigncert="$(openssl req -new -x509 \
-            -key /etc/nginx/server-2.1.0.key \
-            -out /etc/nginx/server-2.1.0.crt \
-            -days 3650 \
-            -subj /CN=*.wordpress-develop.test/CN=*.wordpress.test/CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.vvv.local/CN=*.vvv.localhost/CN=*.vvv.test 2>&1)"
-	  echo "$vvvsigncert"
-  fi
-
   echo -e "\nSetup configuration files..."
 
   # Used to ensure proper services are started on `vagrant up`
