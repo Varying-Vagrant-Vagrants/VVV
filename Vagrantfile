@@ -539,5 +539,15 @@ Vagrant.configure("2") do |config|
     config.trigger.before :destroy, :stdout => true do
       system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_destroy'")
     end
+    config.trigger.before :ssh, :stdout => true do |trigger|
+      current_location = "~"
+      vvv_config['sites'].each do |site, args|
+        if ENV['PWD'].start_with?(args['local_dir'])
+          current_location = ENV['PWD'].dup
+          current_location = current_location.sub! args['local_dir'], args['vm_dir']
+        end
+      end
+      File.open(vagrant_dir+"/config/.vvv_temp_ssh_cwd", 'w') { |file| file.write( current_location ) }
+    end
   end
 end

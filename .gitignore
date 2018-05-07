@@ -27,6 +27,9 @@
 # No need to share individual site configs with each other
 /config/nginx-config/sites/*.conf
 
+# Ignore the cwd config for vagrant ssh
+/config/.vvv_temp_ssh_cwd
+
 # Ignore anything in the 'custom' directory in config
 /config/custom/*
 
