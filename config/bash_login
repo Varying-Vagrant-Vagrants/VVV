@@ -1,0 +1,7 @@
+# Change initial working directory if one is present.
+if [ -e "/srv/config/custom/initial_cwd_once" ]; then
+    cd "$( cat /srv/config/custom/initial_cwd_once )"
+    rm /srv/config/custom/initial_cwd_once
+elif [ -e "/srv/config/custom/initial_cwd" ]; then
+    cd "$( cat /srv/config/custom/initial_cwd )"
+fi
