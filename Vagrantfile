@@ -525,7 +525,7 @@ Vagrant.configure("2") do |config|
     trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_up" }
   end
   config.trigger.before :reload do |trigger|
-    trigger.name = "VVV Pre-Up"
+    trigger.name = "VVV Pre-Reload"
     trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_halt" }
   end
   config.trigger.after :reload do |trigger|
