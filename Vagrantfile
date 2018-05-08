@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
-
+Vagrant.require_version ">= 2.1.0"
 require 'yaml'
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
@@ -36,7 +36,7 @@ STARS
   splash = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v2.2.0#{creset}-#{branch_c}#{git_or_zip}#{branch}
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v2.2.1#{creset}-#{branch_c}#{git_or_zip}#{branch}
  
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
