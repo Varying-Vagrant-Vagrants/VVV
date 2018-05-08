@@ -326,10 +326,13 @@ tools_install() {
     curl -s https://beyondgrep.com/ack-2.16-single-file > "/usr/bin/ack" && chmod +x "/usr/bin/ack"
   fi
 
+  # Make sure the composer cache is not owned by root
+  chown -R vagrant:www-data /usr/local/src/composer
+
   # COMPOSER
   #
   # Install Composer if it is not yet available.
-  if [[ ! -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
+  if [[ ! -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
@@ -338,21 +341,18 @@ tools_install() {
 
   if [[ -f /vagrant/provision/github.token ]]; then
     ghtoken=`cat /vagrant/provision/github.token`
-    composer config --global github-oauth.github.com $ghtoken
+    noroot composer config --global github-oauth.github.com $ghtoken
     echo "Your personal GitHub token is set for Composer."
   fi
 
   # Update both Composer and any global packages. Updates to Composer are direct from
   # the master branch on its GitHub repository.
-  if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
+  if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi self-update --no-progress --no-interaction
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:6.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/php-invoker:1.1.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction mockery/mockery:0.9.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction d11wtq/boris:v1.0.8
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global config bin-dir /usr/local/bin
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global update --no-progress --no-interaction
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --no-progress --no-interaction
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:6.* phpunit/php-invoker:1.1.* mockery/mockery:0.9.* d11wtq/boris:v1.0.8
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
   fi
 
   # Grunt
@@ -608,7 +608,7 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /vagrant/provision/phpcs
-  composer update --no-ansi --no-autoloader
+  noroot composer update --no-ansi --no-autoloader
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
   ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
