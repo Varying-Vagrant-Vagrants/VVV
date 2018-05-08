@@ -9,7 +9,7 @@
 # it does not exist, then we'll handle some basic tasks.
 if [[ -f /home/vagrant/bin/vagrant_suspend_custom ]]; then
 	echo "Executing vagrant_suspend_custom"
-	vagrant_suspend_custom
+	/home/vagrant/bin/vagrant_suspend_custom
 else
-	db_backup
+	/home/vagrant/bin/db_backup
 fi
