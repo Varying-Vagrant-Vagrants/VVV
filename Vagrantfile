@@ -513,31 +513,35 @@ Vagrant.configure("2") do |config|
 
   # Vagrant Triggers
   #
-  # If the vagrant-triggers plugin is installed, we can run various scripts on Vagrant
-  # state changes like `vagrant up`, `vagrant halt`, `vagrant suspend`, and `vagrant destroy`
+  # We run various scripts on Vagrant state changes like `vagrant up`, `vagrant halt`,
+  # `vagrant suspend`, and `vagrant destroy`
   #
   # These scripts are run on the host machine, so we use `vagrant ssh` to tunnel back
   # into the VM and execute things. By default, each of these scripts calls db_backup
   # to create backups of all current databases. This can be overridden with custom
   # scripting. See the individual files in config/homebin/ for details.
-  if defined? VagrantPlugins::Triggers
-    config.trigger.after :up, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_up'")
-    end
-    config.trigger.before :reload, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_halt'")
-    end
-    config.trigger.after :reload, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_up'")
-    end
-    config.trigger.before :halt, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_halt'")
-    end
-    config.trigger.before :suspend, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_suspend'")
-    end
-    config.trigger.before :destroy, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_destroy'")
-    end
+  config.trigger.after :up do |trigger|
+    trigger.name = "VVV Post-Up"
+    trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_up" }
+  end
+  config.trigger.before :reload do |trigger|
+    trigger.name = "VVV Pre-Reload"
+    trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_halt" }
+  end
+  config.trigger.after :reload do |trigger|
+    trigger.name = "VVV Post-Reload"
+    trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_up" }
+  end
+  config.trigger.before :halt do |trigger|
+    trigger.name = "VVV Pre-Halt"
+    trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_halt" }
+  end
+  config.trigger.before :suspend do |trigger|
+    trigger.name = "VVV Pre-Suspend"
+    trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_suspend" }
+  end
+  config.trigger.before :destroy do |trigger|
+    trigger.name = "VVV Pre-Destroy"
+    trigger.run_remote = { inline: "/home/vagrant/bin/vagrant_destroy" }
   end
 end
