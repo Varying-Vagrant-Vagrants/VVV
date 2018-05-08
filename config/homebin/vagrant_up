@@ -9,5 +9,5 @@
 # it does not exist, then we'll handle some basic tasks.
 if [[ -f /home/vagrant/bin/vagrant_up_custom ]]; then
 	echo "Executing vagrant_up_custom"
-	vagrant_up_custom
+	/home/vagrant/bin/vagrant_up_custom
 fi
