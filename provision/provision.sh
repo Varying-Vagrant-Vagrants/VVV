@@ -160,18 +160,11 @@ profile_setup() {
   cp "/srv/config/subversion-servers" "/home/vagrant/.subversion/servers"
   cp "/srv/config/subversion-config" "/home/vagrant/.subversion/config"
 
-  if [[ ! -d "/home/vagrant/bin" ]]; then
-    mkdir "/home/vagrant/bin"
-  fi
-
-  rsync -rvzh --delete "/srv/config/homebin/" "/home/vagrant/bin/"
-
   echo " * Copied /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
   echo " * Copied /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
   echo " * Copied /srv/config/vimrc                             to /home/vagrant/.vimrc"
   echo " * Copied /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
   echo " * Copied /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
-  echo " * rsync'd /srv/config/homebin                          to /home/vagrant/bin"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
