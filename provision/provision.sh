@@ -50,7 +50,6 @@ apt_package_check_list=(
   php7.2-curl
   php7.2-gd
   php7.2-mbstring
-  php7.2-mcrypt
   php7.2-mysql
   php7.2-imap
   php7.2-json
