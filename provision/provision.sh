@@ -319,7 +319,7 @@ tools_install() {
   fi
 
   # Make sure the composer cache is not owned by root
-  chown -R vagrant:www-data /usr/local/src/composer
+  chown -R vagrant:vagrant /usr/local/src/composer
 
   # COMPOSER
   #
@@ -368,19 +368,11 @@ tools_install() {
     done
     rm /tmp/stop_gyp_hack
   }
-  if [[ "$(grunt --version)" ]]; then
-    echo "Updating Grunt CLI"
-    npm update -g grunt-cli
-    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm update -g grunt-cssjanus
-    npm update -g grunt-rtlcss
-  else
-    echo "Installing Grunt CLI"
-    npm install -g grunt-cli
-    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm install -g grunt-cssjanus
-    npm install -g grunt-rtlcss
-  fi
+  echo "Updating/Installing Grunt CLI"
+  npm update -g grunt-cli &>/dev/null
+  hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+  npm update -g grunt-cssjanus &>/dev/null
+  npm update -g grunt-rtlcss
   chown -R vagrant:vagrant /usr/lib/node_modules/
 
   # Graphviz
