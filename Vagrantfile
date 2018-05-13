@@ -2,9 +2,20 @@
 # vi: set ft=ruby ts=2 sw=2 et:
 Vagrant.require_version ">= 2.1.0"
 require 'yaml'
+require 'fileutils'
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 show_logo = false
+branch_c = "\033[38;5;6m"#111m"
+red="\033[38;5;9m"#124m"
+green="\033[1;38;5;2m"#22m"
+blue="\033[38;5;4m"#33m"
+purple="\033[38;5;5m"#129m"
+docs="\033[0m"
+yellow="\033[38;5;3m"#136m"
+yellow_underlined="\033[4;38;5;3m"#136m"
+url=yellow_underlined
+creset="\033[0m"
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 if [ 'up', 'halt', 'resume', 'suspend', 'status', 'provision', 'reload' ].include? ARGV[0] then
@@ -21,15 +32,6 @@ if show_logo then
     branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
     branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
   end
-  branch_c = "\033[38;5;6m"#111m"
-  red="\033[38;5;9m"#124m"
-  green="\033[1;38;5;2m"#22m"
-  blue="\033[38;5;4m"#33m"
-  purple="\033[38;5;5m"#129m"
-  docs="\033[0m"
-  url="\033[4m"
-  url="\033[4;38;5;3m"#136m"
-  creset="\033[0m"
   stars = <<-STARS
 \033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
 STARS
@@ -46,13 +48,12 @@ STARS
   puts splash
 end
 
-
-
-if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) then
-  vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
-else
-  vvv_config_file = File.join(vagrant_dir, 'vvv-config.yml')
+if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
+  puts "#{yellow}IMPORTANT: Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}, make all modifications to #{green}vvv-custom.yml#{yellow} in future#{creset}\n\n"
+  FileUtils.cp( File.join(vagrant_dir, 'vvv-config.yml'), File.join(vagrant_dir, 'vvv-custom.yml') )
 end
+
+vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
 
 vvv_config = YAML.load_file(vvv_config_file)
 
