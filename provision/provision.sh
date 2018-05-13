@@ -282,7 +282,7 @@ package_install() {
 
 tools_install() {
   # Disable xdebug before any composer provisioning.
-  sh /home/config/homebin/xdebug_off
+  sh /vagrant/config/homebin/xdebug_off
 
   # nvm
   if [[ ! -d "/srv/config/nvm" ]]; then
