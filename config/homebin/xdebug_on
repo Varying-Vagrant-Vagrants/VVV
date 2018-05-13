@@ -4,5 +4,5 @@ sudo phpenmod xdebug
 find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 
 # Ensure the log file for xdebug is group writeable.
-sudo touch /srv/log/xdebug-remote.log
-sudo chmod 664 /srv/log/xdebug-remote.log
+sudo touch /var/log/xdebug-remote.log
+sudo chmod 664 /var/log/xdebug-remote.log
