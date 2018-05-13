@@ -282,7 +282,7 @@ package_install() {
 
 tools_install() {
   # Disable xdebug before any composer provisioning.
-  sh /home/vagrant/bin/xdebug_off
+  sh /home/config/homebin/xdebug_off
 
   # nvm
   if [[ ! -d "/srv/config/nvm" ]]; then
@@ -319,6 +319,8 @@ tools_install() {
   fi
 
   # Make sure the composer cache is not owned by root
+  noroot mkdir -p /usr/local/src/composer
+  noroot mkdir -p /usr/local/src/composer/cache
   chown -R vagrant:vagrant /usr/local/src/composer
 
   # COMPOSER
@@ -419,7 +421,7 @@ nginx_setup() {
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir "/etc/nginx/upstreams/"
   fi
-  cp "/srv/config/nginx-config/php7.0-upstream.conf" "/etc/nginx/upstreams/php70.conf"
+  cp "/srv/config/nginx-config/php7.2-upstream.conf" "/etc/nginx/upstreams/php72.conf"
 
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir "/etc/nginx/custom-sites/"
@@ -433,17 +435,17 @@ nginx_setup() {
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php-config/php7.0-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
-  cp "/srv/config/php-config/php7.0-www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
-  cp "/srv/config/php-config/php7.0-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
+  cp "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
+  cp "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
 
-  echo " * Copied /srv/config/php-config/php7.0-fpm.conf   to /etc/php/7.0/fpm/php-fpm.conf"
-  echo " * Copied /srv/config/php-config/php7.0-www.conf   to /etc/php/7.0/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php-config/php7.0-custom.ini to /etc/php/7.0/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
+  echo " * Copied /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
+  echo " * Copied /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
@@ -543,11 +545,11 @@ mailcatcher_setup() {
     echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
   fi
 
-  if [[ -f "/etc/php/7.0/mods-available/mailcatcher.ini" ]]; then
+  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
     echo " *" Mailcatcher php7 fpm already configured.
   else
-    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.0/mods-available/mailcatcher.ini"
+    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.2/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.2/mods-available/mailcatcher.ini"
   fi
 }
 
@@ -562,9 +564,6 @@ services_restart() {
 
   # Disable PHP Xdebug module by default
   phpdismod xdebug
-
-  # Enable PHP mcrypt module by default
-  phpenmod mcrypt
 
   # Enable PHP mailcatcher sendmail settings by default
   phpenmod mailcatcher
