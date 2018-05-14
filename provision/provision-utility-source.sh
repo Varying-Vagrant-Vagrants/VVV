@@ -5,6 +5,10 @@ REPO=$2
 BRANCH=${3:-master}
 DIR="/vagrant/provision/resources/${NAME}"
 
+noroot() {
+  sudo -EH -u "vagrant" "$@";
+}
+
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the resources repository
   if [[ ! -d ${DIR}/.git ]]; then
