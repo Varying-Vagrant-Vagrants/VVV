@@ -319,8 +319,8 @@ tools_install() {
   fi
 
   # Make sure the composer cache is not owned by root
-  noroot mkdir -p /usr/local/src/composer
-  noroot mkdir -p /usr/local/src/composer/cache
+  mkdir -p /usr/local/src/composer
+  mkdir -p /usr/local/src/composer/cache
   chown -R vagrant:vagrant /usr/local/src/composer
 
   # COMPOSER
