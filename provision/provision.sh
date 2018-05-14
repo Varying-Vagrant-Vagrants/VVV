@@ -395,7 +395,7 @@ tools_install() {
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
-	  echo "Generate Nginx server private key..."
+	  echo "Generating Nginx server private key..."
 	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
 	  echo "$vvvgenrsa"
   fi
@@ -432,6 +432,9 @@ nginx_setup() {
   echo " * Copied /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
   echo " * Copied /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
   echo " * Rsync'd /srv/config/nginx-config/sites/              to /etc/nginx/custom-sites"
+  noroot mkdir -p /var/log/nginx/
+  noroot touch /var/log/nginx/error.log
+  noroot touch /var/log/nginx/access.log
 }
 
 phpfpm_setup() {
