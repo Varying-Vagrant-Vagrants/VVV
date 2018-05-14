@@ -322,6 +322,7 @@ tools_install() {
   mkdir -p /usr/local/src/composer
   mkdir -p /usr/local/src/composer/cache
   chown -R vagrant:vagrant /usr/local/src/composer
+  chown -R vagrant:vagrant /usr/local/bin
 
   # COMPOSER
   #
