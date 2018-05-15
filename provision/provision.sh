@@ -100,6 +100,9 @@ apt_package_check_list=(
 
   # Mailcatcher requirement
   libsqlite3-dev
+  
+  # Needed in older Ubuntu vagrant boxes
+  language-pack-UTF-8
 
 )
 
