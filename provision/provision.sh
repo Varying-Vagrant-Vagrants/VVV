@@ -440,9 +440,9 @@ nginx_setup() {
   echo " * Copied /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
   echo " * Copied /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
   echo " * Rsync'd /srv/config/nginx-config/sites/              to /etc/nginx/custom-sites"
-  noroot mkdir -p /var/log/nginx/
-  noroot touch /var/log/nginx/error.log
-  noroot touch /var/log/nginx/access.log
+  mkdir -p /var/log/nginx/
+  touch /var/log/nginx/error.log
+  touch /var/log/nginx/access.log
 }
 
 phpfpm_setup() {
