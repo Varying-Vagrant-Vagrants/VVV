@@ -1,32 +1,59 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
-
+Vagrant.require_version ">= 2.1.0"
 require 'yaml'
+require 'fileutils'
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
+show_logo = false
+branch_c = "\033[38;5;6m"#111m"
+red="\033[38;5;9m"#124m"
+green="\033[1;38;5;2m"#22m"
+blue="\033[38;5;4m"#33m"
+purple="\033[38;5;5m"#129m"
+docs="\033[0m"
+yellow="\033[38;5;3m"#136m"
+yellow_underlined="\033[4;38;5;3m"#136m"
+url=yellow_underlined
+creset="\033[0m"
 
-if ! ENV['VVV_SKIP_LOGO'] then
-  branch = `if [ -f #{vagrant_dir}/.git/HEAD ]; then git rev-parse --abbrev-ref HEAD; else echo 'novcs'; fi`
-  puts "  \033[38;5;196m__     _\033[38;5;118m__     _\033[38;5;33m__     __ \033[38;5;129m ____    "
-  puts "  \033[38;5;196m\\ \\   / \033[38;5;118m\\ \\   / \033[38;5;33m\\ \\   / / \033[38;5;129m|___ \\   "
-  puts "  \033[38;5;196m \\ \\ / /\033[38;5;118m \\ \\ / /\033[38;5;33m \\ \\ / /  \033[38;5;129m  __) |  "
-  puts "  \033[38;5;196m  \\ V / \033[38;5;118m  \\ V / \033[38;5;33m  \\ V /   \033[38;5;129m / __/   "
-  puts "  \033[38;5;196m   \\_/  \033[38;5;118m   \\_/  \033[38;5;33m   \\_/    \033[38;5;129m|_____|  "
-  puts ""
-  puts "  \033[38;5;196mVarying \033[38;5;118mVagrant \033[38;5;33mVagrants \033[38;5;129mv2.1.0-" + branch
-  puts "  \033[0mDocs:       https://varyingvagrantvagrants.org/"
-  puts "  \033[0mContribute: https://github.com/varying-vagrant-vagrants/vvv"
-  puts "  \033[0mDashboard:  http://vvv.test"
-  puts "\033[0m"
+# whitelist when we show the logo, else it'll show on global Vagrant commands
+if [ 'up', 'halt', 'resume', 'suspend', 'status', 'provision', 'reload' ].include? ARGV[0] then
+  show_logo = true
+end
+if ENV['VVV_SKIP_LOGO'] then
+  show_logo = false
+end
+if show_logo then
+  git_or_zip = "zip-no-vcs"
+  branch = ''
+  if File.directory?("#{vagrant_dir}/.git") then
+    git_or_zip = "git::"
+    branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
+    branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
+  end
+  stars = <<-STARS
+\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
+STARS
+  splash = <<-HEREDOC
+\033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
+#{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v2.2.1#{creset}-#{branch_c}#{git_or_zip}#{branch}
+ 
+#{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
+#{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
+#{docs}Dashboard:  #{url}http://vvv.test#{creset}
+
+  HEREDOC
+  puts splash
 end
 
-
-
-if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) then
-  vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
-else
-  vvv_config_file = File.join(vagrant_dir, 'vvv-config.yml')
+if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
+  puts "#{yellow}IMPORTANT: Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}, make all modifications to #{green}vvv-custom.yml#{yellow} in future#{creset}\n\n"
+  FileUtils.cp( File.join(vagrant_dir, 'vvv-config.yml'), File.join(vagrant_dir, 'vvv-custom.yml') )
 end
+
+vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
 
 vvv_config = YAML.load_file(vvv_config_file)
 
@@ -79,8 +106,32 @@ end
 
 if ! vvv_config['utility-sources'].kind_of? Hash then
   vvv_config['utility-sources'] = Hash.new
+else
+  vvv_config['utility-sources'].each do |name, args|
+    if args.kind_of? String then
+        repo = args
+        args = Hash.new
+        args['repo'] = repo
+        args['branch'] = 'master'
+
+        vvv_config['utility-sources'][name] = args
+    end
+  end
 end
-vvv_config['utility-sources']['core'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+
+if ! vvv_config['dashboard']
+  vvv_config['dashboard'] = Hash.new
+end
+dashboard_defaults = Hash.new
+dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashboard.git'
+dashboard_defaults['branch'] = 'master'
+vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
+
+if ! vvv_config['utility-sources'].key?('core')
+  vvv_config['utility-sources']['core'] = Hash.new
+  vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+  vvv_config['utility-sources']['core']['branch'] = 'master'
+end
 
 if ! vvv_config['utilities'].kind_of? Hash then
   vvv_config['utilities'] = Hash.new
@@ -91,10 +142,17 @@ if ! vvv_config['vm_config'].kind_of? Hash then
 end
 
 defaults = Hash.new
-defaults['memory'] = 1024
+defaults['memory'] = 2048
 defaults['cores'] = 1
+# This should rarely be overridden, so it's not included in the default vvv-config.yml file.
+defaults['private_network_ip'] = '192.168.50.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
+
+if defined? vvv_config['vm_config']['provider'] then
+  # Override or set the vagrant provider.
+  ENV['VAGRANT_DEFAULT_PROVIDER'] = vvv_config['vm_config']['provider']
+end
 
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
@@ -159,17 +217,17 @@ Vagrant.configure("2") do |config|
 
   # The VMware Fusion Provider uses a different naming scheme.
   config.vm.provider :vmware_fusion do |v, override|
-    override.vm.box = "netsensia/ubuntu-trusty64"
+    override.vm.box = "puphpet/ubuntu1404-x64"
   end
 
   # VMWare Workstation can use the same package as Fusion
   config.vm.provider :vmware_workstation do |v, override|
-    override.vm.box = "netsensia/ubuntu-trusty64"
+    override.vm.box = "puphpet/ubuntu1404-x64"
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
-    override.vm.box = "ericmann/trusty64"
+    override.vm.box = "phawxby/trusty64"
   end
 
   config.vm.hostname = "vvv"
@@ -204,7 +262,7 @@ Vagrant.configure("2") do |config|
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
-  config.vm.network :private_network, id: "vvv_primary", ip: "192.168.50.4"
+  config.vm.network :private_network, id: "vvv_primary", ip: vvv_config['vm_config']['private_network_ip']
 
   config.vm.provider :hyperv do |v, override|
     override.vm.network :private_network, id: "vvv_primary", ip: nil
@@ -284,7 +342,7 @@ Vagrant.configure("2") do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder "log/", "/srv/log", :owner => "www-data"
+  config.vm.synced_folder "log/", "/var/log", :owner => "www-data"
 
   # /srv/www/
   #
@@ -388,13 +446,23 @@ Vagrant.configure("2") do |config|
     config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
   end
 
-  vvv_config['utility-sources'].each do |name, repo|
+  # Provision the dashboard that appears when you visit vvv.test
+  config.vm.provision "dashboard",
+      type: "shell",
+      path: File.join( "provision", "provision-dashboard.sh" ),
+      args: [
+        vvv_config['dashboard']['repo'],
+        vvv_config['dashboard']['branch']
+      ]
+
+  vvv_config['utility-sources'].each do |name, args|
     config.vm.provision "utility-source-#{name}",
       type: "shell",
       path: File.join( "provision", "provision-utility-source.sh" ),
       args: [
           name,
-          repo
+          args['repo'].to_s,
+          args['branch'],
       ]
   end
 
@@ -446,31 +514,35 @@ Vagrant.configure("2") do |config|
 
   # Vagrant Triggers
   #
-  # If the vagrant-triggers plugin is installed, we can run various scripts on Vagrant
-  # state changes like `vagrant up`, `vagrant halt`, `vagrant suspend`, and `vagrant destroy`
+  # We run various scripts on Vagrant state changes like `vagrant up`, `vagrant halt`,
+  # `vagrant suspend`, and `vagrant destroy`
   #
   # These scripts are run on the host machine, so we use `vagrant ssh` to tunnel back
   # into the VM and execute things. By default, each of these scripts calls db_backup
   # to create backups of all current databases. This can be overridden with custom
   # scripting. See the individual files in config/homebin/ for details.
-  if defined? VagrantPlugins::Triggers
-    config.trigger.after :up, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_up'")
-    end
-    config.trigger.before :reload, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_halt'")
-    end
-    config.trigger.after :reload, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_up'")
-    end
-    config.trigger.before :halt, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_halt'")
-    end
-    config.trigger.before :suspend, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_suspend'")
-    end
-    config.trigger.before :destroy, :stdout => true do
-      system({'VVV_SKIP_LOGO'=> 'true'}, "vagrant ssh -c 'vagrant_destroy'")
-    end
+  config.trigger.after :up do |trigger|
+    trigger.name = "VVV Post-Up"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+  end
+  config.trigger.before :reload do |trigger|
+    trigger.name = "VVV Pre-Reload"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_halt" }
+  end
+  config.trigger.after :reload do |trigger|
+    trigger.name = "VVV Post-Reload"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+  end
+  config.trigger.before :halt do |trigger|
+    trigger.name = "VVV Pre-Halt"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_halt" }
+  end
+  config.trigger.before :suspend do |trigger|
+    trigger.name = "VVV Pre-Suspend"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_suspend" }
+  end
+  config.trigger.before :destroy do |trigger|
+    trigger.name = "VVV Pre-Destroy"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_destroy" }
   end
 end

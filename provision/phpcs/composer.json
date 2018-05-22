@@ -3,21 +3,24 @@
     "type": "project",
     "repositories": [
         {
-            "type": "vcs",
-            "url":  "https://github.com/Automattic/VIP-Coding-Standards.git"
+            "type": "github",
+            "url":  "https://github.com/Automattic/VIP-Coding-Standards.git",
+            "no-api": true
         }
     ],
     "require": {
         "oomphinc/composer-installers-extender": "^1.1",
         "wp-coding-standards/wpcs": "*",
-        "automattic/vipwpcs": "dev-master"
+        "automattic/vipwpcs": "dev-master",
+        "wimg/php-compatibility": "*"
     },
     "extra": {
         "installer-types": ["library", "phpcodesniffer-standard"],
         "installer-paths": {
             "/srv/www/phpcs/": ["squizlabs/php_codesniffer"],
             "/srv/www/phpcs/CodeSniffer/Standards/WordPress/": ["wp-coding-standards/wpcs"],
-            "/srv/www/phpcs/CodeSniffer/Standards/VIP-Coding-Standards/": ["automattic/vipwpcs"]
+            "/srv/www/phpcs/CodeSniffer/Standards/VIP-Coding-Standards/": ["automattic/vipwpcs"],
+            "/srv/www/phpcs/CodeSniffer/Standards/PHPCompatibility/": ["wimg/php-compatibility"]
         }
     },
     "config": {

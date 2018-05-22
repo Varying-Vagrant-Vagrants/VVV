@@ -1,5 +1,9 @@
 ---
 
+# IMPORTANT !!!!!!!!!
+# Copy this file to vvv-custom.yml so your changes don't get overwritten when you update
+
+
 # This file is a YAML formatted file. YAML indenting is done in spaces not
 # tabs, and whitespace is significant. If you don't stick to this, it will
 # fail on provision
@@ -13,16 +17,16 @@
 # located in. See the docs for how to define these, and what all the keys
 # and options are
 sites:
-  # The wordpress-default configuration provides a default installation of the
+  # The wordpress-default configuration provides an installation of the
   # latest version of WordPress.
   wordpress-default:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
       - local.wordpress.test
 
   # The wordpress-develop configuration is useful for contributing to WordPress.
   wordpress-develop:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
     hosts:
       - src.wordpress-develop.test
       - build.wordpress-develop.test
@@ -51,3 +55,17 @@ utilities:
     - opcache-status
     - phpmyadmin
     - webgrind
+    - trusted-hosts
+    - tls-ca
+
+# vm_config controls how Vagrant provisions the virtual machine, and can be used to
+# increase the memory given to VVV and the number of CPU cores. For WP core development
+# we recommend at least 2GB ( 2048 )
+# It can also be used to override the default provider being used within Vagrant.
+# Due to a limitation within Vagrant, the specified provider is only respected on a clean `vagrant up`
+# as Vagrant currently restricts you to one provider per machine
+# https://www.vagrantup.com/docs/providers/basic_usage.html#vagrant-up
+vm_config:
+  memory: 2048
+  cores: 1
+  # provider: vmware_workstation

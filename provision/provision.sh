@@ -29,15 +29,15 @@ apt_package_check_list=(
 
   # PHP7
   #
-  # Our base packages for php7.0. As long as php7.0-fpm and php7.0-cli are
-  # installed, there is no need to install the general php7.0 package, which
+  # Our base packages for php7.2. As long as php7.2-fpm and php7.2-cli are
+  # installed, there is no need to install the general php7.2 package, which
   # can sometimes install apache as a requirement.
-  php7.0-fpm
-  php7.0-cli
+  php7.2-fpm
+  php7.2-cli
 
   # Common and dev packages for php
-  php7.0-common
-  php7.0-dev
+  php7.2-common
+  php7.2-dev
 
   # Extra PHP modules that we find useful
   php-pear
@@ -46,17 +46,16 @@ apt_package_check_list=(
   php-memcached
   php-ssh2
   php-xdebug
-  php7.0-bcmath
-  php7.0-curl
-  php7.0-gd
-  php7.0-mbstring
-  php7.0-mcrypt
-  php7.0-mysql
-  php7.0-imap
-  php7.0-json
-  php7.0-soap
-  php7.0-xml
-  php7.0-zip
+  php7.2-bcmath
+  php7.2-curl
+  php7.2-gd
+  php7.2-mbstring
+  php7.2-mysql
+  php7.2-imap
+  php7.2-json
+  php7.2-soap
+  php7.2-xml
+  php7.2-zip
 
   # nginx is installed as the default web server
   nginx
@@ -161,18 +160,11 @@ profile_setup() {
   cp "/srv/config/subversion-servers" "/home/vagrant/.subversion/servers"
   cp "/srv/config/subversion-config" "/home/vagrant/.subversion/config"
 
-  if [[ ! -d "/home/vagrant/bin" ]]; then
-    mkdir "/home/vagrant/bin"
-  fi
-
-  rsync -rvzh --delete "/srv/config/homebin/" "/home/vagrant/bin/"
-
   echo " * Copied /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
   echo " * Copied /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
   echo " * Copied /srv/config/vimrc                             to /home/vagrant/.vimrc"
   echo " * Copied /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
   echo " * Copied /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
-  echo " * rsync'd /srv/config/homebin                          to /home/vagrant/bin"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
@@ -290,19 +282,19 @@ package_install() {
 
 tools_install() {
   # Disable xdebug before any composer provisioning.
-  sh /home/vagrant/bin/xdebug_off
+  sh /vagrant/config/homebin/xdebug_off
 
   # nvm
   if [[ ! -d "/srv/config/nvm" ]]; then
     echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
     git clone "https://github.com/creationix/nvm.git" "/srv/config/nvm"
     cd /srv/config/nvm
-    git checkout `git describe --abbrev=0 --tags`
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
   else
     echo -e "\nUpdating nvm..."
     cd /srv/config/nvm
-    git pull origin master
-    git checkout `git describe --abbrev=0 --tags`
+    git fetch origin
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin` -q
   fi
   # Activate nvm
   source /srv/config/nvm/nvm.sh
@@ -326,10 +318,16 @@ tools_install() {
     curl -s https://beyondgrep.com/ack-2.16-single-file > "/usr/bin/ack" && chmod +x "/usr/bin/ack"
   fi
 
+  # Make sure the composer cache is not owned by root
+  mkdir -p /usr/local/src/composer
+  mkdir -p /usr/local/src/composer/cache
+  chown -R vagrant:www-data /usr/local/src/composer
+  chown -R vagrant:www-data /usr/local/bin
+
   # COMPOSER
   #
   # Install Composer if it is not yet available.
-  if [[ ! -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
+  if [[ ! -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
@@ -338,21 +336,18 @@ tools_install() {
 
   if [[ -f /vagrant/provision/github.token ]]; then
     ghtoken=`cat /vagrant/provision/github.token`
-    composer config --global github-oauth.github.com $ghtoken
+    noroot composer config --global github-oauth.github.com $ghtoken
     echo "Your personal GitHub token is set for Composer."
   fi
 
   # Update both Composer and any global packages. Updates to Composer are direct from
   # the master branch on its GitHub repository.
-  if [[ -n "$(composer --version --no-ansi | grep 'Composer version')" ]]; then
+  if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi self-update --no-progress --no-interaction
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:5.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/php-invoker:1.1.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction mockery/mockery:0.9.*
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global require --no-update --no-progress --no-interaction d11wtq/boris:v1.0.8
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global config bin-dir /usr/local/bin
-    COMPOSER_HOME=/usr/local/src/composer composer --no-ansi global update --no-progress --no-interaction
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --no-progress --no-interaction
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:6.* phpunit/php-invoker:1.1.* mockery/mockery:0.9.* d11wtq/boris:v1.0.8
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
   fi
 
   # Grunt
@@ -408,7 +403,7 @@ tools_install() {
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
-	  echo "Generate Nginx server private key..."
+	  echo "Generating Nginx server private key..."
 	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
 	  echo "$vvvgenrsa"
   fi
@@ -435,7 +430,7 @@ nginx_setup() {
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir "/etc/nginx/upstreams/"
   fi
-  cp "/srv/config/nginx-config/php7.0-upstream.conf" "/etc/nginx/upstreams/php70.conf"
+  cp "/srv/config/nginx-config/php7.2-upstream.conf" "/etc/nginx/upstreams/php72.conf"
 
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir "/etc/nginx/custom-sites/"
@@ -445,26 +440,30 @@ nginx_setup() {
   echo " * Copied /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
   echo " * Copied /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
   echo " * Rsync'd /srv/config/nginx-config/sites/              to /etc/nginx/custom-sites"
+  mkdir -p /var/log/nginx/
+  touch /var/log/nginx/error.log
+  touch /var/log/nginx/access.log
 }
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php-config/php7.0-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
-  cp "/srv/config/php-config/php7.0-www.conf" "/etc/php/7.0/fpm/pool.d/www.conf"
-  cp "/srv/config/php-config/php7.0-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
+  cp "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
+  cp "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
 
-  echo " * Copied /srv/config/php-config/php7.0-fpm.conf   to /etc/php/7.0/fpm/php-fpm.conf"
-  echo " * Copied /srv/config/php-config/php7.0-www.conf   to /etc/php/7.0/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php-config/php7.0-custom.ini to /etc/php/7.0/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
+  echo " * Copied /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
+  echo " * Copied /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
+  cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 
-  echo " * Copied /srv/config/memcached-config/memcached.conf   to /etc/memcached.conf"
+  echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
 }
 
 mysql_setup() {
@@ -558,11 +557,11 @@ mailcatcher_setup() {
     echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
   fi
 
-  if [[ -f "/etc/php/7.0/mods-available/mailcatcher.ini" ]]; then
+  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
     echo " *" Mailcatcher php7 fpm already configured.
   else
-    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.0/mods-available/mailcatcher.ini"
+    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.2/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.2/mods-available/mailcatcher.ini"
   fi
 }
 
@@ -578,13 +577,11 @@ services_restart() {
   # Disable PHP Xdebug module by default
   phpdismod xdebug
 
-  # Enable PHP mcrypt module by default
-  phpenmod mcrypt
-
   # Enable PHP mailcatcher sendmail settings by default
   phpenmod mailcatcher
 
-  service php7.0-fpm restart
+  # Restart all php-fpm versions
+  find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
@@ -622,14 +619,14 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /vagrant/provision/phpcs
-  composer update --no-ansi --no-autoloader
+  noroot composer update --no-ansi --no-autoloader
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
   ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
   ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
   # Install the standards in PHPCS
-  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/,./CodeSniffer/Standards/VIP-Coding-Standards/
+  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/,./CodeSniffer/Standards/VIP-Coding-Standards/,./CodeSniffer/Standards/PHPCompatibility/
   phpcs --config-set default_standard WordPress-Core
   phpcs -i
 }

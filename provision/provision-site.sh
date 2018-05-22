@@ -36,6 +36,16 @@ get_primary_host() {
   echo ${value:-$1}
 }
 
+is_utility_installed() {
+  local utilities=`cat ${VVV_CONFIG} | shyaml get-values utilities.${1} 2> /dev/null`
+  for utility in ${utilities}; do
+    if [[ "${utility}" == "${2}" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 if [[ true == $SKIP_PROVISIONING ]]; then
     REPO=false
 fi
@@ -44,12 +54,12 @@ if [[ false != "${REPO}" ]]; then
   # Clone or pull the site repository
   if [[ ! -d ${VM_DIR}/.git ]]; then
     echo -e "\nDownloading ${SITE}, see ${REPO}"
-    git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR}
+    noroot git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR} -q
   else
     echo -e "\nUpdating ${SITE}..."
     cd ${VM_DIR}
-    git pull origin ${BRANCH}
-    git checkout ${BRANCH}
+    noroot git pull origin ${BRANCH} -q
+    noroot git checkout ${BRANCH} -q
   fi
 fi
 

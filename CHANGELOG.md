@@ -4,6 +4,42 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 2.2.1 (May, 2018)
+
+Note that to update to 2.2.1, you must remove the Vagrant triggers plugin and install Vagrant 2.1
+
+### Enhancements
+
+* Support for Vagrant 2.1, note that older versions of Vagrant and Vagrant Triggers are now deprecated
+* PHP 7.2 is now the default PHP version
+* Added the TLS CA authority, making HTTPS TLS/SSL connections to VVV sites easier, see [our docs on how to set this up](https://varyingvagrantvagrants.org/docs/en-US/references/https/)
+* The VVV terminal splash is now smaller, with better support for lighter colour schemes.
+* The dashboard is now a separate git repo cloned on provision, that can be overriden in `vvv-custom.yml`
+* PHPCompatibility PHPCS standards are now installed
+* VVV now has a `version` file
+* Private network IP can now be changed via `vvv-custom.yml`, see [#1407](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1407)
+* Default VM RAM bumped up to `2048` from `1024`, [see #1370](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1370)
+* The `src` subdomain of the WP develop site was disabled in line with changes to WP core
+* `php70` added to the core utility
+
+### Bug Fixes
+
+* Fixed the unexpected `-f` error on Windows
+* Fixed the splash not reporting git vs zip and branch on Windows
+* Fixes to PHPCS installation
+* Updated the box used for VMWare [see #1406](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1406)
+* When cloning utilities git ran as the root user [see #1491](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1491)
+* Composer ran under the root users [see #1489](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1489)
+* When cloning sites, git ran as the root user [see #1490](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1490)
+
+### Deprecations
+
+* `vvv-wordpress-develop` has been replaced by `custom-site-template-develop`
+* `vvv-wordpress` has been replaced by `custom-site-template`
+* Legacy TLS certificate generation for vvv.test was removed, it was broken, use the TLS-CA utility instead
+* PHP 7.0 is no longer the default PHP version used, and has been replaced with PHP 7.2, `php70` is available in the core utility [see #1484](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1484)
+* Older versions of Vagrant are no longer supported, Vagrant 2.1+ is now required
+
 ## 2.1.0 (November 8, 2017)
 
 ### Enhancements
@@ -39,7 +75,7 @@ A full `vagrant destroy` and `vagrant up` are recommended for best results. Runn
 
 It is possible to make the from VVV 1.4.x to 2.0.0 without a `vagrant destroy`, but the process will involve restructuring several things. Primarily, default project directories are now expected to contain a `public_html/` directory. This requires not only file changes, but new Nginx configurations. If you need help troubleshooting, don't hesitate to open a new issue.
 
-Please see the [migration documentation](https://varyingvagrantvagrants.org/docs/en-US/migrate-vvv-1/) for tips on how to manage this process.
+Please see the [migration documentation](https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/migrating-from-vvv-1-4-x/) for tips on how to manage this process.
 
 The decision to include breaking changes in a release is not made lightly. The new ability to configure your installation of VVV with a `vvv-custom.yml` file will make VVV entirely more flexible and maintainable than it has ever been. Please see the [release blog post](https://varyingvagrantvagrants.org/blog/2017/03/13/varying-vagrant-vagrants-2-0-0.html) and [documentation](https://varyingvagrantvagrants.org/docs/en-US/) for more details.
 

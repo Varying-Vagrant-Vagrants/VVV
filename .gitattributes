@@ -1,2 +1,8 @@
 # Force provisioning script to use LF, even on Windows
 * text eol=lf
+
+# Avoid binary files to be corrupted by CRLF conversion
+*.png binary
+*.gif binary
+*.jpg binary
+*.jpeg binary

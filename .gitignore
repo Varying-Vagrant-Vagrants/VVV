@@ -31,7 +31,7 @@
 /config/custom/*
 
 # Ignore the nvm git clone in the 'nvm' directory in config
-/config/nvm/*
+/config/nvm/
 
 # Ignore a custom bash_prompt if it exists
 /config/bash_prompt
@@ -43,7 +43,8 @@
 /database/data/*
 
 # Log files should be ignored.
-/log/**/*.log
+/log/*
+!/log/README.md
 
 # No need to share our individual sites with each other
 /www/*
@@ -64,9 +65,6 @@
 # And we provide our default host names in a dat file.
 !/www/vvv-hosts
 
-# And a few of our web directories are important to share.
-/www/default/*
-!/www/default/index.php
-
 # But not the custom phpMyAdmin config in the database-admin directory.
 /www/default/database-admin/config.inc.custom.php
+/certificates
