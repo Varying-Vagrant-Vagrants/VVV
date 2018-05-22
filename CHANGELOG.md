@@ -4,7 +4,41 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## TBD (TBD)
+## 2.2.1 (May, 2018)
+
+Note that to update to 2.2.1, you must remove the Vagrant triggers plugin and install Vagrant 2.1
+
+### Enhancements
+
+* Support for Vagrant 2.1, note that older versions of Vagrant and Vagrant Triggers are now deprecated
+* PHP 7.2 is now the default PHP version
+* Added the TLS CA authority, making HTTPS TLS/SSL connections to VVV sites easier, see [our docs on how to set this up](https://varyingvagrantvagrants.org/docs/en-US/references/https/)
+* The VVV terminal splash is now smaller, with better support for lighter colour schemes.
+* The dashboard is now a separate git repo cloned on provision, that can be overriden in `vvv-custom.yml`
+* PHPCompatibility PHPCS standards are now installed
+* VVV now has a `version` file
+* Private network IP can now be changed via `vvv-custom.yml`, see [#1407](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1407)
+* Default VM RAM bumped up to `2048` from `1024`, [see #1370](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1370)
+* The `src` subdomain of the WP develop site was disabled in line with changes to WP core
+* `php70` added to the core utility
+
+### Bug Fixes
+
+* Fixed the unexpected `-f` error on Windows
+* Fixed the splash not reporting git vs zip and branch on Windows
+* Fixes to PHPCS installation
+* Updated the box used for VMWare [see #1406](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1406)
+* When cloning utilities git ran as the root user [see #1491](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1491)
+* Composer ran under the root users [see #1489](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1489)
+* When cloning sites, git ran as the root user [see #1490](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1490)
+
+### Deprecations
+
+* `vvv-wordpress-develop` has been replaced by `custom-site-template-develop`
+* `vvv-wordpress` has been replaced by `custom-site-template`
+* Legacy TLS certificate generation for vvv.test was removed, it was broken, use the TLS-CA utility instead
+* PHP 7.0 is no longer the default PHP version used, and has been replaced with PHP 7.2, `php70` is available in the core utility [see #1484](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1484)
+* Older versions of Vagrant are no longer supported, Vagrant 2.1+ is now required
 
 ## 2.1.0 (November 8, 2017)
 
