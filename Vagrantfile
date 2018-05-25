@@ -528,6 +528,7 @@ Vagrant.configure("2") do |config|
   config.trigger.before :reload do |trigger|
     trigger.name = "VVV Pre-Reload"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_halt" }
+    trigger.on_error = :continue
   end
   config.trigger.after :reload do |trigger|
     trigger.name = "VVV Post-Reload"
@@ -536,13 +537,16 @@ Vagrant.configure("2") do |config|
   config.trigger.before :halt do |trigger|
     trigger.name = "VVV Pre-Halt"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_halt" }
+    trigger.on_error = :continue
   end
   config.trigger.before :suspend do |trigger|
     trigger.name = "VVV Pre-Suspend"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_suspend" }
+    trigger.on_error = :continue
   end
   config.trigger.before :destroy do |trigger|
     trigger.name = "VVV Pre-Destroy"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_destroy" }
+    trigger.on_error = :continue
   end
 end
