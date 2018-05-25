@@ -16,6 +16,8 @@ yellow="\033[38;5;3m"#136m"
 yellow_underlined="\033[4;38;5;3m"#136m"
 url=yellow_underlined
 creset="\033[0m"
+versionfile = File.open("version", "r")
+version = versionfile.read
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 if [ 'up', 'halt', 'resume', 'suspend', 'status', 'provision', 'reload' ].include? ARGV[0] then
@@ -38,7 +40,7 @@ STARS
   splash = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v2.2.1#{creset}-#{branch_c}#{git_or_zip}#{branch}
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
  
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
