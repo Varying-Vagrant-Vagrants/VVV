@@ -18,7 +18,7 @@ yellow="\033[38;5;3m"#136m"
 yellow_underlined="\033[4;38;5;3m"#136m"
 url=yellow_underlined
 creset="\033[0m"
-versionfile = File.open("version", "r")
+versionfile = File.open("#{vagrant_dir}/version", "r")
 version = versionfile.read
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
