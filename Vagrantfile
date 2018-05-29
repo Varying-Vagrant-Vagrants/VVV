@@ -1,8 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
 Vagrant.require_version ">= 2.1.0"
-Vagrant.require_plugin "vagrant-hostsupdater"
-
 require 'yaml'
 require 'fileutils'
 
