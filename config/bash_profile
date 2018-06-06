@@ -41,6 +41,9 @@ eval "$(grunt --completion=bash)"
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
 
+# Vagrant scripts
+export PATH="$PATH:/vagrant/config/homebin/"
+
 # nvm path
 export NVM_DIR="/srv/config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
