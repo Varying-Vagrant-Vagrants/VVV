@@ -487,7 +487,7 @@ mailhog_setup() {
     cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
   fi
   echo " * Starting MailHog"
-  mailhog -api-bind-addr 127.0.0.1:8025 -ui-bind-addr 127.0.0.1:1080 -smtp-bind-addr 127.0.0.1:1025
+  mailhog # serves UI on port 8025
 }
 
 mysql_setup() {
