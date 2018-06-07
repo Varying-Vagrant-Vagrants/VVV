@@ -98,9 +98,6 @@ apt_package_check_list=(
   g++
   nodejs
 
-  # MailHog requirement
-  golang-go
-
 )
 
 ### FUNCTIONS
@@ -466,22 +463,31 @@ phpfpm_setup() {
   echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
 }
 
+go_setup() {
+  if [[ ! -e /usr/local/bin/mailhog ]]; then
+    echo " * Installing GoLang 1.10.3"
+    curl -O https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+    tar -xvf go1.10.3.linux-amd64.tar.gz
+    mv go /usr/local
+    export PATH=$PATH:/usr/local/go/bin
+  fi
+}
 mailhog_setup() {
 
-  if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
+  if [[ ! -e /usr/local/bin/mailhog ]]; then
+    export GOPATH=/home/vagrant/gocodev
+    
     echo " * Fetching MailHog and MHSendmail"
-    noroot mkdir -p ~/gocode
+    
+    noroot mkdir -p /home/vagrant/gocode
     noroot go get github.com/mailhog/MailHog
     noroot go get github.com/mailhog/mhsendmail
 
     cp /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
     cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
-  end
+  fi
   echo " * Starting MailHog"
-  mailhog \
-  -api-bind-addr 127.0.0.1:8025 \
-  -ui-bind-addr 127.0.0.1:1080 \
-  -smtp-bind-addr 127.0.0.1:1025
+  mailhog -api-bind-addr 127.0.0.1:8025 -ui-bind-addr 127.0.0.1:1080 -smtp-bind-addr 127.0.0.1:1025
 }
 
 mysql_setup() {
@@ -644,6 +650,8 @@ git_ppa_check
 package_install
 tools_install
 nginx_setup
+go_setup
+mailhog_setup
 phpfpm_setup
 services_restart
 mysql_setup
