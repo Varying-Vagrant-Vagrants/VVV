@@ -661,11 +661,12 @@ fi
 
 tools_install
 nginx_setup
-<<<<<<< HEAD
 go_setup
 mailhog_setup
-=======
->>>>>>> removed mailcatcher
+
+go_setup
+mailhog_setup
+
 phpfpm_setup
 services_restart
 mysql_setup
