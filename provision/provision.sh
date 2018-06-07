@@ -93,6 +93,10 @@ apt_package_install_list=(
   # nodejs for use by grunt
   g++
   nodejs
+
+  # MailHog requirement
+  golang-go
+
 )
 
 ### FUNCTIONS
@@ -657,8 +661,11 @@ fi
 
 tools_install
 nginx_setup
+<<<<<<< HEAD
 go_setup
 mailhog_setup
+=======
+>>>>>>> removed mailcatcher
 phpfpm_setup
 services_restart
 mysql_setup
