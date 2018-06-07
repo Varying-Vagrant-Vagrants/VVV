@@ -38,6 +38,9 @@ eval "$(grunt --completion=bash)"
 # add autocomplete for wp-cli
 . /srv/config/wp-cli/wp-completion.bash
 
+# Go
+export GOPATH=$HOME/gocode
+
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
 

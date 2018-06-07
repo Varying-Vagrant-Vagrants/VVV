@@ -466,6 +466,24 @@ phpfpm_setup() {
   echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
 }
 
+mailhog_setup() {
+
+  if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
+    echo " * Fetching MailHog and MHSendmail"
+    noroot mkdir -p ~/gocode
+    noroot go get github.com/mailhog/MailHog
+    noroot go get github.com/mailhog/mhsendmail
+
+    cp /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
+    cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
+  end
+  echo " * Starting MailHog"
+  mailhog \
+  -api-bind-addr 127.0.0.1:8025 \
+  -ui-bind-addr 127.0.0.1:1080 \
+  -smtp-bind-addr 127.0.0.1:1025
+}
+
 mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
   local exists_mysql
