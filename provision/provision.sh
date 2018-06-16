@@ -16,14 +16,8 @@ start_seconds="$(date +%s)"
 # Build a bash array to pass all of the packages we want to install to a single
 # apt-get command. This avoids doing all the leg work each time a package is
 # set to install. It also allows us to easily comment out or add single
-# packages. We set the array as empty to begin with so that we can append
-# individual packages to it as required.
-apt_package_install_list=()
-
-# Start with a bash array containing all packages we want to install in the
-# virtual machine. We'll then loop through each of these and check individual
-# status before adding them to the apt_package_install_list array.
-apt_package_check_list=(
+# packages.
+apt_package_install_list=(
   # Please avoid apostrophes in these comments - they break vim syntax
   # highlighting.
 
@@ -196,25 +190,7 @@ print_pkg_info() {
   printf " * $pkg %${real_space}.${#pkg_version}s ${pkg_version}\n"
 }
 
-package_check() {
-  # Loop through each of our packages that should be installed on the system. If
-  # not yet installed, it should be added to the array of packages to install.
-  local pkg
-  local pkg_version
-
-  for pkg in "${apt_package_check_list[@]}"; do
-    if not_installed "${pkg}"; then
-      echo " *" "$pkg" [not installed]
-      apt_package_install_list+=($pkg)
-    else
-      pkg_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
-      print_pkg_info "$pkg" "$pkg_version"
-    fi
-  done
-}
-
 package_install() {
-  package_check
 
   # MariaDB/MySQL
   #
@@ -238,46 +214,47 @@ package_install() {
   echo "Linked custom apt sources"
 
   if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
-      # Retrieve the NodeJS signing key from nodesource.com
-      echo "Applying NodeSource NodeJS signing key..."
+    # Retrieve the NodeJS signing key from nodesource.com
+    echo "Applying NodeSource NodeJS signing key..."
 	  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
   fi
 
-  if [[ ${#apt_package_install_list[@]} = 0 ]]; then
-    echo -e "No apt packages to install.\n"
-  else
-    # Before running `apt-get update`, we should add the public keys for
-    # the packages that we are installing from non standard sources via
-    # our appended apt source.list
-
+  # Before running `apt-get update`, we should add the public keys for
+  # the packages that we are installing from non standard sources via
+  # our appended apt source.list
+  if [[ ! $( apt-key list | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
     wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
+  fi
 
+  if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo "Applying the PHP signing key..."
     apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
     apt-key export E5267A6C | apt-key add -
+  fi
 
+  if [[ ! $( apt-key list | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
     apt-key adv --quiet --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
-
-    # Update all of the package references before installing anything
-    echo "Running apt-get update..."
-    apt-get -y update
-
-    # Install required packages
-    echo "Installing apt-get packages..."
-    apt-get -y install ${apt_package_install_list[@]}
-
-    # Remove unnecessary packages
-    echo "Removing unnecessary packages..."
-    apt-get autoremove -y
-
-    # Clean up apt caches
-    apt-get clean
   fi
+
+  # Update all of the package references before installing anything
+  echo "Running apt-get update..."
+  apt-get -y update
+
+  # Install required packages
+  echo "Installing apt-get packages..."
+  apt-get -y install ${apt_package_install_list[@]}
+
+  # Remove unnecessary packages
+  echo "Removing unnecessary packages..."
+  apt-get autoremove -y
+
+  # Clean up apt caches
+  apt-get clean
 }
 
 tools_install() {
