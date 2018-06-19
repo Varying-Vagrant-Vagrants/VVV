@@ -9,10 +9,13 @@ deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
 deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
 
-# MariaDB 10.1 repository list as of 2017-03-04 21:42 UTC
+# MariaDB 10.3 repository list - created 2018-06-19 13:36 UTC
 # http://downloads.mariadb.org/mariadb/repositories/
-deb [arch=amd64,i386] http://mirrors.accretive-networks.net/mariadb/repo/10.1/ubuntu trusty main
-deb-src http://mirrors.accretive-networks.net/mariadb/repo/10.1/ubuntu trusty main
+deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu trusty main
+deb-src http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu trusty main
+
+deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu trusty main
+deb-src http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu trusty main
 
 # Provides Node.js
 deb https://deb.nodesource.com/node_6.x trusty main
