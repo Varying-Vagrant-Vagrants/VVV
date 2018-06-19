@@ -664,7 +664,7 @@ if ! package_install; then
   echo "Main packages check and install failed, halting provision"
   exit 1
 fi
-exit 0
+
 tools_install
 nginx_setup
 mailcatcher_setup
