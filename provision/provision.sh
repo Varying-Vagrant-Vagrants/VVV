@@ -20,6 +20,8 @@ start_seconds="$(date +%s)"
 apt_package_install_list=(
   # Please avoid apostrophes in these comments - they break vim syntax
   # highlighting.
+  # 
+  software-properties-common
 
   # PHP7
   #
@@ -247,8 +249,8 @@ package_install() {
 
   # Install required packages
   echo "Installing apt-get packages..."
-  if ! apt-get -y install ${apt_package_install_list[@]}; then
-  	apt-get clean
+  if ! apt-get -y install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+    apt-get clean
     return 1
   fi
 
@@ -662,6 +664,7 @@ if ! package_install; then
   echo "Main packages check and install failed, halting provision"
   exit 1
 fi
+exit 0
 tools_install
 nginx_setup
 mailcatcher_setup
