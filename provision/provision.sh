@@ -247,7 +247,10 @@ package_install() {
 
   # Install required packages
   echo "Installing apt-get packages..."
-  apt-get -y install ${apt_package_install_list[@]}
+  if ! apt-get -y install ${apt_package_install_list[@]}; then
+  	apt-get clean
+    return 1
+  fi
 
   # Remove unnecessary packages
   echo "Removing unnecessary packages..."
@@ -255,6 +258,8 @@ package_install() {
 
   # Clean up apt caches
   apt-get clean
+  
+  return 0
 }
 
 tools_install() {
@@ -653,7 +658,10 @@ network_check
 echo " "
 echo "Main packages check and install."
 git_ppa_check
-package_install
+if ! package_install; then
+  echo "Main packages check and install failed, halting provision"
+  exit 1
+fi
 tools_install
 nginx_setup
 mailcatcher_setup
