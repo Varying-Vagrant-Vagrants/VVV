@@ -101,6 +101,10 @@ apt_package_check_list=(
   # Mailcatcher requirement
   libsqlite3-dev
 
+
+  # ruby dev, needed or mailcatcher
+  ruby-dev
+
 )
 
 ### FUNCTIONS
