@@ -205,6 +205,12 @@ Vagrant.configure("2") do |config|
   # on your host machine inside the guest. See the manual for `ssh-add`.
   config.ssh.forward_agent = true
 
+  # SSH Key Insertion
+  #
+  # This is disabled, we had several contributors who ran into issues.
+  # See: https://github.com/Varying-Vagrant-Vagrants/VVV/issues/1551
+  config.ssh.insert_key = false
+
   # Default Ubuntu Box
   #
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
