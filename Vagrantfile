@@ -41,13 +41,56 @@ STARS
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
 #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
- 
+ HEREDOC
+
+  platform = '' + Vagrant::Util::Platform.platform + ' '
+  if Vagrant::Util::Platform.windows? then
+    if Vagrant::Util::Platform.wsl? then
+      platform = platform + 'wsl '
+    end
+    if Vagrant::Util::Platform.msys? then
+      platform = platform + 'msys '
+    end
+    if Vagrant::Util::Platform.cygwin? then
+      platform = platform + 'cygwin '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_enabled? then
+      platform = platform + 'HyperV-Enabled '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_admin? then
+      platform = platform + 'HyperV-Admin '
+    end
+    if Vagrant::Util::Platform.windows_admin? then
+      platform = platform + 'HasWinAdminPriv '
+    end
+  else
+
+    if ENV['SHELL'] then
+      platform = platform + "shell:" + ENV['SHELL']
+    end
+    if Vagrant::Util::Platform.systemd? then
+      platform = platform + 'systemd '
+    end
+  end
+
+  if Vagrant::Util::Platform.fs_case_sensitive? then
+    platform = platform + 'CaseSensitiveFS '
+  end
+  if ! Vagrant::Util::Platform.terminal_supports_colors? then
+    platform = platform + 'NoColour '
+  end
+
+ docs = <<-HEREDOC
+
+#{docs}Platform:   #{creset}#{platform}
+
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
 #{docs}Dashboard:  #{url}http://vvv.test#{creset}
 
   HEREDOC
   puts splash
+  puts docs
 end
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
