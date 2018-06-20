@@ -4,6 +4,17 @@ Vagrant.require_version ">= 2.1.0"
 require 'yaml'
 require 'fileutils'
 
+
+def virtualbox_version()
+    vboxmanage = Vagrant::Util::Which.which("VBoxManage") || Vagrant::Util::Which.which("VBoxManage.exe")
+    if vboxmanage != nil
+        s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
+        return s.stdout.strip!
+    else
+        return nil
+    end
+end
+
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 show_logo = false
 branch_c = "\033[38;5;6m"#111m"
@@ -27,21 +38,6 @@ if ENV['VVV_SKIP_LOGO'] then
   show_logo = false
 end
 if show_logo then
-  git_or_zip = "zip-no-vcs"
-  branch = ''
-  if File.directory?("#{vagrant_dir}/.git") then
-    git_or_zip = "git::"
-    branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
-    branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
-  end
-  stars = <<-STARS
-\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
-STARS
-  splash = <<-HEREDOC
-\033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
-#{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
- HEREDOC
 
   platform = '' + Vagrant::Util::Platform.platform + ' '
   if Vagrant::Util::Platform.windows? then
@@ -79,10 +75,25 @@ STARS
   if ! Vagrant::Util::Platform.terminal_supports_colors? then
     platform = platform + 'NoColour '
   end
+  
+  git_or_zip = "zip-no-vcs"
+  branch = ''
+  if File.directory?("#{vagrant_dir}/.git") then
+    git_or_zip = "git::"
+    branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
+    branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
+  end
+  stars = <<-STARS
+\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
+STARS
+  splash = <<-HEREDOC
+\033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
+#{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
 
- docs = <<-HEREDOC
-
-#{docs}Platform:   #{creset}#{platform}
+#{yellow}Platform:   #{yellow}#{platform}
+#{green}Vagrant:    #{green}#{Vagrant::VERSION}
+#{blue}VirtualBox: #{blue}#{virtualbox_version()}
 
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
@@ -90,7 +101,6 @@ STARS
 
   HEREDOC
   puts splash
-  puts docs
 end
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
