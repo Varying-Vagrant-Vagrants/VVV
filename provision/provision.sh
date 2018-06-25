@@ -222,7 +222,7 @@ package_install() {
   if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
     echo "Applying NodeSource NodeJS signing key..."
-	  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+    apt-key add /vagrant/config/apt-keys/nodesource.gpg.key
   fi
 
   # Before running `apt-get update`, we should add the public keys for
@@ -231,20 +231,19 @@ package_install() {
   if [[ ! $( apt-key list | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
-    wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
+    apt-key add /vagrant/config/apt-keys/nginx_signing.key
   fi
 
   if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo "Applying the PHP signing key..."
-    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
-    apt-key export E5267A6C | apt-key add -
+    apt-key add /vagrant/config/apt-keys/keyserver_ubuntu.key
   fi
 
   if [[ ! $( apt-key list | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
-    apt-key adv --quiet --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+    apt-key add /vagrant/config/apt-keys/mariadb.key
   fi
 
   # Update all of the package references before installing anything
@@ -391,18 +390,18 @@ tools_install() {
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
-	  echo "Generating Nginx server private key..."
-	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
-	  echo "$vvvgenrsa"
+    echo "Generating Nginx server private key..."
+    vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
+    echo "$vvvgenrsa"
   fi
   if [[ ! -e /etc/nginx/server-2.1.0.crt ]]; then
-	  echo "Sign the certificate using the above private key..."
-	  vvvsigncert="$(openssl req -new -x509 \
+    echo "Sign the certificate using the above private key..."
+    vvvsigncert="$(openssl req -new -x509 \
             -key /etc/nginx/server-2.1.0.key \
             -out /etc/nginx/server-2.1.0.crt \
             -days 3650 \
             -subj /CN=*.wordpress-develop.test/CN=*.wordpress.test/CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.vvv.local/CN=*.vvv.localhost/CN=*.vvv.test 2>&1)"
-	  echo "$vvvsigncert"
+    echo "$vvvsigncert"
   fi
 
   echo -e "\nSetup configuration files..."
