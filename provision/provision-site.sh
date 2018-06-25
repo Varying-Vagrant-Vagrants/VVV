@@ -121,5 +121,6 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
     fi
     done
   fi
+  service nginx restart
 fi
-service nginx restart
+
