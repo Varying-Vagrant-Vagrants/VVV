@@ -470,7 +470,7 @@ mailhog_setup() {
     cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
   fi
   echo " * Starting MailHog"
-  mailhog # serves UI on port 8025
+  # mailhog # serves UI on port 8025
 }
 
 mysql_setup() {
