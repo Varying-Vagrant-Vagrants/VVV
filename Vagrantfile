@@ -4,6 +4,17 @@ Vagrant.require_version ">= 2.1.0"
 require 'yaml'
 require 'fileutils'
 
+
+def virtualbox_version()
+    vboxmanage = Vagrant::Util::Which.which("VBoxManage") || Vagrant::Util::Which.which("VBoxManage.exe")
+    if vboxmanage != nil
+        s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
+        return s.stdout.strip!
+    else
+        return nil
+    end
+end
+
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 show_logo = false
 branch_c = "\033[38;5;6m"#111m"
@@ -27,6 +38,44 @@ if ENV['VVV_SKIP_LOGO'] then
   show_logo = false
 end
 if show_logo then
+
+  platform = '' + Vagrant::Util::Platform.platform + ' '
+  if Vagrant::Util::Platform.windows? then
+    if Vagrant::Util::Platform.wsl? then
+      platform = platform + 'wsl '
+    end
+    if Vagrant::Util::Platform.msys? then
+      platform = platform + 'msys '
+    end
+    if Vagrant::Util::Platform.cygwin? then
+      platform = platform + 'cygwin '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_enabled? then
+      platform = platform + 'HyperV-Enabled '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_admin? then
+      platform = platform + 'HyperV-Admin '
+    end
+    if Vagrant::Util::Platform.windows_admin? then
+      platform = platform + 'HasWinAdminPriv '
+    end
+  else
+
+    if ENV['SHELL'] then
+      platform = platform + "shell:" + ENV['SHELL']
+    end
+    if Vagrant::Util::Platform.systemd? then
+      platform = platform + 'systemd '
+    end
+  end
+
+  if Vagrant::Util::Platform.fs_case_sensitive? then
+    platform = platform + 'CaseSensitiveFS '
+  end
+  if ! Vagrant::Util::Platform.terminal_supports_colors? then
+    platform = platform + 'NoColour '
+  end
+  
   git_or_zip = "zip-no-vcs"
   branch = ''
   if File.directory?("#{vagrant_dir}/.git") then
@@ -41,7 +90,11 @@ STARS
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
 #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
- 
+
+#{yellow}Platform:   #{yellow}#{platform}
+#{green}Vagrant:    #{green}#{Vagrant::VERSION}
+#{blue}VirtualBox: #{blue}#{virtualbox_version()}
+
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
 #{docs}Dashboard:  #{url}http://vvv.test#{creset}
@@ -205,6 +258,12 @@ Vagrant.configure("2") do |config|
   # on your host machine inside the guest. See the manual for `ssh-add`.
   config.ssh.forward_agent = true
 
+  # SSH Key Insertion
+  #
+  # This is disabled, we had several contributors who ran into issues.
+  # See: https://github.com/Varying-Vagrant-Vagrants/VVV/issues/1551
+  config.ssh.insert_key = false
+
   # Default Ubuntu Box
   #
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
@@ -318,11 +377,7 @@ Vagrant.configure("2") do |config|
   # command is automatically issued on halt, suspend, and destroy if the vagrant-triggers
   # plugin is installed.
   if File.exists?(File.join(vagrant_dir,'database/data/mysql_upgrade_info')) then
-    if vagrant_version >= "1.3.0"
-      config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
-    else
-      config.vm.synced_folder "database/data/", "/var/lib/mysql", :extra => 'dmode=777,fmode=777'
-    end
+    config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
 
     # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
     # those are specific to Virtualbox. The folder is therefore overridden with one that
@@ -340,30 +395,22 @@ Vagrant.configure("2") do |config|
   # nginx as well as any pre-existing database files.
   config.vm.synced_folder "config/", "/srv/config"
 
-  # /srv/log/
+  # /var/log/
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder "log/", "/var/log", :owner => "www-data"
+  config.vm.synced_folder "log/", "/var/log", :owner => "ubuntu", :mount_options => [ "dmode=777", "fmode=777" ]
 
   # /srv/www/
   #
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
-  if vagrant_version >= "1.3.0"
-    config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
-  else
-    config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => 'dmode=775,fmode=774'
-  end
+  config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
 
   vvv_config['sites'].each do |site, args|
     if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
-      if vagrant_version >= "1.3.0"
-        config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
-      else
-        config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :extra => 'dmode=775,fmode=774'
-      end
+      config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
     end
   end
 
