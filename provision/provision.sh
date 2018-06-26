@@ -459,7 +459,7 @@ go_setup() {
 mailhog_setup() {
 
   if [[ ! -e /usr/local/bin/mailhog ]]; then
-    export GOPATH=/home/vagrant/gocodev
+    export GOPATH=/home/vagrant/gocode
     
     echo " * Fetching MailHog and MHSendmail"
     
