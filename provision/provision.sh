@@ -94,12 +94,8 @@ apt_package_install_list=(
   g++
   nodejs
 
-  # Mailcatcher requirement
-  libsqlite3-dev
-
-
-  # ruby dev, needed or mailcatcher
-  ruby-dev
+  # MailHog requirement
+  golang-go
 
 )
 
@@ -453,6 +449,53 @@ phpfpm_setup() {
   echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
 }
 
+go_setup() {
+  if [[ ! -e /usr/local/bin/mailhog ]]; then
+    echo " * Installing GoLang 1.10.3"
+    curl -sO https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+    tar -xvf go1.10.3.linux-amd64.tar.gz
+    rm go1.10.3.linux-amd64.tar.gz
+    mv go /usr/local
+    export PATH="$PATH:/usr/local/go/bin"
+  fi
+}
+mailhog_setup() {
+
+  if [[ ! -e /usr/local/bin/mailhog ]]; then
+    export GOPATH=/home/vagrant/gocode
+    
+    echo " * Fetching MailHog and MHSendmail"
+    
+    noroot mkdir -p /home/vagrant/gocode
+    noroot /usr/local/go/bin/go get github.com/mailhog/MailHog
+    noroot /usr/local/go/bin/go get github.com/mailhog/mhsendmail
+
+    cp /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
+    cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
+
+    # Make it start on reboot
+    tee /etc/init/mailhog.conf <<EOL
+description "Mailhog"
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+pre-start script
+    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
+end script
+EOL
+  fi
+  local exists_mailcatcher
+  exists_mailcatcher="$(service mailcatcher status)"
+  if [[ "mailcatcher: unrecognized service" != "${exists_mailcatcher}" ]]; then
+    service mailcatcher stop
+    if [[ -e /etc/init/mailcatcher.conf ]]; then
+      rm /etc/init/mailcatcher.conf
+    fi
+  fi
+  echo " * Starting MailHog"
+  service mailhog start
+}
+
 mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
   local exists_mysql
@@ -503,55 +546,6 @@ mysql_setup() {
   fi
 }
 
-mailcatcher_setup() {
-  # Mailcatcher
-  #
-  # Installs mailcatcher using RVM. RVM allows us to install the
-  # current version of ruby and all mailcatcher dependencies reliably.
-  local pkg
-  local rvm_version
-  local mailcatcher_version
-
-  rvm_version="$(/usr/bin/env rvm --silent --version 2>&1 | grep 'rvm ' | cut -d " " -f 2)"
-  if [[ -n "${rvm_version}" ]]; then
-    pkg="RVM"
-    print_pkg_info "$pkg" "$rvm_version"
-  else
-    # RVM key D39DC0E3
-    # Signatures introduced in 1.26.0
-    gpg -q --no-tty --batch --keyserver "hkp://keyserver.ubuntu.com:80" --recv-keys D39DC0E3
-    gpg -q --no-tty --batch --keyserver "hkp://keyserver.ubuntu.com:80" --recv-keys BF04FF17
-
-    printf " * RVM [not installed]\n Installing from source"
-    curl --silent -L "https://raw.githubusercontent.com/rvm/rvm/stable/binscripts/rvm-installer" | sudo bash -s stable --ruby --quiet-curl
-    source "/usr/local/rvm/scripts/rvm"
-  fi
-
-  mailcatcher_version="$(/usr/bin/env mailcatcher --version 2>&1 | grep 'mailcatcher ' | cut -d " " -f 2)"
-  if [[ -n "${mailcatcher_version}" ]]; then
-    pkg="Mailcatcher"
-    print_pkg_info "$pkg" "$mailcatcher_version"
-  else
-    echo " * Mailcatcher [not installed]"
-    /usr/bin/env rvm default@mailcatcher --create do gem install mailcatcher --no-rdoc --no-ri
-    /usr/bin/env rvm wrapper default@mailcatcher --no-prefix mailcatcher catchmail
-  fi
-
-  if [[ -f "/etc/init/mailcatcher.conf" ]]; then
-    echo " *" Mailcatcher upstart already configured.
-  else
-    cp "/srv/config/init/mailcatcher.conf"  "/etc/init/mailcatcher.conf"
-    echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
-  fi
-
-  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
-    echo " *" Mailcatcher php7 fpm already configured.
-  else
-    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.2/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.2/mods-available/mailcatcher.ini"
-  fi
-}
-
 services_restart() {
   # RESTART SERVICES
   #
@@ -559,13 +553,9 @@ services_restart() {
   echo -e "\nRestart services..."
   service nginx restart
   service memcached restart
-  service mailcatcher restart
 
   # Disable PHP Xdebug module by default
   phpdismod xdebug
-
-  # Enable PHP mailcatcher sendmail settings by default
-  phpenmod mailcatcher
 
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
@@ -670,7 +660,12 @@ fi
 
 tools_install
 nginx_setup
-mailcatcher_setup
+go_setup
+mailhog_setup
+
+go_setup
+mailhog_setup
+
 phpfpm_setup
 services_restart
 mysql_setup
