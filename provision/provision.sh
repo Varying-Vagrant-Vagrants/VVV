@@ -451,6 +451,7 @@ go_setup() {
     echo " * Installing GoLang 1.10.3"
     curl -sO https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
     tar -xvf go1.10.3.linux-amd64.tar.gz
+    rm go1.10.3.linux-amd64.tar.gz
     mv go /usr/local
     export PATH="$PATH:/usr/local/go/bin"
   fi
@@ -463,14 +464,14 @@ mailhog_setup() {
     echo " * Fetching MailHog and MHSendmail"
     
     noroot mkdir -p /home/vagrant/gocode
-    noroot go get github.com/mailhog/MailHog
-    noroot go get github.com/mailhog/mhsendmail
+    noroot /usr/local/go/bin/go get github.com/mailhog/MailHog
+    noroot /usr/local/go/bin/go get github.com/mailhog/mhsendmail
 
     cp /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
     cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
 
     # Make it start on reboot
-    sudo tee /etc/init/mailhog.conf <<EOL
+    tee /etc/init/mailhog.conf <<EOL
 description "Mailhog"
 start on runlevel [2345]
 stop on runlevel [!2345]
@@ -481,12 +482,11 @@ end script
 EOL
   fi
   exists_mailcatcher="$(service mailcatcher status)"
-  if [[ "mailcatcher: unrecognized service" != "${exists_mysql}" ]]; then
+  if [[ "mailcatcher: unrecognized service" != "${exists_mailcatcher}" ]]; then
     service mailcatcher stop
     rm /etc/init/mailcatcher.conf
   fi
   echo " * Starting MailHog"
-  service mailcatcher stop
   service mailhog start
 }
 
