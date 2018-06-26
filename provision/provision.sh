@@ -481,10 +481,13 @@ pre-start script
 end script
 EOL
   fi
+  local exists_mailcatcher
   exists_mailcatcher="$(service mailcatcher status)"
   if [[ "mailcatcher: unrecognized service" != "${exists_mailcatcher}" ]]; then
     service mailcatcher stop
-    rm /etc/init/mailcatcher.conf
+    if [[ -e /etc/init/mailcatcher.conf ]]; then
+      rm /etc/init/mailcatcher.conf
+    fi
   fi
   echo " * Starting MailHog"
   service mailhog start
