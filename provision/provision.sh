@@ -449,7 +449,7 @@ phpfpm_setup() {
 go_setup() {
   if [[ ! -e /usr/local/bin/mailhog ]]; then
     echo " * Installing GoLang 1.10.3"
-    curl -O https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+    curl -sO https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
     tar -xvf go1.10.3.linux-amd64.tar.gz
     mv go /usr/local
     export PATH="$PATH:/usr/local/go/bin"
@@ -468,9 +468,26 @@ mailhog_setup() {
 
     cp /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
     cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
+
+    # Make it start on reboot
+    sudo tee /etc/init/mailhog.conf <<EOL
+description "Mailhog"
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+pre-start script
+    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
+end script
+EOL
+  fi
+  exists_mailcatcher="$(service mailcatcher status)"
+  if [[ "mailcatcher: unrecognized service" != "${exists_mysql}" ]]; then
+    service mailcatcher stop
+    rm /etc/init/mailcatcher.conf
   fi
   echo " * Starting MailHog"
-  # mailhog # serves UI on port 8025
+  service mailcatcher stop
+  service mailhog start
 }
 
 mysql_setup() {
