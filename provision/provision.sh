@@ -111,7 +111,7 @@ network_detection() {
   # Make an HTTP request to google.com to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://google.com 2>&1 | grep 'connected')" ]]; then
+  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 8.8.8.8 2>&1 | grep 'connected')" ]]; then
     echo "Network connection detected..."
     ping_result="Connected"
   else
