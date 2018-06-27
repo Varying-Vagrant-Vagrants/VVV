@@ -111,7 +111,7 @@ network_detection() {
   # Make an HTTP request to google.com to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=5 --spider --recursive --level=2 http://google.com 2>&1 | grep 'connected')" ]]; then
+  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://google.com 2>&1 | grep 'connected')" ]]; then
     echo "Network connection detected..."
     ping_result="Connected"
   else
@@ -123,8 +123,30 @@ network_detection() {
 network_check() {
   network_detection
   if [[ ! "$ping_result" == "Connected" ]]; then
-    echo -e "\nNo network connection available, skipping package installation"
-    exit 0
+    echo " "
+    echo "#################################################################"
+    echo " "
+    echo " Problem:"
+    echo " Provisioning needs a network connection but none was found."
+    echo " VVV tried to ping google.com, and got no response."
+    echo " "
+    echo " Make sure you have a working internet connection, that you "
+    echo " restarted after installing VirtualBox and Vagrant, and that they"
+    echo " aren't blocked by a firewall."
+    echo " "
+    echo " Additionally, if you're at a contributor day event, be kind,"
+    echo " provisioning involves downloading things, a full provision may "
+    echo " ruin the wifi for everybody else :("
+    echo " "
+    echo " Network ifconfig output:"
+    echo " "
+    ifconfig
+    echo " "
+    echo " No network connection available, aborting provision"
+    echo " "
+    echo "#################################################################"
+
+    exit 1
   fi
 }
 
