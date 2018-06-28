@@ -223,6 +223,10 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--cpus", vvv_config['vm_config']['cores']]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    
+    # see https://github.com/hashicorp/vagrant/issues/7648
+    v.customize ['modifyvm', :id, '--cableconnected1', 'on']
+
     v.customize ["modifyvm", :id, "--rtcuseutc", "on"]
     v.customize ["modifyvm", :id, "--audio", "none"]
     v.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
