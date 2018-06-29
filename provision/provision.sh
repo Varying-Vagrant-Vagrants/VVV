@@ -107,7 +107,7 @@ network_detection() {
   # Make an HTTP request to google.com to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 8.8.8.8 2>&1 | grep 'connected')" ]]; then
+  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://google.com 2>&1 | grep 'connected')" ]]; then
     echo "Network connection detected..."
     ping_result="Connected"
   else
@@ -123,13 +123,19 @@ network_check() {
     echo "#################################################################"
     echo " "
     echo "Problem:"
+    echo " "
     echo "Provisioning needs a network connection but none was found."
     echo "VVV tried to ping google.com, and got no response."
     echo " "
     echo "Make sure you have a working internet connection, that you "
-    echo "restarted after installing VirtualBox and Vagrant, and that they"
-    echo "aren't blocked by a firewall. If you can load https://google.com"
-    echo "in your browser, then VVV should be able to connect."
+    echo "restarted after installing VirtualBox and Vagrant, and that "
+    echo "they aren't blocked by a firewall or security software. If"
+    echo "you can load https://google.com in your browser, then VVV"
+    echo "should be able to connect."
+    echo " "
+    echo "Also note that some users have reported issues when combined"
+    echo "with VPNs, disable your VPN and reprovision to see if this is"
+    echo "the cause."
     echo " "
     echo "Additionally, if you're at a contributor day event, be kind,"
     echo "provisioning involves downloading things, a full provision may "
@@ -144,6 +150,10 @@ network_check() {
     echo "If that doesn't work, and you're sure you have a strong "
     echo "internet connection, open an issue on GitHub, and include the "
     echo "output above so that the problem can be debugged"
+    echo " "
+    echo "vagrant reload --provision"
+    echo " "
+    echo "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
     echo " "
     echo "#################################################################"
 
