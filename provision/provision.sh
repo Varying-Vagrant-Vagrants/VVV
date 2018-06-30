@@ -308,7 +308,7 @@ package_install() {
 
   # Install required packages
   echo "Installing apt-get packages..."
-  if ! apt-get -y install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+  if ! apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
     apt-get clean
     return 1
   fi
