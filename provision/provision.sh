@@ -201,6 +201,8 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
     rm /etc/update-motd.d/98-cloudguest
   fi
+  cp "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
+  chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
 profile_setup() {
