@@ -180,6 +180,37 @@ noroot() {
   sudo -EH -u "vagrant" "$@";
 }
 
+cleanup_terminal_splash() {
+  # Dastardly Ubuntu tries to be helpful and suggest users update packages
+  # themselves, but this can break things
+  if [[ -f /etc/update-motd.d/00-header ]]; then
+    rm /etc/update-motd.d/00-header
+  fi
+  if [[ -f /etc/update-motd.d/10-help-text ]]; then
+    rm /etc/update-motd.d/10-help-text
+  fi
+  if [[ -f /etc/update-motd.d/51-cloudguest ]]; then
+    rm /etc/update-motd.d/51-cloudguest
+  fi
+  if [[ -f /etc/update-motd.d/50-landscape-sysinfo ]]; then
+    rm /etc/update-motd.d/50-landscape-sysinfo
+  fi
+  if [[ -f /etc/update-motd.d/90-updates-available ]]; then
+    rm /etc/update-motd.d/90-updates-available
+  fi
+  if [[ -f /etc/update-motd.d/91-release-upgrade ]]; then
+    rm /etc/update-motd.d/91-release-upgrade
+  fi
+  if [[ -f /etc/update-motd.d/95-hwe-eol ]]; then
+    rm /etc/update-motd.d/95-hwe-eol
+  fi
+  if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
+    rm /etc/update-motd.d/98-cloudguest
+  fi
+  cp "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
+  chmod +x /etc/update-motd.d/00-vvv-bash-splash
+}
+
 profile_setup() {
   # Copy custom dotfiles and bin file for the vagrant user from local
   cp "/srv/config/bash_profile" "/home/vagrant/.bash_profile"
@@ -683,6 +714,7 @@ cleanup_vvv(){
 network_check
 # Profile_setup
 echo "Bash profile setup and directories."
+cleanup_terminal_splash
 profile_setup
 
 network_check

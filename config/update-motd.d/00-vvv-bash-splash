@@ -1,0 +1,12 @@
+#!/bin/bash
+
+red="\033[38;5;9m"
+green="\033[1;38;5;2m"
+blue="\033[38;5;4m"
+purple="\033[38;5;5m"
+yellow="\033[38;5;3m"
+creset="\033[0m"
+echo -e "\033[1;38;5;196m__ ${green}__ ${blue}__ __ "
+echo -e "${red}\\ V${green}\\ V${blue}\\ V / ${red}Varying ${green}Vagrant ${blue}Vagrants"
+echo -e "${red} \\_/${green}\\_/${blue}\\_/  ${yellow}Have a nice day ${creset}"
+echo " "
