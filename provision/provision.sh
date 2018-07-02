@@ -192,11 +192,17 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/51-cloudguest ]]; then
     rm /etc/update-motd.d/51-cloudguest
   fi
+  if [[ -f /etc/update-motd.d/50-landscape-sysinfo ]]; then
+    rm /etc/update-motd.d/50-landscape-sysinfo
+  fi
   if [[ -f /etc/update-motd.d/90-updates-available ]]; then
     rm /etc/update-motd.d/90-updates-available
   fi
   if [[ -f /etc/update-motd.d/91-release-upgrade ]]; then
     rm /etc/update-motd.d/91-release-upgrade
+  fi
+  if [[ -f /etc/update-motd.d/95-hwe-eol ]]; then
+    rm /etc/update-motd.d/95-hwe-eol
   fi
   if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
     rm /etc/update-motd.d/98-cloudguest
