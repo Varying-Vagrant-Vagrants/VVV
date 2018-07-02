@@ -183,22 +183,22 @@ noroot() {
 cleanup_terminal_splash() {
   # Dastardly Ubuntu tries to be helpful and suggest users update packages
   # themselves, but this can break things
-  if [[ -e /etc/update-motd.d/00-header ]]; then
+  if [[ -f /etc/update-motd.d/00-header ]]; then
     rm /etc/update-motd.d/00-header
   fi
-  if [[ -e /etc/update-motd.d/10-help-text ]]; then
+  if [[ -f /etc/update-motd.d/10-help-text ]]; then
     rm /etc/update-motd.d/10-help-text
   fi
-  if [[ -e /etc/update-motd.d/51-cloudguest ]]; then
+  if [[ -f /etc/update-motd.d/51-cloudguest ]]; then
     rm /etc/update-motd.d/51-cloudguest
   fi
-  if [[ -e /etc/update-motd.d/90-updates-available ]]; then
+  if [[ -f /etc/update-motd.d/90-updates-available ]]; then
     rm /etc/update-motd.d/90-updates-available
   fi
-  if [[ -e /etc/update-motd.d/91-release-upgrade ]]; then
+  if [[ -f /etc/update-motd.d/91-release-upgrade ]]; then
     rm /etc/update-motd.d/91-release-upgrade
   fi
-  if [[ -e /etc/update-motd.d/98-cloudguest ]]; then
+  if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
     rm /etc/update-motd.d/98-cloudguest
   fi
 }
