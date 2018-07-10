@@ -532,17 +532,19 @@ Vagrant.configure("2") do |config|
   end
 
   vvv_config['sites'].each do |site, args|
-    config.vm.provision "site-#{site}",
-      type: "shell",
-      path: File.join( "provision", "provision-site.sh" ),
-      args: [
-        site,
-        args['repo'].to_s,
-        args['branch'],
-        args['vm_dir'],
-        args['skip_provisioning'].to_s,
-        args['nginx_upstream']
-      ]
+    if args['skip_provisioning'] === false then
+      config.vm.provision "site-#{site}",
+        type: "shell",
+        path: File.join( "provision", "provision-site.sh" ),
+        args: [
+          site,
+          args['repo'].to_s,
+          args['branch'],
+          args['vm_dir'],
+          args['skip_provisioning'].to_s,
+          args['nginx_upstream']
+        ]
+    end
   end
 
 
