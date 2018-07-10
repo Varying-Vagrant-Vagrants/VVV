@@ -512,6 +512,11 @@ phpfpm_setup() {
   echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
   echo " * Copied /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
 
+  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
+    echo " * Cleaning up mailcatcher.ini from a previous install"
+    rm -f /etc/php/7.2/mods-available/mailcatcher.ini
+  fi
+
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
@@ -623,9 +628,13 @@ services_restart() {
   echo -e "\nRestart services..."
   service nginx restart
   service memcached restart
+  service mailhog restart
 
   # Disable PHP Xdebug module by default
   phpdismod xdebug
+
+  # Enable PHP mailcatcher sendmail settings by default
+  phpenmod mailcatcher
 
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
