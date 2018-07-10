@@ -555,7 +555,7 @@ mailhog_setup() {
 
     # Make it start on reboot
     tee /etc/init/mailhog.conf <<EOL
-description "Mailhog"
+description "MailHog"
 start on runlevel [2345]
 stop on runlevel [!2345]
 respawn
@@ -564,13 +564,9 @@ pre-start script
 end script
 EOL
   fi
-  local exists_mailcatcher
-  exists_mailcatcher="$(service mailcatcher status)"
-  if [[ "mailcatcher: unrecognized service" != "${exists_mailcatcher}" ]]; then
-    service mailcatcher stop
-    if [[ -e /etc/init/mailcatcher.conf ]]; then
-      rm /etc/init/mailcatcher.conf
-    fi
+  if [[ -e /etc/init/mailcatcher.conf ]]; then
+    echo " * Cleaning up old MailCatcher startup file"
+    rm /etc/init/mailcatcher.conf
   fi
   echo " * Starting MailHog"
   service mailhog start
@@ -639,7 +635,7 @@ services_restart() {
   phpdismod xdebug
 
   # Enable PHP mailcatcher sendmail settings by default
-  phpenmod mailcatcher
+  phpenmod mailhog
 
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
