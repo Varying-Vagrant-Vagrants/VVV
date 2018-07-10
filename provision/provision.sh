@@ -536,6 +536,11 @@ go_setup() {
 }
 mailhog_setup() {
 
+  if [[ -f "/etc/init/mailcatcher.conf" ]]; then
+    echo " * Cleaning up old mailcatcher.conf"
+    rm -f /etc/init/mailcatcher.conf
+  fi
+
   if [[ ! -e /usr/local/bin/mailhog ]]; then
     export GOPATH=/home/vagrant/gocode
     
