@@ -1,6 +1,8 @@
 <!--- Hello! Thanks for using VVV and taking the time to open an issue. -->
 <!--- Please use the Title field to provide a clear summary of the issue. -->
 
+<!-- Have you tried the develop branch? Your problem might already be fixed! -->
+
 <!-- What follows is a request for information that will go a long way in helping anyone
 contributing to the VVV project to follow along with your bug, enhancement, or feature
 request. Anything written in an HTML comment (like this paragraph) will not be shown
@@ -35,7 +37,9 @@ log into a gist at gist.github.com and paste the link here. -->
 <!--- Providing context helps us come up with a solution that is most useful in the real world -->
 
 ## Your Environment
-<!--- Include as many relevant details about the environment you experienced the bug in -->
+<!--- IMPORTANT: Include as many relevant details about the environment you experienced the bug in -->
+<!--- If you don't provide this info, you will still be asked for it. --->
+<!--- A lot of the information is given when you run vagrant status -->
 * VVV version: <!-- don't forget the point releases -->
 * VVV Git Branch: <!-- master, develop, zip download? -->
 * Vagrant version:
