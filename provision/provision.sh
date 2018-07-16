@@ -104,14 +104,14 @@ apt_package_install_list=(
 network_detection() {
   # Network Detection
   #
-  # Make an HTTP request to google.com to determine if outside access is available
+  # Make an HTTP request to ppa.launchpad.net to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://google.com 2>&1 | grep 'connected')" ]]; then
-    echo "Network connection detected..."
+  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://ppa.launchpad.net 2>&1 | grep 'connected')" ]]; then
+    echo "Succesful Network connection to ppa.launchpad.net detected..."
     ping_result="Connected"
   else
-    echo "Network connection not detected. Unable to reach google.com..."
+    echo "Network connection not detected. Unable to reach ppa.launchpad.net..."
     ping_result="Not Connected"
   fi
 }
@@ -130,7 +130,7 @@ network_check() {
     echo "Make sure you have a working internet connection, that you "
     echo "restarted after installing VirtualBox and Vagrant, and that "
     echo "they aren't blocked by a firewall or security software. If"
-    echo "you can load https://google.com in your browser, then VVV"
+    echo "you can load https://ppa.launchpad.net in your browser, then VVV"
     echo "should be able to connect."
     echo " "
     echo "Also note that some users have reported issues when combined"
