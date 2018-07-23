@@ -226,6 +226,7 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--rtcuseutc", "on"]
     v.customize ["modifyvm", :id, "--audio", "none"]
     v.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//srv/www", "1"]
 
     # Set the box name in VirtualBox to match the working directory.
     vvv_pwd = Dir.pwd
