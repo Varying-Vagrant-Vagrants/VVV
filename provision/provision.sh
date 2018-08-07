@@ -744,9 +744,6 @@ nginx_setup
 go_setup
 mailhog_setup
 
-go_setup
-mailhog_setup
-
 phpfpm_setup
 services_restart
 mysql_setup
