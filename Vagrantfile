@@ -424,6 +424,7 @@ Vagrant.configure("2") do |config|
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
+    override.vm.synced_folder "log/", "/var/log", :owner => "www-data", :mount_options => []
 
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
