@@ -125,7 +125,7 @@ network_check() {
     echo "Problem:"
     echo " "
     echo "Provisioning needs a network connection but none was found."
-    echo "VVV tried to ping google.com, and got no response."
+    echo "VVV tried to ping ppa.launchpad.net, and got no response."
     echo " "
     echo "Make sure you have a working internet connection, that you "
     echo "restarted after installing VirtualBox and Vagrant, and that "
