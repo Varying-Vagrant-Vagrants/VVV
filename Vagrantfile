@@ -451,12 +451,6 @@ Vagrant.configure("2") do |config|
         override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
       end
     end
-    # Change all the folder to use SMB instead of Virtual Box shares
-    #override.vm.synced_folders.each do |id, options|
-    #  if ! options[:type]
-    #    options[:type] = "smb"
-    #  end
-    #end
   end
 
   # Customfile - POSSIBLY UNSTABLE
