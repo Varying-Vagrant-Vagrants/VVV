@@ -290,7 +290,6 @@ Vagrant.configure("2") do |config|
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
-    #override.vm.box = "phawxby/trusty64"
     override.vm.box = "bento/ubuntu-14.04"
   end
 
