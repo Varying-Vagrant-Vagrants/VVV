@@ -93,10 +93,6 @@ apt_package_install_list=(
   # nodejs for use by grunt
   g++
   nodejs
-
-  # MailHog requirement
-  golang-go
-
 )
 
 ### FUNCTIONS
@@ -533,12 +529,18 @@ phpfpm_setup() {
 
 go_setup() {
   if [[ ! -e /usr/local/bin/mailhog ]]; then
-    echo " * Installing GoLang 1.10.3"
-    curl -sO https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
-    tar -xvf go1.10.3.linux-amd64.tar.gz
-    rm go1.10.3.linux-amd64.tar.gz
-    mv go /usr/local
-    export PATH="$PATH:/usr/local/go/bin"
+      local DOWNLOADS_PAGE=$(curl --silent "https://golang.org/dl/")
+      local DOWNLOADS_RE="https://dl\\.google\\.com/go/go([0-9]\\.[0-9]+)+\\.linux-amd64\\.tar\\.gz"
+
+      if [[ $DOWNLOADS_PAGE =~ $DOWNLOADS_RE ]]; then
+          echo " * Installing GoLang ${BASH_REMATCH[1]}"
+          curl -so- ${BASH_REMATCH[0]} | tar zxvf -
+          mv go /usr/local
+          export PATH="$PATH:/usr/local/go/bin"
+      else
+          echo "Could not find link to latest GoLang!"
+          return 1
+      fi
   fi
 }
 mailhog_setup() {
