@@ -331,23 +331,30 @@ package_install() {
   return 0
 }
 
+# taken from <https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c>
+latest_github_release() {
+    local LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$1/releases/latest") # Get latest release from GitHub api
+    local GITHUB_RELEASE_REGEXP="\"tag_name\": \"([^\"]+)\""
+
+    if [[ $LATEST_RELEASE =~ $GITHUB_RELEASE_REGEXP ]]; then
+        echo "${BASH_REMATCH[1]}"
+        return 0
+    fi
+
+    return 1
+}
+
 tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /vagrant/config/homebin/xdebug_off
 
+  local LATEST_NVM=$(latest_github_release "creationix/nvm")
+
   # nvm
-  if [[ ! -d "/srv/config/nvm" ]]; then
-    echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
-    git clone "https://github.com/creationix/nvm.git" "/srv/config/nvm"
-    cd /srv/config/nvm
-    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
-  else
-    echo -e "\nUpdating nvm..."
-    cd /srv/config/nvm
-    git fetch origin
-    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin` -q
-  fi
-  # Activate nvm
+  mkdir -p "/srv/config/nvm" &&
+      curl -so- https://raw.githubusercontent.com/creationix/nvm/$LATEST_NVM/install.sh |
+          METHOD=script NVM_DIR=/srv/config/nvm bash
+
   source /srv/config/nvm/nvm.sh
 
   # npm
