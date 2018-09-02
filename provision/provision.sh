@@ -66,6 +66,7 @@ apt_package_install_list=(
   imagemagick
   subversion
   git
+  git-lfs
   zip
   unzip
   ngrep
@@ -308,6 +309,12 @@ package_install() {
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
     apt-key add /vagrant/config/apt-keys/mariadb.key
+  fi
+
+  if [[ ! $( apt-key list | grep 'packagecloud ops') ]]; then
+    # Apply the PackageCloud signing key which signs git lfs
+    echo "Applying the PackageCloud signing key..."
+    apt-key add /vagrant/config/apt-keys/git-lfs.key
   fi
 
   # Update all of the package references before installing anything
