@@ -528,21 +528,15 @@ phpfpm_setup() {
 }
 
 go_setup() {
-  if [[ ! -e /usr/local/bin/mailhog ]]; then
-      local DOWNLOADS_PAGE=$(curl --silent "https://golang.org/dl/")
-      local DOWNLOADS_RE="https://dl\\.google\\.com/go/go([0-9]\\.[0-9]+)+\\.linux-amd64\\.tar\\.gz"
-
-      if [[ $DOWNLOADS_PAGE =~ $DOWNLOADS_RE ]]; then
-          echo " * Installing GoLang ${BASH_REMATCH[1]}"
-          curl -so- ${BASH_REMATCH[0]} | tar zxvf -
-          mv go /usr/local
-          export PATH="$PATH:/usr/local/go/bin"
-      else
-          echo "Could not find link to latest GoLang!"
-          return 1
-      fi
+  if [[ ! -e /usr/local/go/bin/go ]]; then
+      echo " * Installing GoLang 1.10.3"
+      curl -so- https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz | tar zxvf -
+      mv go /usr/local
+      export PATH="$PATH:/usr/local/go/bin"
+      export GOPATH=/home/vagrant/gocode
   fi
 }
+
 mailhog_setup() {
 
   if [[ -f "/etc/init/mailcatcher.conf" ]]; then
