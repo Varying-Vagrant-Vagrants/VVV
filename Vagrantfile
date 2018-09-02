@@ -116,6 +116,14 @@ if ! vvv_config['sites'].kind_of? Hash then
   vvv_config['sites'] = Hash.new
 end
 
+if ! vvv_config['general'].kind_of? Hash then
+  vvv_config['general'] = Hash.new
+end
+
+general_defaults = Hash.new
+general_defaults['provision'] = 'all'
+vvv_config['general'] = general_defaults.merge(vvv_config['general'])
+
 if ! vvv_config['hosts'].kind_of? Hash then
   vvv_config['hosts'] = Array.new
 end
@@ -480,85 +488,89 @@ Vagrant.configure("2") do |config|
   # Provisioning
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
-  #
-  # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
-  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
-  # file) should go in this script. If it does not exist, no extra provisioning will run.
-  if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
-    config.vm.provision "pre", type: "shell", path: File.join( "provision", "provision-pre.sh" )
-  end
-
-  # provision.sh or provision-custom.sh
-  #
-  # By default, Vagrantfile is set to use the provision.sh bash script located in the
-  # provision directory. If it is detected that a provision-custom.sh script has been
-  # created, that is run as a replacement. This is an opportunity to replace the entirety
-  # of the provisioning provided by default.
-  if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
-    config.vm.provision "custom", type: "shell", path: File.join( "provision", "provision-custom.sh" )
-  else
-    config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
-  end
-
-  # Provision the dashboard that appears when you visit vvv.test
-  config.vm.provision "dashboard",
-      type: "shell",
-      path: File.join( "provision", "provision-dashboard.sh" ),
-      args: [
-        vvv_config['dashboard']['repo'],
-        vvv_config['dashboard']['branch']
-      ]
-
-  vvv_config['utility-sources'].each do |name, args|
-    config.vm.provision "utility-source-#{name}",
-      type: "shell",
-      path: File.join( "provision", "provision-utility-source.sh" ),
-      args: [
-          name,
-          args['repo'].to_s,
-          args['branch'],
-      ]
-  end
-
-  vvv_config['utilities'].each do |name, utilities|
-
-    if ! utilities.kind_of? Array then
-      utilities = Hash.new
+  
+  if vvv_config['general']['provision'] == 'all' then
+    # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
+    # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
+    # file) should go in this script. If it does not exist, no extra provisioning will run.
+    if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
+      config.vm.provision "pre", type: "shell", path: File.join( "provision", "provision-pre.sh" )
     end
-    utilities.each do |utility|
-        config.vm.provision "utility-#{name}-#{utility}",
-          type: "shell",
-          path: File.join( "provision", "provision-utility.sh" ),
-          args: [
-              name,
-              utility
-          ]
-      end
-  end
 
-  vvv_config['sites'].each do |site, args|
-    if args['skip_provisioning'] === false then
-      config.vm.provision "site-#{site}",
+    # provision.sh or provision-custom.sh
+    #
+    # By default, Vagrantfile is set to use the provision.sh bash script located in the
+    # provision directory. If it is detected that a provision-custom.sh script has been
+    # created, that is run as a replacement. This is an opportunity to replace the entirety
+    # of the provisioning provided by default.
+    if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
+      config.vm.provision "custom", type: "shell", path: File.join( "provision", "provision-custom.sh" )
+    else
+      config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
+    end
+
+    # Provision the dashboard that appears when you visit vvv.test
+    config.vm.provision "dashboard",
         type: "shell",
-        path: File.join( "provision", "provision-site.sh" ),
+        path: File.join( "provision", "provision-dashboard.sh" ),
         args: [
-          site,
-          args['repo'].to_s,
-          args['branch'],
-          args['vm_dir'],
-          args['skip_provisioning'].to_s,
-          args['nginx_upstream']
+          vvv_config['dashboard']['repo'],
+          vvv_config['dashboard']['branch']
+        ]
+
+    vvv_config['utility-sources'].each do |name, args|
+      config.vm.provision "utility-source-#{name}",
+        type: "shell",
+        path: File.join( "provision", "provision-utility-source.sh" ),
+        args: [
+            name,
+            args['repo'].to_s,
+            args['branch'],
         ]
     end
-  end
+
+    vvv_config['utilities'].each do |name, utilities|
+
+      if ! utilities.kind_of? Array then
+        utilities = Hash.new
+      end
+      utilities.each do |utility|
+          config.vm.provision "utility-#{name}-#{utility}",
+            type: "shell",
+            path: File.join( "provision", "provision-utility.sh" ),
+            args: [
+                name,
+                utility
+            ]
+        end
+    end
+
+    vvv_config['sites'].each do |site, args|
+      if args['skip_provisioning'] === false then
+        config.vm.provision "site-#{site}",
+          type: "shell",
+          path: File.join( "provision", "provision-site.sh" ),
+          args: [
+            site,
+            args['repo'].to_s,
+            args['branch'],
+            args['vm_dir'],
+            args['skip_provisioning'].to_s,
+            args['nginx_upstream']
+          ]
+      end
+    end
 
 
-  # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
-  # run after the shell commands laid out in provision.sh or provision-custom.sh should be
-  # put into this file. This provides a good opportunity to install additional packages
-  # without having to replace the entire default provisioning script.
-  if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
-    config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
+    # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
+    # run after the shell commands laid out in provision.sh or provision-custom.sh should be
+    # put into this file. This provides a good opportunity to install additional packages
+    # without having to replace the entire default provisioning script.
+    if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
+      config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
+    end
+  else
+    puts "\nProvisioning of utilities core and sites disabled by vvv-custom.yml config\n\n"
   end
 
   # Always start MariaDB/MySQL on boot, even when not running the full provisioner
