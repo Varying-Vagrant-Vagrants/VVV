@@ -113,18 +113,18 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
 
     # Look for Nginx vhost files, symlink them into the custom sites dir
     if [[ -f "${VM_DIR}/.vvv/vvv-nginx.conf" ]]; then
-      vvv_privision_site_nginx "${VM_DIR}/.vvv/vvv-nginx.conf"
+      vvv_provision_site_nginx "${VM_DIR}/.vvv/vvv-nginx.conf"
     elif [[ -f "${VM_DIR}/provision/vvv-nginx.conf" ]]; then
-      vvv_privision_site_nginx "${VM_DIR}/provision/vvv-nginx.conf"
+      vvv_provision_site_nginx "${VM_DIR}/provision/vvv-nginx.conf"
     elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
-      vvv_privision_site_nginx "${VM_DIR}/vvv-nginx.conf"
+      vvv_provision_site_nginx "${VM_DIR}/vvv-nginx.conf"
     else
       NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
       if [[ -z $results ]] ; then
         echo "Warning: No nginx config was found, VVV will not know how to serve this site"
       else
         for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
-          vvv_privision_site_nginx $SITE_CONFIG_FILE
+          vvv_provision_site_nginx $SITE_CONFIG_FILE
         done
       fi
     fi
