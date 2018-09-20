@@ -95,11 +95,11 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
   
   if [[ -d ${VM_DIR} ]]; then
     # Look for site setup scripts
-    if [[ -f "${VM_DIR}/.vvv/vvv-init.sh" ]] then
+    if [[ -f "${VM_DIR}/.vvv/vvv-init.sh" ]]; then
       ( cd "${VM_DIR}/.vvv" && source vvv-init.sh )
-    elif [[ -f "${VM_DIR}/provision/vvv-init.sh" ]] then
+    elif [[ -f "${VM_DIR}/provision/vvv-init.sh" ]]; then
       ( cd "${VM_DIR}/provision" && source vvv-init.sh )
-    elif [[ -f "${VM_DIR}/vvv-init.sh" ]] then
+    elif [[ -f "${VM_DIR}/vvv-init.sh" ]]; then
       ( cd "${VM_DIR}" && source vvv-init.sh )
     else
       find ${VM_DIR} -maxdepth 3 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
@@ -112,11 +112,11 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
     fi
 
     # Look for Nginx vhost files, symlink them into the custom sites dir
-    if [[ -f "${VM_DIR}/.vvv/vvv-nginx.conf" ]] then
+    if [[ -f "${VM_DIR}/.vvv/vvv-nginx.conf" ]]; then
       vvv_privision_site_nginx "${VM_DIR}/.vvv/vvv-nginx.conf"
-    elif [[ -f "${VM_DIR}/provision/vvv-nginx.conf" ]] then
+    elif [[ -f "${VM_DIR}/provision/vvv-nginx.conf" ]]; then
       vvv_privision_site_nginx "${VM_DIR}/provision/vvv-nginx.conf"
-    elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]] then
+    elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
       vvv_privision_site_nginx "${VM_DIR}/vvv-nginx.conf"
     else
       NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
