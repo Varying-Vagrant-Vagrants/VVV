@@ -46,6 +46,29 @@ is_utility_installed() {
   return 1
 }
 
+function vvv_provision_site_nginx() {
+  SITE_CONFIG_FILE=$0
+  DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
+  DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
+  DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
+  DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< "$SITE_CONFIG_FILE" | cut -c1-32).conf"
+  VVV_HOSTS=$(get_hosts)
+  # We allow the replacement of the {vvv_path_to_folder} token with
+  # whatever you want, allowing flexible placement of the site folder
+  # while still having an Nginx config which works.
+  DIR="$(dirname "$SITE_CONFIG_FILE")"
+  sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+  sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+  sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+  sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+  sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+
+  # Resolve relative paths since not supported in Nginx root.
+  while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"; do
+    sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+  done
+}
+
 if [[ true == $SKIP_PROVISIONING ]]; then
     REPO=false
 fi
@@ -69,67 +92,67 @@ else
 fi
 
 if [[ false == "${SKIP_PROVISIONING}" ]]; then
-  # Look for site setup scripts
-  find ${VM_DIR} -maxdepth 3 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
-    DIR="$(dirname "$SITE_CONFIG_FILE")"
-    (
-    cd "$DIR"
-    source vvv-init.sh
-    )
-  done
-
+  
   if [[ -d ${VM_DIR} ]]; then
-    # Look for Nginx vhost files, symlink them into the custom sites dir
-    NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
-    if [[ -z $results ]] ; then
-      echo "Warning: No nginx config was found, VVV will not know how to serve this site"
+    # Look for site setup scripts
+    if [[ -f "${VM_DIR}/.vvv/vvv-init.sh" ]] then
+      ( cd "${VM_DIR}/.vvv" && source vvv-init.sh )
+    elif [[ -f "${VM_DIR}/provision/vvv-init.sh" ]] then
+      ( cd "${VM_DIR}/provision" && source vvv-init.sh )
+    elif [[ -f "${VM_DIR}/vvv-init.sh" ]] then
+      ( cd "${VM_DIR}" && source vvv-init.sh )
     else
-      for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
-        DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
-        DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
-        DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
-        DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< "$SITE_CONFIG_FILE" | cut -c1-32).conf"
-        VVV_HOSTS=$(get_hosts)
-        # We allow the replacement of the {vvv_path_to_folder} token with
-        # whatever you want, allowing flexible placement of the site folder
-        # while still having an Nginx config which works.
+      find ${VM_DIR} -maxdepth 3 -name 'vvv-init.sh' -print0 | while read -d $'\0' SITE_CONFIG_FILE; do
         DIR="$(dirname "$SITE_CONFIG_FILE")"
-        sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-        sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-        sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-        sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-        sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-
-        # Resolve relative paths since not supported in Nginx root.
-        while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"; do
-          sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-        done
-      done
-
-      # Parse any vvv-hosts file located in the site repository for domains to
-      # be added to the virtual machine's host file so that it is self aware.
-      #
-      # Domains should be entered on new lines.
-      echo "Adding domains to the virtual machine's /etc/hosts file..."
-      find ${VM_DIR} -maxdepth 4 -name 'vvv-hosts' | \
-      while read hostfile; do
-        while IFS='' read -r line || [ -n "$line" ]; do
-          if [[ "#" != ${line:0:1} ]]; then
-            if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
-              echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-              echo " * Added $line from $hostfile"
-            fi
-          fi
-        done < "$hostfile"
-      done
-
-      for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`; do
-        if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
-        echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-        echo " * Added $line from ${VVV_CONFIG}"
-      fi
+        (
+        cd "$DIR"
+        source vvv-init.sh
+        )
       done
     fi
+
+    # Look for Nginx vhost files, symlink them into the custom sites dir
+    if [[ -f "${VM_DIR}/.vvv/vvv-nginx.conf" ]] then
+      vvv_privision_site_nginx "${VM_DIR}/.vvv/vvv-nginx.conf"
+    elif [[ -f "${VM_DIR}/provision/vvv-nginx.conf" ]] then
+      vvv_privision_site_nginx "${VM_DIR}/provision/vvv-nginx.conf"
+    elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]] then
+      vvv_privision_site_nginx "${VM_DIR}/vvv-nginx.conf"
+    else
+      NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
+      if [[ -z $results ]] ; then
+        echo "Warning: No nginx config was found, VVV will not know how to serve this site"
+      else
+        for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
+          vvv_privision_site_nginx $SITE_CONFIG_FILE
+        done
+      fi
+    fi
+
+    # Parse any vvv-hosts file located in the site repository for domains to
+    # be added to the virtual machine's host file so that it is self aware.
+    #
+    # Domains should be entered on new lines.
+    echo "Adding domains to the virtual machine's /etc/hosts file..."
+    find ${VM_DIR} -maxdepth 4 -name 'vvv-hosts' | \
+    while read hostfile; do
+      while IFS='' read -r line || [ -n "$line" ]; do
+        if [[ "#" != ${line:0:1} ]]; then
+          if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+            echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
+            echo " * Added $line from $hostfile"
+          fi
+        fi
+      done < "$hostfile"
+    done
+
+    for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`; do
+      if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+      echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
+      echo " * Added $line from ${VVV_CONFIG}"
+    fi
+    done
+
     service nginx restart
   fi
 fi
