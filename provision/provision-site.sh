@@ -47,25 +47,28 @@ is_utility_installed() {
 }
 
 function vvv_provision_site_nginx() {
-  SITE_CONFIG_FILE=$0
-  DEST_CONFIG_FILE=${SITE_CONFIG_FILE//\/srv\/www\//}
-  DEST_CONFIG_FILE=${DEST_CONFIG_FILE//\//\-}
-  DEST_CONFIG_FILE=${DEST_CONFIG_FILE/%-vvv-nginx.conf/}
-  DEST_CONFIG_FILE="vvv-auto-$DEST_CONFIG_FILE-$(md5sum <<< "$SITE_CONFIG_FILE" | cut -c1-32).conf"
+  SITE_NAME=$0
+  SITE_NGINX_FILE=$1
+  echo "site config file: ${SITE_NGINX_FILE}"
+  DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
+  DEST_NGINX_FILE="vvv-auto-${SITE_NAME}-${DEST_NGINX_FILE}-$(md5sum <<< "$SITE_NGINX_FILE" | cut -c1-32).conf"
   VVV_HOSTS=$(get_hosts)
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
   # while still having an Nginx config which works.
-  DIR="$(dirname "$SITE_CONFIG_FILE")"
-  sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_CONFIG_FILE" > "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-  sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-  sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-  sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
-  sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+  #env
+  DIR="$(dirname "$SITE_NGINX_FILE")"
+  sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
   # Resolve relative paths since not supported in Nginx root.
-  while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"; do
-    sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/${DEST_CONFIG_FILE}"
+  while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"; do
+    sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   done
 }
 
@@ -113,18 +116,18 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
 
     # Look for Nginx vhost files, symlink them into the custom sites dir
     if [[ -f "${VM_DIR}/.vvv/vvv-nginx.conf" ]]; then
-      vvv_provision_site_nginx "${VM_DIR}/.vvv/vvv-nginx.conf"
+      vvv_provision_site_nginx $SITE "${VM_DIR}/.vvv/vvv-nginx.conf"
     elif [[ -f "${VM_DIR}/provision/vvv-nginx.conf" ]]; then
-      vvv_provision_site_nginx "${VM_DIR}/provision/vvv-nginx.conf"
+      vvv_provision_site_nginx $SITE "${VM_DIR}/provision/vvv-nginx.conf"
     elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
-      vvv_provision_site_nginx "${VM_DIR}/vvv-nginx.conf"
+      vvv_provision_site_nginx $SITE "${VM_DIR}/vvv-nginx.conf"
     else
       NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
       if [[ -z $results ]] ; then
         echo "Warning: No nginx config was found, VVV will not know how to serve this site"
       else
         for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
-          vvv_provision_site_nginx $SITE_CONFIG_FILE
+          vvv_provision_site_nginx $SITE $SITE_CONFIG_FILE
         done
       fi
     fi
