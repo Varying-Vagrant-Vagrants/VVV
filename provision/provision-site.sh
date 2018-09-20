@@ -63,6 +63,9 @@ if [[ false != "${REPO}" ]]; then
   fi
 else
   echo "The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
+  if [[ ! -d ${VM_DIR} ]]; then
+    echo "Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV"
+  fi
 fi
 
 if [[ false == "${SKIP_PROVISIONING}" ]]; then
