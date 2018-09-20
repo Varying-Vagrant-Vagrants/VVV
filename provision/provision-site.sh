@@ -47,13 +47,12 @@ is_utility_installed() {
 }
 
 function vvv_provision_site_nginx() {
-  SITE_NAME=$0
-  SITE_NGINX_FILE=$1
-  echo "site config file: ${SITE_NGINX_FILE}"
+  SITE_NAME=$1
+  SITE_NGINX_FILE=$2
   DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
   DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
   DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
-  DEST_NGINX_FILE="vvv-auto-${SITE_NAME}-${DEST_NGINX_FILE}-$(md5sum <<< "$SITE_NGINX_FILE" | cut -c1-32).conf"
+  DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "$SITE_NGINX_FILE" | cut -c1-32).conf"
   VVV_HOSTS=$(get_hosts)
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
