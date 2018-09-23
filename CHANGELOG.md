@@ -23,6 +23,7 @@ permalink: /docs/en-US/changelog/
  * VVV will now warn you when you add a site without a site template
  * Fixed issues wrapping bash prompt colours on some environments
  * Fixed an issue with dpkg failures
+ * The logs folder is now owned by the vagrant user not the ubuntu user
 
 ### Deprecations
 
