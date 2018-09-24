@@ -403,7 +403,7 @@ Vagrant.configure("2") do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder "log/", "/var/log", :owner => "ubuntu", :mount_options => [ "dmode=777", "fmode=777" ]
+  config.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => [ "dmode=777", "fmode=777" ]
 
   # /srv/www/
   #
@@ -428,7 +428,7 @@ Vagrant.configure("2") do |config|
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
-    override.vm.synced_folder "log/", "/var/log", :owner => "www-data", :mount_options => []
+    override.vm.synced_folder "log/", "/var/log/", :owner => "vagrant", :mount_options => []
 
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
@@ -443,6 +443,7 @@ Vagrant.configure("2") do |config|
   # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
     override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+    override.vm.synced_folder "log/", "/var/log/", :owner => "vagrant", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
         override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
