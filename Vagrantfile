@@ -75,7 +75,7 @@ if show_logo then
   if ! Vagrant::Util::Platform.terminal_supports_colors? then
     platform = platform + 'NoColour '
   end
-  
+
   git_or_zip = "zip-no-vcs"
   branch = ''
   if File.directory?("#{vagrant_dir}/.git") then
@@ -87,7 +87,7 @@ if show_logo then
 \033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
 STARS
   splash = <<-HEREDOC
-\033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __ 
+\033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
 #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
 
@@ -254,6 +254,8 @@ Vagrant.configure("2") do |config|
   config.vm.provider :hyperv do |v, override|
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']
+    v.enable_virtualization_extensions = true
+    v.linked_clone = true
   end
 
   # SSH Agent Forwarding
@@ -292,7 +294,7 @@ Vagrant.configure("2") do |config|
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
-    override.vm.box = "phawxby/trusty64"
+    override.vm.box = "bento/ubuntu-14.04"
   end
 
   config.vm.hostname = "vvv"
@@ -378,8 +380,7 @@ Vagrant.configure("2") do |config|
   # we'll continue to map that directory as /var/lib/mysql inside the virtual machine. Once
   # this file is changed or removed, this mapping will no longer occur. A db_backup command
   # is now available inside the virtual machine to backup all databases for future use. This
-  # command is automatically issued on halt, suspend, and destroy if the vagrant-triggers
-  # plugin is installed.
+  # command is automatically issued on halt, suspend, and destroy
   if File.exists?(File.join(vagrant_dir,'database/data/mysql_upgrade_info')) then
     config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
 
@@ -387,6 +388,10 @@ Vagrant.configure("2") do |config|
     # those are specific to Virtualbox. The folder is therefore overridden with one that
     # uses corresponding Parallels mount options.
     config.vm.provider :parallels do |v, override|
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
+    end
+    # Neither does the HyperV provider
+    config.vm.provider :hyperv do |v, override|
       override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
     end
   end
@@ -410,7 +415,7 @@ Vagrant.configure("2") do |config|
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
-  config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+  config.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
 
   vvv_config['sites'].each do |site, args|
     if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
@@ -427,8 +432,8 @@ Vagrant.configure("2") do |config|
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |v, override|
-    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => []
-    override.vm.synced_folder "log/", "/var/log/", :owner => "vagrant", :mount_options => []
+    override.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => []
+    override.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => []
 
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
@@ -442,17 +447,11 @@ Vagrant.configure("2") do |config|
   # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
   # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
-    override.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
-    override.vm.synced_folder "log/", "/var/log/", :owner => "vagrant", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
+    override.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => []
+    override.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => []
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => ["dir_mode=0775","file_mode=0774","forceuid","noperm","nobrl","mfsymlinks"]
-      end
-    end
-    # Change all the folder to use SMB instead of Virtual Box shares
-    override.vm.synced_folders.each do |id, options|
-      if ! options[:type]
-        options[:type] = "smb"
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
       end
     end
   end
