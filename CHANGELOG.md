@@ -4,6 +4,32 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 2.3.0 ( Sep 2018 )
+
+### Enhancements
+
+ * Support for git-lfs
+ * Replaced MailCatcher with MailHog
+ * Network tests now use Launchpad instead of Google.com
+ * Improved Splash screen and warning messages
+ * Improved the default vvv config to prevent confusion
+ * Improved the default prompt when using `vagrant ssh`
+ * Improved the welcome message when you SSH in
+ * If provisioning fails, VVV now aborts instead of continuing and failing
+ * Apt-get keys are now bundled with the VM
+
+### Bug Fixes
+
+ * VVV will now warn you when you add a site without a site template
+ * Fixed issues wrapping bash prompt colours on some environments
+ * Fixed an issue with dpkg failures
+ * The logs folder is now owned by the vagrant user not the ubuntu user
+
+### Deprecations
+
+ - VVV will now search 3 folders down for vvv-init.sh vvv-hosts and vvv-nginx.conf not 4 folders
+ - Ruby was replaced with GoLang, and MailCatcher removed for new users
+
 ## 2.2.1 (May, 2018)
 
 Note that to update to 2.2.1, you must remove the Vagrant triggers plugin and install Vagrant 2.1

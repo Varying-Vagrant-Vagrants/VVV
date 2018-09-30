@@ -16,16 +16,12 @@ start_seconds="$(date +%s)"
 # Build a bash array to pass all of the packages we want to install to a single
 # apt-get command. This avoids doing all the leg work each time a package is
 # set to install. It also allows us to easily comment out or add single
-# packages. We set the array as empty to begin with so that we can append
-# individual packages to it as required.
-apt_package_install_list=()
-
-# Start with a bash array containing all packages we want to install in the
-# virtual machine. We'll then loop through each of these and check individual
-# status before adding them to the apt_package_install_list array.
-apt_package_check_list=(
+# packages.
+apt_package_install_list=(
   # Please avoid apostrophes in these comments - they break vim syntax
   # highlighting.
+  # 
+  software-properties-common
 
   # PHP7
   #
@@ -70,6 +66,7 @@ apt_package_check_list=(
   imagemagick
   subversion
   git
+  git-lfs
   zip
   unzip
   ngrep
@@ -97,10 +94,6 @@ apt_package_check_list=(
   # nodejs for use by grunt
   g++
   nodejs
-
-  # Mailcatcher requirement
-  libsqlite3-dev
-
 )
 
 ### FUNCTIONS
@@ -108,14 +101,14 @@ apt_package_check_list=(
 network_detection() {
   # Network Detection
   #
-  # Make an HTTP request to google.com to determine if outside access is available
+  # Make an HTTP request to ppa.launchpad.net to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=5 --spider --recursive --level=2 http://google.com 2>&1 | grep 'connected')" ]]; then
-    echo "Network connection detected..."
+  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://ppa.launchpad.net 2>&1 | grep 'connected')" ]]; then
+    echo "Succesful Network connection to ppa.launchpad.net detected..."
     ping_result="Connected"
   else
-    echo "Network connection not detected. Unable to reach google.com..."
+    echo "Network connection not detected. Unable to reach ppa.launchpad.net..."
     ping_result="Not Connected"
   fi
 }
@@ -123,8 +116,45 @@ network_detection() {
 network_check() {
   network_detection
   if [[ ! "$ping_result" == "Connected" ]]; then
-    echo -e "\nNo network connection available, skipping package installation"
-    exit 0
+    echo " "
+    echo "#################################################################"
+    echo " "
+    echo "Problem:"
+    echo " "
+    echo "Provisioning needs a network connection but none was found."
+    echo "VVV tried to ping ppa.launchpad.net, and got no response."
+    echo " "
+    echo "Make sure you have a working internet connection, that you "
+    echo "restarted after installing VirtualBox and Vagrant, and that "
+    echo "they aren't blocked by a firewall or security software. If"
+    echo "you can load https://ppa.launchpad.net in your browser, then VVV"
+    echo "should be able to connect."
+    echo " "
+    echo "Also note that some users have reported issues when combined"
+    echo "with VPNs, disable your VPN and reprovision to see if this is"
+    echo "the cause."
+    echo " "
+    echo "Additionally, if you're at a contributor day event, be kind,"
+    echo "provisioning involves downloading things, a full provision may "
+    echo "ruin the wifi for everybody else :("
+    echo " "
+    echo "Network ifconfig output:"
+    echo " "
+    ifconfig
+    echo " "
+    echo "No network connection available, aborting provision. Try "
+    echo "provisioning again once network connectivity is restored."
+    echo "If that doesn't work, and you're sure you have a strong "
+    echo "internet connection, open an issue on GitHub, and include the "
+    echo "output above so that the problem can be debugged"
+    echo " "
+    echo "vagrant reload --provision"
+    echo " "
+    echo "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
+    echo " "
+    echo "#################################################################"
+
+    exit 1
   fi
 }
 
@@ -145,6 +175,37 @@ git_ppa_check() {
 
 noroot() {
   sudo -EH -u "vagrant" "$@";
+}
+
+cleanup_terminal_splash() {
+  # Dastardly Ubuntu tries to be helpful and suggest users update packages
+  # themselves, but this can break things
+  if [[ -f /etc/update-motd.d/00-header ]]; then
+    rm /etc/update-motd.d/00-header
+  fi
+  if [[ -f /etc/update-motd.d/10-help-text ]]; then
+    rm /etc/update-motd.d/10-help-text
+  fi
+  if [[ -f /etc/update-motd.d/51-cloudguest ]]; then
+    rm /etc/update-motd.d/51-cloudguest
+  fi
+  if [[ -f /etc/update-motd.d/50-landscape-sysinfo ]]; then
+    rm /etc/update-motd.d/50-landscape-sysinfo
+  fi
+  if [[ -f /etc/update-motd.d/90-updates-available ]]; then
+    rm /etc/update-motd.d/90-updates-available
+  fi
+  if [[ -f /etc/update-motd.d/91-release-upgrade ]]; then
+    rm /etc/update-motd.d/91-release-upgrade
+  fi
+  if [[ -f /etc/update-motd.d/95-hwe-eol ]]; then
+    rm /etc/update-motd.d/95-hwe-eol
+  fi
+  if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
+    rm /etc/update-motd.d/98-cloudguest
+  fi
+  cp "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
+  chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
 profile_setup() {
@@ -196,25 +257,7 @@ print_pkg_info() {
   printf " * $pkg %${real_space}.${#pkg_version}s ${pkg_version}\n"
 }
 
-package_check() {
-  # Loop through each of our packages that should be installed on the system. If
-  # not yet installed, it should be added to the array of packages to install.
-  local pkg
-  local pkg_version
-
-  for pkg in "${apt_package_check_list[@]}"; do
-    if not_installed "${pkg}"; then
-      echo " *" "$pkg" [not installed]
-      apt_package_install_list+=($pkg)
-    else
-      pkg_version=$(dpkg -s "${pkg}" 2>&1 | grep 'Version:' | cut -d " " -f 2)
-      print_pkg_info "$pkg" "$pkg_version"
-    fi
-  done
-}
-
 package_install() {
-  package_check
 
   # MariaDB/MySQL
   #
@@ -238,65 +281,83 @@ package_install() {
   echo "Linked custom apt sources"
 
   if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
-      # Retrieve the NodeJS signing key from nodesource.com
-      echo "Applying NodeSource NodeJS signing key..."
-	  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+    # Retrieve the NodeJS signing key from nodesource.com
+    echo "Applying NodeSource NodeJS signing key..."
+    apt-key add /vagrant/config/apt-keys/nodesource.gpg.key
   fi
 
-  if [[ ${#apt_package_install_list[@]} = 0 ]]; then
-    echo -e "No apt packages to install.\n"
-  else
-    # Before running `apt-get update`, we should add the public keys for
-    # the packages that we are installing from non standard sources via
-    # our appended apt source.list
-
+  # Before running `apt-get update`, we should add the public keys for
+  # the packages that we are installing from non standard sources via
+  # our appended apt source.list
+  if [[ ! $( apt-key list | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
-    wget --quiet "http://nginx.org/keys/nginx_signing.key" -O- | apt-key add -
+    apt-key add /vagrant/config/apt-keys/nginx_signing.key
+  fi
 
+  if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo "Applying the PHP signing key..."
-    apt-key adv --quiet --keyserver "hkp://keyserver.ubuntu.com:80" --recv-key E5267A6C 2>&1 | grep "gpg:"
-    apt-key export E5267A6C | apt-key add -
+    apt-key add /vagrant/config/apt-keys/keyserver_ubuntu.key
+  fi
 
+  if [[ ! $( apt-key list | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
-    apt-key adv --quiet --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
-
-    # Update all of the package references before installing anything
-    echo "Running apt-get update..."
-    apt-get -y update
-
-    # Install required packages
-    echo "Installing apt-get packages..."
-    apt-get -y install ${apt_package_install_list[@]}
-
-    # Remove unnecessary packages
-    echo "Removing unnecessary packages..."
-    apt-get autoremove -y
-
-    # Clean up apt caches
-    apt-get clean
+    apt-key add /vagrant/config/apt-keys/mariadb.key
   fi
+
+  if [[ ! $( apt-key list | grep 'packagecloud ops') ]]; then
+    # Apply the PackageCloud signing key which signs git lfs
+    echo "Applying the PackageCloud signing key..."
+    apt-key add /vagrant/config/apt-keys/git-lfs.key
+  fi
+
+  # Update all of the package references before installing anything
+  echo "Running apt-get update..."
+  apt-get -y update
+
+  # Install required packages
+  echo "Installing apt-get packages..."
+  if ! apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+    apt-get clean
+    return 1
+  fi
+
+  # Remove unnecessary packages
+  echo "Removing unnecessary packages..."
+  apt-get autoremove -y
+
+  # Clean up apt caches
+  apt-get clean
+  
+  return 0
+}
+
+# taken from <https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c>
+latest_github_release() {
+    local LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$1/releases/latest") # Get latest release from GitHub api
+    local GITHUB_RELEASE_REGEXP="\"tag_name\": \"([^\"]+)\""
+
+    if [[ $LATEST_RELEASE =~ $GITHUB_RELEASE_REGEXP ]]; then
+        echo "${BASH_REMATCH[1]}"
+        return 0
+    fi
+
+    return 1
 }
 
 tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /vagrant/config/homebin/xdebug_off
 
+  local LATEST_NVM=$(latest_github_release "creationix/nvm")
+
   # nvm
-  if [[ ! -d "/srv/config/nvm" ]]; then
-    echo -e "\nDownloading nvm, see https://github.com/creationix/nvm"
-    git clone "https://github.com/creationix/nvm.git" "/srv/config/nvm"
-    cd /srv/config/nvm
-    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
-  else
-    echo -e "\nUpdating nvm..."
-    cd /srv/config/nvm
-    git fetch origin
-    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin` -q
-  fi
-  # Activate nvm
+  mkdir -p "/srv/config/nvm" &&
+      curl -so- https://raw.githubusercontent.com/creationix/nvm/$LATEST_NVM/install.sh |
+          METHOD=script NVM_DIR=/srv/config/nvm bash
+
   source /srv/config/nvm/nvm.sh
 
   # npm
@@ -403,18 +464,18 @@ tools_install() {
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
-	  echo "Generating Nginx server private key..."
-	  vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
-	  echo "$vvvgenrsa"
+    echo "Generating Nginx server private key..."
+    vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
+    echo "$vvvgenrsa"
   fi
   if [[ ! -e /etc/nginx/server-2.1.0.crt ]]; then
-	  echo "Sign the certificate using the above private key..."
-	  vvvsigncert="$(openssl req -new -x509 \
+    echo "Sign the certificate using the above private key..."
+    vvvsigncert="$(openssl req -new -x509 \
             -key /etc/nginx/server-2.1.0.key \
             -out /etc/nginx/server-2.1.0.crt \
             -days 3650 \
             -subj /CN=*.wordpress-develop.test/CN=*.wordpress.test/CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.vvv.local/CN=*.vvv.localhost/CN=*.vvv.test 2>&1)"
-	  echo "$vvvsigncert"
+    echo "$vvvsigncert"
   fi
 
   echo -e "\nSetup configuration files..."
@@ -452,18 +513,73 @@ phpfpm_setup() {
   cp "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
   cp "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
   cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/mailhog.ini" "/etc/php/7.2/mods-available/mailhog.ini"
 
   echo " * Copied /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
   echo " * Copied /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
   echo " * Copied /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
   echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
   echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
+
+  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
+    echo " * Cleaning up mailcatcher.ini from a previous install"
+    rm -f /etc/php/7.2/mods-available/mailcatcher.ini
+  fi
 
   # Copy memcached configuration from local
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
   cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 
   echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
+}
+
+go_setup() {
+  if [[ ! -e /usr/local/go/bin/go ]]; then
+      echo " * Installing GoLang 1.10.3"
+      curl -so- https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz | tar zxvf -
+      mv go /usr/local
+      export PATH="$PATH:/usr/local/go/bin"
+      export GOPATH=/home/vagrant/gocode
+  fi
+}
+
+mailhog_setup() {
+
+  if [[ -f "/etc/init/mailcatcher.conf" ]]; then
+    echo " * Cleaning up old mailcatcher.conf"
+    rm -f /etc/init/mailcatcher.conf
+  fi
+
+  if [[ ! -e /usr/local/bin/mailhog ]]; then
+    export GOPATH=/home/vagrant/gocode
+    
+    echo " * Fetching MailHog and MHSendmail"
+    
+    noroot mkdir -p /home/vagrant/gocode
+    noroot /usr/local/go/bin/go get github.com/mailhog/MailHog
+    noroot /usr/local/go/bin/go get github.com/mailhog/mhsendmail
+
+    cp /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
+    cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
+
+    # Make it start on reboot
+    tee /etc/init/mailhog.conf <<EOL
+description "MailHog"
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+pre-start script
+    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
+end script
+EOL
+  fi
+  if [[ -e /etc/init/mailcatcher.conf ]]; then
+    echo " * Cleaning up old MailCatcher startup file"
+    rm /etc/init/mailcatcher.conf
+  fi
+  echo " * Starting MailHog"
+  service mailhog start
 }
 
 mysql_setup() {
@@ -516,55 +632,6 @@ mysql_setup() {
   fi
 }
 
-mailcatcher_setup() {
-  # Mailcatcher
-  #
-  # Installs mailcatcher using RVM. RVM allows us to install the
-  # current version of ruby and all mailcatcher dependencies reliably.
-  local pkg
-  local rvm_version
-  local mailcatcher_version
-
-  rvm_version="$(/usr/bin/env rvm --silent --version 2>&1 | grep 'rvm ' | cut -d " " -f 2)"
-  if [[ -n "${rvm_version}" ]]; then
-    pkg="RVM"
-    print_pkg_info "$pkg" "$rvm_version"
-  else
-    # RVM key D39DC0E3
-    # Signatures introduced in 1.26.0
-    gpg -q --no-tty --batch --keyserver "hkp://keyserver.ubuntu.com:80" --recv-keys D39DC0E3
-    gpg -q --no-tty --batch --keyserver "hkp://keyserver.ubuntu.com:80" --recv-keys BF04FF17
-
-    printf " * RVM [not installed]\n Installing from source"
-    curl --silent -L "https://raw.githubusercontent.com/rvm/rvm/stable/binscripts/rvm-installer" | sudo bash -s stable --ruby --quiet-curl
-    source "/usr/local/rvm/scripts/rvm"
-  fi
-
-  mailcatcher_version="$(/usr/bin/env mailcatcher --version 2>&1 | grep 'mailcatcher ' | cut -d " " -f 2)"
-  if [[ -n "${mailcatcher_version}" ]]; then
-    pkg="Mailcatcher"
-    print_pkg_info "$pkg" "$mailcatcher_version"
-  else
-    echo " * Mailcatcher [not installed]"
-    /usr/bin/env rvm default@mailcatcher --create do gem install mailcatcher --no-rdoc --no-ri
-    /usr/bin/env rvm wrapper default@mailcatcher --no-prefix mailcatcher catchmail
-  fi
-
-  if [[ -f "/etc/init/mailcatcher.conf" ]]; then
-    echo " *" Mailcatcher upstart already configured.
-  else
-    cp "/srv/config/init/mailcatcher.conf"  "/etc/init/mailcatcher.conf"
-    echo " * Copied /srv/config/init/mailcatcher.conf    to /etc/init/mailcatcher.conf"
-  fi
-
-  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
-    echo " *" Mailcatcher php7 fpm already configured.
-  else
-    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.2/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php-config/mailcatcher.ini    to /etc/php/7.2/mods-available/mailcatcher.ini"
-  fi
-}
-
 services_restart() {
   # RESTART SERVICES
   #
@@ -572,13 +639,13 @@ services_restart() {
   echo -e "\nRestart services..."
   service nginx restart
   service memcached restart
-  service mailcatcher restart
+  service mailhog restart
 
   # Disable PHP Xdebug module by default
   phpdismod xdebug
 
   # Enable PHP mailcatcher sendmail settings by default
-  phpenmod mailcatcher
+  phpenmod mailhog
 
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
@@ -669,6 +736,7 @@ cleanup_vvv(){
 network_check
 # Profile_setup
 echo "Bash profile setup and directories."
+cleanup_terminal_splash
 profile_setup
 
 network_check
@@ -676,10 +744,16 @@ network_check
 echo " "
 echo "Main packages check and install."
 git_ppa_check
-package_install
+if ! package_install; then
+  echo "Main packages check and install failed, halting provision"
+  exit 1
+fi
+
 tools_install
 nginx_setup
-mailcatcher_setup
+go_setup
+mailhog_setup
+
 phpfpm_setup
 services_restart
 mysql_setup

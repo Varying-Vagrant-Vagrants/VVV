@@ -13,6 +13,17 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+red="\[\033[38;5;9m\]"
+green="\[\033[01;32m\]"
+blue="\[\033[38;5;4m\]"
+yellow="\[\033[38;5;3m\]"
+white="\[\033[00m\]"
+PS1="${debian_chroot:+($debian_chroot)}${red}\u${green}@${blue}\h${white}:${yellow}\w$ \[\033[0m\]"
+
 # setup bash prompt
 if [ -n "$BASH_VERSION" ]; then
     # include .bash_prompt if it exists
@@ -38,8 +49,15 @@ eval "$(grunt --completion=bash)"
 # add autocomplete for wp-cli
 . /srv/config/wp-cli/wp-completion.bash
 
+# Go
+export PATH="$PATH:/usr/local/go/bin"
+export GOPATH=$HOME/gocode
+
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
+
+# Vagrant scripts
+export PATH="$PATH:/vagrant/config/homebin/"
 
 # nvm path
 export NVM_DIR="/srv/config/nvm"

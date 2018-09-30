@@ -28,8 +28,7 @@ sites:
   wordpress-develop:
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
     hosts:
-      - src.wordpress-develop.test
-      - build.wordpress-develop.test
+      - wordpress-develop.test
 
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.dev.
