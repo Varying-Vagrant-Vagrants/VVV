@@ -104,7 +104,7 @@ STARS
 end
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
-  puts "#{yellow}IMPORTANT: Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}, make all modifications to #{green}vvv-custom.yml#{yellow} in future#{creset}\n\n"
+  puts "#{yellow}Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}vvv-custom.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
   FileUtils.cp( File.join(vagrant_dir, 'vvv-config.yml'), File.join(vagrant_dir, 'vvv-custom.yml') )
 end
 
@@ -223,7 +223,7 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--cpus", vvv_config['vm_config']['cores']]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    
+
     # see https://github.com/hashicorp/vagrant/issues/7648
     v.customize ['modifyvm', :id, '--cableconnected1', 'on']
 
