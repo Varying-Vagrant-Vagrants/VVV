@@ -497,6 +497,10 @@ nginx_setup() {
     mkdir "/etc/nginx/custom-sites/"
   fi
   rsync -rvzh --delete "/srv/config/nginx-config/sites/" "/etc/nginx/custom-sites/"
+  
+  if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
+    mkdir "/etc/nginx/custom-utilities/"
+  fi
 
   echo " * Copied /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
   echo " * Copied /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
