@@ -61,7 +61,7 @@ function vvv_provision_site_nginx() {
   DIR="$(dirname "$SITE_NGINX_FILE")"
   sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_site_name}#$SITE#g" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
