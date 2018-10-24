@@ -536,6 +536,21 @@ Vagrant.configure("2") do |config|
       end
   end
 
+  vvv_config['utilities'].each do |name, utilities|
+    if ! utilities.kind_of? Array then
+      utilities = Hash.new
+    end
+    utilities.each do |utility|
+      # load the vvv-hosts file
+      utility_hosts_file = File.join(vagrant_dir, "provision/resources/#{name}/#{utility}/vvv-hosts")
+      if File.exist? utility_hosts_file then
+        File.readlines(utility_hosts_file).map do |line|
+          vvv_config['hosts'] += [ line ]
+        end
+      end
+    end
+  end
+
   vvv_config['sites'].each do |site, args|
     if args['skip_provisioning'] === false then
       config.vm.provision "site-#{site}",
