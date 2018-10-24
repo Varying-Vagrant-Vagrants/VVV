@@ -159,6 +159,15 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site].delete('hosts')
 end
 
+# Adding utilities folders
+utilities_parent_folder = File.join(vagrant_dir, 'www/default')
+utilities_hosts_paths = Dir.glob(Array.new(4) {|i| utilities_parent_folder + '/*'*(i+1) + '/vvv-hosts'})
+  
+vvv_config['hosts'] += utilities_hosts_paths.map do |path|
+    lines = File.readlines(path).map(&:chomp)
+    lines.grep(/\A[^#]/)
+end.flatten
+
 if ! vvv_config['utility-sources'].kind_of? Hash then
   vvv_config['utility-sources'] = Hash.new
 else
