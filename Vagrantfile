@@ -148,14 +148,15 @@ vvv_config['sites'].each do |site, args|
 
   vvv_config['sites'][site] = defaults.merge(args)
 
-  site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
+  if ! vvv_config['sites'][site]['skip_provisioning'] then
+    site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
+    vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
+      lines = File.readlines(path).map(&:chomp)
+      lines.grep(/\A[^#]/)
+    end.flatten
 
-  vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
-    lines = File.readlines(path).map(&:chomp)
-    lines.grep(/\A[^#]/)
-  end.flatten
-
-  vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+    vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+  end
   vvv_config['sites'][site].delete('hosts')
 end
 
