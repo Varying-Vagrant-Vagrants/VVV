@@ -1,8 +1,5 @@
 ---
 
-# IMPORTANT !!!!!!!!!
-# Copy this file to vvv-custom.yml so your changes don't get overwritten when you update
-
 
 # This file is a YAML formatted file. YAML indenting is done in spaces not
 # tabs, and whitespace is significant. If you don't stick to this, it will
@@ -17,31 +14,43 @@
 # located in. See the docs for how to define these, and what all the keys
 # and options are
 sites:
-  # The wordpress-default configuration provides an installation of the
-  # latest version of WordPress.
-  wordpress-default:
+
+  # latest version of WordPress, can be used for client work and testing
+  wordpress-one:
+    description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
-      - local.wordpress.test
+      - one.wordpress.test
 
-  # The wordpress-develop configuration is useful for contributing to WordPress.
-  wordpress-develop:
+  wordpress-two:
+    description: "A standard WP install, useful for building plugins, testing things, etc"
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
+    hosts:
+      - two.wordpress.test
+
+  #mysite:
+  #  description: "My website"
+  #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
+  #  hosts:
+  #    - mysite.com
+
+  # The wordpress-develop configuration is useful for contributing to WordPress Core.
+  wordpress-trunk:
+    description: "An svn based WP Core trunk dev setup, useful for contributor days, Trac tickets, patches"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
     hosts:
-      - wordpress-develop.test
+      - trunk.wordpress.test
 
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.dev.
   # Remember, whitespace is significant! Tabs and spaces mean different things
-
   #example-site:
   #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
   #  hosts:
   #    - my-example-site.test
 
   # The following commented out site configuration will create a environment useful
-  # for contributions to the WordPress meta team:
-  
+  # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
   #wordpress-meta-environment:
   #  repo: https://github.com/WordPress/meta-environment.git
 
@@ -49,13 +58,17 @@ sites:
 # Utilities are system level items rather than sites, that install tools or packages
 # the core utilities install tools such as phpmyadmin
 utilities:
-  core:
-    - memcached-admin
-    - opcache-status
-    - phpmyadmin
-    - webgrind
-    - trusted-hosts
-    - tls-ca
+  core: # The core VVV utility
+    - memcached-admin # Object cache management
+    - opcache-status # opcache management
+    - phpmyadmin # Web based database client
+    - webgrind # PHP Debugging
+    - trusted-hosts # GitHub etc
+    - tls-ca # SSL
+    #- php56
+    #- php70
+    #- php71
+    #- php72
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
 # increase the memory given to VVV and the number of CPU cores. For WP core development
@@ -66,5 +79,5 @@ utilities:
 # https://www.vagrantup.com/docs/providers/basic_usage.html#vagrant-up
 vm_config:
   memory: 2048
-  cores: 1
+  cores: 2
   # provider: vmware_workstation

@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
-Vagrant.require_version ">= 2.1.0"
+Vagrant.require_version ">= 2.1.4"
 require 'yaml'
 require 'fileutils'
 
@@ -104,7 +104,7 @@ STARS
 end
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
-  puts "#{yellow}IMPORTANT: Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}, make all modifications to #{green}vvv-custom.yml#{yellow} in future#{creset}\n\n"
+  puts "#{yellow}Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}vvv-custom.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
   FileUtils.cp( File.join(vagrant_dir, 'vvv-config.yml'), File.join(vagrant_dir, 'vvv-custom.yml') )
 end
 
@@ -148,14 +148,15 @@ vvv_config['sites'].each do |site, args|
 
   vvv_config['sites'][site] = defaults.merge(args)
 
-  site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
+  if ! vvv_config['sites'][site]['skip_provisioning'] then
+    site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
+    vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
+      lines = File.readlines(path).map(&:chomp)
+      lines.grep(/\A[^#]/)
+    end.flatten
 
-  vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
-    lines = File.readlines(path).map(&:chomp)
-    lines.grep(/\A[^#]/)
-  end.flatten
-
-  vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+    vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+  end
   vvv_config['sites'][site].delete('hosts')
 end
 
@@ -223,13 +224,15 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--cpus", vvv_config['vm_config']['cores']]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    
+
     # see https://github.com/hashicorp/vagrant/issues/7648
     v.customize ['modifyvm', :id, '--cableconnected1', 'on']
 
     v.customize ["modifyvm", :id, "--rtcuseutc", "on"]
     v.customize ["modifyvm", :id, "--audio", "none"]
     v.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//srv/www", "1"]
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//srv/config", "1"]
 
     # Set the box name in VirtualBox to match the working directory.
     vvv_pwd = Dir.pwd

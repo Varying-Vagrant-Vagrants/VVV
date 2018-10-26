@@ -4,7 +4,7 @@ Varying Vagrant Vagrants is an open source [Vagrant](https://www.vagrantup.com) 
 
 VVV is a [10up](https://10up.com) creation and [transitioned](http://10up.com/blog/varying-vagrant-vagrants-future/) to a community organization in 2014.
 
-* **Latest Stable**: [2.2.1](https://github.com/Varying-Vagrant-Vagrants/VVV/releases/tag/2.2.1)
+* **Latest Stable**: [2.4.0 master branch](https://github.com/Varying-Vagrant-Vagrants/VVV/tree/master)
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
 * **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
@@ -20,7 +20,7 @@ VVV is ideal for developing themes and plugins, as well as for [contributing to 
 
 ## Minimum System requirements
 
-- [Vagrant](https://www.vagrantup.com) 2.1+
+- [Vagrant](https://www.vagrantup.com) 2.1.4+
 - [Virtualbox](https://www.virtualbox.org) 5.2+
 
 ## Software included
@@ -34,7 +34,7 @@ VVV is built on a Ubuntu 14.04 LTS (Trusty) base VM and provisions the server wi
 1. [Memcached](http://memcached.org/)
 1. [PHPUnit](https://phpunit.de/)
 1. [Composer](https://github.com/composer/composer)
-1. [NodeJs](https://nodejs.org/)
+1. [NodeJs](https://nodejs.org/) v10
 1. [Mailcatcher](http://mailcatcher.me/)
 
 For a more comprehensive list, please see the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).
