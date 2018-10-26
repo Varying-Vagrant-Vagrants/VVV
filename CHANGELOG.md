@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
  * Updated Node v6 to Node v10
  * The default site config has been improved to clear up confusion over the difference between the site template and the develop site template
  * Utilities can now place nginx config files in `/etc/nginx/custom-utilities/` during provisioning
+ * The default Nginx config can now be extended with files in `/etc/nginx/dashboard-extensions/` during provisioning
  * The message VVV showed when copying `vvv-config.yml` to `vvv-custom.yml` was a tad confusing, it's been improved
 
 ### Bug Fixes
