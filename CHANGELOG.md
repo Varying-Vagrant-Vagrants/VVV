@@ -8,7 +8,7 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
- * 
+ * Updated Node v6 to Node v10
 
 ### Bug Fixes
 
