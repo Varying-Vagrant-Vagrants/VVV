@@ -4,21 +4,21 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.3.1 ( WIP 2018 )
+## 2.4.0 ( 2018 October 2th )
 
 ### Enhancements
 
  * Updated Node v6 to Node v10
+ * The default site config has been improved to clear up confusion over the difference between the site template and the develop site template
+ * Utilities can now place nginx config files in `/etc/nginx/custom-utilities/` during provisioning
+ * The message VVV showed when copying `vvv-config.yml` to `vvv-custom.yml` was a tad confusing, it's been improved
 
 ### Bug Fixes
 
  * Sites that set `skip_provision` to true no longer have their hosts added
+ * PHP error logging was switched from `/srv/log` to `/var/log`, fixing an issue with PHP logs appearing inside Nginx logs
 
-### Deprecations
-
- * 
-
-## 2.3.0 ( Sep 2018 )
+## 2.3.0 ( 2018 September )
 
 ### Enhancements
 
