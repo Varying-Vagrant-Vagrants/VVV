@@ -501,7 +501,12 @@ nginx_setup() {
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
     mkdir "/etc/nginx/custom-utilities/"
   fi
-  rm -rf /etc/nginx/custom-utilities/*
+
+  if [[ ! -d "/etc/nginx/custom-dashboard-extensions" ]]; then
+    mkdir "/etc/nginx/custom-dashboard-extensions/"
+  fi
+
+  rm -rf /etc/nginx/custom-{dashboard-extensions,utilities}/*
 
   echo " * Copied /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
   echo " * Copied /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
