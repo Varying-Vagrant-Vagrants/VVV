@@ -18,8 +18,8 @@ deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu trusty 
 deb-src http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu trusty main
 
 # Provides Node.js
-deb https://deb.nodesource.com/node_6.x trusty main
-deb-src https://deb.nodesource.com/node_6.x trusty main
+deb https://deb.nodesource.com/node_10.x trusty main
+deb-src https://deb.nodesource.com/node_10.x trusty main
 
 # git lfs (large file storage plugin for git)
 deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main
