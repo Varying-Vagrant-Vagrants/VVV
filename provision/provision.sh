@@ -500,8 +500,8 @@ nginx_setup() {
   
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
     mkdir "/etc/nginx/custom-utilities/"
-    echo " * Generated custom-utilities folder                    to /etc/nginx/custom-utilities/"
   fi
+  rm -rf /etc/nginx/custom-utilities/*
 
   echo " * Copied /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
   echo " * Copied /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
