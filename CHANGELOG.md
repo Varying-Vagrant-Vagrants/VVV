@@ -12,7 +12,7 @@ permalink: /docs/en-US/changelog/
 
 ### Bug Fixes
 
- * 
+ * Sites that set `skip_provision` to true no longer have their hosts added
 
 ### Deprecations
 
