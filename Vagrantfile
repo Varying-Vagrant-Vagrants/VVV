@@ -11,7 +11,7 @@ def virtualbox_version()
         s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
         return s.stdout.strip!
     else
-        return nil
+        return 'unknown'
     end
 end
 
@@ -39,8 +39,9 @@ if ENV['VVV_SKIP_LOGO'] then
 end
 if show_logo then
 
-  platform = '' + Vagrant::Util::Platform.platform + ' '
+  platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
   if Vagrant::Util::Platform.windows? then
+    platform = platform + 'windows '
     if Vagrant::Util::Platform.wsl? then
       platform = platform + 'wsl '
     end
@@ -62,7 +63,7 @@ if show_logo then
   else
 
     if ENV['SHELL'] then
-      platform = platform + "shell:" + ENV['SHELL']
+      platform = platform + "shell:" + ENV['SHELL'] +' '
     end
     if Vagrant::Util::Platform.systemd? then
       platform = platform + 'systemd '
@@ -332,10 +333,10 @@ Vagrant.configure("2") do |config|
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
-  config.vm.network :private_network, id: "vvv_primary", ip: vvv_config['vm_config']['private_network_ip']
+  config.vm.network :private_network, id: "vvv_primary", ip: vvv_config['vm_config']['private_network_ip'], nic_type: "virtio"
 
   config.vm.provider :hyperv do |v, override|
-    override.vm.network :private_network, id: "vvv_primary", ip: nil
+    override.vm.network :private_network, id: "vvv_primary", ip: nil, nic_type: "virtio"
   end
 
   # Public Network (disabled)
