@@ -423,6 +423,11 @@ Vagrant.configure("2") do |config|
   vvv_config['sites'].each do |site, args|
     if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
       config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+
+      # If Bindfs vagrant plugin is available on MacOS, use it to help with permissions issues
+      if Vagrant.has_plugin?('vagrant-bindfs')
+        config.bindfs.bind_folder args['local_dir'], args['vm_dir']
+      end
     end
   end
 
