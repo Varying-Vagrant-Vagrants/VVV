@@ -35,7 +35,7 @@ VVV is built on a Ubuntu 14.04 LTS (Trusty) base VM and provisions the server wi
 1. [PHPUnit](https://phpunit.de/)
 1. [Composer](https://github.com/composer/composer)
 1. [NodeJs](https://nodejs.org/) v10
-1. [Mailcatcher](http://mailcatcher.me/)
+1. [Mailhog](https://github.com/mailhog/MailHog)
 
 For a more comprehensive list, please see the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).
 
