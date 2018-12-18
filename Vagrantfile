@@ -333,10 +333,10 @@ Vagrant.configure("2") do |config|
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
-  config.vm.network :private_network, id: "vvv_primary", ip: vvv_config['vm_config']['private_network_ip'], nic_type: "virtio"
+  config.vm.network :private_network, id: "vvv_primary", ip: vvv_config['vm_config']['private_network_ip']
 
   config.vm.provider :hyperv do |v, override|
-    override.vm.network :private_network, id: "vvv_primary", ip: nil, nic_type: "virtio"
+    override.vm.network :private_network, id: "vvv_primary", ip: nil
   end
 
   # Public Network (disabled)
