@@ -83,6 +83,7 @@ if [[ false != "${REPO}" ]]; then
   else
     echo -e "\nUpdating ${SITE}..."
     cd ${VM_DIR}
+    noroot git reset origin/${BRANCH} --hard -q
     noroot git pull origin ${BRANCH} -q
     noroot git checkout ${BRANCH} -q
   fi
