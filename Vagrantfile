@@ -69,6 +69,14 @@ if show_logo then
     end
   end
 
+  if Vagrant.has_plugin?('vagrant-hostsupdater') then
+    platform = platform + 'vagrant-hostsupdater '
+  end
+  
+  if Vagrant.has_plugin?('vagrant-vbguest') then
+    platform = platform + 'vagrant-vbguest '
+  end
+
   if Vagrant::Util::Platform.fs_case_sensitive? then
     platform = platform + 'CaseSensitiveFS '
   end
