@@ -62,7 +62,7 @@ if show_logo then
   else
 
     if ENV['SHELL'] then
-      platform = platform + "shell:" + ENV['SHELL']
+      platform = platform + "shell:" + ENV['SHELL'] + ' '
     end
     if Vagrant::Util::Platform.systemd? then
       platform = platform + 'systemd '
