@@ -152,27 +152,29 @@ cleanup_terminal_splash() {
 
 profile_setup() {
   # Copy custom dotfiles and bin file for the vagrant user from local
+  echo " * Copying /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
   cp "/srv/config/bash_profile" "/home/vagrant/.bash_profile"
+
+  echo " * Copying /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
   cp "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
+
+  echo " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
   cp "/srv/config/vimrc" "/home/vagrant/.vimrc"
 
   if [[ ! -d "/home/vagrant/.subversion" ]]; then
-    mkdir "/home/vagrant/.subversion"
+    mkdir -p "/home/vagrant/.subversion"
   fi
 
+  echo " * Copying /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
   cp "/srv/config/subversion-servers" "/home/vagrant/.subversion/servers"
-  cp "/srv/config/subversion-config" "/home/vagrant/.subversion/config"
 
-  echo " * Copied /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
-  echo " * Copied /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
-  echo " * Copied /srv/config/vimrc                             to /home/vagrant/.vimrc"
-  echo " * Copied /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
-  echo " * Copied /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
+  echo " * Copying /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
+  cp "/srv/config/subversion-config" "/home/vagrant/.subversion/config"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
+    echo " * Copying /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
     cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
-    echo " * Copied /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
   fi
 }
 
