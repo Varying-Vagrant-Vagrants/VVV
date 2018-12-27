@@ -425,36 +425,38 @@ nginx_setup() {
   echo -e "\nSetup configuration files..."
 
   # Used to ensure proper services are started on `vagrant up`
-  cp "/srv/config/init/vvv-start.conf" "/etc/init/vvv-start.conf"
-  echo " * Copied /srv/config/init/vvv-start.conf               to /etc/init/vvv-start.conf"
+  echo " * Copying /srv/config/init/vvv-start.conf               to /etc/init/vvv-start.conf"
+  cp -f "/srv/config/init/vvv-start.conf" "/etc/init/vvv-start.conf"
 
   # Copy nginx configuration from local
-  cp "/srv/config/nginx-config/nginx.conf" "/etc/nginx/nginx.conf"
-  cp "/srv/config/nginx-config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
+  echo " * Copying /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
+  cp -f "/srv/config/nginx-config/nginx.conf" "/etc/nginx/nginx.conf"
+
+  echo " * Copying /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
+  cp -f "/srv/config/nginx-config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
 
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
-    mkdir "/etc/nginx/upstreams/"
+    mkdir -p "/etc/nginx/upstreams/"
   fi
-  cp "/srv/config/nginx-config/php7.2-upstream.conf" "/etc/nginx/upstreams/php72.conf"
+  echo " * Copying /srv/config/nginx-config/php7.2-upstream.conf to /etc/nginx/upstreams/php72.conf"
+  cp -f "/srv/config/nginx-config/php7.2-upstream.conf" "/etc/nginx/upstreams/php72.conf"
 
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
-    mkdir "/etc/nginx/custom-sites/"
+    mkdir -p "/etc/nginx/custom-sites/"
   fi
+  echo " * Rsync'ing /srv/config/nginx-config/sites/             to /etc/nginx/custom-sites"
   rsync -rvzh --delete "/srv/config/nginx-config/sites/" "/etc/nginx/custom-sites/"
   
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
-    mkdir "/etc/nginx/custom-utilities/"
+    mkdir -p "/etc/nginx/custom-utilities/"
   fi
 
   if [[ ! -d "/etc/nginx/custom-dashboard-extensions" ]]; then
-    mkdir "/etc/nginx/custom-dashboard-extensions/"
+    mkdir -p "/etc/nginx/custom-dashboard-extensions/"
   fi
 
   rm -rf /etc/nginx/custom-{dashboard-extensions,utilities}/*
 
-  echo " * Copied /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
-  echo " * Copied /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
-  echo " * Rsync'd /srv/config/nginx-config/sites/              to /etc/nginx/custom-sites"
   mkdir -p /var/log/nginx/
   touch /var/log/nginx/error.log
   touch /var/log/nginx/access.log
@@ -462,19 +464,23 @@ nginx_setup() {
 
 phpfpm_setup() {
   # Copy php-fpm configuration from local
-  cp "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
-  cp "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
-  cp "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
-  cp "/srv/config/php-config/mailhog.ini" "/etc/php/7.2/mods-available/mailhog.ini"
-
-  echo " * Copied /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
-  echo " * Copied /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
-  echo " * Copied /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
-  echo " * Copied /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
+  echo " * Copying /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
+  cp -f "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
+  
+  echo " * Copying /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
+  cp -f "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
+  
+  echo " * Copying /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
+  cp -f "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
+  
+  echo " * Copying /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
+  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
+  
+  echo " * Copying /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
+  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
+  
+  echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
+  cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.2/mods-available/mailhog.ini"
 
   if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
     echo " * Cleaning up mailcatcher.ini from a previous install"
@@ -482,10 +488,9 @@ phpfpm_setup() {
   fi
 
   # Copy memcached configuration from local
-  cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
-  cp "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
-
-  echo " * Copied /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
+  echo " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
+  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
+  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 }
 
 go_setup() {
@@ -514,8 +519,8 @@ mailhog_setup() {
     noroot /usr/local/go/bin/go get github.com/mailhog/MailHog
     noroot /usr/local/go/bin/go get github.com/mailhog/mhsendmail
 
-    cp /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
-    cp /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
+    cp -f /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
+    cp -f /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
 
     # Make it start on reboot
     tee /etc/init/mailhog.conf <<EOL
@@ -530,7 +535,7 @@ EOL
   fi
   if [[ -e /etc/init/mailcatcher.conf ]]; then
     echo " * Cleaning up old MailCatcher startup file"
-    rm /etc/init/mailcatcher.conf
+    rm -f /etc/init/mailcatcher.conf
   fi
   echo " * Starting MailHog"
   service mailhog start
