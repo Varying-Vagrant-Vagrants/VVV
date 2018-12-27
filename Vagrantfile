@@ -62,11 +62,19 @@ if show_logo then
   else
 
     if ENV['SHELL'] then
-      platform = platform + "shell:" + ENV['SHELL']
+      platform = platform + "shell:" + ENV['SHELL'] + ' '
     end
     if Vagrant::Util::Platform.systemd? then
       platform = platform + 'systemd '
     end
+  end
+
+  if Vagrant.has_plugin?('vagrant-hostsupdater') then
+    platform = platform + 'vagrant-hostsupdater '
+  end
+
+  if Vagrant.has_plugin?('vagrant-vbguest') then
+    platform = platform + 'vagrant-vbguest '
   end
 
   if Vagrant::Util::Platform.fs_case_sensitive? then
@@ -83,9 +91,7 @@ if show_logo then
     branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
     branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
   end
-  stars = <<-STARS
-\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
-STARS
+
   splash = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
