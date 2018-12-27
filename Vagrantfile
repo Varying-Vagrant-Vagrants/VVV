@@ -11,7 +11,7 @@ def virtualbox_version()
         s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
         return s.stdout.strip!
     else
-        return nil
+        return 'unknown'
     end
 end
 
@@ -39,8 +39,9 @@ if ENV['VVV_SKIP_LOGO'] then
 end
 if show_logo then
 
-  platform = '' + Vagrant::Util::Platform.platform + ' '
+  platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
   if Vagrant::Util::Platform.windows? then
+    platform = platform + 'windows '
     if Vagrant::Util::Platform.wsl? then
       platform = platform + 'wsl '
     end
