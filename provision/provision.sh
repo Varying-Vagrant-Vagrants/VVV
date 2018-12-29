@@ -22,7 +22,7 @@ start_seconds="$(date +%s)"
 apt_package_install_list=(
   # Please avoid apostrophes in these comments - they break vim syntax
   # highlighting.
-  # 
+  #
   software-properties-common
 
   # PHP7
@@ -274,7 +274,7 @@ package_install() {
 
   # Clean up apt caches
   apt-get clean
-  
+
   return 0
 }
 
@@ -441,7 +441,7 @@ nginx_setup() {
     mkdir "/etc/nginx/custom-sites/"
   fi
   rsync -rvzh --delete "/srv/config/nginx-config/sites/" "/etc/nginx/custom-sites/"
-  
+
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
     mkdir "/etc/nginx/custom-utilities/"
   fi
@@ -507,9 +507,9 @@ mailhog_setup() {
 
   if [[ ! -e /usr/local/bin/mailhog ]]; then
     export GOPATH=/home/vagrant/gocode
-    
+
     echo " * Fetching MailHog and MHSendmail"
-    
+
     noroot mkdir -p /home/vagrant/gocode
     noroot /usr/local/go/bin/go get github.com/mailhog/MailHog
     noroot /usr/local/go/bin/go get github.com/mailhog/mhsendmail
@@ -647,7 +647,7 @@ php_codesniff() {
   ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
   # Install the standards in PHPCS
-  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/,./CodeSniffer/Standards/VIP-Coding-Standards/,./CodeSniffer/Standards/PHPCompatibility/
+  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/,./CodeSniffer/Standards/VIP-Coding-Standards/,./CodeSniffer/Standards/PHPCompatibility/,./CodeSniffer/Standards/PHPCompatibilityParagonie/,./CodeSniffer/Standards/PHPCompatibilityWP/
   phpcs --config-set default_standard WordPress-Core
   phpcs -i
 }
