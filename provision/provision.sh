@@ -251,9 +251,9 @@ package_install() {
     apt-key add /vagrant/config/apt-keys/mariadb.key
   fi
 
-  if [[ ! $( apt-key list | grep 'packagecloud ops') ]]; then
+  if [[ ! $( apt-key list | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
-    echo "Applying the PackageCloud signing key..."
+    echo "Applying the PackageCloud Git-LFS signing key..."
     apt-key add /vagrant/config/apt-keys/git-lfs.key
   fi
 
@@ -263,7 +263,7 @@ package_install() {
 
   # Install required packages
   echo "Installing apt-get packages..."
-  if ! apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+  if ! apt-get -y --force-yes -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
     apt-get clean
     return 1
   fi
