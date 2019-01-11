@@ -7,7 +7,7 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-source provision-network-functions.sh
+source /vagrant/provision/provision-network-functions.sh
 
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
