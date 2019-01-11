@@ -504,12 +504,12 @@ mailhog_setup() {
 
   if [[ ! -e /usr/local/bin/mailhog ]]; then
     echo " * Installing MailHog"
-    curl --silent -o /usr/local/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
+    curl --silent -L -o /usr/local/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
     chmod +x /usr/local/bin/mailhog
   fi
   if [[ ! -e /usr/local/bin/mhsendmail ]]; then
     echo " * Installing MHSendmail"
-    curl --silent -o /usr/local/bin/mhsendmail https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64
+    curl --silent -L -o /usr/local/bin/mhsendmail https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64
     chmod +x /usr/local/bin/mhsendmail
   fi
 
