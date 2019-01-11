@@ -8,9 +8,10 @@ if [[ -f /vagrant/vvv-custom.yml ]]; then
 	VVV_CONFIG=/vagrant/vvv-custom.yml
 fi
 
-local run_backups=`cat ${VVV_CONFIG} | shyaml get-value general.db_backup 2> /dev/null`
+run_backups=`cat ${VVV_CONFIG} | shyaml get-value general.db_backup 2> /dev/null`
 
-if [[ $run_backups != "False" ]] then;
+if [[ $run_backups != "False" ]]
+then
 
 	# Create individual SQL files for each database. These files
 	# are imported automatically during an initial provision if

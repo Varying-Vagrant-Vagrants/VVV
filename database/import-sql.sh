@@ -23,9 +23,10 @@ if [[ -f /vagrant/vvv-custom.yml ]]; then
 	VVV_CONFIG=/vagrant/vvv-custom.yml
 fi
 
-local run_restore=`cat ${VVV_CONFIG} | shyaml get-value general.db_restore 2> /dev/null`
+run_restore=`cat ${VVV_CONFIG} | shyaml get-value general.db_restore 2> /dev/null`
 
-if [[ $run_restore == "False" ]] then;
+if [[ $run_restore == "False" ]]
+then
 	echo "Skipping DB import script\n"
 	exit;
 fi
