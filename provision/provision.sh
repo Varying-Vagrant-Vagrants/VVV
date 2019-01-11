@@ -7,6 +7,8 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
+export DEBIAN_FRONTEND=noninteractive
+
 source /vagrant/provision/provision-network-functions.sh
 
 # By storing the date now, we can calculate the duration of provisioning at the
@@ -502,11 +504,13 @@ mailhog_setup() {
 
   if [[ ! -e /usr/local/bin/mailhog ]]; then
     echo " * Installing MailHog"
-    curl -o /usr/local/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
+    curl --silent -o /usr/local/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
+    chmod +x /usr/local/bin/mailhog
   fi
   if [[ ! -e /usr/local/bin/mhsendmail ]]; then
     echo " * Installing MHSendmail"
-    curl -o /usr/local/bin/mhsendmail https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64
+    curl --silent -o /usr/local/bin/mhsendmail https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64
+    chmod +x /usr/local/bin/mhsendmail
   fi
 
   if [[ ! -e /etc/init/mailhog.conf ]]; then
@@ -631,7 +635,7 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /vagrant/provision/phpcs
-  noroot composer update --no-ansi --no-autoloader
+  noroot composer update --no-ansi --no-autoloader --no-progress
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
   ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
