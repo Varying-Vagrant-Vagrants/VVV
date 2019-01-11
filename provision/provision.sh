@@ -241,7 +241,7 @@ package_install() {
 
   if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
-    echo "Applying the PHP signing key..."
+    echo "Applying the Ondřej PHP signing key..."
     apt-key add /vagrant/config/apt-keys/keyserver_ubuntu.key
   fi
 
@@ -457,6 +457,7 @@ nginx_setup() {
 
   rm -rf /etc/nginx/custom-{dashboard-extensions,utilities}/*
 
+  echo "Making sure the Nginx log files and folder exist"
   mkdir -p /var/log/nginx/
   touch /var/log/nginx/error.log
   touch /var/log/nginx/access.log
@@ -493,34 +494,22 @@ phpfpm_setup() {
   cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 }
 
-go_setup() {
-  if [[ ! -e /usr/local/go/bin/go ]]; then
-      echo " * Installing GoLang 1.10.3"
-      curl -so- https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz | tar zxvf -
-      mv go /usr/local
-      export PATH="$PATH:/usr/local/go/bin"
-      export GOPATH=/home/vagrant/gocode
-  fi
-}
-
 mailhog_setup() {
-
   if [[ -f "/etc/init/mailcatcher.conf" ]]; then
     echo " * Cleaning up old mailcatcher.conf"
     rm -f /etc/init/mailcatcher.conf
   fi
 
   if [[ ! -e /usr/local/bin/mailhog ]]; then
-    export GOPATH=/home/vagrant/gocode
+    echo " * Installing MailHog"
+    curl -o /usr/local/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
+  fi
+  if [[ ! -e /usr/local/bin/mhsendmail ]]; then
+    echo " * Installing MHSendmail"
+    curl -o /usr/local/bin/mhsendmail https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64
+  fi
 
-    echo " * Fetching MailHog and MHSendmail"
-
-    noroot mkdir -p /home/vagrant/gocode
-    noroot /usr/local/go/bin/go get github.com/mailhog/MailHog
-    noroot /usr/local/go/bin/go get github.com/mailhog/mhsendmail
-
-    cp -f /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
-    cp -f /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
+  if [[ ! -e /etc/init/mailhog.conf ]]; then
 
     # Make it start on reboot
     tee /etc/init/mailhog.conf <<EOL
@@ -533,10 +522,7 @@ pre-start script
 end script
 EOL
   fi
-  if [[ -e /etc/init/mailcatcher.conf ]]; then
-    echo " * Cleaning up old MailCatcher startup file"
-    rm -f /etc/init/mailcatcher.conf
-  fi
+
   echo " * Starting MailHog"
   service mailhog start
 }
@@ -595,7 +581,7 @@ services_restart() {
   # RESTART SERVICES
   #
   # Make sure the services we expect to be running are running.
-  echo -e "\nRestart services..."
+  echo -e "\nRestarting services..."
   service nginx restart
   service memcached restart
   service mailhog restart
@@ -658,6 +644,7 @@ php_codesniff() {
 }
 
 wpsvn_check() {
+  echo " * Searching for SVN repositories that need upgrading"
   # Get all SVN repos.
   svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
 
@@ -669,6 +656,7 @@ wpsvn_check() {
 
       if [[ "$svn_test" == *"svn upgrade"* ]]; then
         # If it is needed do it!
+        echo " * Upgrading svn repository: ${repo}"
         svn upgrade "${repo/%\.svn/}"
       fi;
     done
@@ -676,6 +664,7 @@ wpsvn_check() {
 }
 
 cleanup_vvv(){
+  echo "Cleaning up Nginx configs"
   # Kill previously symlinked Nginx configs
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
@@ -710,7 +699,6 @@ fi
 
 tools_install
 nginx_setup
-go_setup
 mailhog_setup
 
 phpfpm_setup
