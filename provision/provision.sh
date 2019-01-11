@@ -334,7 +334,8 @@ tools_install() {
   # COMPOSER
   #
   # Install Composer if it is not yet available.
-  if [[ ! -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
+  exists_composer="$(which composer)"
+  if [[ "/usr/local/bin/composer" != "${exists_composer}" ]]; then
     echo "Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
