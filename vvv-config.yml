@@ -91,3 +91,5 @@ vm_config:
 general:
   # Backup the databases to the database/backups subfolder on halt/suspend/destroy, set to false to disable
   db_backup: true
+  # Import the databases if they're missing from backups
+  db_restore: true
