@@ -357,6 +357,21 @@ tools_install() {
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
   fi
 
+
+  function install_grunt() {
+    echo "Installing Grunt CLI"
+    npm install -g grunt-cli
+    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm install -g grunt-cssjanus
+    npm install -g grunt-rtlcss
+  }
+  function update_grunt() {
+    echo "Updating Grunt CLI"
+    npm update -g grunt-cli
+    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm update -g grunt-cssjanus
+    npm update -g grunt-rtlcss
+  }
   # Grunt
   #
   # Install or Update Grunt based on current state.  Updates are direct
@@ -378,18 +393,11 @@ tools_install() {
     done
     rm /tmp/stop_gyp_hack
   }
-  if [[ "$(grunt --version)" ]]; then
-    echo "Updating Grunt CLI"
-    npm update -g grunt-cli
-    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm update -g grunt-cssjanus
-    npm update -g grunt-rtlcss
+  exists_grunt="$(which grunt)"
+  if [[ "/usr/bin/grunt" != "${exists_grunt}" ]]; then
+    install_grunt
   else
-    echo "Installing Grunt CLI"
-    npm install -g grunt-cli
-    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm install -g grunt-cssjanus
-    npm install -g grunt-rtlcss
+    update_grunt
   fi
   chown -R vagrant:vagrant /usr/lib/node_modules/
 
