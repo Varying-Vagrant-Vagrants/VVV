@@ -11,7 +11,7 @@
     "require": {
         "oomphinc/composer-installers-extender": "^1.1",
         "wp-coding-standards/wpcs": "*",
-        "automattic/vipwpcs": "dev-master",
+        "automattic/vipwpcs": "*",
         "phpcompatibility/php-compatibility": "*",
         "phpcompatibility/phpcompatibility-paragonie": "*",
         "phpcompatibility/phpcompatibility-wp": "*"
