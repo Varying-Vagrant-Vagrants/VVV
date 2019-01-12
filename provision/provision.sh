@@ -7,7 +7,9 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-source provision-network-functions.sh
+export DEBIAN_FRONTEND=noninteractive
+
+source /vagrant/provision/provision-network-functions.sh
 
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
@@ -241,7 +243,7 @@ package_install() {
 
   if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
-    echo "Applying the PHP signing key..."
+    echo "Applying the Ondřej PHP signing key..."
     apt-key add /vagrant/config/apt-keys/keyserver_ubuntu.key
   fi
 
@@ -332,7 +334,8 @@ tools_install() {
   # COMPOSER
   #
   # Install Composer if it is not yet available.
-  if [[ ! -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
+  exists_composer="$(which composer)"
+  if [[ "/usr/local/bin/composer" != "${exists_composer}" ]]; then
     echo "Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
@@ -355,6 +358,21 @@ tools_install() {
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
   fi
 
+
+  function install_grunt() {
+    echo "Installing Grunt CLI"
+    npm install -g grunt-cli
+    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm install -g grunt-cssjanus
+    npm install -g grunt-rtlcss
+  }
+  function update_grunt() {
+    echo "Updating Grunt CLI"
+    npm update -g grunt-cli
+    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm update -g grunt-cssjanus
+    npm update -g grunt-rtlcss
+  }
   # Grunt
   #
   # Install or Update Grunt based on current state.  Updates are direct
@@ -376,18 +394,11 @@ tools_install() {
     done
     rm /tmp/stop_gyp_hack
   }
-  if [[ "$(grunt --version)" ]]; then
-    echo "Updating Grunt CLI"
-    npm update -g grunt-cli
-    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm update -g grunt-cssjanus
-    npm update -g grunt-rtlcss
+  exists_grunt="$(which grunt)"
+  if [[ "/usr/bin/grunt" != "${exists_grunt}" ]]; then
+    install_grunt
   else
-    echo "Installing Grunt CLI"
-    npm install -g grunt-cli
-    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm install -g grunt-cssjanus
-    npm install -g grunt-rtlcss
+    update_grunt
   fi
   chown -R vagrant:vagrant /usr/lib/node_modules/
 
@@ -457,6 +468,7 @@ nginx_setup() {
 
   rm -rf /etc/nginx/custom-{dashboard-extensions,utilities}/*
 
+  echo "Making sure the Nginx log files and folder exist"
   mkdir -p /var/log/nginx/
   touch /var/log/nginx/error.log
   touch /var/log/nginx/access.log
@@ -493,34 +505,24 @@ phpfpm_setup() {
   cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 }
 
-go_setup() {
-  if [[ ! -e /usr/local/go/bin/go ]]; then
-      echo " * Installing GoLang 1.10.3"
-      curl -so- https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz | tar zxvf -
-      mv go /usr/local
-      export PATH="$PATH:/usr/local/go/bin"
-      export GOPATH=/home/vagrant/gocode
-  fi
-}
-
 mailhog_setup() {
-
   if [[ -f "/etc/init/mailcatcher.conf" ]]; then
     echo " * Cleaning up old mailcatcher.conf"
     rm -f /etc/init/mailcatcher.conf
   fi
 
   if [[ ! -e /usr/local/bin/mailhog ]]; then
-    export GOPATH=/home/vagrant/gocode
+    echo " * Installing MailHog"
+    curl --silent -L -o /usr/local/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
+    chmod +x /usr/local/bin/mailhog
+  fi
+  if [[ ! -e /usr/local/bin/mhsendmail ]]; then
+    echo " * Installing MHSendmail"
+    curl --silent -L -o /usr/local/bin/mhsendmail https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64
+    chmod +x /usr/local/bin/mhsendmail
+  fi
 
-    echo " * Fetching MailHog and MHSendmail"
-
-    noroot mkdir -p /home/vagrant/gocode
-    noroot /usr/local/go/bin/go get github.com/mailhog/MailHog
-    noroot /usr/local/go/bin/go get github.com/mailhog/mhsendmail
-
-    cp -f /home/vagrant/gocode/bin/MailHog /usr/local/bin/mailhog
-    cp -f /home/vagrant/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
+  if [[ ! -e /etc/init/mailhog.conf ]]; then
 
     # Make it start on reboot
     tee /etc/init/mailhog.conf <<EOL
@@ -533,10 +535,7 @@ pre-start script
 end script
 EOL
   fi
-  if [[ -e /etc/init/mailcatcher.conf ]]; then
-    echo " * Cleaning up old MailCatcher startup file"
-    rm -f /etc/init/mailcatcher.conf
-  fi
+
   echo " * Starting MailHog"
   service mailhog start
 }
@@ -595,7 +594,7 @@ services_restart() {
   # RESTART SERVICES
   #
   # Make sure the services we expect to be running are running.
-  echo -e "\nRestart services..."
+  echo -e "\nRestarting services..."
   service nginx restart
   service memcached restart
   service mailhog restart
@@ -645,7 +644,7 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /vagrant/provision/phpcs
-  noroot composer update --no-ansi --no-autoloader
+  noroot composer update --no-ansi --no-autoloader --no-progress
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
   ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
@@ -658,6 +657,7 @@ php_codesniff() {
 }
 
 wpsvn_check() {
+  echo " * Searching for SVN repositories that need upgrading"
   # Get all SVN repos.
   svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
 
@@ -669,6 +669,7 @@ wpsvn_check() {
 
       if [[ "$svn_test" == *"svn upgrade"* ]]; then
         # If it is needed do it!
+        echo " * Upgrading svn repository: ${repo}"
         svn upgrade "${repo/%\.svn/}"
       fi;
     done
@@ -676,6 +677,7 @@ wpsvn_check() {
 }
 
 cleanup_vvv(){
+  echo "Cleaning up Nginx configs"
   # Kill previously symlinked Nginx configs
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
@@ -710,7 +712,6 @@ fi
 
 tools_install
 nginx_setup
-go_setup
 mailhog_setup
 
 phpfpm_setup
