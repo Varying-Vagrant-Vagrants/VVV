@@ -4,6 +4,19 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 2.5.0 ( January 2019 )
+
+### Enhancements
+
+ * Updated PHPMemcachedadmin from v1.2.2.1 to v1.2.3
+ * A new `db_backup` option was added to `vvv-custom.yml`
+ * A new `db_restore` option was added to skip the initial import
+
+### Bug Fixes
+
+ * Updated the GPG key for packagecloud.io
+
+
 ## 2.4.0 ( 2018 October 2th )
 
 ### Enhancements
