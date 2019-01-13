@@ -80,16 +80,16 @@ function vvv_provision_site_nginx() {
 }
 
 function vvv_provision_hosts_file() {
-  hostfile = $1
-  while read hostfile; do
+  HOSTFILE=$1
+  while read HOSTFILE; do
     while IFS='' read -r line || [ -n "$line" ]; do
       if [[ "#" != ${line:0:1} ]]; then
         if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
           echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-          echo " * Added $line from $hostfile"
+          echo " * Added $line from $HOSTFILE"
         fi
       fi
-    done < "$hostfile"
+    done < "$HOSTFILE"
   done
 }
 
