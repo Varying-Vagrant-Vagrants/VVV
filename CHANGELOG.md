@@ -15,7 +15,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
  * Updated the GPG key for packagecloud.io
-
+ * Updated the site provisioning script to fix WordPress Meta Environment failure (WordPress/meta-environment#122)
 
 ## 2.4.0 ( 2018 October 2th )
 

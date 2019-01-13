@@ -123,7 +123,7 @@ if [[ false == "${SKIP_PROVISIONING}" ]]; then
       vvv_provision_site_nginx $SITE "${VM_DIR}/vvv-nginx.conf"
     else
       NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
-      if [[ -z $results ]] ; then
+      if [[ -z $NGINX_CONFIGS ]] ; then
         echo "Warning: No nginx config was found, VVV will not know how to serve this site"
       else
         for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
