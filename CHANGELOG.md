@@ -31,6 +31,7 @@ permalink: /docs/en-US/changelog/
  * Updated the GPG key for packagecloud.io
  * Updated the site provisioning script to fix WordPress Meta Environment failure (WordPress/meta-environment#122)
  * Continue if the vagrant up and reload triggers failed
+ * Nginx and MySQL restarting is no longer done via a provisioner, this fixes contributor day issues when using `--no-provision` leading to nginx and mysql being unavailable. This is done via the `config/homebin/vagrant_up` script
 
 ## 2.4.0 ( 2018 October 2th )
 
