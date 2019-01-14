@@ -698,7 +698,7 @@ cleanup_vvv(){
   echo "127.0.0.1 vvv.local # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.localhost # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
-  if [[ `is_utility_installed "tideways"` ]]; then
+  if [[ `is_utility_installed core tideways` ]]; then
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
   mv /tmp/hosts /etc/hosts
