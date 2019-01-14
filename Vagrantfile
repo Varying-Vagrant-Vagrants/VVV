@@ -574,13 +574,6 @@ Vagrant.configure("2") do |config|
     config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
   end
 
-  # Always start MariaDB/MySQL on boot, even when not running the full provisioner
-  # (run: "always" support added in 1.6.0)
-  if vagrant_version >= "1.6.0"
-    config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
-    config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
-  end
-
   # Vagrant Triggers
   #
   # We run various scripts on Vagrant state changes like `vagrant up`, `vagrant halt`,
