@@ -19,5 +19,5 @@ deb https://deb.nodesource.com/node_11.x cosmic main
 deb-src https://deb.nodesource.com/node_11.x cosmic main
 
 # git lfs (large file storage plugin for git)
-deb https://packagecloud.io/github/git-lfs/ubuntu/ cosmic main
-deb-src https://packagecloud.io/github/git-lfs/ubuntu/ cosmic main
+deb https://packagecloud.io/github/git-lfs/ubuntu/ xenial main
+deb-src https://packagecloud.io/github/git-lfs/ubuntu/ xenial main
