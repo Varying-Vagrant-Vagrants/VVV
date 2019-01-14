@@ -19,6 +19,7 @@ permalink: /docs/en-US/changelog/
  * VVV will warn the user if no hosts are defined for a site, or if no folder exists for a site
  * Skipping provisioning on a site will now make the site provisioner abort earlier
  * Site provisioners no longer need to use nginx template config files to add TLS keys, they can use `{vvv_tls_cert}` and `{vvv_tls_key}` in `vvv-nginx.conf`
+ * `tideways.vvv.test` is now registered if the experimental tideways xhgui utility is present
 
 ### Deprecations
 
