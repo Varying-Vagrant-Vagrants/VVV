@@ -14,9 +14,6 @@ deb-src http://ppa.launchpad.net/ondrej/php/ubuntu cosmic main
 deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu cosmic main
 deb-src http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu cosmic main
 
-deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu cosmic main
-deb-src http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu trusty main
-
 # Provides Node.js
 deb https://deb.nodesource.com/node_11.x cosmic main
 deb-src https://deb.nodesource.com/node_11.x cosmic main
