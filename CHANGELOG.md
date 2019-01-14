@@ -4,7 +4,7 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.5.0 ( January 2019 )
+## 2.5.1 ( 14th January 2019 )
 
 2.5 Brings a major bug fix, and some performance improvements to provisioning
 
