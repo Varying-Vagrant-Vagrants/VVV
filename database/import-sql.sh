@@ -18,6 +18,19 @@
 #
 # Let's begin...
 
+VVV_CONFIG=/vagrant/vvv-config.yml
+if [[ -f /vagrant/vvv-custom.yml ]]; then
+	VVV_CONFIG=/vagrant/vvv-custom.yml
+fi
+
+run_restore=`cat ${VVV_CONFIG} | shyaml get-value general.db_restore 2> /dev/null`
+
+if [[ $run_restore == "False" ]]
+then
+	echo "Skipping DB import script\n"
+	exit;
+fi
+
 # Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
 printf "\nStart MariaDB Database Import\n"
 cd /srv/database/backups/

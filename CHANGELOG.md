@@ -4,6 +4,35 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 2.5.1 ( 14th January 2019 )
+
+2.5 Brings a major bug fix, and some performance improvements to provisioning
+
+### Enhancements
+
+ * Updated PHPMemcachedadmin from v1.2.2.1 to v1.2.3
+ * A new `db_backup` option was added to `vvv-custom.yml`
+ * A new `db_restore` option was added to skip the initial import
+ * MailHog is now installed from a prebuilt binary instead of being built from source, speeding up initial provision
+ * VVV will now explicitly check for vvv-hosts in the .vvv and provision subfolders and skip searching 3 folders down if they're found
+ * Additional warnings and messages were added to aid with debugging site provisioners
+ * VVV will warn the user if no hosts are defined for a site, or if no folder exists for a site
+ * Skipping provisioning on a site will now make the site provisioner abort earlier
+ * Site provisioners no longer need to use nginx template config files to add TLS keys, they can use `{vvv_tls_cert}` and `{vvv_tls_key}` in `vvv-nginx.conf`
+ * `tideways.vvv.test` is now registered if the experimental tideways xhgui utility is present
+
+### Deprecations
+
+ * Loading vvv-hosts is now skipped if hosts are defined in the VVV configuration file
+ * GoLang was removed from the provisioner
+
+### Bug Fixes
+
+ * Updated the GPG key for packagecloud.io
+ * Updated the site provisioning script to fix WordPress Meta Environment failure (WordPress/meta-environment#122)
+ * Continue if the vagrant up and reload triggers failed
+ * Nginx and MySQL restarting is no longer done via a provisioner, this fixes contributor day issues when using `--no-provision` leading to nginx and mysql being unavailable. This is done via the `config/homebin/vagrant_up` script
+
 ## 2.4.0 ( 2018 October 2th )
 
 ### Enhancements

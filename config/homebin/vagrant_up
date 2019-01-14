@@ -11,3 +11,6 @@ if [[ -f /vagrant/config/homebin/vagrant_up_custom ]]; then
 	echo "Executing vagrant_up_custom"
 	/vagrant/config/homebin/vagrant_up_custom
 fi
+
+sudo service nginx restart
+sudo service mysql restart

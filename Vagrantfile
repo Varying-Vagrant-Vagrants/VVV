@@ -11,7 +11,7 @@ def virtualbox_version()
         s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
         return s.stdout.strip!
     else
-        return nil
+        return 'unknown'
     end
 end
 
@@ -39,8 +39,9 @@ if ENV['VVV_SKIP_LOGO'] then
 end
 if show_logo then
 
-  platform = '' + Vagrant::Util::Platform.platform + ' '
+  platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
   if Vagrant::Util::Platform.windows? then
+    platform = platform + 'windows '
     if Vagrant::Util::Platform.wsl? then
       platform = platform + 'wsl '
     end
@@ -62,11 +63,19 @@ if show_logo then
   else
 
     if ENV['SHELL'] then
-      platform = platform + "shell:" + ENV['SHELL']
+      platform = platform + "shell:" + ENV['SHELL'] + ' '
     end
     if Vagrant::Util::Platform.systemd? then
       platform = platform + 'systemd '
     end
+  end
+
+  if Vagrant.has_plugin?('vagrant-hostsupdater') then
+    platform = platform + 'vagrant-hostsupdater '
+  end
+
+  if Vagrant.has_plugin?('vagrant-vbguest') then
+    platform = platform + 'vagrant-vbguest '
   end
 
   if Vagrant::Util::Platform.fs_case_sensitive? then
@@ -83,9 +92,7 @@ if show_logo then
     branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
     branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
   end
-  stars = <<-STARS
-\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;203m☆\033[0m\033[38;5;204m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;198m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m\033[38;5;199m☆\033[0m
-STARS
+
   splash = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
@@ -120,7 +127,7 @@ if ! vvv_config['hosts'].kind_of? Hash then
   vvv_config['hosts'] = Array.new
 end
 
-vvv_config['hosts'] += ['vvv.dev']
+vvv_config['hosts'] += ['vvv.dev'] # Deprecated
 vvv_config['hosts'] += ['vvv.test']
 vvv_config['hosts'] += ['vvv.local']
 vvv_config['hosts'] += ['vvv.localhost']
@@ -468,13 +475,16 @@ Vagrant.configure("2") do |config|
   # Note that if you find yourself using a Customfile for anything crazy or specifying
   # different provisioning, then you may want to consider a new Vagrantfile entirely.
   if File.exists?(File.join(vagrant_dir,'Customfile')) then
+    puts "Running Custom Vagrant file with additional vagrant configs at #{File.join(vagrant_dir,'Customfile')}\n\n"
     eval(IO.read(File.join(vagrant_dir,'Customfile')), binding)
+    puts "Finished running Custom Vagrant file with additional vagrant configs, resuming normal vagrantfile execution\n\n"
   end
 
   vvv_config['sites'].each do |site, args|
     if args['allow_customfile'] then
       paths = Dir[File.join(args['local_dir'], '**', 'Customfile')]
       paths.each do |file|
+        puts "Running additional site vagrant customfile at #{file}\n\n"
         eval(IO.read(file), binding)
       end
     end
@@ -529,6 +539,9 @@ Vagrant.configure("2") do |config|
       utilities = Hash.new
     end
     utilities.each do |utility|
+        if utility == 'tideways' then
+          vvv_config['hosts'] += ['tideways.vvv.test']
+        end
         config.vm.provision "utility-#{name}-#{utility}",
           type: "shell",
           path: File.join( "provision", "provision-utility.sh" ),
@@ -564,13 +577,6 @@ Vagrant.configure("2") do |config|
     config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
   end
 
-  # Always start MariaDB/MySQL on boot, even when not running the full provisioner
-  # (run: "always" support added in 1.6.0)
-  if vagrant_version >= "1.6.0"
-    config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
-    config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
-  end
-
   # Vagrant Triggers
   #
   # We run various scripts on Vagrant state changes like `vagrant up`, `vagrant halt`,
@@ -583,6 +589,7 @@ Vagrant.configure("2") do |config|
   config.trigger.after :up do |trigger|
     trigger.name = "VVV Post-Up"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+    trigger.on_error = :continue
   end
   config.trigger.before :reload do |trigger|
     trigger.name = "VVV Pre-Reload"
@@ -592,6 +599,7 @@ Vagrant.configure("2") do |config|
   config.trigger.after :reload do |trigger|
     trigger.name = "VVV Post-Reload"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+    trigger.on_error = :continue
   end
   config.trigger.before :halt do |trigger|
     trigger.name = "VVV Pre-Halt"

@@ -11,8 +11,10 @@
     "require": {
         "oomphinc/composer-installers-extender": "^1.1",
         "wp-coding-standards/wpcs": "*",
-        "automattic/vipwpcs": "dev-master",
-        "wimg/php-compatibility": "*"
+        "automattic/vipwpcs": "*",
+        "phpcompatibility/php-compatibility": "*",
+        "phpcompatibility/phpcompatibility-paragonie": "*",
+        "phpcompatibility/phpcompatibility-wp": "*"
     },
     "extra": {
         "installer-types": ["library", "phpcodesniffer-standard"],
@@ -20,7 +22,9 @@
             "/srv/www/phpcs/": ["squizlabs/php_codesniffer"],
             "/srv/www/phpcs/CodeSniffer/Standards/WordPress/": ["wp-coding-standards/wpcs"],
             "/srv/www/phpcs/CodeSniffer/Standards/VIP-Coding-Standards/": ["automattic/vipwpcs"],
-            "/srv/www/phpcs/CodeSniffer/Standards/PHPCompatibility/": ["wimg/php-compatibility"]
+            "/srv/www/phpcs/CodeSniffer/Standards/PHPCompatibility/": ["phpcompatibility/php-compatibility"],
+            "/srv/www/phpcs/CodeSniffer/Standards/PHPCompatibilityParagonie/": ["phpcompatibility/phpcompatibility-paragonie"],
+            "/srv/www/phpcs/CodeSniffer/Standards/PHPCompatibilityWP/": ["phpcompatibility/phpcompatibility-wp"]
         }
     },
     "config": {

@@ -7,7 +7,11 @@
 
 #
 # IMPORTANT, if you change this file, you have to reprovision,  no exceptions
+# Do this by running either this command:
 # vagrant reload --provision
+# 
+# Or, if your machine is already turned on:
+# vagrant provision
 #
 
 # These are your websites, and their names map on to the folders they're
@@ -35,6 +39,7 @@ sites:
   #    - mysite.com
 
   # The wordpress-develop configuration is useful for contributing to WordPress Core.
+  # It uses the built WP to serve the site
   wordpress-trunk:
     description: "An svn based WP Core trunk dev setup, useful for contributor days, Trac tickets, patches"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
@@ -42,7 +47,7 @@ sites:
       - trunk.wordpress.test
 
   # The following commented out site configuration will create a standard WordPress
-  # site in www/example-site/ available at http://my-example-site.dev.
+  # site in www/example-site/ available at http://my-example-site.test.
   # Remember, whitespace is significant! Tabs and spaces mean different things
   #example-site:
   #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
@@ -64,11 +69,12 @@ utilities:
     - phpmyadmin # Web based database client
     - webgrind # PHP Debugging
     - trusted-hosts # GitHub etc
-    - tls-ca # SSL
+    - tls-ca # SSL/TLS certificates
     #- php56
     #- php70
     #- php71
     #- php72
+    #- php73
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
 # increase the memory given to VVV and the number of CPU cores. For WP core development
@@ -81,3 +87,10 @@ vm_config:
   memory: 2048
   cores: 2
   # provider: vmware_workstation
+
+# General VVV options
+general:
+  # Backup the databases to the database/backups subfolder on halt/suspend/destroy, set to false to disable
+  db_backup: true
+  # Import the databases if they're missing from backups
+  db_restore: true
