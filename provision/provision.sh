@@ -362,14 +362,14 @@ tools_install() {
 
   function install_grunt() {
     echo "Installing Grunt CLI"
-    npm install -g grunt-cli
+    npm install -g grunt-cli grunt
     hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
     npm install -g grunt-cssjanus
     npm install -g grunt-rtlcss
   }
   function update_grunt() {
     echo "Updating Grunt CLI"
-    npm update -g grunt-cli
+    npm update -g grunt-cli grunt
     hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
     npm update -g grunt-cssjanus
     npm update -g grunt-rtlcss
