@@ -39,6 +39,7 @@ sites:
   #    - mysite.com
 
   # The wordpress-develop configuration is useful for contributing to WordPress Core.
+  # It uses the built WP to serve the site
   wordpress-trunk:
     description: "An svn based WP Core trunk dev setup, useful for contributor days, Trac tickets, patches"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
