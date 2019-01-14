@@ -127,7 +127,7 @@ if ! vvv_config['hosts'].kind_of? Hash then
   vvv_config['hosts'] = Array.new
 end
 
-vvv_config['hosts'] += ['vvv.dev']
+vvv_config['hosts'] += ['vvv.dev'] # Deprecated
 vvv_config['hosts'] += ['vvv.test']
 vvv_config['hosts'] += ['vvv.local']
 vvv_config['hosts'] += ['vvv.localhost']
@@ -539,6 +539,9 @@ Vagrant.configure("2") do |config|
       utilities = Hash.new
     end
     utilities.each do |utility|
+        if utility == 'tideways' then
+          vvv_config['hosts'] += ['tideways.vvv.test']
+        end
         config.vm.provision "utility-#{name}-#{utility}",
           type: "shell",
           path: File.join( "provision", "provision-utility.sh" ),

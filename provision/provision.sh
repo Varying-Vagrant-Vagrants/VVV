@@ -102,6 +102,16 @@ apt_package_install_list=(
 
 ### FUNCTIONS
 
+is_utility_installed() {
+  local utilities=`cat ${VVV_CONFIG} | shyaml get-values utilities.${1} 2> /dev/null`
+  for utility in ${utilities}; do
+    if [[ "${utility}" == "${2}" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 git_ppa_check() {
   # git
   #
@@ -688,6 +698,9 @@ cleanup_vvv(){
   echo "127.0.0.1 vvv.local # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.localhost # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
+  if [[ `is_utility_installed "tideways"` ]]; then
+    echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
+  fi
   mv /tmp/hosts /etc/hosts
 }
 
