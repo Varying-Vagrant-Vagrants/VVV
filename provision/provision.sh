@@ -523,22 +523,26 @@ mailhog_setup() {
     chmod +x /usr/local/bin/mhsendmail
   fi
 
-  if [[ ! -e /etc/init/mailhog.conf ]]; then
+  if [[ ! -e /etc/systemd/system/mailhog.service ]]; then
 
     # Make it start on reboot
-    tee /etc/init/mailhog.conf <<EOL
-description "MailHog"
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-pre-start script
-    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
-end script
+    tee /etc/systemd/system/mailhog.service <<EOL
+[Unit]
+Description=MailHog
+After=network.service vagrant.mount
+[Service]
+Type=simple
+ExecStart=/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
+[Install]
+WantedBy=multi-user.target
 EOL
   fi
 
+  # Start on reboot
+  systemctl enable mailhog
+
   echo " * Starting MailHog"
-  service mailhog start
+  systemctl start mailhog
 }
 
 mysql_setup() {
