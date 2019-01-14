@@ -8,6 +8,7 @@
 # configurations included with Varying Vagrant Vagrants.
 
 export DEBIAN_FRONTEND=noninteractive
+export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
 source /vagrant/provision/provision-network-functions.sh
 
