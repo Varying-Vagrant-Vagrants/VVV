@@ -309,22 +309,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "vvv"
 
-  # Local Machine Hosts
-  #
-  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
-  # installed, the following will automatically configure your local machine's hosts file to
-  # be aware of the domains specified below. Watch the provisioning script as you may need to
-  # enter a password for Vagrant to access your hosts file.
-  #
-  # By default, we'll include the domains set up by VVV through the vvv-hosts file
-  # located in the www/ directory and in vvv-config.yml.
-  if defined?(VagrantPlugins::HostsUpdater)
-
-    # Pass the found host names to the hostsupdater plugin so it can perform magic.
-    config.hostsupdater.aliases = vvv_config['hosts']
-    config.hostsupdater.remove_on_suspend = true
-  end
-
   # Private Network (default)
   #
   # A private network is created by default. This is the IP address through which your
@@ -568,13 +552,28 @@ Vagrant.configure("2") do |config|
     end
   end
 
-
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
   if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
     config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
+  end
+
+  # Local Machine Hosts
+  #
+  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+  # installed, the following will automatically configure your local machine's hosts file to
+  # be aware of the domains specified below. Watch the provisioning script as you may need to
+  # enter a password for Vagrant to access your hosts file.
+  #
+  # By default, we'll include the domains set up by VVV through the vvv-hosts file
+  # located in the www/ directory and in vvv-config.yml.
+  if defined?(VagrantPlugins::HostsUpdater)
+
+    # Pass the found host names to the hostsupdater plugin so it can perform magic.
+    config.hostsupdater.aliases = vvv_config['hosts']
+    config.hostsupdater.remove_on_suspend = true
   end
 
   # Vagrant Triggers
