@@ -219,6 +219,8 @@ end
 
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
+ENV["LC_ALL"] = "en_US.UTF-8"
+
 Vagrant.configure("2") do |config|
 
   # Store the current version of Vagrant for use in conditionals when dealing
