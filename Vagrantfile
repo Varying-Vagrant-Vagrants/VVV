@@ -269,6 +269,9 @@ Vagrant.configure("2") do |config|
     v.enable_virtualization_extensions = true
     v.linked_clone = true
   end
+  
+  # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
+  config.vagrant.plugins = ["vagrant-hostsupdater", "vagrant-vbguest"]
 
   # SSH Agent Forwarding
   #
