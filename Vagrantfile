@@ -271,7 +271,9 @@ Vagrant.configure("2") do |config|
   end
   
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
-  config.vagrant.plugins = {"vagrant-hostsupdater" => {"entry_point" => "./vagrant-hostsupdater.gem"}}
+  if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem')) then
+    config.vagrant.plugins = {"vagrant-hostsupdater" => {"entry_point" => File.join(vagrant_dir, 'vagrant-hostsupdater.gem')}}
+  end
 
   # SSH Agent Forwarding
   #
