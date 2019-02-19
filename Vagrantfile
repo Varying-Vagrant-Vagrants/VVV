@@ -277,6 +277,8 @@ Vagrant.configure("2") do |config|
         File.delete(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
         puts "#{yellow}VVV has completed installing local plugins. Please run the requested command again.#{creset}"
         exit
+      else
+        config.vagrant.plugins = ["vagrant-hostsupdater"]
       end
   end
 
