@@ -127,7 +127,7 @@ if ! vvv_config['hosts'].kind_of? Hash then
   vvv_config['hosts'] = Array.new
 end
 
-vvv_config['hosts'] += ['vvv.dev']
+vvv_config['hosts'] += ['vvv.dev'] # Deprecated
 vvv_config['hosts'] += ['vvv.test']
 vvv_config['hosts'] += ['vvv.local']
 vvv_config['hosts'] += ['vvv.localhost']
@@ -218,6 +218,8 @@ if defined? vvv_config['vm_config']['provider'] then
 end
 
 vvv_config['hosts'] = vvv_config['hosts'].uniq
+
+ENV["LC_ALL"] = "en_US.UTF-8"
 
 Vagrant.configure("2") do |config|
 
@@ -311,22 +313,6 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.hostname = "vvv"
-
-  # Local Machine Hosts
-  #
-  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
-  # installed, the following will automatically configure your local machine's hosts file to
-  # be aware of the domains specified below. Watch the provisioning script as you may need to
-  # enter a password for Vagrant to access your hosts file.
-  #
-  # By default, we'll include the domains set up by VVV through the vvv-hosts file
-  # located in the www/ directory and in vvv-config.yml.
-  if defined?(VagrantPlugins::HostsUpdater)
-
-    # Pass the found host names to the hostsupdater plugin so it can perform magic.
-    config.hostsupdater.aliases = vvv_config['hosts']
-    config.hostsupdater.remove_on_suspend = true
-  end
 
   # Private Network (default)
   #
@@ -542,6 +528,9 @@ Vagrant.configure("2") do |config|
       utilities = Hash.new
     end
     utilities.each do |utility|
+        if utility == 'tideways' then
+          vvv_config['hosts'] += ['tideways.vvv.test']
+        end
         config.vm.provision "utility-#{name}-#{utility}",
           type: "shell",
           path: File.join( "provision", "provision-utility.sh" ),
@@ -568,7 +557,6 @@ Vagrant.configure("2") do |config|
     end
   end
 
-
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
@@ -577,11 +565,20 @@ Vagrant.configure("2") do |config|
     config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
   end
 
-  # Always start MariaDB/MySQL on boot, even when not running the full provisioner
-  # (run: "always" support added in 1.6.0)
-  if vagrant_version >= "1.6.0"
-    config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
-    config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
+  # Local Machine Hosts
+  #
+  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+  # installed, the following will automatically configure your local machine's hosts file to
+  # be aware of the domains specified below. Watch the provisioning script as you may need to
+  # enter a password for Vagrant to access your hosts file.
+  #
+  # By default, we'll include the domains set up by VVV through the vvv-hosts file
+  # located in the www/ directory and in vvv-config.yml.
+  if defined?(VagrantPlugins::HostsUpdater)
+
+    # Pass the found host names to the hostsupdater plugin so it can perform magic.
+    config.hostsupdater.aliases = vvv_config['hosts']
+    config.hostsupdater.remove_on_suspend = true
   end
 
   # Vagrant Triggers
@@ -596,6 +593,7 @@ Vagrant.configure("2") do |config|
   config.trigger.after :up do |trigger|
     trigger.name = "VVV Post-Up"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+    trigger.on_error = :continue
   end
   config.trigger.before :reload do |trigger|
     trigger.name = "VVV Pre-Reload"
@@ -605,6 +603,7 @@ Vagrant.configure("2") do |config|
   config.trigger.after :reload do |trigger|
     trigger.name = "VVV Post-Reload"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+    trigger.on_error = :continue
   end
   config.trigger.before :halt do |trigger|
     trigger.name = "VVV Pre-Halt"
