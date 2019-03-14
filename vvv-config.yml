@@ -21,12 +21,14 @@ sites:
 
   # latest version of WordPress, can be used for client work and testing
   wordpress-one:
+    skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
       - one.wordpress.test
 
   wordpress-two:
+    skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
@@ -41,6 +43,7 @@ sites:
   # The wordpress-develop configuration is useful for contributing to WordPress Core.
   # It uses the built WP to serve the site
   wordpress-trunk:
+    skip_provisioning: true # provisioning this one takes longer, so it's disabled by default
     description: "An svn based WP Core trunk dev setup, useful for contributor days, Trac tickets, patches"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
     hosts:
@@ -56,8 +59,9 @@ sites:
 
   # The following commented out site configuration will create a environment useful
   # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
-  #wordpress-meta-environment:
-  #  repo: https://github.com/WordPress/meta-environment.git
+  wordpress-meta-environment:
+    skip_provisioning: true # disabled by default, this takes a long time to provision
+    repo: https://github.com/WordPress/meta-environment.git
 
 
 # Utilities are system level items rather than sites, that install tools or packages
