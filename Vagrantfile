@@ -539,6 +539,7 @@ Vagrant.configure("2") do |config|
     utilities.each do |utility|
         if utility == 'tideways' then
           vvv_config['hosts'] += ['tideways.vvv.test']
+          vvv_config['hosts'] += ['xhgui.vvv.test']
         end
         config.vm.provision "utility-#{name}-#{utility}",
           type: "shell",
