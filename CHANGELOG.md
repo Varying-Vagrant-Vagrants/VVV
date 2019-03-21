@@ -6,8 +6,12 @@ permalink: /docs/en-US/changelog/
 
 ## 2.6.0 ( TBD )
 
-* Auto download plugin for vagrant, supported vagrant 2.2.0+
-* Autoset the locale inside the virtual machine to avoid errors in the console
+### Enhancements
+
+ * Auto download plugin for vagrant, supported vagrant 2.2.0+
+ * Autoset the locale inside the virtual machine to avoid errors in the console
+ * Added a `vagrant_provision` and `vagrant_provision_custom` script to the homebin folder that run post-provision
+ * Improved the messaging to tell the user at the end of a `vagrant up` or `vagrant provision` that it was succesful
 
 ## 2.5.1 ( 14th January 2019 )
 
