@@ -44,7 +44,7 @@ permalink: /docs/en-US/changelog/
 
 ## 2.4.0 ( 2018 October 2th )
 
-### Enhancements
+### Enhancements
 
  * Updated Node v6 to Node v10
  * The default site config has been improved to clear up confusion over the difference between the site template and the develop site template
