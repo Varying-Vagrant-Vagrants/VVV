@@ -605,6 +605,11 @@ Vagrant.configure("2") do |config|
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
     trigger.on_error = :continue
   end
+  config.trigger.after :provision do |trigger|
+    trigger.name = "VVV Post-Provision"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_provision" }
+    trigger.on_error = :continue
+  end
   config.trigger.before :reload do |trigger|
     trigger.name = "VVV Pre-Reload"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_halt" }

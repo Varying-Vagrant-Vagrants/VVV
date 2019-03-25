@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# This script is run after a provision. To customize this behavior,
+# include a file in your local VVV/config/homebin
+# directory: vagrant_provision_custom
+#
+# Note that sometimes provisioning happens on `vagrant up --provision`
+# so if you have a vagrant_up_custom file, be careful of double
+# execution
+#
+# Look for a custom trigger file. If this exists, we'll assume that
+# all trigger actions should be handled by this custom script. If
+# it does not exist, then we'll handle some basic tasks.
+
+echo "Post Vagrant provision script"
+
+if [[ -f /vagrant/config/homebin/vagrant_provision_custom ]]; then
+	echo "Custom vagrant provision script found, executing vagrant_provision_custom"
+	/vagrant/config/homebin/vagrant_provision_custom
+fi
+
+echo "Congratulations! Provisioning has Finished Thanks for using VVV, visit http://vvv.test to see your sites listed"
