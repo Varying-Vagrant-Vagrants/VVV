@@ -90,6 +90,7 @@ yellow="\033[38;5;3m"#136m"
 yellow_underlined="\033[4;38;5;3m"#136m"
 url=yellow_underlined
 creset="\033[0m"
+
 versionfile = File.open("#{vagrant_dir}/version", "r")
 version = versionfile.read
 version = version.gsub('\n','')
