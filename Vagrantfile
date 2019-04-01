@@ -37,54 +37,10 @@ end
 if ENV['VVV_SKIP_LOGO'] then
   show_logo = false
 end
+
+# Show the initial splash screen
+
 if show_logo then
-
-  platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
-  if Vagrant::Util::Platform.windows? then
-    platform = platform + 'windows '
-    if Vagrant::Util::Platform.wsl? then
-      platform = platform + 'wsl '
-    end
-    if Vagrant::Util::Platform.msys? then
-      platform = platform + 'msys '
-    end
-    if Vagrant::Util::Platform.cygwin? then
-      platform = platform + 'cygwin '
-    end
-    if Vagrant::Util::Platform.windows_hyperv_enabled? then
-      platform = platform + 'HyperV-Enabled '
-    end
-    if Vagrant::Util::Platform.windows_hyperv_admin? then
-      platform = platform + 'HyperV-Admin '
-    end
-    if Vagrant::Util::Platform.windows_admin? then
-      platform = platform + 'HasWinAdminPriv '
-    end
-  else
-
-    if ENV['SHELL'] then
-      platform = platform + "shell:" + ENV['SHELL'] + ' '
-    end
-    if Vagrant::Util::Platform.systemd? then
-      platform = platform + 'systemd '
-    end
-  end
-
-  if Vagrant.has_plugin?('vagrant-hostsupdater') then
-    platform = platform + 'vagrant-hostsupdater '
-  end
-
-  if Vagrant.has_plugin?('vagrant-vbguest') then
-    platform = platform + 'vagrant-vbguest '
-  end
-
-  if Vagrant::Util::Platform.fs_case_sensitive? then
-    platform = platform + 'CaseSensitiveFS '
-  end
-  if ! Vagrant::Util::Platform.terminal_supports_colors? then
-    platform = platform + 'NoColour '
-  end
-
   git_or_zip = "zip-no-vcs"
   branch = ''
   if File.directory?("#{vagrant_dir}/.git") then
@@ -93,22 +49,16 @@ if show_logo then
     branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
   end
 
-  splash = <<-HEREDOC
+    splashfirst = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
 #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
 
-#{yellow}Platform:   #{yellow}#{platform}
-#{green}Vagrant:    #{green}v#{Vagrant::VERSION},	#{blue}VirtualBox: #{blue}v#{virtualbox_version()}
-#{purple}VVV Path:   "#{vagrant_dir}"
-
-#{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
-#{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
-#{docs}Dashboard:  #{url}http://vvv.test#{creset}
-
   HEREDOC
-  puts splash
+  puts splashfirst
 end
+
+# Load the config file before the second section of the splash screen
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
   puts "#{yellow}Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}vvv-custom.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
@@ -211,13 +161,82 @@ defaults['cores'] = 1
 defaults['private_network_ip'] = '192.168.50.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
+vvv_config['hosts'] = vvv_config['hosts'].uniq
+
+# Show the second splash screen section
+
+if show_logo then
+  platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
+  if Vagrant::Util::Platform.windows? then
+    platform = platform + 'windows '
+    if Vagrant::Util::Platform.wsl? then
+      platform = platform + 'wsl '
+    end
+    if Vagrant::Util::Platform.msys? then
+      platform = platform + 'msys '
+    end
+    if Vagrant::Util::Platform.cygwin? then
+      platform = platform + 'cygwin '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_enabled? then
+      platform = platform + 'HyperV-Enabled '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_admin? then
+      platform = platform + 'HyperV-Admin '
+    end
+    if Vagrant::Util::Platform.windows_admin? then
+      platform = platform + 'HasWinAdminPriv '
+    end
+  else
+
+    if ENV['SHELL'] then
+      platform = platform + "shell:" + ENV['SHELL'] + ' '
+    end
+    if Vagrant::Util::Platform.systemd? then
+      platform = platform + 'systemd '
+    end
+  end
+
+  if Vagrant.has_plugin?('vagrant-hostsupdater') then
+    platform = platform + 'vagrant-hostsupdater '
+  end
+
+  if Vagrant.has_plugin?('vagrant-vbguest') then
+    platform = platform + 'vagrant-vbguest '
+  end
+
+  if Vagrant::Util::Platform.fs_case_sensitive? then
+    platform = platform + 'CaseSensitiveFS '
+  end
+  if ! Vagrant::Util::Platform.terminal_supports_colors? then
+    platform = platform + 'NoColour '
+  end
+
+  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
+    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
+      platform = platform + 'contributor_day_box '
+    end
+  end
+
+  splashsecond = <<-HEREDOC
+#{yellow}Platform:   #{yellow}#{platform}
+#{green}Vagrant:    #{green}v#{Vagrant::VERSION},	#{blue}VirtualBox: #{blue}v#{virtualbox_version()}
+#{purple}VVV Path:   "#{vagrant_dir}"
+
+#{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
+#{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
+#{docs}Dashboard:  #{url}http://vvv.test#{creset}
+
+  HEREDOC
+  puts splashsecond
+end
 
 if defined? vvv_config['vm_config']['provider'] then
   # Override or set the vagrant provider.
   ENV['VAGRANT_DEFAULT_PROVIDER'] = vvv_config['vm_config']['provider']
 end
 
-vvv_config['hosts'] = vvv_config['hosts'].uniq
+
 
 ENV["LC_ALL"] = "en_US.UTF-8"
 
@@ -299,7 +318,17 @@ Vagrant.configure("2") do |config|
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
   # box containing the Ubuntu 14.04 Trusty 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
+  # 
+  # Note: We would like to update this to a newer box, but a naive update would
+  # destroy everybodies databases, it's not as simple as it first seems
   config.vm.box = "ubuntu/trusty64"
+
+  # If we're at a contributor day, switch the base box to the prebuilt one
+  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
+    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
+	    config.vm.box  = "vvv/contribute"
+    end
+  end
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
