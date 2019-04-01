@@ -19,4 +19,16 @@ if [[ -f /vagrant/config/homebin/vagrant_provision_custom ]]; then
 	/vagrant/config/homebin/vagrant_provision_custom
 fi
 
-echo "Congratulations! Provisioning has Finished Thanks for using VVV, visit http://vvv.test to see your sites listed"
+echo "Restarting Nginx and MySQL"
+sudo service nginx restart
+sudo service mysql restart
+
+green="\033[01;32m"
+echo ""
+echo -e "${green}         yay  "
+echo -e "${green}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                __ __ __ __"
+echo -e "${green}   █▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
+echo -e "${green}    █░░█░░░░░█░░█     using        \_/\_/\_/"
+echo -e "${green} ▄▄  █░░░▀█▀░░░█  ▄▄ "
+echo -e "${green}█░░█ ▀▄░░░░░░░▄▀ █░░█ Provisioning has finished! Visit http://vvv.test"
+echo -e "\033[0m"

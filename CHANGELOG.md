@@ -12,6 +12,7 @@ permalink: /docs/en-US/changelog/
  * Autoset the locale inside the virtual machine to avoid errors in the console
  * Added a `vagrant_provision` and `vagrant_provision_custom` script to the homebin folder that run post-provision
  * Improved the messaging to tell the user at the end of a `vagrant up` or `vagrant provision` that it was succesful
+ * Added friendly splashes at the end of vagrant up and provision to make it obvious to end users when they've finished
  * The VVV install path is now in the splash screen, making it easier to debug GH issues
  * Added a `wordcamp_contributor_day_box` flag to the `vm_config` section of `vvv-config.yml` so that contributor day setup scripts are simpler
 
