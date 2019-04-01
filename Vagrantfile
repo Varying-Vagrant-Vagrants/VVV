@@ -5,7 +5,7 @@ require 'yaml'
 require 'fileutils'
 
 def virtualbox_path()
-
+    @vboxmanage_path = nil
     if Vagrant::Util::Platform.windows? || Vagrant::Util::Platform.cygwin?
         @vboxmanage_path = Vagrant::Util::Which.which("VBoxManage")
 
@@ -69,7 +69,7 @@ def virtualbox_path()
 
     # Fall back to hoping for the PATH to work out
     @vboxmanage_path ||= "VBoxManage"
-    return vboxmanage_path
+    return @vboxmanage_path
 end
 
 def virtualbox_version()
