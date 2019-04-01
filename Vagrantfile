@@ -99,8 +99,8 @@ if show_logo then
 #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
 
 #{yellow}Platform:   #{yellow}#{platform}
-#{green}Vagrant:    #{green}#{Vagrant::VERSION}
-#{blue}VirtualBox: #{blue}#{virtualbox_version()}
+#{green}Vagrant:    #{green}v#{Vagrant::VERSION},	#{blue}VirtualBox: #{blue}v#{virtualbox_version()}
+#{purple}VVV Path:   "#{vagrant_dir}"
 
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
