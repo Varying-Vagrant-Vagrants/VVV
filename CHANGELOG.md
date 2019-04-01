@@ -13,6 +13,10 @@ permalink: /docs/en-US/changelog/
  * Added a `vagrant_provision` and `vagrant_provision_custom` script to the homebin folder that run post-provision
  * Improved the messaging to tell the user at the end of a `vagrant up` or `vagrant provision` that it was succesful
 
+### Bug Fixes
+
+ * Improved detection of VirtualBox path to avoid `???` version numbers in the VVV splash
+
 ## 2.5.1 ( 14th January 2019 )
 
 2.5 Brings a major bug fix, and some performance improvements to provisioning
