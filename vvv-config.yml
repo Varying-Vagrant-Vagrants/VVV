@@ -74,6 +74,8 @@ utilities:
     - webgrind # PHP Debugging
     - trusted-hosts # GitHub etc
     - tls-ca # SSL/TLS certificates
+    - mongodb # needed for Tideways/XHGui
+    - tideways # PHP profiling tool, also installs xhgui
     #- php56
     #- php70
     #- php71
