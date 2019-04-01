@@ -16,6 +16,10 @@ permalink: /docs/en-US/changelog/
  * The VVV install path is now in the splash screen, making it easier to debug GH issues
  * Added a `wordcamp_contributor_day_box` flag to the `vm_config` section of `vvv-config.yml` so that contributor day setup scripts are simpler
 
+### Bug Fixes
+
+ * Improved detection of VirtualBox path to avoid `???` version numbers in the VVV splash
+
 ## 2.5.1 ( 14th January 2019 )
 
 2.5 Brings a major bug fix, and some performance improvements to provisioning
