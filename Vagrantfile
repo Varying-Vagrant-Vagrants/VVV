@@ -605,6 +605,10 @@ Vagrant.configure("2") do |config|
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
     trigger.on_error = :continue
   end
+  config.trigger.before :provision do |trigger|
+    trigger.info = "༼ つ ◕_◕ ༽つ Provisioning can take a few minutes, go make a cup of tea and sit back. If you only wanted to turn VVV on, use vagrant up"
+    trigger.on_error = :continue
+  end
   config.trigger.after :provision do |trigger|
     trigger.name = "VVV Post-Provision"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_provision" }
