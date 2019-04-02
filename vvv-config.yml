@@ -21,12 +21,14 @@ sites:
 
   # latest version of WordPress, can be used for client work and testing
   wordpress-one:
+    skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
       - one.wordpress.test
 
   wordpress-two:
+    skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
@@ -41,6 +43,7 @@ sites:
   # The wordpress-develop configuration is useful for contributing to WordPress Core.
   # It uses the built WP to serve the site
   wordpress-trunk:
+    skip_provisioning: true # provisioning this one takes longer, so it's disabled by default
     description: "An svn based WP Core trunk dev setup, useful for contributor days, Trac tickets, patches"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
     hosts:
@@ -56,8 +59,9 @@ sites:
 
   # The following commented out site configuration will create a environment useful
   # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
-  #wordpress-meta-environment:
-  #  repo: https://github.com/WordPress/meta-environment.git
+  wordpress-meta-environment:
+    skip_provisioning: true # disabled by default, this takes a long time to provision
+    repo: https://github.com/WordPress/meta-environment.git
 
 
 # Utilities are system level items rather than sites, that install tools or packages
@@ -70,6 +74,8 @@ utilities:
     - webgrind # PHP Debugging
     - trusted-hosts # GitHub etc
     - tls-ca # SSL/TLS certificates
+    - mongodb # needed for Tideways/XHGui
+    - tideways # PHP profiling tool, also installs xhgui
     #- php56
     #- php70
     #- php71
@@ -77,15 +83,23 @@ utilities:
     #- php73
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
-# increase the memory given to VVV and the number of CPU cores. For WP core development
-# we recommend at least 2GB ( 2048 )
+# increase the memory given to VVV and the number of CPU cores. 
 # It can also be used to override the default provider being used within Vagrant.
-# Due to a limitation within Vagrant, the specified provider is only respected on a clean `vagrant up`
-# as Vagrant currently restricts you to one provider per machine
-# https://www.vagrantup.com/docs/providers/basic_usage.html#vagrant-up
+
 vm_config:
+  # For WP core development we recommend at least 2GB ( 2048 ),
+  # If you have 4GB of RAM, lower this to 768MB or you may encounter issues
   memory: 2048
+  # CPU cores:
   cores: 2
+
+  # this tells VVV to use the prebuilt box copied from the USB drive at contributor days
+  # once set to false, do not change back to true, and reprovision
+  # wordcamp_contributor_day_box: false
+
+  # Due to a limitation within Vagrant, the specified provider is only respected on a clean `vagrant up`
+  # as Vagrant currently restricts you to one provider per machine
+  # https://www.vagrantup.com/docs/providers/basic_usage.html#vagrant-up
   # provider: vmware_workstation
 
 # General VVV options
@@ -94,3 +108,4 @@ general:
   db_backup: true
   # Import the databases if they're missing from backups
   db_restore: true
+

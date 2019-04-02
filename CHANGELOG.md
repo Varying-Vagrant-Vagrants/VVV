@@ -4,6 +4,22 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 2.6.0 ( TBD )
+
+### Enhancements
+
+ * Auto download plugin for vagrant, supported vagrant 2.2.0+
+ * Autoset the locale inside the virtual machine to avoid errors in the console
+ * Added a `vagrant_provision` and `vagrant_provision_custom` script to the homebin folder that run post-provision
+ * Improved the messaging to tell the user at the end of a `vagrant up` or `vagrant provision` that it was succesful
+ * Added friendly splashes at the end of vagrant up and provision to make it obvious to end users when they've finished
+ * The VVV install path is now in the splash screen, making it easier to debug GH issues
+ * Added a `wordcamp_contributor_day_box` flag to the `vm_config` section of `vvv-config.yml` so that contributor day setup scripts are simpler
+
+### Bug Fixes
+
+ * Improved detection of VirtualBox path to avoid `???` version numbers in the VVV splash
+
 ## 2.5.1 ( 14th January 2019 )
 
 2.5 Brings a major bug fix, and some performance improvements to provisioning
@@ -35,7 +51,7 @@ permalink: /docs/en-US/changelog/
 
 ## 2.4.0 ( 2018 October 2th )
 
-### Enhancements
+### Enhancements
 
  * Updated Node v6 to Node v10
  * The default site config has been improved to clear up confusion over the difference between the site template and the develop site template

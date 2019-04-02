@@ -39,9 +39,18 @@ fi
 
 # Set the WP_TESTS_DIR path directory so that we can use phpunit inside
 # plugins almost immediately.
-export WP_TESTS_DIR=/srv/www/wordpress-develop/public_html/tests/phpunit/
+if [ -d "/srv/www/wordpress-trunk/public_html/tests/phpunit/" ]; then
+    export WP_TESTS_DIR=/srv/www/wordpress-trunk/public_html/tests/phpunit/
+elif [ -d "/srv/www/wordpress-develop/public_html/tests/phpunit/" ]; then
+    export WP_TESTS_DIR=/srv/www/wordpress-develop/public_html/tests/phpunit/
+fi
+
 # Set the WP_CORE_DIR path so phpunit tests are run against WP trunk
-export WP_CORE_DIR=/srv/www/wordpress-develop/public_html/src/
+if [ -d "/srv/www/wordpress-trunk/public_html/src/" ]; then
+    export WP_CORE_DIR=/srv/www/wordpress-trunk/public_html/src/
+elif [ -d "/srv/www/wordpress-develop/public_html/src/" ]; then
+    export WP_CORE_DIR=/srv/www/wordpress-develop/public_html/src/
+fi
 
 # add autocomplete for grunt
 eval "$(grunt --completion=bash)"

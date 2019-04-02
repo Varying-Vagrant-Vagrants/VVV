@@ -4,15 +4,78 @@ Vagrant.require_version ">= 2.1.4"
 require 'yaml'
 require 'fileutils'
 
+def virtualbox_path()
+    @vboxmanage_path = nil
+    if Vagrant::Util::Platform.windows? || Vagrant::Util::Platform.cygwin?
+        @vboxmanage_path = Vagrant::Util::Which.which("VBoxManage")
+
+        # On Windows, we use the VBOX_INSTALL_PATH environmental
+        # variable to find VBoxManage.
+        if !@vboxmanage_path && (ENV.key?("VBOX_INSTALL_PATH") ||
+          ENV.key?("VBOX_MSI_INSTALL_PATH"))
+
+          # Get the path.
+          path = ENV["VBOX_INSTALL_PATH"] || ENV["VBOX_MSI_INSTALL_PATH"]
+
+          # There can actually be multiple paths in here, so we need to
+          # split by the separator ";" and see which is a good one.
+          path.split(";").each do |single|
+            # Make sure it ends with a \
+            single += "\\" if !single.end_with?("\\")
+
+            # If the executable exists, then set it as the main path
+            # and break out
+            vboxmanage = "#{single}VBoxManage.exe"
+            if File.file?(vboxmanage)
+              @vboxmanage_path = Vagrant::Util::Platform.cygwin_windows_path(vboxmanage)
+              break
+            end
+          end
+        end
+
+        # If we still don't have one, try to find it using common locations
+        drive = ENV["SYSTEMDRIVE"] || "C:"
+        [
+          "#{drive}/Program Files/Oracle/VirtualBox",
+          "#{drive}/Program Files (x86)/Oracle/VirtualBox",
+          "#{ENV["PROGRAMFILES"]}/Oracle/VirtualBox"
+        ].each do |maybe|
+          path = File.join(maybe, "VBoxManage.exe")
+          if File.file?(path)
+            @vboxmanage_path = path
+            break
+          end
+        end
+        elsif Vagrant::Util::Platform.wsl?
+        if !Vagrant::Util::Platform.wsl_windows_access?
+          raise Vagrant::Errors::WSLVirtualBoxWindowsAccessError
+        end
+        @vboxmanage_path = Vagrant::Util::Which.which("VBoxManage") || Vagrant::Util::Which.which("VBoxManage.exe")
+        if !@vboxmanage_path
+          # If we still don't have one, try to find it using common locations
+          drive = "/mnt/c"
+          [
+            "#{drive}/Program Files/Oracle/VirtualBox",
+            "#{drive}/Program Files (x86)/Oracle/VirtualBox"
+          ].each do |maybe|
+            path = File.join(maybe, "VBoxManage.exe")
+            if File.file?(path)
+              @vboxmanage_path = path
+              break
+            end
+          end
+        end
+    end
+
+    # Fall back to hoping for the PATH to work out
+    @vboxmanage_path ||= "VBoxManage"
+    return @vboxmanage_path
+end
 
 def virtualbox_version()
-    vboxmanage = Vagrant::Util::Which.which("VBoxManage") || Vagrant::Util::Which.which("VBoxManage.exe")
-    if vboxmanage != nil
-        s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
-        return s.stdout.strip!
-    else
-        return 'unknown'
-    end
+    vboxmanage = virtualbox_path()
+    s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
+    return s.stdout.strip!
 end
 
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
@@ -27,8 +90,10 @@ yellow="\033[38;5;3m"#136m"
 yellow_underlined="\033[4;38;5;3m"#136m"
 url=yellow_underlined
 creset="\033[0m"
+
 versionfile = File.open("#{vagrant_dir}/version", "r")
 version = versionfile.read
+version = version.gsub('\n','')
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 if [ 'up', 'halt', 'resume', 'suspend', 'status', 'provision', 'reload' ].include? ARGV[0] then
@@ -37,54 +102,10 @@ end
 if ENV['VVV_SKIP_LOGO'] then
   show_logo = false
 end
+
+# Show the initial splash screen
+
 if show_logo then
-
-  platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
-  if Vagrant::Util::Platform.windows? then
-    platform = platform + 'windows '
-    if Vagrant::Util::Platform.wsl? then
-      platform = platform + 'wsl '
-    end
-    if Vagrant::Util::Platform.msys? then
-      platform = platform + 'msys '
-    end
-    if Vagrant::Util::Platform.cygwin? then
-      platform = platform + 'cygwin '
-    end
-    if Vagrant::Util::Platform.windows_hyperv_enabled? then
-      platform = platform + 'HyperV-Enabled '
-    end
-    if Vagrant::Util::Platform.windows_hyperv_admin? then
-      platform = platform + 'HyperV-Admin '
-    end
-    if Vagrant::Util::Platform.windows_admin? then
-      platform = platform + 'HasWinAdminPriv '
-    end
-  else
-
-    if ENV['SHELL'] then
-      platform = platform + "shell:" + ENV['SHELL'] + ' '
-    end
-    if Vagrant::Util::Platform.systemd? then
-      platform = platform + 'systemd '
-    end
-  end
-
-  if Vagrant.has_plugin?('vagrant-hostsupdater') then
-    platform = platform + 'vagrant-hostsupdater '
-  end
-
-  if Vagrant.has_plugin?('vagrant-vbguest') then
-    platform = platform + 'vagrant-vbguest '
-  end
-
-  if Vagrant::Util::Platform.fs_case_sensitive? then
-    platform = platform + 'CaseSensitiveFS '
-  end
-  if ! Vagrant::Util::Platform.terminal_supports_colors? then
-    platform = platform + 'NoColour '
-  end
-
   git_or_zip = "zip-no-vcs"
   branch = ''
   if File.directory?("#{vagrant_dir}/.git") then
@@ -93,22 +114,16 @@ if show_logo then
     branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
   end
 
-  splash = <<-HEREDOC
+    splashfirst = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
 #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
 
-#{yellow}Platform:   #{yellow}#{platform}
-#{green}Vagrant:    #{green}#{Vagrant::VERSION}
-#{blue}VirtualBox: #{blue}#{virtualbox_version()}
-
-#{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
-#{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
-#{docs}Dashboard:  #{url}http://vvv.test#{creset}
-
   HEREDOC
-  puts splash
+  puts splashfirst
 end
+
+# Load the config file before the second section of the splash screen
 
 if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
   puts "#{yellow}Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}vvv-custom.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
@@ -211,13 +226,84 @@ defaults['cores'] = 1
 defaults['private_network_ip'] = '192.168.50.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
+vvv_config['hosts'] = vvv_config['hosts'].uniq
+
+# Show the second splash screen section
+
+if show_logo then
+  platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
+  if Vagrant::Util::Platform.windows? then
+    platform = platform + 'windows '
+    if Vagrant::Util::Platform.wsl? then
+      platform = platform + 'wsl '
+    end
+    if Vagrant::Util::Platform.msys? then
+      platform = platform + 'msys '
+    end
+    if Vagrant::Util::Platform.cygwin? then
+      platform = platform + 'cygwin '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_enabled? then
+      platform = platform + 'HyperV-Enabled '
+    end
+    if Vagrant::Util::Platform.windows_hyperv_admin? then
+      platform = platform + 'HyperV-Admin '
+    end
+    if Vagrant::Util::Platform.windows_admin? then
+      platform = platform + 'HasWinAdminPriv '
+    end
+  else
+
+    if ENV['SHELL'] then
+      platform = platform + "shell:" + ENV['SHELL'] + ' '
+    end
+    if Vagrant::Util::Platform.systemd? then
+      platform = platform + 'systemd '
+    end
+  end
+
+  if Vagrant.has_plugin?('vagrant-hostsupdater') then
+    platform = platform + 'vagrant-hostsupdater '
+  end
+
+  if Vagrant.has_plugin?('vagrant-vbguest') then
+    platform = platform + 'vagrant-vbguest '
+  end
+
+  if Vagrant::Util::Platform.fs_case_sensitive? then
+    platform = platform + 'CaseSensitiveFS '
+  end
+  if ! Vagrant::Util::Platform.terminal_supports_colors? then
+    platform = platform + 'NoColour '
+  end
+
+  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
+    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
+      platform = platform + 'contributor_day_box '
+    end
+  end
+
+  splashsecond = <<-HEREDOC
+#{yellow}Platform:   #{yellow}#{platform}
+#{green}Vagrant:    #{green}v#{Vagrant::VERSION},	#{blue}VirtualBox: #{blue}v#{virtualbox_version()}
+#{purple}VVV Path:   "#{vagrant_dir}"
+
+#{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
+#{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
+#{docs}Dashboard:  #{url}http://vvv.test#{creset}
+
+  HEREDOC
+  puts splashsecond
+end
 
 if defined? vvv_config['vm_config']['provider'] then
   # Override or set the vagrant provider.
   ENV['VAGRANT_DEFAULT_PROVIDER'] = vvv_config['vm_config']['provider']
 end
 
-vvv_config['hosts'] = vvv_config['hosts'].uniq
+
+
+ENV["LC_ALL"] = "en_US.UTF-8"
 
 Vagrant.configure("2") do |config|
 
@@ -267,6 +353,18 @@ Vagrant.configure("2") do |config|
     v.enable_virtualization_extensions = true
     v.linked_clone = true
   end
+  
+  # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
+  if !Vagrant.has_plugin?("vagrant-hostsupdater") then
+      if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem')) then
+        system("vagrant plugin install " + File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
+        File.delete(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
+        puts "#{yellow}VVV has completed installing local plugins. Please run the requested command again.#{creset}"
+        exit
+      else
+        config.vagrant.plugins = ["vagrant-hostsupdater"]
+      end
+  end
 
   # SSH Agent Forwarding
   #
@@ -285,7 +383,17 @@ Vagrant.configure("2") do |config|
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
   # box containing the Ubuntu 14.04 Trusty 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
+  # 
+  # Note: We would like to update this to a newer box, but a naive update would
+  # destroy everybodies databases, it's not as simple as it first seems
   config.vm.box = "ubuntu/trusty64"
+
+  # If we're at a contributor day, switch the base box to the prebuilt one
+  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
+    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
+	    config.vm.box  = "vvv/contribute"
+    end
+  end
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
@@ -308,22 +416,6 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.hostname = "vvv"
-
-  # Local Machine Hosts
-  #
-  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
-  # installed, the following will automatically configure your local machine's hosts file to
-  # be aware of the domains specified below. Watch the provisioning script as you may need to
-  # enter a password for Vagrant to access your hosts file.
-  #
-  # By default, we'll include the domains set up by VVV through the vvv-hosts file
-  # located in the www/ directory and in vvv-config.yml.
-  if defined?(VagrantPlugins::HostsUpdater)
-
-    # Pass the found host names to the hostsupdater plugin so it can perform magic.
-    config.hostsupdater.aliases = vvv_config['hosts']
-    config.hostsupdater.remove_on_suspend = true
-  end
 
   # Private Network (default)
   #
@@ -541,6 +633,7 @@ Vagrant.configure("2") do |config|
     utilities.each do |utility|
         if utility == 'tideways' then
           vvv_config['hosts'] += ['tideways.vvv.test']
+          vvv_config['hosts'] += ['xhgui.vvv.test']
         end
         config.vm.provision "utility-#{name}-#{utility}",
           type: "shell",
@@ -568,13 +661,28 @@ Vagrant.configure("2") do |config|
     end
   end
 
-
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
   if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
     config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
+  end
+
+  # Local Machine Hosts
+  #
+  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+  # installed, the following will automatically configure your local machine's hosts file to
+  # be aware of the domains specified below. Watch the provisioning script as you may need to
+  # enter a password for Vagrant to access your hosts file.
+  #
+  # By default, we'll include the domains set up by VVV through the vvv-hosts file
+  # located in the www/ directory and in vvv-config.yml.
+  if defined?(VagrantPlugins::HostsUpdater)
+
+    # Pass the found host names to the hostsupdater plugin so it can perform magic.
+    config.hostsupdater.aliases = vvv_config['hosts']
+    config.hostsupdater.remove_on_suspend = true
   end
 
   # Vagrant Triggers
@@ -589,6 +697,15 @@ Vagrant.configure("2") do |config|
   config.trigger.after :up do |trigger|
     trigger.name = "VVV Post-Up"
     trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+    trigger.on_error = :continue
+  end
+  config.trigger.before :provision do |trigger|
+    trigger.info = "༼ つ ◕_◕ ༽つ Provisioning can take a few minutes, go make a cup of tea and sit back. If you only wanted to turn VVV on, use vagrant up"
+    trigger.on_error = :continue
+  end
+  config.trigger.after :provision do |trigger|
+    trigger.name = "VVV Post-Provision"
+    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_provision" }
     trigger.on_error = :continue
   end
   config.trigger.before :reload do |trigger|
