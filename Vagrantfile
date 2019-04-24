@@ -142,10 +142,7 @@ if ! vvv_config['hosts'].kind_of? Hash then
   vvv_config['hosts'] = Array.new
 end
 
-vvv_config['hosts'] += ['vvv.dev'] # Deprecated
 vvv_config['hosts'] += ['vvv.test']
-vvv_config['hosts'] += ['vvv.local']
-vvv_config['hosts'] += ['vvv.localhost']
 
 vvv_config['sites'].each do |site, args|
   if args.kind_of? String then

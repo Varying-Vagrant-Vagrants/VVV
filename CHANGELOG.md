@@ -4,7 +4,13 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.6.0 ( TBD )
+## 2.7.0 ( TBD )
+
+### Removals
+
+ - The deprecated domains `vvv.dev`, `vvv.local`, and `vvv.localhost`, were removed, the dashboard lives at `vvv.test`.
+
+## 2.6.0 ( 2nd April 2019 )
 
 ### Enhancements
 
