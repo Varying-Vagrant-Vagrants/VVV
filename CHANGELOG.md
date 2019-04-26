@@ -6,6 +6,10 @@ permalink: /docs/en-US/changelog/
 
 ## 2.7.0 ( TBD )
 
+### Enhancements
+
+ - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
+
 ### Removals
 
  - The deprecated domains `vvv.dev`, `vvv.local`, and `vvv.localhost`, were removed, the dashboard lives at `vvv.test`.
