@@ -10,6 +10,10 @@ permalink: /docs/en-US/changelog/
 
  - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
 
+### Bug Fixes
+
+ - VVV now sets the fmode and dmode values on `/srv/www` for virtualbox shares
+
 ### Removals
 
  - The deprecated domains `vvv.dev`, `vvv.local`, and `vvv.localhost`, were removed, the dashboard lives at `vvv.test`.
