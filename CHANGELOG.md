@@ -9,6 +9,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
  - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
+ - Added a VVV logo to the folder icon on MacOS
 
 ### Removals
 
