@@ -10,7 +10,7 @@ permalink: /docs/en-US/changelog/
 
  - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
  - Added a VVV logo to the folder icon on MacOS
- - Added a PHP folder icon to the www folder on MacOS ( from https://github.com/shariati/OS-Folder-Icons )
+ - Added a PHP folder icon to the www folder on MacOS ( from https://github.com/VigoKrumins/folder-icons/blob/master/macOS/png/php.png )
 
 ### Removals
 
