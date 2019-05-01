@@ -9,6 +9,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
  - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
+ - Add `git-svn` to provision.sh for installation, git-svn used in a bi-directional operation between subversion and git
 
 ### Removals
 
