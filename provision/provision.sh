@@ -71,6 +71,7 @@ apt_package_install_list=(
   subversion
   git
   git-lfs
+  git-svn
   zip
   unzip
   ngrep
