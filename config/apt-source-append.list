@@ -5,9 +5,13 @@
 deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 
-# Provides PHP7
-deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
-deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+# Ondrej PHP ( no longer provides Ubuntu 14 packages )
+#deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+#deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+
+# VVV mirror packages
+deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu trusty main
+deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu trusty main
 
 # MariaDB 10.3 repository list - created 2018-06-19 13:36 UTC
 # http://downloads.mariadb.org/mariadb/repositories/
