@@ -252,10 +252,16 @@ package_install() {
     apt-key add /vagrant/config/apt-keys/nginx_signing.key
   fi
 
-  if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
-    # Apply the PHP signing key
-    echo "Applying the Ondřej PHP signing key..."
-    apt-key add /vagrant/config/apt-keys/keyserver_ubuntu.key
+  #if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
+  #  # Apply the PHP signing key
+  #  echo "Applying the Ondřej PHP signing key..."
+  #  apt-key add /vagrant/config/apt-keys/ondrej_keyserver_ubuntu.key
+  #fi
+
+  if [[ ! $( apt-key list | grep 'Varying Vagrant Vagrants') ]]; then
+    # Apply the VVV signing key
+    echo "Applying the Varying Vagrant Vagrants mirror signing key..."
+    apt-key add /vagrant/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
   if [[ ! $( apt-key list | grep 'MariaDB') ]]; then

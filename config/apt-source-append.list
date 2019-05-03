@@ -6,8 +6,8 @@ deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 
 # Ondrej PHP ( no longer provides Ubuntu 14 packages )
-#deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
-#deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+# deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+# deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
 
 # VVV mirror packages
 deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu trusty main
