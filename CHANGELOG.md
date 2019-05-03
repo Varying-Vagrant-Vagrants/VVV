@@ -6,10 +6,16 @@ permalink: /docs/en-US/changelog/
 
 ## 2.7.0 ( TBD )
 
+This will be the last version on Ubuntu 14, 2.8/3.0 will be moving to either Ubuntu 18 or a prebuilt base image.
+
 ### Enhancements
 
  - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
  - Add `git-svn` to provision.sh for installation, git-svn used in a bi-directional operation between subversion and git
+
+### Bug Fixes
+
+ - Switched to VVV mirrored PHP packages now that Ondrej no longer supports Ubuntu 14
 
 ### Removals
 
