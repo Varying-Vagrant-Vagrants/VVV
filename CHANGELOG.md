@@ -4,6 +4,39 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 2.7.0 ( TBD )
+
+This will be the last version on Ubuntu 14, 2.8/3.0 will be moving to either Ubuntu 18 or a prebuilt base image.
+
+### Enhancements
+
+ - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
+ - Add `git-svn` to provision.sh for installation, git-svn used in a bi-directional operation between subversion and git
+
+### Bug Fixes
+
+ - Switched to VVV mirrored PHP packages now that Ondrej no longer supports Ubuntu 14
+
+### Removals
+
+ - The deprecated domains `vvv.dev`, `vvv.local`, and `vvv.localhost`, were removed, the dashboard lives at `vvv.test`.
+
+## 2.6.0 ( 2nd April 2019 )
+
+### Enhancements
+
+ * Auto download plugin for vagrant, supported vagrant 2.2.0+
+ * Autoset the locale inside the virtual machine to avoid errors in the console
+ * Added a `vagrant_provision` and `vagrant_provision_custom` script to the homebin folder that run post-provision
+ * Improved the messaging to tell the user at the end of a `vagrant up` or `vagrant provision` that it was succesful
+ * Added friendly splashes at the end of vagrant up and provision to make it obvious to end users when they've finished
+ * The VVV install path is now in the splash screen, making it easier to debug GH issues
+ * Added a `wordcamp_contributor_day_box` flag to the `vm_config` section of `vvv-config.yml` so that contributor day setup scripts are simpler
+
+### Bug Fixes
+
+ * Improved detection of VirtualBox path to avoid `???` version numbers in the VVV splash
+
 ## 2.5.1 ( 14th January 2019 )
 
 2.5 Brings a major bug fix, and some performance improvements to provisioning
@@ -35,7 +68,7 @@ permalink: /docs/en-US/changelog/
 
 ## 2.4.0 ( 2018 October 2th )
 
-### Enhancements
+### Enhancements
 
  * Updated Node v6 to Node v10
  * The default site config has been improved to clear up confusion over the difference between the site template and the develop site template
