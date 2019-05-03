@@ -475,24 +475,18 @@ Vagrant.configure("2") do |config|
   # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/", "/srv/database"
 
-  # If the mysql_upgrade_info file from a previous persistent database mapping is detected,
-  # we'll continue to map that directory as /var/lib/mysql inside the virtual machine. Once
-  # this file is changed or removed, this mapping will no longer occur. A db_backup command
-  # is now available inside the virtual machine to backup all databases for future use. This
-  # command is automatically issued on halt, suspend, and destroy
-  if File.exists?(File.join(vagrant_dir,'database/data/mysql_upgrade_info')) then
-    config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
+  # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
+  config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
 
-    # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
-    # those are specific to Virtualbox. The folder is therefore overridden with one that
-    # uses corresponding Parallels mount options.
-    config.vm.provider :parallels do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
-    end
-    # Neither does the HyperV provider
-    config.vm.provider :hyperv do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
-    end
+  # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
+  # those are specific to Virtualbox. The folder is therefore overridden with one that
+  # uses corresponding Parallels mount options.
+  config.vm.provider :parallels do |v, override|
+    override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
+  end
+  # Neither does the HyperV provider
+  config.vm.provider :hyperv do |v, override|
+    override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
   end
 
   # /srv/config/
