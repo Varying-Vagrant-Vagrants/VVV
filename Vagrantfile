@@ -311,7 +311,7 @@ Vagrant.configure("2") do |config|
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
     # Move the ubuntu-bionic-18.04-cloudimg-console.log file to log directory.
-    v.customize ["modifyvm", :id, "--uartmode1", "file", File.join(Dir.pwd, "log/ubuntu-bionic-18.04-cloudimg-console.log")]
+    v.customize ["modifyvm", :id, "--uartmode1", "file", File.join(vagrant_dir, "log/ubuntu-bionic-18.04-cloudimg-console.log")]
 
     v.customize ["modifyvm", :id, "--memory", vvv_config['vm_config']['memory']]
     v.customize ["modifyvm", :id, "--cpus", vvv_config['vm_config']['cores']]
