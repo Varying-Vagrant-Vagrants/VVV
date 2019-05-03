@@ -10,8 +10,8 @@ deb http://ppa.launchpad.net/ondrej/php/ubuntu cosmic main
 deb-src http://ppa.launchpad.net/ondrej/php/ubuntu cosmic main
 
 # VVV mirror packages
-deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu trusty main
-deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu trusty main
+deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu cosmic main
+deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu cosmic main
 
 # MariaDB 10.3 repository list - created 2018-06-19 13:36 UTC
 # http://downloads.mariadb.org/mariadb/repositories/
