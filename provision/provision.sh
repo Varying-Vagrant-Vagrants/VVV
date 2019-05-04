@@ -7,9 +7,6 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-# Fix the permissions so that database/data is usable by MariaDB
-usermod -a -G vboxsf mysql
-
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
