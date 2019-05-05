@@ -7,12 +7,6 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-groupadd mysql
-useradd -g mysql -r mysql
-#useradd -gr mysql mysql
-#groupadd -g mysql
-usermod -a -G vboxsf mysql
-
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
@@ -230,6 +224,14 @@ package_install() {
   # MariaDB is already installed, it will not affect anything.
   echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
   echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
+
+  echo -e "\nSetup MySQL configuration file links..."
+
+  # Copy mysql configuration from local
+  echo " * Copying /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
+  cp -f "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
+  echo " * Copying /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
+  cp -f "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
 
   # Postfix
   #
@@ -574,14 +576,6 @@ mysql_setup() {
 
   exists_mysql="$(service mysql status)"
   if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
-    echo -e "\nSetup MySQL configuration file links..."
-
-    # Copy mysql configuration from local
-    cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
-    cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
-
-    echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
-    echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
 
     # MySQL gives us an error if we restart a non running service, which
     # happens after a `vagrant halt`. Check to see if it's running before
