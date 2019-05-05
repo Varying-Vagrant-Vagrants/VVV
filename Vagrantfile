@@ -380,10 +380,11 @@ Vagrant.configure("2") do |config|
 
   # Default Ubuntu Box
   #
-  # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
+  # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized
   # box containing the Ubuntu 18.04 Bionic 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
+  config.vm.box = "ubuntu/bionic64"
+  #config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
 
   # If we're at a contributor day, switch the base box to the prebuilt one
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
@@ -476,7 +477,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "database/", "/srv/database"
 
   # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-  config.vm.synced_folder "database/data/", "/var/lib/mysql", id: "mysql", create: true, owner: "mysql", group: "mysql", mount_options: [ "dmode=777", "fmode=777" ]
+  config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, mount_options: [ "dmode=777", "fmode=777" ]
 
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
@@ -501,7 +502,7 @@ Vagrant.configure("2") do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => [ "dmode=777", "fmode=777" ]
+  config.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => [ "dmode=665", "fmode=664" ]
 
   # /srv/www/
   #
