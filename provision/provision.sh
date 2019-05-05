@@ -7,6 +7,12 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
+groupadd mysql
+useradd -g mysql -r mysql
+#useradd -gr mysql mysql
+#groupadd -g mysql
+usermod -a -G vboxsf mysql
+
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
