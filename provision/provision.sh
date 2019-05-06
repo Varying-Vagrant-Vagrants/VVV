@@ -324,15 +324,6 @@ tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /vagrant/config/homebin/xdebug_off
 
-  local LATEST_NVM=$(latest_github_release "creationix/nvm")
-
-  # nvm
-  mkdir -p "/srv/config/nvm" &&
-      curl -so- https://raw.githubusercontent.com/creationix/nvm/$LATEST_NVM/install.sh |
-          METHOD=script NVM_DIR=/srv/config/nvm bash
-
-  source /srv/config/nvm/nvm.sh
-
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
@@ -675,9 +666,10 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /vagrant/provision/phpcs
-  noroot composer update --no-ansi --no-autoloader --no-progress
+  composer update --no-ansi --no-autoloader --no-progress
 
-  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
+  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
+  # that it can be used on the host in an editor with matching rules
   ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
   ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
