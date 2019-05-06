@@ -8,6 +8,7 @@
 # configurations included with Varying Vagrant Vagrants.
 
 export DEBIAN_FRONTEND=noninteractive
+export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
 source /vagrant/provision/provision-network-functions.sh
 
@@ -221,8 +222,17 @@ package_install() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.1 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.1 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
+
+  echo -e "\nSetup MySQL configuration file links..."
+
+  # Preconfigyre mariadb
+  groupadd -g 115 mysql
+  useradd -u 112 -g mysql -G vboxsf -r mysql
+  mkdir -p "/etc/mysql/conf.d"
+  echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
+  cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
 
   # Postfix
   #
@@ -282,7 +292,7 @@ package_install() {
 
   # Install required packages
   echo "Installing apt-get packages..."
-  if ! apt-get -y --force-yes -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
     apt-get clean
     return 1
   fi
@@ -313,15 +323,6 @@ latest_github_release() {
 tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /vagrant/config/homebin/xdebug_off
-
-  local LATEST_NVM=$(latest_github_release "creationix/nvm")
-
-  # nvm
-  mkdir -p "/srv/config/nvm" &&
-      curl -so- https://raw.githubusercontent.com/creationix/nvm/$LATEST_NVM/install.sh |
-          METHOD=script NVM_DIR=/srv/config/nvm bash
-
-  source /srv/config/nvm/nvm.sh
 
   # npm
   #
@@ -539,22 +540,26 @@ mailhog_setup() {
     chmod +x /usr/local/bin/mhsendmail
   fi
 
-  if [[ ! -e /etc/init/mailhog.conf ]]; then
+  if [[ ! -e /etc/systemd/system/mailhog.service ]]; then
 
     # Make it start on reboot
-    tee /etc/init/mailhog.conf <<EOL
-description "MailHog"
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-pre-start script
-    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
-end script
+    tee /etc/systemd/system/mailhog.service <<EOL
+[Unit]
+Description=MailHog
+After=network.service vagrant.mount
+[Service]
+Type=simple
+ExecStart=/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
+[Install]
+WantedBy=multi-user.target
 EOL
   fi
 
+  # Start on reboot
+  systemctl enable mailhog
+
   echo " * Starting MailHog"
-  service mailhog start
+  systemctl start mailhog
 }
 
 mysql_setup() {
@@ -661,9 +666,10 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /vagrant/provision/phpcs
-  noroot composer update --no-ansi --no-autoloader --no-progress
+  composer update --no-ansi --no-autoloader --no-progress
 
-  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
+  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
+  # that it can be used on the host in an editor with matching rules
   ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
   ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 

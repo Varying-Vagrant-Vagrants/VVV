@@ -4,18 +4,23 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.7.0 ( TBD )
+## 3.0.0 ( May 2019 )
 
-This will be the last version on Ubuntu 14, 2.8/3.0 will be moving to either Ubuntu 18 or a prebuilt base image.
+This version moves to an Ubuntu 18.04 box. It also moves the database data directory to a mounted folder. This means you can destroy and rebuild the VM without loss, but it also means **a `vagrant destroy` is necessary to update**. **Be sure to back up database tables you need beforehand**.
+
+In the near future, we expect to use a box with PHP/etc preinstalled, this will be VVV 4.0.
 
 ### Enhancements
 
+ - The box was changed to use Ubuntu 18.04 LTS
  - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
- - Add `git-svn` to provision.sh for installation, git-svn used in a bi-directional operation between subversion and git
+ - Added tbe `git-svn` package, `git-svn` is used for bi-directional operation between subversion and git
+ - MongoDB was updated to v4.0
 
 ### Bug Fixes
 
- - Switched to VVV mirrored PHP packages now that Ondrej no longer supports Ubuntu 14
+ - Added a VVV package mirror PPA
+ - Updated apt-get keys for several sources
 
 ### Removals
 

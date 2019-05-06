@@ -310,6 +310,9 @@ Vagrant.configure("2") do |config|
 
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
+    # Move the ubuntu-bionic-18.04-cloudimg-console.log file to log directory.
+    v.customize ["modifyvm", :id, "--uartmode1", "file", File.join(vagrant_dir, "log/ubuntu-bionic-18.04-cloudimg-console.log")]
+
     v.customize ["modifyvm", :id, "--memory", vvv_config['vm_config']['memory']]
     v.customize ["modifyvm", :id, "--cpus", vvv_config['vm_config']['cores']]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -377,13 +380,11 @@ Vagrant.configure("2") do |config|
 
   # Default Ubuntu Box
   #
-  # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized (332MB)
-  # box containing the Ubuntu 14.04 Trusty 64 bit release. Once this box is downloaded
+  # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized
+  # box containing the Ubuntu 18.04 Bionic 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  # 
-  # Note: We would like to update this to a newer box, but a naive update would
-  # destroy everybodies databases, it's not as simple as it first seems
-  config.vm.box = "ubuntu/trusty64"
+  #config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
 
   # If we're at a contributor day, switch the base box to the prebuilt one
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
@@ -394,22 +395,22 @@ Vagrant.configure("2") do |config|
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |v, override|
-    override.vm.box = "parallels/ubuntu-14.04"
+    override.vm.box = "parallels/ubuntu-18.04"
   end
 
   # The VMware Fusion Provider uses a different naming scheme.
   config.vm.provider :vmware_fusion do |v, override|
-    override.vm.box = "puphpet/ubuntu1404-x64"
+    override.vm.box = "puphpet/ubuntu1804-x64"
   end
 
   # VMWare Workstation can use the same package as Fusion
   config.vm.provider :vmware_workstation do |v, override|
-    override.vm.box = "puphpet/ubuntu1404-x64"
+    override.vm.box = "puphpet/ubuntu1804-x64"
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
-    override.vm.box = "bento/ubuntu-14.04"
+    override.vm.box = "bento/ubuntu-18.04"
   end
 
   config.vm.hostname = "vvv"
@@ -475,24 +476,18 @@ Vagrant.configure("2") do |config|
   # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/", "/srv/database"
 
-  # If the mysql_upgrade_info file from a previous persistent database mapping is detected,
-  # we'll continue to map that directory as /var/lib/mysql inside the virtual machine. Once
-  # this file is changed or removed, this mapping will no longer occur. A db_backup command
-  # is now available inside the virtual machine to backup all databases for future use. This
-  # command is automatically issued on halt, suspend, and destroy
-  if File.exists?(File.join(vagrant_dir,'database/data/mysql_upgrade_info')) then
-    config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
+  # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
+  config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
 
-    # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
-    # those are specific to Virtualbox. The folder is therefore overridden with one that
-    # uses corresponding Parallels mount options.
-    config.vm.provider :parallels do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
-    end
-    # Neither does the HyperV provider
-    config.vm.provider :hyperv do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => []
-    end
+  # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
+  # those are specific to Virtualbox. The folder is therefore overridden with one that
+  # uses corresponding Parallels mount options.
+  config.vm.provider :parallels do |v, override|
+    override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: "mysql", group: "mysql", :mount_options => []
+  end
+  # Neither does the HyperV provider
+  config.vm.provider :hyperv do |v, override|
+    override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: "mysql", group: "mysql", :mount_options => []
   end
 
   # /srv/config/
@@ -507,18 +502,18 @@ Vagrant.configure("2") do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => [ "dmode=777", "fmode=777" ]
+  config.vm.synced_folder "log/", "/var/log", owner: "root", group: "syslog", mount_options: [ "dmode=777", "fmode=666" ]
 
   # /srv/www/
   #
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
-  config.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+  config.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", mount_options: [ "dmode=775", "fmode=774" ]
 
   vvv_config['sites'].each do |site, args|
     if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
-      config.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+      config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
     end
   end
 
