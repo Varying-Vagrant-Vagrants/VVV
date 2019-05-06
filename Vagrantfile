@@ -502,7 +502,7 @@ Vagrant.configure("2") do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder "log/", "/var/log", owner: "vagrant", mount_options: [ "dmode=665", "fmode=664" ]
+  config.vm.synced_folder "log/", "/var/log", owner: "root", group: "syslog", mount_options: [ "dmode=777", "fmode=666" ]
 
   # /srv/www/
   #
