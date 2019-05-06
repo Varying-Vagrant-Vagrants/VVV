@@ -477,7 +477,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "database/", "/srv/database"
 
   # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-  config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: "mysql", group: "mysql", mount_options: [ "dmode=777", "fmode=777" ]
+  config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
 
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that

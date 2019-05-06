@@ -227,11 +227,12 @@ package_install() {
 
   echo -e "\nSetup MySQL configuration file links..."
 
-  # Copy mysql configuration from local
-  echo " * Copying /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
-  cp -f "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
-  echo " * Copying /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
-  cp -f "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
+  # Preconfigyre mariadb
+  groupadd -g 115 mysql
+  useradd -u 112 -g mysql -G vboxsf -r mysql
+  mkdir -p "/etc/mysql/conf.d"
+  echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
+  cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
 
   # Postfix
   #
@@ -576,6 +577,14 @@ mysql_setup() {
 
   exists_mysql="$(service mysql status)"
   if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
+    echo -e "\nSetup MySQL configuration file links..."
+
+    # Copy mysql configuration from local
+    cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
+    cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
+
+    echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
+    echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
 
     # MySQL gives us an error if we restart a non running service, which
     # happens after a `vagrant halt`. Check to see if it's running before
