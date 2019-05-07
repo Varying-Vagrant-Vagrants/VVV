@@ -18,7 +18,7 @@ if [[ $codename == "trusty" ]]; then
   exit 1
 fi
 
-source /vagrant/provision/provision-network-functions.sh
+source /srv/provision/provision-network-functions.sh
 
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
@@ -258,7 +258,7 @@ package_install() {
   if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
     echo "Applying NodeSource NodeJS signing key..."
-    apt-key add /vagrant/config/apt-keys/nodesource.gpg.key
+    apt-key add /srv/config/apt-keys/nodesource.gpg.key
   fi
 
   # Before running `apt-get update`, we should add the public keys for
@@ -267,31 +267,31 @@ package_install() {
   if [[ ! $( apt-key list | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
-    apt-key add /vagrant/config/apt-keys/nginx_signing.key
+    apt-key add /srv/config/apt-keys/nginx_signing.key
   fi
 
   if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo "Applying the Ondřej PHP signing key..."
-    apt-key add /vagrant/config/apt-keys/ondrej_keyserver_ubuntu.key
+    apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
   if [[ ! $( apt-key list | grep 'Varying Vagrant Vagrants') ]]; then
     # Apply the VVV signing key
     echo "Applying the Varying Vagrant Vagrants mirror signing key..."
-    apt-key add /vagrant/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
+    apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
   if [[ ! $( apt-key list | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
-    apt-key add /vagrant/config/apt-keys/mariadb.key
+    apt-key add /srv/config/apt-keys/mariadb.key
   fi
 
   if [[ ! $( apt-key list | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
     echo "Applying the PackageCloud Git-LFS signing key..."
-    apt-key add /vagrant/config/apt-keys/git-lfs.key
+    apt-key add /srv/config/apt-keys/git-lfs.key
   fi
 
   # Update all of the package references before installing anything
@@ -330,7 +330,7 @@ latest_github_release() {
 
 tools_install() {
   # Disable xdebug before any composer provisioning.
-  sh /vagrant/config/homebin/xdebug_off
+  sh /srv/config/homebin/xdebug_off
 
   # npm
   #
@@ -368,8 +368,8 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  if [[ -f /vagrant/provision/github.token ]]; then
-    ghtoken=`cat /vagrant/provision/github.token`
+  if [[ -f /srv/provision/github.token ]]; then
+    ghtoken=`cat /srv/provision/github.token`
     noroot composer config --global github-oauth.github.com $ghtoken
     echo "Your personal GitHub token is set for Composer."
   fi
@@ -673,7 +673,7 @@ php_codesniff() {
   # Sniffs WordPress Coding Standards
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
-  cd /vagrant/provision/phpcs
+  cd /srv/provision/phpcs
   composer update --no-ansi --no-autoloader --no-progress
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
