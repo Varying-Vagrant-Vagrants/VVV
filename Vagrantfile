@@ -304,9 +304,6 @@ ENV["LC_ALL"] = "en_US.UTF-8"
 
 Vagrant.configure("2") do |config|
 
-  # Disable the default synced folder to avoid overlapping mounts
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-
   # Store the current version of Vagrant for use in conditionals when dealing
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
@@ -470,6 +467,11 @@ Vagrant.configure("2") do |config|
   # machine versions. Think of it as two different ways to access the same file. When the
   # virtual machine is destroyed with `vagrant destroy`, your files will remain in your local
   # environment.
+
+  # Disable the default synced folder to avoid overlapping mounts
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provision "file", source: "version", destination: "/vagrant/version"
+  config.vm.provision "file", source: "vvv-custom.yml", destination: "/vagrant/vvv-custom.yml"
 
   # /srv/database/
   #
