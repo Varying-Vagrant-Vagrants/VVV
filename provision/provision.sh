@@ -10,6 +10,13 @@
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
+if [[ $codename == "trusty" ]]; then
+  echo "VVV 3 Uses an Ubuntu 18 box, but this VM is using an older Ubuntu 14 box"
+  echo "You need to backup your database then run vagrant destroy,"
+  echo "followed by a vagrant up --provision"
+  exit 1
+fi
+
 source /vagrant/provision/provision-network-functions.sh
 
 # By storing the date now, we can calculate the duration of provisioning at the
