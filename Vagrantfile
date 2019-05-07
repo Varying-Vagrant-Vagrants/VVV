@@ -304,6 +304,9 @@ ENV["LC_ALL"] = "en_US.UTF-8"
 
 Vagrant.configure("2") do |config|
 
+  # Disable the default synced folder to avoid overlapping mounts
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
   # Store the current version of Vagrant for use in conditionals when dealing
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
