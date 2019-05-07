@@ -3,7 +3,7 @@
 NAME=$1
 REPO=$2
 BRANCH=${3:-master}
-DIR="/vagrant/provision/resources/${NAME}"
+DIR="/srv/provision/resources/${NAME}"
 
 noroot() {
   sudo -EH -u "vagrant" "$@";
