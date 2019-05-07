@@ -205,6 +205,6 @@ else
   done
 fi
 
-service nginx restart
+service nginx reload
 
 
