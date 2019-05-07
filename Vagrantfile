@@ -474,7 +474,7 @@ Vagrant.configure("2") do |config|
   # a mapped directory inside the VM will be created that contains these files.
   # This directory is used to maintain default database scripts as well as backed
   # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
-  config.vm.synced_folder "database/", "/srv/database"
+  config.vm.synced_folder "database/sql/", "/srv/database"
 
   # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
   config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
@@ -497,6 +497,16 @@ Vagrant.configure("2") do |config|
   # This directory is currently used to maintain various config files for php and
   # nginx as well as any pre-existing database files.
   config.vm.synced_folder "config/", "/srv/config"
+
+  # /srv/config/
+  # 
+  # Map the provision folder so that utilities and provisioners can access helper scripts
+  config.vm.synced_folder "provision/", "/srv/provision"
+
+  # /srv/certificates
+  # 
+  # This is a location for the TLS certificates to be accessible inside the VM
+  config.vm.synced_folder "certificates/", "/srv/certificates", create: true
 
   # /var/log/
   #
