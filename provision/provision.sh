@@ -10,6 +10,7 @@
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
+codename=$(lsb_release --codename | cut -f2)
 if [[ $codename == "trusty" ]]; then
   echo "VVV 3 Uses an Ubuntu 18 box, but this VM is using an older Ubuntu 14 box"
   echo "You need to backup your database then run vagrant destroy,"
