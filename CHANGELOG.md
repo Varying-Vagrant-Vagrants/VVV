@@ -16,11 +16,14 @@ In the near future, we expect to use a box with PHP/etc preinstalled, this will 
  - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
  - Added tbe `git-svn` package, `git-svn` is used for bi-directional operation between subversion and git
  - MongoDB was updated to v4.0
+ - New `/srv/provision` and `/srv/certificates` shared folders
 
 ### Bug Fixes
 
  - Added a VVV package mirror PPA
  - Updated apt-get keys for several sources
+ - Prevented provisioning from occurring inside Ubuntu 14 VMs
+ - Fixed issues with Nginx restarting too fast and too often
 
 ### Removals
 
