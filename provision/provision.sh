@@ -198,6 +198,9 @@ profile_setup() {
     echo " * Copying /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
     cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
+
+  echo " * Copying /srv/provision/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
+  cp -f /srv/provision/ssh_known_hosts /etc/ssh/ssh_known_hosts
 }
 
 not_installed() {
@@ -715,12 +718,10 @@ cleanup_vvv(){
   # Cleanup the hosts file
   echo "Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
-  echo "127.0.0.1 vvv.dev # vvv-auto" >> "/etc/hosts"
-  echo "127.0.0.1 vvv.local # vvv-auto" >> "/etc/hosts"
-  echo "127.0.0.1 vvv.localhost # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
   if [[ `is_utility_installed core tideways` ]]; then
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
+    echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
   mv /tmp/hosts /etc/hosts
 }
