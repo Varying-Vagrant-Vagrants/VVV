@@ -470,8 +470,10 @@ Vagrant.configure("2") do |config|
 
   # Disable the default synced folder to avoid overlapping mounts
   config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.vm.provision "file", source: "version", destination: "/vagrant/version"
-  config.vm.provision "file", source: "vvv-custom.yml", destination: "/vagrant/vvv-custom.yml"
+  config.vm.provision "file", source: "version", destination: "/home/vagrant/version"
+  config.vm.provision "file", source: "vvv-custom.yml", destination: "/home/vagrant/vvv-custom.yml"
+  config.vm.provision "shell",
+    inline: "mkdir -p /vagrant;cp -f /home/vagrant/version /vagrant; cp -f /home/vagrant/vvv-custom.yml /vagrant"
 
   # /srv/database/
   #
