@@ -693,7 +693,7 @@ Vagrant.configure("2") do |config|
   # scripting. See the individual files in config/homebin/ for details.
   config.trigger.after :up do |trigger|
     trigger.name = "VVV Post-Up"
-    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+    trigger.run_remote = { inline: "/srv/config/homebin/vagrant_up" }
     trigger.on_error = :continue
   end
   config.trigger.before :provision do |trigger|
@@ -702,32 +702,32 @@ Vagrant.configure("2") do |config|
   end
   config.trigger.after :provision do |trigger|
     trigger.name = "VVV Post-Provision"
-    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_provision" }
+    trigger.run_remote = { inline: "/srv/config/homebin/vagrant_provision" }
     trigger.on_error = :continue
   end
   config.trigger.before :reload do |trigger|
     trigger.name = "VVV Pre-Reload"
-    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_halt" }
+    trigger.run_remote = { inline: "/srv/config/homebin/vagrant_halt" }
     trigger.on_error = :continue
   end
   config.trigger.after :reload do |trigger|
     trigger.name = "VVV Post-Reload"
-    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_up" }
+    trigger.run_remote = { inline: "/srv/config/homebin/vagrant_up" }
     trigger.on_error = :continue
   end
   config.trigger.before :halt do |trigger|
     trigger.name = "VVV Pre-Halt"
-    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_halt" }
+    trigger.run_remote = { inline: "/srv/config/homebin/vagrant_halt" }
     trigger.on_error = :continue
   end
   config.trigger.before :suspend do |trigger|
     trigger.name = "VVV Pre-Suspend"
-    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_suspend" }
+    trigger.run_remote = { inline: "/srv/config/homebin/vagrant_suspend" }
     trigger.on_error = :continue
   end
   config.trigger.before :destroy do |trigger|
     trigger.name = "VVV Pre-Destroy"
-    trigger.run_remote = { inline: "/vagrant/config/homebin/vagrant_destroy" }
+    trigger.run_remote = { inline: "/srv/config/homebin/vagrant_destroy" }
     trigger.on_error = :continue
   end
 end
