@@ -10,9 +10,9 @@
 
 echo "Post Vagrant up script"
 
-if [[ -f /vagrant/config/homebin/vagrant_up_custom ]]; then
+if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
 	echo "Custom vagrant up script found, executing vagrant_up_custom"
-	/vagrant/config/homebin/vagrant_up_custom
+	/srv/config/homebin/vagrant_up_custom
 fi
 
 echo "Restarting Nginx and MySQL"

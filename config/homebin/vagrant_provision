@@ -14,9 +14,9 @@
 
 echo "Post Vagrant provision script"
 
-if [[ -f /vagrant/config/homebin/vagrant_provision_custom ]]; then
+if [[ -f /srv/config/homebin/vagrant_provision_custom ]]; then
 	echo "Custom vagrant provision script found, executing vagrant_provision_custom"
-	/vagrant/config/homebin/vagrant_provision_custom
+	/srv/config/homebin/vagrant_provision_custom
 fi
 
 echo "Restarting Nginx and MySQL"
