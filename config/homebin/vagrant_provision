@@ -1,18 +1,22 @@
 #!/bin/bash
 #
-# This script is run whenever `vagrant up` is used to power on
-# the virtual machine. To customize this behavior, include a file
-# in your local VVV/config/homebin directory: vagrant_up_custom
+# This script is run after a provision. To customize this behavior,
+# include a file in your local VVV/config/homebin
+# directory: vagrant_provision_custom
+#
+# Note that sometimes provisioning happens on `vagrant up --provision`
+# so if you have a vagrant_up_custom file, be careful of double
+# execution
 #
 # Look for a custom trigger file. If this exists, we'll assume that
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
 
-echo "Post Vagrant up script"
+echo "Post Vagrant provision script"
 
-if [[ -f /vagrant/config/homebin/vagrant_up_custom ]]; then
-	echo "Custom vagrant up script found, executing vagrant_up_custom"
-	/vagrant/config/homebin/vagrant_up_custom
+if [[ -f /vagrant/config/homebin/vagrant_provision_custom ]]; then
+	echo "Custom vagrant provision script found, executing vagrant_provision_custom"
+	/vagrant/config/homebin/vagrant_provision_custom
 fi
 
 echo "Restarting Nginx and MySQL"
@@ -26,5 +30,5 @@ echo -e "${green}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄               
 echo -e "${green}   █▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
 echo -e "${green}    █░░█░░░░░█░░█     using        \_/\_/\_/"
 echo -e "${green} ▄▄  █░░░▀█▀░░░█  ▄▄ "
-echo -e "${green}█░░█ ▀▄░░░░░░░▄▀ █░░█ Vagrant Up has finished! Visit http://vvv.test"
+echo -e "${green}█░░█ ▀▄░░░░░░░▄▀ █░░█ Provisioning has finished! Visit http://vvv.test"
 echo -e "\033[0m"

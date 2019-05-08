@@ -1,0 +1,3 @@
+[mysqld]
+innodb_use_native_aio = 0
+log_bin = ON

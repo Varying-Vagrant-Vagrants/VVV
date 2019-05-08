@@ -13,14 +13,14 @@ if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the resources repository
   if [[ ! -d ${DIR}/.git ]]; then
     echo -e "\nDownloading ${NAME} resources, see ${REPO}"
-    noroot git clone ${REPO} --branch ${BRANCH} ${DIR} -q
+    git clone ${REPO} --branch ${BRANCH} ${DIR} -q
     cd ${DIR}
-    noroot git checkout ${BRANCH} -q
+    git checkout ${BRANCH} -q
   else
     echo -e "\nUpdating ${NAME} resources..."
     cd ${DIR}
-    noroot git pull origin ${BRANCH} -q
-    noroot git checkout ${BRANCH} -q
+    git pull origin ${BRANCH} -q
+    git checkout ${BRANCH} -q
   fi
 fi
 
