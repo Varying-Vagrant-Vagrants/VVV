@@ -199,8 +199,8 @@ profile_setup() {
     cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
 
-  echo " * Copying /srv/provision/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
-  cp -f /srv/provision/ssh_known_hosts /etc/ssh/ssh_known_hosts
+  echo " * Copying /srv/config/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
+  cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
 }
 
 not_installed() {
