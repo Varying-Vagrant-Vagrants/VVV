@@ -66,8 +66,8 @@ function vvv_provision_site_nginx() {
   sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   
   if [ -n "$(type -t is_utility_installed)" ] && [ "$(type -t is_utility_installed)" = function ] && `is_utility_installed core tls-ca`; then
-    sed -i "s#{vvv_tls_cert}#ssl_certificate /vagrant/certificates/${VVV_SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}#ssl_certificate_key /vagrant/certificates/${VVV_SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_cert}#ssl_certificate /srv/certificates/${VVV_SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_key}#ssl_certificate_key /srv/certificates/${VVV_SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   else
     sed -i "s#{vvv_tls_cert}##" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
     sed -i "s#{vvv_tls_key}##" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
@@ -84,9 +84,9 @@ function vvv_provision_hosts_file() {
   while read HOSTFILE; do
     while IFS='' read -r line || [ -n "$line" ]; do
       if [[ "#" != ${line:0:1} ]]; then
-        if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+        if [[ -z "$(grep -q "^127.0.0.1 ${line}$" /etc/hosts)" ]]; then
           echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-          echo " * Added $line from $HOSTFILE"
+          echo " * Added ${line} from ${HOSTFILE}"
         fi
       fi
     done < "$HOSTFILE"
@@ -199,12 +199,13 @@ else
   echo "Adding hosts from the VVV config entry"
   for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`; do
     if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
-      echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-      echo " * Added $line from ${VVV_CONFIG}"
+      echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
+      echo " * Added ${line} from ${VVV_CONFIG}"
     fi
   done
 fi
 
+echo "Reloading Nginx"
 service nginx reload
 
 

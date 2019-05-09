@@ -28,6 +28,7 @@ In the near future, we expect to use a box with PHP/etc preinstalled, this will 
 ### Removals
 
  - The deprecated domains `vvv.dev`, `vvv.local`, and `vvv.localhost`, were removed, the dashboard lives at `vvv.test`.
+ - Removed the `/vagrant` default shared folder
 
 ## 2.6.0 ( 2nd April 2019 )
 
