@@ -12,7 +12,7 @@ if [[ false != "dashboard" && false != "${REPO}" ]]; then
     cd ${DIR}
     git checkout ${BRANCH} -q
   else
-    echo -e "\nUpdating dashboard..."
+    echo -e "\nUpdating dashboard on the ${BRANCH} branch..."
     cd ${DIR}
     git pull origin ${BRANCH} -q
     git checkout ${BRANCH} -q
