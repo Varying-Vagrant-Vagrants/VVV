@@ -84,9 +84,9 @@ function vvv_provision_hosts_file() {
   while read HOSTFILE; do
     while IFS='' read -r line || [ -n "$line" ]; do
       if [[ "#" != ${line:0:1} ]]; then
-        if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+        if [[ -z "$(grep -q "^127.0.0.1 ${line}$" /etc/hosts)" ]]; then
           echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-          echo " * Added $line from $HOSTFILE"
+          echo " * Added ${line} from ${HOSTFILE}"
         fi
       fi
     done < "$HOSTFILE"
@@ -199,12 +199,13 @@ else
   echo "Adding hosts from the VVV config entry"
   for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`; do
     if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
-      echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
-      echo " * Added $line from ${VVV_CONFIG}"
+      echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
+      echo " * Added ${line} from ${VVV_CONFIG}"
     fi
   done
 fi
 
+echo "Reloading Nginx"
 service nginx reload
 
 
