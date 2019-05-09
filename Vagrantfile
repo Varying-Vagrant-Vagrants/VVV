@@ -96,7 +96,7 @@ version = versionfile.read
 version = version.gsub('\n','')
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
-if [ 'up', 'halt', 'resume', 'suspend', 'status', 'provision', 'reload' ].include? ARGV[0] then
+if [ 'up', 'resume', 'status', 'provision', 'reload' ].include? ARGV[0] then
   show_logo = true
 end
 if ENV['VVV_SKIP_LOGO'] then
