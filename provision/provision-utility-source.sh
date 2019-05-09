@@ -8,12 +8,12 @@ DIR="/srv/provision/utilities/${NAME}"
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
   if [[ ! -d ${DIR}/.git ]]; then
-    echo -e "\nCloning the \"${NAME}\" utility, see \"${REPO}\""
+    echo "Cloning the \"${NAME}\" utility, see \"${REPO}\""
     git clone ${REPO} --branch ${BRANCH} ${DIR} -q
     cd ${DIR}
     git checkout ${BRANCH} -q
   else
-    echo -e "\nUpdating the \"${NAME}\" utility on the \"${BRANCH}\" branch..."
+    echo  "Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch..."
     cd ${DIR}
     git pull origin ${BRANCH} -q
     git checkout ${BRANCH} -q
@@ -31,5 +31,6 @@ else
   if [[ false == "${REPO}" ]]; then
     echo -e "Error: While processing the ${NAME} utility, VVV could not find a git repository to clone"
   fi
+fi
 
 exit 0
