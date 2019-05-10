@@ -24,6 +24,7 @@ In the near future, we expect to use a box with PHP/etc preinstalled, this will 
  - Updated apt-get keys for several sources
  - Prevented provisioning from occurring inside Ubuntu 14 VMs
  - Fixed issues with Nginx restarting too fast and too often
+ - Fixed the permissions on the `db_restore` script
 
 ### Removals
 
