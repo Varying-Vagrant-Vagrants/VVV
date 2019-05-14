@@ -291,7 +291,7 @@ if show_logo then
   end
 
   if defined? vvv_config['general']['db_share_type'] then
-    if vvv_config['vm_config']['db_share_type'] != true then
+    if vvv_config['general']['db_share_type'] != true then
       platform = platform + 'shared_db_folder_disabled '
     else
       platform = platform + 'shared_db_folder_enabled '
