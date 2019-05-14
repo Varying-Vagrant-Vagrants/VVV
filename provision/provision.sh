@@ -178,19 +178,26 @@ is_utility_installed() {
   return 1
 }
 
+
+
 git_ppa_check() {
   # git
   #
   # apt-get does not have latest version of git,
   # so let's the use ppa repository instead.
   #
-  # Install prerequisites.
-  sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
-  # Add ppa repo.
-  echo "Adding ppa:git-core/ppa repository"
-  sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
-  # Update apt-get info.
-  sudo apt-get update &>/dev/null
+  if grep -Rq "^deb.*ppa:git-core/ppa" /etc/apt/sources.list.d/*.list
+  then
+    # Install prerequisites.
+    sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
+    # Add ppa repo.
+    echo " * Adding ppa:git-core/ppa repository"
+    sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
+    # Update apt-get info.
+    sudo apt-get update &>/dev/null
+  else
+    echo " * git-core/ppa already present, skipping"
+  fi
 }
 
 noroot() {
