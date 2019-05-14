@@ -287,11 +287,7 @@ if show_logo then
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
     if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
       platform = platform + 'contributor_day_box '
-    else
-      --
     end
-  else
-    --
   end
 
   if defined? vvv_config['general']['db_share_type'] then
