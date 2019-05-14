@@ -9,6 +9,8 @@
 
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+export COMPOSER_ALLOW_SUPERUSER=1
+export COMPOSER_NO_INTERACTION=1
 
 codename=$(lsb_release --codename | cut -f2)
 if [[ $codename == "trusty" ]]; then
