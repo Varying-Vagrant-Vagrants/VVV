@@ -102,7 +102,7 @@ if [[ false != "${REPO}" ]]; then
   # Clone or pull the site repository
   if [[ ! -d ${VM_DIR}/.git ]]; then
     echo -e "\nDownloading ${SITE}, git cloning from ${REPO}"
-    noroot git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR} -q
+    git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR} -q
     if [ $? -eq 0 ]; then
       echo "Site Template clone succesful"
     else
@@ -113,9 +113,9 @@ if [[ false != "${REPO}" ]]; then
   else
     echo -e "\nUpdating ${SITE}..."
     cd ${VM_DIR}
-    noroot git reset origin/${BRANCH} --hard -q
-    noroot git pull origin ${BRANCH} -q
-    noroot git checkout ${BRANCH} -q
+    git reset origin/${BRANCH} --hard -q
+    git pull origin ${BRANCH} -q
+    git checkout ${BRANCH} -q
   fi
 else
   echo "The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
