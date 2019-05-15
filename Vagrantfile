@@ -216,6 +216,10 @@ if ! vvv_config['vm_config'].kind_of? Hash then
   vvv_config['vm_config'] = Hash.new
 end
 
+if ! vvv_config['general'].kind_of? Hash then
+  vvv_config['general'] = Hash.new
+end
+
 defaults = Hash.new
 defaults['memory'] = 2048
 defaults['cores'] = 1
@@ -278,6 +282,22 @@ if show_logo then
     if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
       platform = platform + 'contributor_day_box '
     end
+  end
+
+  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
+    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
+      platform = platform + 'contributor_day_box '
+    end
+  end
+
+  if defined? vvv_config['general']['db_share_type'] then
+    if vvv_config['general']['db_share_type'] != true then
+      platform = platform + 'shared_db_folder_disabled '
+    else
+      platform = platform + 'shared_db_folder_enabled '
+    end
+  else
+    platform = platform + 'shared_db_folder_default '
   end
 
   splashsecond = <<-HEREDOC
@@ -492,9 +512,19 @@ SCRIPT
   # This directory is used to maintain default database scripts as well as backed
   # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/sql/", "/srv/database"
+  use_db_share = true
 
-  # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-  config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
+  if defined? vvv_config['general']['db_share_type'] then
+    if vvv_config['general']['db_share_type'] != false then
+      use_db_share = true
+    else
+      use_db_share = false
+    end
+  end
+  if use_db_share == true then
+    # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
+    config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
+  end
 
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
