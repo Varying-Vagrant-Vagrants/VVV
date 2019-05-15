@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
-Vagrant.require_version ">= 2.1.4"
+Vagrant.require_version ">= 2.2.4"
 require 'yaml'
 require 'fileutils'
 
@@ -384,6 +384,11 @@ Vagrant.configure("2") do |config|
       else
         config.vagrant.plugins = ["vagrant-hostsupdater"]
       end
+  end
+
+  # The vbguest plugin has issues for some users, so we're going to disable it for now
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false  
   end
 
   # SSH Agent Forwarding
