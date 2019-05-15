@@ -25,6 +25,7 @@ In the near future, we expect to use a box with PHP/etc preinstalled, this will 
  - Prevented provisioning from occurring inside Ubuntu 14 VMs
  - Fixed issues with Nginx restarting too fast and too often
  - Fixed the permissions on the `db_restore` script
+ - The `/var/log` folder is no longer directly mounted, instead the `/var/log/php`, `/var/log/nginx` and `/var/log/memcached` subfolders are mounted. This improves compatibility
 
 ### Removals
 
