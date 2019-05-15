@@ -130,6 +130,13 @@ if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
   FileUtils.cp( File.join(vagrant_dir, 'vvv-config.yml'), File.join(vagrant_dir, 'vvv-custom.yml') )
 end
 
+old_db_backup_dir = File.join(vagrant_dir, 'database/backups/' )
+new_db_backup_dir = File.join(vagrant_dir, 'database/sql/backups/' )
+if ( File.directory?( old_db_backup_dir ) == true ) && ( File.directory?( new_db_backup_dir ) == false ) then
+  puts "Moving db backup directory into database/sql/backups"
+  FileUtils.mv( old_db_backup_dir, new_db_backup_dir )
+end
+
 vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
 
 vvv_config = YAML.load_file(vvv_config_file)
