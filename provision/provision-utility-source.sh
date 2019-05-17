@@ -3,24 +3,41 @@
 NAME=$1
 REPO=$2
 BRANCH=${3:-master}
-DIR="/vagrant/provision/resources/${NAME}"
+DIR="/srv/provision/utilities/${NAME}"
 
-noroot() {
-  sudo -EH -u "vagrant" "$@";
-}
+date_time=`cat /vagrant/provisioned_at`
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-utility-source-${NAME}.log"
+mkdir -p "${logfolder}"
+touch "${logfile}"
+exec > >(tee -a "${logfile}" )
+exec 2> >(tee -a "${logfile}" >&2 )
 
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
-  # Clone or pull the resources repository
+  # Clone or pull the utility repository
   if [[ ! -d ${DIR}/.git ]]; then
-    echo -e "\nDownloading ${NAME} resources, see ${REPO}"
-    noroot git clone ${REPO} --branch ${BRANCH} ${DIR} -q
+    echo "Cloning the \"${NAME}\" utility, see \"${REPO}\""
+    git clone ${REPO} --branch ${BRANCH} ${DIR} -q
     cd ${DIR}
-    noroot git checkout ${BRANCH} -q
+    git checkout ${BRANCH} -q
   else
-    echo -e "\nUpdating ${NAME} resources..."
+    echo  "Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch..."
     cd ${DIR}
-    noroot git pull origin ${BRANCH} -q
-    noroot git checkout ${BRANCH} -q
+    git pull origin ${BRANCH} -q
+    git checkout ${BRANCH} -q
+  fi
+else
+  if [[ false == "${NAME}" && false == "${REPO}" ]]; then
+    echo "Error: VVV tried to provision a utility, but no name or git repo was supplied, double check your vvv-custom.yml file is correct and has the right indentation"
+    exit 1
+  fi
+  if [[ false == "${NAME}" ]]; then
+    echo -e "Error: While processing a utility, a utility with a blank name was found, with the git repo ${REPO}"
+    exit 1
+  fi
+
+  if [[ false == "${REPO}" ]]; then
+    echo -e "Error: While processing the ${NAME} utility, VVV could not find a git repository to clone"
   fi
 fi
 

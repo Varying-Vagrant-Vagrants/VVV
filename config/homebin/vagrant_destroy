@@ -7,9 +7,9 @@
 # Look for a custom trigger file. If this exists, we'll assume that
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
-if [[ -f /vagrant/config/homebin/vagrant_destroy_custom ]]; then
+if [[ -f /srv/config/homebin/vagrant_destroy_custom ]]; then
 	echo "Executing vagrant_destroy_custom"
-	/vagrant/config/homebin/vagrant_destroy_custom
+	/srv/config/homebin/vagrant_destroy_custom
 else
-	/vagrant/config/homebin/db_backup
+	/srv/config/homebin/db_backup
 fi

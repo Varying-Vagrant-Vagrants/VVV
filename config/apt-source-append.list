@@ -2,25 +2,26 @@
 # versions of various packages that are installed
 
 # Provides Nginx mainline
-deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
-deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
+deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx
 
 # Provides PHP7
-deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
-deb-src http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
+deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
+deb-src http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
+
+# VVV mirror packages
+deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
+deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
 
 # MariaDB 10.3 repository list - created 2018-06-19 13:36 UTC
 # http://downloads.mariadb.org/mariadb/repositories/
-deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu trusty main
-deb-src http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu trusty main
-
-deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu trusty main
-deb-src http://mirrors.coreix.net/mariadb/repo/10.1/ubuntu trusty main
+deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu bionic main
+deb-src http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu bionic main
 
 # Provides Node.js
-deb https://deb.nodesource.com/node_10.x trusty main
-deb-src https://deb.nodesource.com/node_10.x trusty main
+deb https://deb.nodesource.com/node_11.x bionic main
+deb-src https://deb.nodesource.com/node_11.x bionic main
 
 # git lfs (large file storage plugin for git)
-deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main
-deb-src https://packagecloud.io/github/git-lfs/ubuntu/ trusty main
+deb https://packagecloud.io/github/git-lfs/ubuntu/ bionic main
+deb-src https://packagecloud.io/github/git-lfs/ubuntu/ bionic main

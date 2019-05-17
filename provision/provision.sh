@@ -8,8 +8,81 @@
 # configurations included with Varying Vagrant Vagrants.
 
 export DEBIAN_FRONTEND=noninteractive
+export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+export COMPOSER_ALLOW_SUPERUSER=1
+export COMPOSER_NO_INTERACTION=1
 
-source /vagrant/provision/provision-network-functions.sh
+date_time=`cat /vagrant/provisioned_at`
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-main.log"
+mkdir -p "${logfolder}"
+touch "${logfile}"
+exec > >(tee -a "${logfile}" )
+exec 2> >(tee -a "${logfile}" >&2 )
+
+codename=$(lsb_release --codename | cut -f2)
+if [[ $codename == "trusty" ]]; then
+  r="\e[0;32m"
+  echo " "
+  echo '__ __ __ __'
+  echo '\ V\ V\ V / A message from the VVV team'
+  echo ' \_/\_/\_/  '
+  echo -e " "
+  echo -e "We Have Some Good News and Some Bad News"
+  echo -e "----------------------------------------"
+  echo -e " "
+  echo -e "The good news is that you updated to VVV 3+! Thanks for taking "
+  echo -e "care of your install!"
+  echo -e " "
+  echo -e "The bad news is that your VM is still an Ubuntu 14 VM. VVV 3+ needs"
+  echo -e "Ubuntu 18, and requires a vagant destroy and a reprovision."
+  echo -e " "
+  echo -e " "
+  echo -e "\e[1;4;33mImportant: Destroying and reprovisioning will erase the database${r}"
+  echo -e " "
+  sqlcount=$(cd /srv/database/backups; ls -1q *.sql | wc -l)
+  if [[ $sqlcount -gt 0 ]]; then
+    echo -e "\e[0;33m "
+    echo -e "\e[0;33mLuckily, VVV backs up the database to database/backups, and "
+    echo -e "we found ${sqlcount} of those .sql files in database/backups from the last "
+    echo -e "time you ran vagrant halt."
+
+    echo -e "These DB backups can be restored after updating with this command:"
+    echo -e "vagrant ssh -c \"db_restore\"${r}"
+  else
+    echo -e "\e[0;33m "
+    echo -e "\e[0;33mNormally VVV takes backups, but we didn't find any existing backups${r}"
+    echo -e " "
+    echo -e "How Do I Grab Database Backups?"
+    echo -e "--------------------------------"
+    echo -e " "
+    echo -e "If you've turned off database backups, or haven't turned off your VM"
+    echo -e "in a while, take the following steps:"
+    echo -e " "
+    echo -e " 1. downgrade back to VVV 2:             git fetch --tags && git checkout 2.6.0"
+    echo -e " 2. turn on the VM but dont provision:   vagrant up"
+    echo -e " 3. run the backup DB script:            vagrant ssh -c \"db_backup\""
+    echo -e " 4. turn off the VM:                     vagrant halt"
+    echo -e " 5. return to VVV 3+:                    git checkout develop"
+    echo -e " 6. you can now update your VM to VVV 3, see the instructions in the section above"
+  fi
+  echo -e " "
+  echo -e " "
+  echo -e "Updating Your VM To VVV 3+"
+  echo -e "--------------------------"
+  echo -e " "
+  echo -e "If you're happy and have your database files, you can update your VM to VVV 3+ with these commands:"
+  echo -e " "
+  echo -e " 1. destroy the VM:              vagrant destroy"
+  echo -e " 2. provision a new VM:          vagrant up --provision"
+  echo -e " 3. optionally restore backups:  vagrant ssh -c \"db_restore\""
+  echo -e " "
+  echo -e " "
+  echo -e " "
+  exit 1
+fi
+
+source /srv/provision/provision-network-functions.sh
 
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
@@ -71,6 +144,7 @@ apt_package_install_list=(
   subversion
   git
   git-lfs
+  git-svn
   zip
   unzip
   ngrep
@@ -112,19 +186,26 @@ is_utility_installed() {
   return 1
 }
 
+
+
 git_ppa_check() {
   # git
   #
   # apt-get does not have latest version of git,
   # so let's the use ppa repository instead.
   #
-  # Install prerequisites.
-  sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
-  # Add ppa repo.
-  echo "Adding ppa:git-core/ppa repository"
-  sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
-  # Update apt-get info.
-  sudo apt-get update &>/dev/null
+  if grep -Rq "^deb.*ppa:git-core/ppa" /etc/apt/sources.list.d/*.list
+  then
+    # Install prerequisites.
+    sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
+    # Add ppa repo.
+    echo " * Adding ppa:git-core/ppa repository"
+    sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
+    # Update apt-get info.
+    sudo apt-get update &>/dev/null
+  else
+    echo " * git-core/ppa already present, skipping"
+  fi
 }
 
 noroot() {
@@ -188,6 +269,9 @@ profile_setup() {
     echo " * Copying /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
     cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
+
+  echo " * Copying /srv/config/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
+  cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
 }
 
 not_installed() {
@@ -220,8 +304,28 @@ package_install() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.1 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.1 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
+
+  echo -e "\n * Setting up MySQL configuration file links..."
+
+  # Preconfigure mariadb
+  if grep -q 'mysql' /etc/group; then
+    echo " * mysql group exists"
+  else
+    echo " * creating mysql group"
+    groupadd -g 115 mysql
+  fi
+  
+  if id 112 >/dev/null 2>&1; then
+    echo " * mysql user present"
+  else
+    echo " * adding the mysql user"
+    useradd -u 112 -g mysql -G vboxsf -r mysql
+  fi
+  mkdir -p "/etc/mysql/conf.d"
+  echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
+  cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
 
   # Postfix
   #
@@ -239,7 +343,7 @@ package_install() {
   if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
     echo "Applying NodeSource NodeJS signing key..."
-    apt-key add /vagrant/config/apt-keys/nodesource.gpg.key
+    apt-key add /srv/config/apt-keys/nodesource.gpg.key
   fi
 
   # Before running `apt-get update`, we should add the public keys for
@@ -248,25 +352,31 @@ package_install() {
   if [[ ! $( apt-key list | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
-    apt-key add /vagrant/config/apt-keys/nginx_signing.key
+    apt-key add /srv/config/apt-keys/nginx_signing.key
   fi
 
   if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo "Applying the Ondřej PHP signing key..."
-    apt-key add /vagrant/config/apt-keys/keyserver_ubuntu.key
+    apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
+  fi
+
+  if [[ ! $( apt-key list | grep 'Varying Vagrant Vagrants') ]]; then
+    # Apply the VVV signing key
+    echo "Applying the Varying Vagrant Vagrants mirror signing key..."
+    apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
   if [[ ! $( apt-key list | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
-    apt-key add /vagrant/config/apt-keys/mariadb.key
+    apt-key add /srv/config/apt-keys/mariadb.key
   fi
 
   if [[ ! $( apt-key list | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
     echo "Applying the PackageCloud Git-LFS signing key..."
-    apt-key add /vagrant/config/apt-keys/git-lfs.key
+    apt-key add /srv/config/apt-keys/git-lfs.key
   fi
 
   # Update all of the package references before installing anything
@@ -275,7 +385,7 @@ package_install() {
 
   # Install required packages
   echo "Installing apt-get packages..."
-  if ! apt-get -y --force-yes -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
     apt-get clean
     return 1
   fi
@@ -305,16 +415,7 @@ latest_github_release() {
 
 tools_install() {
   # Disable xdebug before any composer provisioning.
-  sh /vagrant/config/homebin/xdebug_off
-
-  local LATEST_NVM=$(latest_github_release "creationix/nvm")
-
-  # nvm
-  mkdir -p "/srv/config/nvm" &&
-      curl -so- https://raw.githubusercontent.com/creationix/nvm/$LATEST_NVM/install.sh |
-          METHOD=script NVM_DIR=/srv/config/nvm bash
-
-  source /srv/config/nvm/nvm.sh
+  sh /srv/config/homebin/xdebug_off
 
   # npm
   #
@@ -352,8 +453,8 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  if [[ -f /vagrant/provision/github.token ]]; then
-    ghtoken=`cat /vagrant/provision/github.token`
+  if [[ -f /srv/provision/github.token ]]; then
+    ghtoken=`cat /srv/provision/github.token`
     noroot composer config --global github-oauth.github.com $ghtoken
     echo "Your personal GitHub token is set for Composer."
   fi
@@ -532,22 +633,26 @@ mailhog_setup() {
     chmod +x /usr/local/bin/mhsendmail
   fi
 
-  if [[ ! -e /etc/init/mailhog.conf ]]; then
+  if [[ ! -e /etc/systemd/system/mailhog.service ]]; then
 
     # Make it start on reboot
-    tee /etc/init/mailhog.conf <<EOL
-description "MailHog"
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-pre-start script
-    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
-end script
+    tee /etc/systemd/system/mailhog.service <<EOL
+[Unit]
+Description=MailHog
+After=network.service vagrant.mount
+[Service]
+Type=simple
+ExecStart=/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
+[Install]
+WantedBy=multi-user.target
 EOL
   fi
 
+  # Start on reboot
+  systemctl enable mailhog
+
   echo " * Starting MailHog"
-  service mailhog start
+  systemctl start mailhog
 }
 
 mysql_setup() {
@@ -653,10 +758,11 @@ php_codesniff() {
   # Sniffs WordPress Coding Standards
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
-  cd /vagrant/provision/phpcs
-  noroot composer update --no-ansi --no-autoloader --no-progress
+  cd /srv/provision/phpcs
+  composer update --no-ansi --no-autoloader --no-progress
 
-  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory
+  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
+  # that it can be used on the host in an editor with matching rules
   ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
   ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
@@ -694,12 +800,10 @@ cleanup_vvv(){
   # Cleanup the hosts file
   echo "Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
-  echo "127.0.0.1 vvv.dev # vvv-auto" >> "/etc/hosts"
-  echo "127.0.0.1 vvv.local # vvv-auto" >> "/etc/hosts"
-  echo "127.0.0.1 vvv.localhost # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
   if [[ `is_utility_installed core tideways` ]]; then
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
+    echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
   mv /tmp/hosts /etc/hosts
 }

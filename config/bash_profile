@@ -66,7 +66,7 @@ export GOPATH=$HOME/gocode
 export PATH="$PATH:/srv/www/phpcs/scripts/"
 
 # Vagrant scripts
-export PATH="$PATH:/vagrant/config/homebin/"
+export PATH="$PATH:/srv/config/homebin/"
 
 # nvm path
 export NVM_DIR="/srv/config/nvm"

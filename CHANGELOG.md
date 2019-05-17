@@ -4,7 +4,39 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 2.6.0 ( TBD )
+## 3.0.0 ( 17 May 2019 )
+
+This version moves to an Ubuntu 18.04 box. It also moves the database data directory to a mounted folder. This means you can destroy and rebuild the VM without loss, but it also means **a `vagrant destroy` is necessary to update**. **Be sure to back up database tables you need beforehand**.
+
+If you have issues provisioning with the new shared database folder, you can disable it by adding `db_share_type: false` to the `general:` section of `vvv-custom.yml` then reprovisioning. This will return you to the VVV 2 behaviour. 
+
+In the near future, we expect to use a box with PHP/etc preinstalled, this will be VVV 4.0.
+
+### Enhancements
+
+ - The box was changed to use Ubuntu 18.04 LTS
+ - If cloning a git repo to create a new site fails, VVV will halt provisioning and warn the user
+ - Added tbe `git-svn` package, `git-svn` is used for bi-directional operation between subversion and git
+ - MongoDB was updated to v4.0
+ - New `/srv/provision` and `/srv/certificates` shared folders
+ - Provisioners now log their output to a `logs/provisioners` folder, with each provision having its own subfolder
+
+### Bug Fixes
+
+ - Added a VVV package mirror PPA
+ - Updated apt-get keys for several sources
+ - Prevented provisioning from occurring inside Ubuntu 14 VMs
+ - Fixed issues with Nginx restarting too fast and too often by reloading instead
+ - Fixed the permissions on the `db_restore` script
+ - The `/var/log` folder is no longer directly mounted, instead the `/var/log/php`, `/var/log/nginx`, `/var/log/provisioners` and `/var/log/memcached` subfolders are mounted. This improves compatibility
+ - The SQL import script for backups will now create the databases if they don't exist before importing
+
+### Removals
+
+ - The deprecated domains `vvv.dev`, `vvv.local`, and `vvv.localhost`, were removed, the dashboard lives at `vvv.test`.
+ - Removed the `/vagrant` default shared folder
+
+## 2.6.0 ( 2nd April 2019 )
 
 ### Enhancements
 
