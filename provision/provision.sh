@@ -12,7 +12,7 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 export COMPOSER_ALLOW_SUPERUSER=1
 export COMPOSER_NO_INTERACTION=1
 
-date_time=`date "+%Y%m%d-%H%M%S"`
+date_time=`cat /vagrant/provisioned_at`
 logfile="/var/log/provisioners/${date_time}/provisioner-main.log"
 mkdir -p "${logfile}"
 touch "${logfile}"
