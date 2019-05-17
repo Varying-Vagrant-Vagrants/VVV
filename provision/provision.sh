@@ -17,7 +17,8 @@ logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-main.log"
 mkdir -p "${logfolder}"
 touch "${logfile}"
-exec &> >(tee -a "${logfile}" >&2 )
+exec > >(tee -a "${logfile}" )
+exec 2> >(tee -a "${logfile}" >&2 )
 
 codename=$(lsb_release --codename | cut -f2)
 if [[ $codename == "trusty" ]]; then
