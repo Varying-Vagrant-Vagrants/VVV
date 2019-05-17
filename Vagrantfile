@@ -508,9 +508,12 @@ Vagrant.configure("2") do |config|
 # cleanup
 rm -rf /vagrant/* 
 mkdir -p /vagrant
+touch /vagrant/provisioned_at
+echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
 cp -f /home/vagrant/vvv-custom.yml /vagrant
+
 # symlink the certificates folder for older site templates compat
 ln -s /srv/certificates /vagrant/certificates
 SCRIPT
@@ -574,6 +577,7 @@ SCRIPT
   config.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: [ "dmode=777", "fmode=666" ]
   config.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: [ "dmode=777", "fmode=666" ]
   config.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: [ "dmode=777", "fmode=666" ]
+  config.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: [ "dmode=777", "fmode=666" ]
 
   # /srv/www/
   #

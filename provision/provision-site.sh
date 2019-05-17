@@ -10,6 +10,14 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR}
 VVV_SITE_NAME=${SITE}
 
+date_time=`cat /vagrant/provisioned_at`
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-site-${SITE}.log"
+mkdir -p "${logfolder}"
+touch "${logfile}"
+exec > >(tee -a "${logfile}" )
+exec 2> >(tee -a "${logfile}" >&2 )
+
 VVV_CONFIG=/vagrant/vvv-config.yml
 if [[ -f /vagrant/vvv-custom.yml ]]; then
 	VVV_CONFIG=/vagrant/vvv-custom.yml

@@ -5,6 +5,14 @@ REPO=$2
 BRANCH=${3:-master}
 DIR="/srv/provision/utilities/${NAME}"
 
+date_time=`cat /vagrant/provisioned_at`
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-utility-source-${NAME}.log"
+mkdir -p "${logfolder}"
+touch "${logfile}"
+exec > >(tee -a "${logfile}" )
+exec 2> >(tee -a "${logfile}" >&2 )
+
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
   if [[ ! -d ${DIR}/.git ]]; then
