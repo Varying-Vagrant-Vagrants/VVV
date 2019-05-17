@@ -508,9 +508,12 @@ Vagrant.configure("2") do |config|
 # cleanup
 rm -rf /vagrant/* 
 mkdir -p /vagrant
+touch /vagrant/provisioned_at
+date "+%Y%m%d-%H%M%S" > /vagrant/provisioned_at
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
 cp -f /home/vagrant/vvv-custom.yml /vagrant
+
 # symlink the certificates folder for older site templates compat
 ln -s /srv/certificates /vagrant/certificates
 SCRIPT
