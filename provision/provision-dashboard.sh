@@ -5,8 +5,9 @@ BRANCH=${2:-master}
 DIR="/srv/www/default/dashboard"
 
 date_time=`cat /vagrant/provisioned_at`
-logfile="/var/log/provisioners/${date_time}/provisioner-dashboard.log"
-mkdir -p "${logfile}"
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-dashboard.log"
+mkdir -p "${logfolder}"
 touch "${logfile}"
 exec &> >(tee -a "${logfile}" >&2 )
 

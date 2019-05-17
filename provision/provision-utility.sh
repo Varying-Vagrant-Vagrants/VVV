@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 date_time=`cat /vagrant/provisioned_at`
-logfile="/var/log/provisioners/${date_time}/provisioner-utility-${1}-${2}.log"
-mkdir -p "${logfile}"
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-utility-${1}-${2}.log"
+mkdir -p "${logfolder}"
 touch "${logfile}"
 exec &> >(tee -a "${logfile}" >&2 )
 

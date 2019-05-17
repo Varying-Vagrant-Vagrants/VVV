@@ -11,8 +11,9 @@ VVV_PATH_TO_SITE=${VM_DIR}
 VVV_SITE_NAME=${SITE}
 
 date_time=`cat /vagrant/provisioned_at`
-logfile="/var/log/provisioners/${date_time}/provisioner-site-${SITE}.log"
-mkdir -p "${logfile}"
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-site-${SITE}.log"
+mkdir -p "${logfolder}"
 touch "${logfile}"
 exec &> >(tee -a "${logfile}" >&2 )
 
