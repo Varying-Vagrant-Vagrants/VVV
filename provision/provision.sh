@@ -759,7 +759,7 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /srv/provision/phpcs
-  composer update --no-ansi --no-autoloader --no-progress
+  noroot composer update --no-ansi --no-autoloader --no-progress
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
   # that it can be used on the host in an editor with matching rules
