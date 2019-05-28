@@ -244,6 +244,8 @@ cleanup_terminal_splash() {
 }
 
 profile_setup() {
+  echo " * Setting ownership of files in /home/vagrant to vagrant"
+  chown -R vagrant:vagrant /home/vagrant/
   # Copy custom dotfiles and bin file for the vagrant user from local
   echo " * Copying /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
   rm -f "/home/vagrant/.bash_profile"
@@ -343,9 +345,10 @@ package_install() {
   echo postfix postfix/mailname string vvv | debconf-set-selections
 
   # Provide our custom apt sources before running `apt-get update`
-  ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
-  echo "Linked custom apt sources"
-
+  echo " * Copying custom apt sources"
+  cp -f /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
+  
+  echo " * Checking Apt Keys"
   if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
     echo "Applying NodeSource NodeJS signing key..."
