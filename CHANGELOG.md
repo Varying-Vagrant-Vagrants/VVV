@@ -4,6 +4,12 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 3.1.0 ( TBD 2019 )
+
+### Bug Fixes
+
+ - Fixed an issue with permissions in files copied to the home folder
+
 ## 3.0.0 ( 17 May 2019 )
 
 This version moves to an Ubuntu 18.04 box. It also moves the database data directory to a mounted folder. This means you can destroy and rebuild the VM without loss, but it also means **a `vagrant destroy` is necessary to update**. **Be sure to back up database tables you need beforehand**.
