@@ -618,6 +618,17 @@ SCRIPT
   config.vm.provider :hyperv do |v, override|
     override.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => []
     override.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => []
+
+    if use_db_share == true then
+      # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
+      config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: []
+    end
+
+    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
+    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: []
+    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: []
+    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: []
+    
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
         override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
