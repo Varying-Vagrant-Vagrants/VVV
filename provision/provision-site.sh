@@ -107,23 +107,27 @@ if [[ true == $SKIP_PROVISIONING ]]; then
 fi
 
 if [[ false != "${REPO}" ]]; then
-  # Clone or pull the site repository
-  if [[ ! -d ${VM_DIR}/.git ]]; then
-    echo -e "\nDownloading ${SITE}, git cloning from ${REPO}"
+  if [[ -d ${VM_DIR} ]]; then
+    if [[ -d ${VM_DIR}/.git ]]; then
+    	echo -e "\nUpdating ${SITE} in ${VM_DIR}..."
+    	cd ${VM_DIR}
+    	git reset origin/${BRANCH} --hard -q
+    	git pull origin ${BRANCH} -q
+    	git checkout ${BRANCH} -q
+    else
+      echo "Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the vvv-custom.yml entry"
+    fi
+  else
+    # Clone or pull the site repository
+    echo -e "\nDownloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
     git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR} -q
     if [ $? -eq 0 ]; then
-      echo "Site Template clone succesful"
+      echo "${SITE} Site Template clone succesful"
     else
       echo "Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}"
       echo "VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable"
       exit 1
     fi
-  else
-    echo -e "\nUpdating ${SITE}..."
-    cd ${VM_DIR}
-    git reset origin/${BRANCH} --hard -q
-    git pull origin ${BRANCH} -q
-    git checkout ${BRANCH} -q
   fi
 else
   echo "The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
