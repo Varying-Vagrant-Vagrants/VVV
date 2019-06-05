@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
  - Fixed an issue with permissions in files copied to the home folder
  - Fixed shared folder and permissions for Microsoft Hyper-V
  - Fixed all mount_options to the correct permissions for Microsoft Hyper-V
+ - Set VM Name to exactly the same as VirtualBox, using v.vmname for Hyper-V
 
 ## 3.0.0 ( 17 May 2019 )
 

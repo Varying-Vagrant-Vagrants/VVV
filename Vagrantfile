@@ -616,6 +616,8 @@ SCRIPT
   # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
   # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
+    v.vmname = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
+    
     override.vm.synced_folder "www/", "/srv/www", :owner => "vagrant", :group => "www-data", :mount_options => [ "dir_mode=0775", "file_mode=0774" ]
     override.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => []
 
