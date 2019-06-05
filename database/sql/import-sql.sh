@@ -44,9 +44,9 @@ then
 	do
 	pre_dot=${file%%.sql}
 
-	printf " * Creating the ${pre_dot} database if it doesn't already exist, and granting the wp user access"
-	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS ${pre_dot}"
-	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${pre_dot}.* TO wp@localhost IDENTIFIED BY 'wp';"
+	printf " * Creating the ${pre_dot} table if it doesn't already exist, and granting the wp user access"
+	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`$pre_dot\`"
+	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`$pre_dot\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
 	mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
 	db_exist=`mysql -u root -proot --skip-column-names -e "$mysql_cmd"`
