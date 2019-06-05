@@ -548,7 +548,7 @@ SCRIPT
     end
     # Neither does the HyperV provider
     config.vm.provider :hyperv do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, :mount_options => []
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, :mount_options => [ "dir_mode=0775", "file_mode=0664" ]
     end
   end
 
@@ -621,13 +621,13 @@ SCRIPT
 
     if use_db_share == true then
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: []
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dir_mode=0775", "file_mode=0664" ]
     end
 
-    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
-    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: []
-    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: []
-    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: []
+    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
+    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
+    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
+    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
     
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
