@@ -291,9 +291,9 @@ if show_logo then
     end
   end
 
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
-      platform = platform + 'contributor_day_box '
+  if defined? vvv_config['vm_config']['box'] then
+    if vvv_config['vm_config']['box'] == true then
+      platform = platform + 'box_override:' + vvv_config['vm_config']['box'] +' '
     end
   end
 
@@ -443,6 +443,10 @@ Vagrant.configure("2") do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
     override.vm.box = "bento/ubuntu-18.04"
+  end
+
+  if defined? vvv_config['vm_config']['box'] then
+    config.vm.box  = vvv_config['vm_config']['box']
   end
 
   config.vm.hostname = "vvv"
