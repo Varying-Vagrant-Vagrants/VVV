@@ -516,10 +516,13 @@ cp -f /home/vagrant/vvv-custom.yml /vagrant
 
 # symlink the certificates folder for older site templates compat
 ln -s /srv/certificates /vagrant/certificates
+sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 SCRIPT
-  config.vm.provision "shell",
-    inline: $script
 
+  config.vm.provision "initial-setup", type: "shell" do |s|
+    s.privileged = false
+    s.inline = $script
+  end
   # /srv/database/
   #
   # If a database directory exists in the same directory as your Vagrantfile,
@@ -590,11 +593,6 @@ SCRIPT
     if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
       config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
     end
-  end
-
-  config.vm.provision "fix-no-tty", type: "shell" do |s|
-    s.privileged = false
-    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
   end
 
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
