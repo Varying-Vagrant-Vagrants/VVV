@@ -292,8 +292,9 @@ if show_logo then
   end
 
   if defined? vvv_config['vm_config']['box'] then
-    if vvv_config['vm_config']['box'] == true then
-      platform = platform + 'box_override:' + vvv_config['vm_config']['box'] +' '
+    if vvv_config['vm_config']['box'] != nil then
+      puts "Custom Box: Box overriden via VVV config, this won't take effect until a destroy + reprovision happens"
+      platform = platform + 'box_override:' + vvv_config['vm_config']['box'] + ' '
     end
   end
 
@@ -446,7 +447,9 @@ Vagrant.configure("2") do |config|
   end
 
   if defined? vvv_config['vm_config']['box'] then
-    config.vm.box  = vvv_config['vm_config']['box']
+    if vvv_config['vm_config']['box'] != nil then
+      config.vm.box  = vvv_config['vm_config']['box']
+    end
   end
 
   config.vm.hostname = "vvv"
