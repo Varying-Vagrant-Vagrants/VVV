@@ -6,6 +6,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.1.0 ( TBD 2019 )
 
+### Enhancements
+
+ - The vagrant box can now be overriden using the `box` parameter in `vvv-custom.yml` under the `vm_config` section. This requires a `vagrant destroy` followed by a `vagrant up --provision` to recreate the VM using the new box
+
 ### Bug Fixes
 
  - Fixed an issue with permissions in files copied to the home folder
