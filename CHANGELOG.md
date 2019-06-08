@@ -9,6 +9,12 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
  - Fixed an issue with permissions in files copied to the home folder
+ - Fixes to log file paths for XDebug and PHP
+ - Fixes files and folders in the home folder being owned by root instead of vagrant
+ - Fixes support for database names containing hyphens in the import/restore scripts
+ - Fixes the site provisioner attempting to clone site templates into existing sites when a site template is added to a site that didn't have one before, but has already provisioned ( it will note that this happened but won't clone the template )
+ - Removed some references to Go
+ - Fixed symlink issues with apt source files by copying instead
 
 ## 3.0.0 ( 17 May 2019 )
 
