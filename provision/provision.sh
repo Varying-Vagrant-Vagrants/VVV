@@ -378,7 +378,7 @@ package_install() {
   fi
 
   if [[ ! $( echo $keys | grep 'MariaDB') ]]; then
-    # Apply the MariaDB signing key
+    # Apply the MariaDB signing keyg
     echo "Applying the MariaDB signing key..."
     apt-key add /srv/config/apt-keys/mariadb.key
   fi
@@ -387,6 +387,10 @@ package_install() {
     # Apply the PackageCloud signing key which signs git lfs
     echo "Applying the PackageCloud Git-LFS signing key..."
     apt-key add /srv/config/apt-keys/git-lfs.key
+  fi
+  if [[ ! $( echo $keys | grep 'MongoDB 4.0') ]]; then
+    echo "Applying the MongoDB 4.0 signing key..."
+    apt-key add "${DIR}/mongo-server-4.0.asc"
   fi
 
   # Update all of the package references before installing anything
