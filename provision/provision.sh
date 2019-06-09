@@ -349,7 +349,8 @@ package_install() {
   cp -f /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
   
   echo " * Checking Apt Keys"
-  if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
+  keys=$( apt-key list )
+  if [[ ! $( echo $keys | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
     echo "Applying NodeSource NodeJS signing key..."
     apt-key add /srv/config/apt-keys/nodesource.gpg.key
@@ -358,31 +359,31 @@ package_install() {
   # Before running `apt-get update`, we should add the public keys for
   # the packages that we are installing from non standard sources via
   # our appended apt source.list
-  if [[ ! $( apt-key list | grep 'nginx') ]]; then
+  if [[ ! $( echo $keys | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
     apt-key add /srv/config/apt-keys/nginx_signing.key
   fi
 
-  if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
+  if [[ ! $( echo $keys | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo "Applying the Ondřej PHP signing key..."
     apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( apt-key list | grep 'Varying Vagrant Vagrants') ]]; then
+  if [[ ! $( echo $keys | grep 'Varying Vagrant Vagrants') ]]; then
     # Apply the VVV signing key
     echo "Applying the Varying Vagrant Vagrants mirror signing key..."
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( apt-key list | grep 'MariaDB') ]]; then
+  if [[ ! $( echo $keys | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing key
     echo "Applying the MariaDB signing key..."
     apt-key add /srv/config/apt-keys/mariadb.key
   fi
 
-  if [[ ! $( apt-key list | grep 'git-lfs') ]]; then
+  if [[ ! $( echo $keys | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
     echo "Applying the PackageCloud Git-LFS signing key..."
     apt-key add /srv/config/apt-keys/git-lfs.key
@@ -395,6 +396,7 @@ package_install() {
   # Install required packages
   echo "Installing apt-get packages..."
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+    echo "Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean
     return 1
   fi
@@ -404,6 +406,7 @@ package_install() {
   apt-get autoremove -y
 
   # Clean up apt caches
+  echo "Cleaning apt caches..."
   apt-get clean
 
   return 0
