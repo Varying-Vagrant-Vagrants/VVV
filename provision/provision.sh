@@ -197,12 +197,14 @@ git_ppa_check() {
   if grep -Rq "^deb.*ppa:git-core/ppa" /etc/apt/sources.list.d/*.list
   then
     # Install prerequisites.
+    echo " * Setting up Git PPA pre-requisites"
     sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
     # Add ppa repo.
     echo " * Adding ppa:git-core/ppa repository"
     sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
     # Update apt-get info.
     sudo apt-get update &>/dev/null
+    echo " * git-core/ppa added"
   else
     echo " * git-core/ppa already present, skipping"
   fi
