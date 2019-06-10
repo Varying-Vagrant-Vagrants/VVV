@@ -9,6 +9,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
  - The vagrant box can now be overriden using the `box` parameter in `vvv-custom.yml` under the `vm_config` section. This requires a `vagrant destroy` followed by a `vagrant up --provision` to recreate the VM using the new box
+ - The main provisioner now only fetches the apt keys once rather than on every key check
 
 ### Bug Fixes
 
