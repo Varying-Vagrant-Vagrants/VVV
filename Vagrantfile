@@ -527,7 +527,6 @@ sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 SCRIPT
 
   config.vm.provision "initial-setup", type: "shell" do |s|
-    s.privileged = false
     s.inline = $script
   end
   # /srv/database/
