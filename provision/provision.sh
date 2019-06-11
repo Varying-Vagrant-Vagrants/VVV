@@ -392,7 +392,7 @@ package_install() {
   fi
   if [[ ! $( echo $keys | grep 'MongoDB 4.0') ]]; then
     echo "Applying the MongoDB 4.0 signing key..."
-    apt-key add "${DIR}/mongo-server-4.0.asc"
+    apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
   fi
 
   # Update all of the package references before installing anything
