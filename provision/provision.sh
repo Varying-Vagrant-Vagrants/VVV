@@ -319,20 +319,20 @@ package_install() {
 
   echo -e "\n * Setting up MySQL configuration file links..."
 
-  # Preconfigure mariadb
   if grep -q 'mysql' /etc/group; then
     echo " * mysql group exists"
   else
     echo " * creating mysql group"
-    groupadd -g 115 mysql
+    groupadd -g 9001 mysql
   fi
   
-  if id 112 >/dev/null 2>&1; then
-    echo " * mysql user present"
+  if id -u mysql >/dev/null 2>&1; then
+    echo " * mysql user present and has uid $(id -u mysql)"
   else
     echo " * adding the mysql user"
-    useradd -u 112 -g mysql -G vboxsf -r mysql
+    useradd -u 9001 -g mysql -G vboxsf -r mysql
   fi
+
   mkdir -p "/etc/mysql/conf.d"
   echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
   cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
