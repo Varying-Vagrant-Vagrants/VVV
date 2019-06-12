@@ -548,17 +548,17 @@ SCRIPT
   end
   if use_db_share == true then
     # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-    config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
+    config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, mount_options: [ "dmode=775", "fmode=664" ]
 
     # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
     # those are specific to Virtualbox. The folder is therefore overridden with one that
     # uses corresponding Parallels mount options.
     config.vm.provider :parallels do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, :mount_options => []
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => []
     end
     # Neither does the HyperV provider
     config.vm.provider :hyperv do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, :mount_options => []
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => []
     end
   end
 
