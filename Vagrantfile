@@ -291,9 +291,10 @@ if show_logo then
     end
   end
 
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
-      platform = platform + 'contributor_day_box '
+  if defined? vvv_config['vm_config']['box'] then
+    if vvv_config['vm_config']['box'] != nil then
+      puts "Custom Box: Box overriden via VVV config, this won't take effect until a destroy + reprovision happens"
+      platform = platform + 'box_override:' + vvv_config['vm_config']['box'] + ' '
     end
   end
 
@@ -445,6 +446,12 @@ Vagrant.configure("2") do |config|
     override.vm.box = "bento/ubuntu-18.04"
   end
 
+  if defined? vvv_config['vm_config']['box'] then
+    if vvv_config['vm_config']['box'] != nil then
+      config.vm.box  = vvv_config['vm_config']['box']
+    end
+  end
+
   config.vm.hostname = "vvv"
 
   # Private Network (default)
@@ -516,10 +523,12 @@ cp -f /home/vagrant/vvv-custom.yml /vagrant
 
 # symlink the certificates folder for older site templates compat
 ln -s /srv/certificates /vagrant/certificates
+sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 SCRIPT
-  config.vm.provision "shell",
-    inline: $script
 
+  config.vm.provision "initial-setup", type: "shell" do |s|
+    s.inline = $script
+  end
   # /srv/database/
   #
   # If a database directory exists in the same directory as your Vagrantfile,
@@ -538,17 +547,17 @@ SCRIPT
   end
   if use_db_share == true then
     # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-    config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
+    config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, mount_options: [ "dmode=775", "fmode=664" ]
 
     # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
     # those are specific to Virtualbox. The folder is therefore overridden with one that
     # uses corresponding Parallels mount options.
     config.vm.provider :parallels do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, :mount_options => []
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => []
     end
     # Neither does the HyperV provider
     config.vm.provider :hyperv do |v, override|
-      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, :mount_options => [ "dir_mode=0775", "file_mode=0664" ]
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => [ "dir_mode=0775", "file_mode=0664" ]
     end
   end
 
@@ -590,11 +599,6 @@ SCRIPT
     if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
       config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
     end
-  end
-
-  config.vm.provision "fix-no-tty", type: "shell" do |s|
-    s.privileged = false
-    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
   end
 
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as

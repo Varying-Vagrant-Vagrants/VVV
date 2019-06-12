@@ -6,12 +6,28 @@ permalink: /docs/en-US/changelog/
 
 ## 3.1.0 ( TBD 2019 )
 
+This is primarily a reliability update. Note that updating to v3.1 requires a `vagrant destroy` and a `vagrant up --provision`. If you've turned off shared database folders, backup beforehand.
+
+### Enhancements
+
+ - The vagrant box can now be overriden using the `box` parameter in `vvv-custom.yml` under the `vm_config` section. This requires a `vagrant destroy` followed by a `vagrant up --provision` to recreate the VM using the new box
+ - The main provisioner now only fetches the apt keys once rather than on every key check
+ - The TTY fix shell provisioner and the `/vagrant` setup shell provisioner were merged for a minor reduction in provisioning time.
+
 ### Bug Fixes
 
+ - Changed to the `ubuntu/bionic64` box to avoid issues with kernel page cache corruption until they can be identified, these were causing issues when updating a WP installation
+ - Fixes to mysql user and group creation to improve shared folder reliability
  - Fixed an issue with permissions in files copied to the home folder
  - Fixed shared folder and permissions for Microsoft Hyper-V
  - Fixed all mount_options to the correct permissions for Microsoft Hyper-V
  - Set VM Name to exactly the same as VirtualBox, using v.vmname for Hyper-V
+ - Fixes to log file paths for XDebug and PHP
+ - Fixes files and folders in the home folder being owned by root instead of vagrant
+ - Fixes support for database names containing hyphens in the import/restore scripts
+ - Fixes the site provisioner attempting to clone site templates into existing sites when a site template is added to a site that didn't have one before, but has already provisioned ( it will note that this happened but won't clone the template )
+ - Removed some references to Go
+ - Fixed symlink issues with apt source files by copying instead
 
 ## 3.0.0 ( 17 May 2019 )
 
