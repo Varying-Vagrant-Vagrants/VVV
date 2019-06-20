@@ -28,6 +28,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
  - Fixed symlink issues with apt source files by copying instead
  - `xdebug_on` and `xdebug_off` now toggle Tideways so that XDebug and Tideways are never running at the same time
  - Switched to Node v10 by default to fix compatibility issues with the WP Core build scripts
+ - Runs the npm commands in the main provisioner under the vagrant user
 
 ## 3.0.0 ( 17 May 2019 )
 
