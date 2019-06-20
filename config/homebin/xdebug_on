@@ -1,5 +1,6 @@
 #!/bin/bash
 sudo phpdismod tideways_xhprof
+sudo phpdismod xhgui
 sudo phpenmod xdebug
 
 find /etc/init.d/ -name "php*-fpm" -exec bash -c 'echo "Restarting $(basename "$0" ) " && sudo service "$(basename "$0")" restart' {} \;
