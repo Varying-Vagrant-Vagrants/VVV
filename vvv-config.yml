@@ -64,7 +64,8 @@ sites:
     repo: https://github.com/WordPress/meta-environment.git
 
 
-# Utilities are system level items rather than sites, that install tools or packages
+# Utilities https://varyingvagrantvagrants.org/docs/en-US/utilities/ 
+# are system level items rather than sites, that install tools or packages
 # the core utilities install tools such as phpmyadmin
 utilities:
   core: # The core VVV utility
@@ -74,7 +75,7 @@ utilities:
     - webgrind # PHP Debugging
     - tls-ca # SSL/TLS certificates
     - mongodb # needed for Tideways/XHGui
-    - tideways # PHP profiling tool, also installs xhgui
+    - tideways # PHP profiling tool, also installs xhgui check https://varyingvagrantvagrants.org/docs/en-US/references/tideways-xhgui/
     #- php56
     #- php70
     #- php71
