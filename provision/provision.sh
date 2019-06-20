@@ -441,9 +441,9 @@ tools_install() {
   #
   # Make sure we have the latest npm version and the update checker module
   echo "Installing/updating npm..."
-  npm install -g npm
+  noroot npm install -g npm
   echo "Installing/updating npm-check-updates..."
-  npm install -g npm-check-updates
+  noroot npm install -g npm-check-updates
 
   # ack-grep
   #
@@ -492,17 +492,17 @@ tools_install() {
 
   function install_grunt() {
     echo "Installing Grunt CLI"
-    npm install -g grunt grunt-cli
-    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm install -g grunt-cssjanus
-    npm install -g grunt-rtlcss
+    noroot npm install -g grunt grunt-cli --no-optional
+    hack_avoid_gyp_errors & noroot npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
+    noroot npm install -g grunt-cssjanus --no-optional
+    noroot npm install -g grunt-rtlcss --no-optional
   }
   function update_grunt() {
     echo "Updating Grunt CLI"
-    npm update -g grunt grunt-cli
-    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm update -g grunt-cssjanus
-    npm update -g grunt-rtlcss
+    noroot npm update -g grunt grunt-cli --no-optional
+    hack_avoid_gyp_errors & noroot npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+    noroot npm update -g grunt-cssjanus --no-optional
+    noroot npm update -g grunt-rtlcss --no-optional
   }
   # Grunt
   #
