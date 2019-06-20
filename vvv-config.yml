@@ -107,6 +107,6 @@ general:
   db_backup: true
   # Import the databases if they're missing from backups
   db_restore: true
-  # set to true to 
+  # set to true to use a synced shared folder for MariaDB database storage 
   db_share_type: false
 
