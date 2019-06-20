@@ -19,8 +19,8 @@ deb [arch=amd64,i386] http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu bionic 
 deb-src http://mirrors.coreix.net/mariadb/repo/10.3/ubuntu bionic main
 
 # Provides Node.js
-deb https://deb.nodesource.com/node_11.x bionic main
-deb-src https://deb.nodesource.com/node_11.x bionic main
+deb https://deb.nodesource.com/node_10.x bionic main
+deb-src https://deb.nodesource.com/node_10.x bionic main
 
 # git lfs (large file storage plugin for git)
 deb https://packagecloud.io/github/git-lfs/ubuntu/ bionic main
