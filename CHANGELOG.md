@@ -26,6 +26,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
  - Fixes the site provisioner attempting to clone site templates into existing sites when a site template is added to a site that didn't have one before, but has already provisioned ( it will note that this happened but won't clone the template )
  - Removed some references to Go
  - Fixed symlink issues with apt source files by copying instead
+ - Specify `keep_colors` on vagrant provisioners to prevent composer from outputting valid messages in the red error colours, unnecessarily alarming users
 
 ## 3.0.0 ( 17 May 2019 )
 
