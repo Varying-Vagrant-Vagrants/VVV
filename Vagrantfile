@@ -661,7 +661,7 @@ SCRIPT
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
   if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
-    config.vm.provision "pre", type: "shell", path: File.join( "provision", "provision-pre.sh" )
+    config.vm.provision "pre", type: "shell", keep_color: true, path: File.join( "provision", "provision-pre.sh" )
   end
 
   # provision.sh or provision-custom.sh
@@ -671,14 +671,15 @@ SCRIPT
   # created, that is run as a replacement. This is an opportunity to replace the entirety
   # of the provisioning provided by default.
   if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
-    config.vm.provision "custom", type: "shell", path: File.join( "provision", "provision-custom.sh" )
+    config.vm.provision "custom", type: "shell", keep_color: true, path: File.join( "provision", "provision-custom.sh" )
   else
-    config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
+    config.vm.provision "default", type: "shell", keep_color: true, path: File.join( "provision", "provision.sh" )
   end
 
   # Provision the dashboard that appears when you visit vvv.test
   config.vm.provision "dashboard",
       type: "shell",
+      keep_color: true, 
       path: File.join( "provision", "provision-dashboard.sh" ),
       args: [
         vvv_config['dashboard']['repo'],
@@ -688,6 +689,7 @@ SCRIPT
   vvv_config['utility-sources'].each do |name, args|
     config.vm.provision "utility-source-#{name}",
       type: "shell",
+      keep_color: true, 
       path: File.join( "provision", "provision-utility-source.sh" ),
       args: [
           name,
@@ -708,6 +710,7 @@ SCRIPT
         end
         config.vm.provision "utility-#{name}-#{utility}",
           type: "shell",
+          keep_color: true, 
           path: File.join( "provision", "provision-utility.sh" ),
           args: [
               name,
@@ -720,6 +723,7 @@ SCRIPT
     if args['skip_provisioning'] === false then
       config.vm.provision "site-#{site}",
         type: "shell",
+        keep_color: true, 
         path: File.join( "provision", "provision-site.sh" ),
         args: [
           site,
@@ -737,7 +741,7 @@ SCRIPT
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
   if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
-    config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
+    config.vm.provision "post", type: "shell", keep_color: true, path: File.join( "provision", "provision-post.sh" )
   end
 
   # Local Machine Hosts
