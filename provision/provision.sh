@@ -492,17 +492,17 @@ tools_install() {
 
   function install_grunt() {
     echo "Installing Grunt CLI"
-    noroot npm install -g grunt grunt-cli
-    hack_avoid_gyp_errors & noroot npm install -g grunt-sass; touch /tmp/stop_gyp_hack
-    noroot npm install -g grunt-cssjanus
-    noroot npm install -g grunt-rtlcss
+    noroot npm install -g grunt grunt-cli --no-optional
+    hack_avoid_gyp_errors & noroot npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
+    noroot npm install -g grunt-cssjanus --no-optional
+    noroot npm install -g grunt-rtlcss --no-optional
   }
   function update_grunt() {
     echo "Updating Grunt CLI"
-    noroot npm update -g grunt grunt-cli
+    noroot npm update -g grunt grunt-cli --no-optional
     hack_avoid_gyp_errors & noroot npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    noroot npm update -g grunt-cssjanus
-    noroot npm update -g grunt-rtlcss
+    noroot npm update -g grunt-cssjanus --no-optional
+    noroot npm update -g grunt-rtlcss --no-optional
   }
   # Grunt
   #
