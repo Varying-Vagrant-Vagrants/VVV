@@ -1,4 +1,6 @@
 #!/bin/bash
 sudo phpdismod xdebug
+sudo phpenmod tideways_xhprof
+sudo phpenmod xhgui
 
 find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
