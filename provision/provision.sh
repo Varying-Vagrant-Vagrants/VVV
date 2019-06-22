@@ -419,9 +419,7 @@ tools_install() {
 
   # npm
   #
-  # Make sure we have the latest npm version and the update checker module
-  echo "Installing/updating npm..."
-  npm install -g npm
+  # Make sure we have the latest update checker module
   echo "Installing/updating npm-check-updates..."
   npm install -g npm-check-updates
 
