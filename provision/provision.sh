@@ -282,7 +282,11 @@ profile_setup() {
   fi
 
   echo " * Copying /srv/config/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
- cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
+  cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
+  echo " * Copying /srv/config/sshd_config to /etc/ssh/sshd_config"
+  cp -f /srv/config/sshd_config /etc/ssh/sshd_config
+  echo " * Reloading SSH Daemon"
+  systemctl reload ssh
 }
 
 not_installed() {
