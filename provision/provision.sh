@@ -446,9 +446,9 @@ tools_install() {
   fi
   
   if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then
-    echo "Detect NodeJS 11, downograding to version 10."
-    apt remove nodejs -y 
-    apt install nodejs -y
+    echo "Downgrading to Node v10."
+    apt remove nodejs -y
+    apt install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken nodejs
   fi
   
   # npm
