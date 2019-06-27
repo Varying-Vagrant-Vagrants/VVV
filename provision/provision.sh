@@ -444,6 +444,13 @@ tools_install() {
     rm -rf ~/.nvm ~/.npm ~/.bower /srv/config/nvm
     echo "NVM folders removed"
   fi
+  
+  if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then
+    echo "Detect NodeJS 11, downograding to version 10."
+    apt remove nodejs -y 
+    apt install nodejs -y
+  fi
+  
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
@@ -505,6 +512,7 @@ tools_install() {
     noroot npm install -g grunt-cssjanus --no-optional
     noroot npm install -g grunt-rtlcss --no-optional
   }
+  
   function update_grunt() {
     echo "Updating Grunt CLI"
     noroot npm update -g grunt grunt-cli --no-optional
