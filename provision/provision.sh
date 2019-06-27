@@ -438,7 +438,7 @@ tools_install() {
   sh /srv/config/homebin/xdebug_off
 
   if [[ -f ~/.nvm ]]; then
-    rm -rf ~/.nvm ~/.npm ~/.bower
+    rm -rf ~/.nvm ~/.npm ~/.bower /srv/config/nvm
   fi
   # npm
   #
