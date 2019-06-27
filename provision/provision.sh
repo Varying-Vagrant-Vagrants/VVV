@@ -437,6 +437,9 @@ tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /srv/config/homebin/xdebug_off
 
+  if [[ -f ~/.nvm ]]; then
+    rm -rf ~/.nvm ~/.npm ~/.bower
+  fi
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
