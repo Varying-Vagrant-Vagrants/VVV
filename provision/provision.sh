@@ -282,7 +282,9 @@ profile_setup() {
   fi
 
   echo " * Copying /srv/config/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
- cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
+  cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
+  echo " * Enabling SSH Password Authentication for database applications"
+  echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 }
 
 not_installed() {
