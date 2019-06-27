@@ -14,6 +14,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
  - The main provisioner now only fetches the apt keys once rather than on every key check
  - The TTY fix shell provisioner and the `/vagrant` setup shell provisioner were merged for a minor reduction in provisioning time.
  - Allow `db_backup` script to be run manually regardless if automatic DB backups are disabled
+ - `vvv`, `vvv.dev`, and `vvv.local` now redirect to `vvv.test`
 
 ### Bug Fixes
 
@@ -30,7 +31,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
  - `xdebug_on` and `xdebug_off` now toggle Tideways so that XDebug and Tideways are never running at the same time
  - Switched to Node v10 by default to fix compatibility issues with the WP Core build scripts
  - Runs the npm commands in the main provisioner under the vagrant user
- - Fixed Database SSH access from the host by enabling password authentication in `/etc/ssh/sshd_config`
+ - Added code to remove NVM
 
 ## 3.0.0 ( 17 May 2019 )
 
