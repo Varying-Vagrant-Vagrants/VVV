@@ -437,13 +437,20 @@ tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /srv/config/homebin/xdebug_off
 
+  echo "Checking for NVM"
+  if [[ -f ~/.nvm ]]; then
+    echo ".nvm folder found, switching to system node, and removing NVM folders"
+    nvm use system
+    rm -rf ~/.nvm ~/.npm ~/.bower /srv/config/nvm
+    echo "NVM folders removed"
+  fi
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
   echo "Installing/updating npm..."
-  noroot npm install -g npm
+  npm install -g npm
   echo "Installing/updating npm-check-updates..."
-  noroot npm install -g npm-check-updates
+  npm install -g npm-check-updates
 
   # ack-grep
   #
@@ -456,15 +463,15 @@ tools_install() {
     curl -s https://beyondgrep.com/ack-2.16-single-file > "/usr/bin/ack" && chmod +x "/usr/bin/ack"
   fi
 
-  # Make sure the composer cache is not owned by root
+  echo "Making sure the composer cache is not owned by root"
   mkdir -p /usr/local/src/composer
   mkdir -p /usr/local/src/composer/cache
   chown -R vagrant:www-data /usr/local/src/composer
   chown -R vagrant:www-data /usr/local/bin
 
   # COMPOSER
-  #
-  # Install Composer if it is not yet available.
+
+  echo "Checking for Composer"
   exists_composer="$(which composer)"
   if [[ "/usr/local/bin/composer" != "${exists_composer}" ]]; then
     echo "Installing Composer..."
@@ -474,6 +481,7 @@ tools_install() {
   fi
 
   if [[ -f /srv/provision/github.token ]]; then
+    echo "A personal GitHub token was found, configuring composer"
     ghtoken=`cat /srv/provision/github.token`
     noroot composer config --global github-oauth.github.com $ghtoken
     echo "Your personal GitHub token is set for Composer."
@@ -483,9 +491,9 @@ tools_install() {
   # the master branch on its GitHub repository.
   if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --no-progress --no-interaction
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:6.* phpunit/php-invoker:1.1.* mockery/mockery:0.9.* d11wtq/boris:v1.0.8
-    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
   fi
 
