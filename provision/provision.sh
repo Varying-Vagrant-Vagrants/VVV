@@ -397,7 +397,7 @@ package_install() {
     apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
   fi
 
-  # Update all of the package references before installing anythin
+  # Update all of the package references before installing anything
   echo "Running apt-get update..."
   apt-get -y update
 
@@ -448,9 +448,9 @@ tools_install() {
   #
   # Make sure we have the latest npm version and the update checker module
   echo "Installing/updating npm..."
-  noroot npm install -g npm
+  npm install -g npm
   echo "Installing/updating npm-check-updates..."
-  noroot npm install -g npm-check-updates
+  npm install -g npm-check-updates
 
   # ack-grep
   #
