@@ -524,6 +524,9 @@ cp -f /home/vagrant/vvv-custom.yml /vagrant
 # symlink the certificates folder for older site templates compat
 ln -s /srv/certificates /vagrant/certificates
 sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
+
+# change ownership for /vagrant folder
+sudo chown -R vagrant:vagrant /vagrant
 SCRIPT
 
   config.vm.provision "initial-setup", type: "shell" do |s|
