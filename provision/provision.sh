@@ -459,6 +459,7 @@ tools_install() {
   #
   # Make sure we have the latest npm version and the update checker module
   echo "Installing/updating npm..."
+  chown -R vagrant:vagrant /usr/lib/node_modules
   npm install -g npm
   echo "Installing/updating npm-check-updates..."
   npm install -g npm-check-updates
