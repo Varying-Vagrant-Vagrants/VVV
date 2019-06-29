@@ -35,6 +35,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
  - Node v11 is now auto-downgraded to Node v10
  - Fixed Database SSH access from the host by enabling password authentication in `/etc/ssh/sshd_config`
  - Added code to remove NVM
+ - Change Permission folder `/vagrant` from root to vagrant
 
 ## 3.0.0 ( 17 May 2019 )
 
