@@ -117,7 +117,7 @@ if show_logo then
     splashfirst = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}#{creset}
 
   HEREDOC
   puts splashfirst
