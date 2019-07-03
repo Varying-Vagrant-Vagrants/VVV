@@ -519,10 +519,10 @@ tools_install() {
   
   function update_grunt() {
     echo "Updating Grunt CLI"
-    noroot npm update -g grunt grunt-cli --no-optional
-    hack_avoid_gyp_errors & noroot npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    noroot npm update -g grunt-cssjanus --no-optional
-    noroot npm update -g grunt-rtlcss --no-optional
+    npm update -g grunt grunt-cli --no-optional
+    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm update -g grunt-cssjanus --no-optional
+    npm update -g grunt-rtlcss --no-optional
   }
   # Grunt
   #
@@ -545,13 +545,12 @@ tools_install() {
     done
     rm /tmp/stop_gyp_hack
   }
-  exists_grunt="$(which grunt)"
-  if [[ "/usr/bin/grunt" != "${exists_grunt}" ]]; then
+  chown -R vagrant:vagrant /usr/lib/node_modules/
+  if command -v grunt >/dev/null 2>&1; then
     install_grunt
   else
     update_grunt
   fi
-  chown -R vagrant:vagrant /usr/lib/node_modules/
 
   # Graphviz
   #
