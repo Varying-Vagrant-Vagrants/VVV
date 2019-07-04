@@ -491,7 +491,10 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  if [[ -f /srv/provision/github.token ]]; then
+  github_token=`cat ${VVV_CONFIG} | shyaml get-value general.github_token 2> /dev/null`
+  if [[ ! -z $github_token ]]; then
+    rm /srv/provision/github.token
+    echo $github_token >> /srv/provision/github.token
     echo "A personal GitHub token was found, configuring composer"
     ghtoken=`cat /srv/provision/github.token`
     noroot composer config --global github-oauth.github.com $ghtoken
