@@ -16,6 +16,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
  - Allow `db_backup` script to be run manually regardless if automatic DB backups are disabled
  - `vvv`, `vvv.dev`, and `vvv.local` now redirect to `vvv.test`
  - Added a premade Sequel Pro config file under the `database` folder
+ - Set GitHub token from `vvv-config.yml` for Composer
 
 ### Bug Fixes
 
