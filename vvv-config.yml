@@ -110,4 +110,6 @@ general:
   db_restore: true
   # set to true to use a synced shared folder for MariaDB database storage 
   db_share_type: false
+  # GitHub token to use from composer
+  #github_token: xxxxxx
 
