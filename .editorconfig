@@ -19,4 +19,4 @@ indent_size = 4
 # Use WordPress-style tabs for PHP files
 [*.php]
 indent_style = tab
-indent_size = 4 
+indent_size = 4
