@@ -368,8 +368,8 @@ Vagrant.configure("2") do |config|
     v.cpus = vvv_config['vm_config']['cores']
   end
 
-  # Configuration options for the VMware Fusion provider.
-  config.vm.provider :vmware_fusion do |v|
+  # Configuration options for the VMware Desktop provider.
+  config.vm.provider :vmware_desktop do |v|
     v.vmx["memsize"] = vvv_config['vm_config']['memory']
     v.vmx["numvcpus"] = vvv_config['vm_config']['cores']
   end
@@ -431,14 +431,10 @@ Vagrant.configure("2") do |config|
     override.vm.box = "parallels/ubuntu-18.04"
   end
 
-  # The VMware Fusion Provider uses a different naming scheme.
-  config.vm.provider :vmware_fusion do |v, override|
-    override.vm.box = "puphpet/ubuntu1804-x64"
-  end
-
-  # VMWare Workstation can use the same package as Fusion
-  config.vm.provider :vmware_workstation do |v, override|
-    override.vm.box = "puphpet/ubuntu1804-x64"
+  # The VMware Desktop Provider uses a different naming scheme.
+  config.vm.provider :vmware_desktop do |v, override|
+    override.vm.box = "bento/ubuntu-18.04"
+    v.gui = false
   end
 
   # Hyper-V uses a different base box.
