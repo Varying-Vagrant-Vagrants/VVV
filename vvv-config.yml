@@ -27,11 +27,11 @@ sites:
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
       - one.wordpress.test
-    custom
+    custom:
       constants:
-				WP_DEBUG: true
-				WP_DEBUG_LOG: true
-				WP_DISABLE_FATAL_ERROR_HANDLER: true # To disable in WP 5.2 the FER mode
+        WP_DEBUG: true
+        WP_DEBUG_LOG: true
+        WP_DISABLE_FATAL_ERROR_HANDLER: true # To disable in WP 5.2 the FER mode
 
   wordpress-two:
     skip_provisioning: false
