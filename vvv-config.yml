@@ -28,7 +28,7 @@ sites:
     hosts:
       - one.wordpress.test
     custom:
-      constants:
+      wpconfig_constants:
         WP_DEBUG: true
         WP_DEBUG_LOG: true
         WP_DISABLE_FATAL_ERROR_HANDLER: true # To disable in WP 5.2 the FER mode
