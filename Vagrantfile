@@ -641,6 +641,24 @@ SCRIPT
     end
   end
 
+  # The VMware Provider does not understand "dmode"/"fmode" in the "mount_options" as
+  # those are specific to Virtualbox. The folder is therefore overridden with one that
+  # uses corresponding VMware mount options.
+  config.vm.provider :vmware_desktop do |v, override|
+    override.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", :mount_options => []
+
+    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
+    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: []
+    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: []
+    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: []
+
+    vvv_config['sites'].each do |site, args|
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => []
+      end
+    end
+  end
+
   # Customfile - POSSIBLY UNSTABLE
   #
   # Use this to insert your own (and possibly rewrite) Vagrant config lines. Helpful
