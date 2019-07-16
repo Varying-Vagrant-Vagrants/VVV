@@ -37,9 +37,10 @@ sites:
     skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
-    # locale: it_IT
-    delete_default_plugins: true
-    install_plugins:
+    custom:
+      # locale: it_IT
+      delete_default_plugins: true
+      install_plugins:
          - query-monitor
     hosts:
       - two.wordpress.test
