@@ -20,17 +20,28 @@
 sites:
 
   # latest version of WordPress, can be used for client work and testing
+  # Check the readme at https://github.com/Varying-Vagrant-Vagrants/custom-site-template
   wordpress-one:
     skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
       - one.wordpress.test
+    custom:
+      wpconfig_constants:
+        WP_DEBUG: true
+        WP_DEBUG_LOG: true
+        WP_DISABLE_FATAL_ERROR_HANDLER: true # To disable in WP 5.2 the FER mode
 
   wordpress-two:
     skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
+    custom:
+      # locale: it_IT
+      delete_default_plugins: true
+      install_plugins:
+         - query-monitor
     hosts:
       - two.wordpress.test
 
