@@ -11,5 +11,17 @@ if [[ -f /srv/config/homebin/vagrant_suspend_custom ]]; then
 	echo "Executing vagrant_suspend_custom"
 	/srv/config/homebin/vagrant_suspend_custom
 else
-	/srv/config/homebin/db_backup
+    # Load vvv-config.yml
+    VVV_CONFIG=/vagrant/vvv-config.yml
+    if [[ -f /vagrant/vvv-custom.yml ]]; then
+        VVV_CONFIG=/vagrant/vvv-custom.yml
+    fi
+
+    # Check if backups are turned on or off
+    run_backups=`cat ${VVV_CONFIG} | shyaml get-value general.db_backup 2> /dev/null`
+
+    if [[ $run_backups != "False" ]]
+    then
+	    /srv/config/homebin/db_backup
+    fi
 fi

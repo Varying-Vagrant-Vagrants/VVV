@@ -117,7 +117,7 @@ if show_logo then
     splashfirst = <<-HEREDOC
 \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
 #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}
+#{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}#{creset}
 
   HEREDOC
   puts splashfirst
@@ -291,9 +291,10 @@ if show_logo then
     end
   end
 
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
-      platform = platform + 'contributor_day_box '
+  if defined? vvv_config['vm_config']['box'] then
+    if vvv_config['vm_config']['box'] != nil then
+      puts "Custom Box: Box overriden via VVV config, this won't take effect until a destroy + reprovision happens"
+      platform = platform + 'box_override:' + vvv_config['vm_config']['box'] + ' '
     end
   end
 
@@ -367,8 +368,8 @@ Vagrant.configure("2") do |config|
     v.cpus = vvv_config['vm_config']['cores']
   end
 
-  # Configuration options for the VMware Fusion provider.
-  config.vm.provider :vmware_fusion do |v|
+  # Configuration options for the VMware Desktop provider.
+  config.vm.provider :vmware_desktop do |v|
     v.vmx["memsize"] = vvv_config['vm_config']['memory']
     v.vmx["numvcpus"] = vvv_config['vm_config']['cores']
   end
@@ -415,8 +416,8 @@ Vagrant.configure("2") do |config|
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized
   # box containing the Ubuntu 18.04 Bionic 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  #config.vm.box = "ubuntu/bionic64"
-  config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
+  config.vm.box = "ubuntu/bionic64"
+  #config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
 
   # If we're at a contributor day, switch the base box to the prebuilt one
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
@@ -430,19 +431,21 @@ Vagrant.configure("2") do |config|
     override.vm.box = "parallels/ubuntu-18.04"
   end
 
-  # The VMware Fusion Provider uses a different naming scheme.
-  config.vm.provider :vmware_fusion do |v, override|
-    override.vm.box = "puphpet/ubuntu1804-x64"
-  end
-
-  # VMWare Workstation can use the same package as Fusion
-  config.vm.provider :vmware_workstation do |v, override|
-    override.vm.box = "puphpet/ubuntu1804-x64"
+  # The VMware Desktop Provider uses a different naming scheme.
+  config.vm.provider :vmware_desktop do |v, override|
+    override.vm.box = "bento/ubuntu-18.04"
+    v.gui = false
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |v, override|
     override.vm.box = "bento/ubuntu-18.04"
+  end
+
+  if defined? vvv_config['vm_config']['box'] then
+    if vvv_config['vm_config']['box'] != nil then
+      config.vm.box  = vvv_config['vm_config']['box']
+    end
   end
 
   config.vm.hostname = "vvv"
@@ -516,10 +519,15 @@ cp -f /home/vagrant/vvv-custom.yml /vagrant
 
 # symlink the certificates folder for older site templates compat
 ln -s /srv/certificates /vagrant/certificates
-SCRIPT
-  config.vm.provision "shell",
-    inline: $script
+sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
+# change ownership for /vagrant folder
+sudo chown -R vagrant:vagrant /vagrant
+SCRIPT
+
+  config.vm.provision "initial-setup", type: "shell" do |s|
+    s.inline = $script
+  end
   # /srv/database/
   #
   # If a database directory exists in the same directory as your Vagrantfile,
@@ -538,18 +546,18 @@ SCRIPT
   end
   if use_db_share == true then
     # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-    config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dmode=775", "fmode=664" ]
-  end
+    config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, mount_options: [ "dmode=775", "fmode=664" ]
 
-  # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
-  # those are specific to Virtualbox. The folder is therefore overridden with one that
-  # uses corresponding Parallels mount options.
-  config.vm.provider :parallels do |v, override|
-    override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: "mysql", group: "mysql", :mount_options => []
-  end
-  # Neither does the HyperV provider
-  config.vm.provider :hyperv do |v, override|
-    override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: "mysql", group: "mysql", :mount_options => []
+    # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
+    # those are specific to Virtualbox. The folder is therefore overridden with one that
+    # uses corresponding Parallels mount options.
+    config.vm.provider :parallels do |v, override|
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => []
+    end
+    # Neither does the HyperV provider
+    config.vm.provider :hyperv do |v, override|
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => [ "dir_mode=0775", "file_mode=0664" ]
+    end
   end
 
   # /srv/config/
@@ -592,11 +600,6 @@ SCRIPT
     end
   end
 
-  config.vm.provision "fix-no-tty", type: "shell" do |s|
-    s.privileged = false
-    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
-  end
-
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
@@ -616,11 +619,42 @@ SCRIPT
   # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
   # override the www folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
-    override.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => []
+    v.vmname = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
+    
+    override.vm.synced_folder "www/", "/srv/www", :owner => "vagrant", :group => "www-data", :mount_options => [ "dir_mode=0775", "file_mode=0774" ]
     override.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => []
+
+    if use_db_share == true then
+      # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
+      override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dir_mode=0775", "file_mode=0664" ]
+    end
+
+    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
+    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
+    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
+    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
+    
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "vagrant", :group => "www-data", :mount_options => [ "dir_mode=0775", "file_mode=0774" ]
+      end
+    end
+  end
+
+  # The VMware Provider does not understand "dmode"/"fmode" in the "mount_options" as
+  # those are specific to Virtualbox. The folder is therefore overridden with one that
+  # uses corresponding VMware mount options.
+  config.vm.provider :vmware_desktop do |v, override|
+    override.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", :mount_options => []
+
+    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
+    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: []
+    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: []
+    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: []
+
+    vvv_config['sites'].each do |site, args|
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => []
       end
     end
   end
@@ -657,7 +691,7 @@ SCRIPT
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
   if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
-    config.vm.provision "pre", type: "shell", path: File.join( "provision", "provision-pre.sh" )
+    config.vm.provision "pre", type: "shell", keep_color: true, path: File.join( "provision", "provision-pre.sh" )
   end
 
   # provision.sh or provision-custom.sh
@@ -667,14 +701,15 @@ SCRIPT
   # created, that is run as a replacement. This is an opportunity to replace the entirety
   # of the provisioning provided by default.
   if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
-    config.vm.provision "custom", type: "shell", path: File.join( "provision", "provision-custom.sh" )
+    config.vm.provision "custom", type: "shell", keep_color: true, path: File.join( "provision", "provision-custom.sh" )
   else
-    config.vm.provision "default", type: "shell", path: File.join( "provision", "provision.sh" )
+    config.vm.provision "default", type: "shell", keep_color: true, path: File.join( "provision", "provision.sh" )
   end
 
   # Provision the dashboard that appears when you visit vvv.test
   config.vm.provision "dashboard",
       type: "shell",
+      keep_color: true, 
       path: File.join( "provision", "provision-dashboard.sh" ),
       args: [
         vvv_config['dashboard']['repo'],
@@ -684,6 +719,7 @@ SCRIPT
   vvv_config['utility-sources'].each do |name, args|
     config.vm.provision "utility-source-#{name}",
       type: "shell",
+      keep_color: true, 
       path: File.join( "provision", "provision-utility-source.sh" ),
       args: [
           name,
@@ -704,6 +740,7 @@ SCRIPT
         end
         config.vm.provision "utility-#{name}-#{utility}",
           type: "shell",
+          keep_color: true, 
           path: File.join( "provision", "provision-utility.sh" ),
           args: [
               name,
@@ -716,6 +753,7 @@ SCRIPT
     if args['skip_provisioning'] === false then
       config.vm.provision "site-#{site}",
         type: "shell",
+        keep_color: true, 
         path: File.join( "provision", "provision-site.sh" ),
         args: [
           site,
@@ -733,7 +771,7 @@ SCRIPT
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
   if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
-    config.vm.provision "post", type: "shell", path: File.join( "provision", "provision-post.sh" )
+    config.vm.provision "post", type: "shell", keep_color: true, path: File.join( "provision", "provision-post.sh" )
   end
 
   # Local Machine Hosts

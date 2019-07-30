@@ -4,6 +4,43 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 3.1.0 ( TBD 2019 )
+
+This is primarily a reliability update. Note that updating to v3.1 requires a `vagrant destroy` and a `vagrant up --provision`. If you've turned off shared database folders, backup beforehand.
+
+### Enhancements
+
+ - The vagrant box can now be overriden using the `box` parameter in `vvv-custom.yml` under the `vm_config` section. This requires a `vagrant destroy` followed by a `vagrant up --provision` to recreate the VM using the new box
+ - The main provisioner now only fetches the apt keys once rather than on every key check
+ - The TTY fix shell provisioner and the `/vagrant` setup shell provisioner were merged for a minor reduction in provisioning time.
+ - Allow `db_backup` script to be run manually regardless if automatic DB backups are disabled
+ - `vvv`, `vvv.dev`, and `vvv.local` now redirect to `vvv.test`
+ - Added a premade Sequel Pro config file under the `database` folder
+ - Set GitHub token from `vvv-custom.yml` for Composer
+
+### Bug Fixes
+
+ - Changed to the `ubuntu/bionic64` box to avoid issues with kernel page cache corruption until they can be identified, these were causing issues when updating a WP installation
+ - Fixes to mysql user and group creation to improve shared folder reliability
+ - Fixed an issue with permissions in files copied to the home folder
+ - Fixed shared folder and permissions for Microsoft Hyper-V
+ - Fixed all mount_options to the correct permissions for Microsoft Hyper-V
+ - Set VM Name to exactly the same as VirtualBox, using v.vmname for Hyper-V
+ - Fixes to log file paths for XDebug and PHP
+ - Fixes files and folders in the home folder being owned by root instead of vagrant
+ - Fixes support for database names containing hyphens in the import/restore scripts
+ - Fixes the site provisioner attempting to clone site templates into existing sites when a site template is added to a site that didn't have one before, but has already provisioned ( it will note that this happened but won't clone the template )
+ - Removed some references to Go
+ - Fixed symlink issues with apt source files by copying instead
+ - Specify `keep_colors` on vagrant provisioners to prevent composer from outputting valid messages in the red error colours, unnecessarily alarming users
+ - `xdebug_on` and `xdebug_off` now toggle Tideways so that XDebug and Tideways are never running at the same time
+ - Switched to Node v10 by default to fix compatibility issues with the WP Core build scripts
+ - Runs the npm commands in the main provisioner under the vagrant user
+ - Node v11 is now auto-downgraded to Node v10
+ - Fixed Database SSH access from the host by enabling password authentication in `/etc/ssh/sshd_config`
+ - Added code to remove NVM
+ - Change Permission folder `/vagrant` from root to vagrant
+
 ## 3.0.0 ( 17 May 2019 )
 
 This version moves to an Ubuntu 18.04 box. It also moves the database data directory to a mounted folder. This means you can destroy and rebuild the VM without loss, but it also means **a `vagrant destroy` is necessary to update**. **Be sure to back up database tables you need beforehand**.

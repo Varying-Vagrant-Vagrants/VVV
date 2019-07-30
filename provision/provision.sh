@@ -119,6 +119,7 @@ apt_package_install_list=(
   php-memcached
   php-ssh2
   php-xdebug
+  php-yaml
   php7.2-bcmath
   php7.2-curl
   php7.2-gd
@@ -197,12 +198,14 @@ git_ppa_check() {
   if grep -Rq "^deb.*ppa:git-core/ppa" /etc/apt/sources.list.d/*.list
   then
     # Install prerequisites.
+    echo " * Setting up Git PPA pre-requisites"
     sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
     # Add ppa repo.
     echo " * Adding ppa:git-core/ppa repository"
     sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
     # Update apt-get info.
     sudo apt-get update &>/dev/null
+    echo " * git-core/ppa added"
   else
     echo " * git-core/ppa already present, skipping"
   fi
@@ -244,34 +247,46 @@ cleanup_terminal_splash() {
 }
 
 profile_setup() {
+  echo " * Setting ownership of files in /home/vagrant to vagrant"
+  chown -R vagrant:vagrant /home/vagrant/
   # Copy custom dotfiles and bin file for the vagrant user from local
   echo " * Copying /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
-  cp "/srv/config/bash_profile" "/home/vagrant/.bash_profile"
+  rm -f "/home/vagrant/.bash_profile"
+  noroot cp -f "/srv/config/bash_profile" "/home/vagrant/.bash_profile"
 
   echo " * Copying /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
-  cp "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
+  rm -f "/home/vagrant/.bash_aliases"
+  noroot cp -f "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
 
   echo " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
-  cp "/srv/config/vimrc" "/home/vagrant/.vimrc"
+  rm -f "/home/vagrant/.vimrc"
+  noroot cp -f "/srv/config/vimrc" "/home/vagrant/.vimrc"
 
   if [[ ! -d "/home/vagrant/.subversion" ]]; then
-    mkdir -p "/home/vagrant/.subversion"
+    noroot mkdir -p "/home/vagrant/.subversion"
   fi
 
   echo " * Copying /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
-  cp "/srv/config/subversion-servers" "/home/vagrant/.subversion/servers"
+  rm -f /home/vagrant/.subversion/servers
+  noroot cp "/srv/config/subversion-servers" "/home/vagrant/.subversion/servers"
 
   echo " * Copying /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
-  cp "/srv/config/subversion-config" "/home/vagrant/.subversion/config"
+  rm -f /home/vagrant/.subversion/config
+  noroot cp "/srv/config/subversion-config" "/home/vagrant/.subversion/config"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
     echo " * Copying /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
-    cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
+    rm -f /home/vagrant/.bash_prompt
+    noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
 
   echo " * Copying /srv/config/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
   cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
+  echo " * Copying /srv/config/sshd_config to /etc/ssh/sshd_config"
+  cp -f /srv/config/sshd_config /etc/ssh/sshd_config
+  echo " * Reloading SSH Daemon"
+  systemctl reload ssh
 }
 
 not_installed() {
@@ -309,20 +324,21 @@ package_install() {
 
   echo -e "\n * Setting up MySQL configuration file links..."
 
-  # Preconfigure mariadb
   if grep -q 'mysql' /etc/group; then
     echo " * mysql group exists"
   else
     echo " * creating mysql group"
-    groupadd -g 115 mysql
+    groupadd -g 9001 mysql
   fi
   
-  if id 112 >/dev/null 2>&1; then
-    echo " * mysql user present"
+  if id -u mysql >/dev/null 2>&1; then
+    echo " * mysql user present and has uid $(id -u mysql)"
   else
     echo " * adding the mysql user"
-    useradd -u 112 -g mysql -G vboxsf -r mysql
+    useradd -u 9001 -g mysql -G vboxsf -r mysql
   fi
+  id mysql
+
   mkdir -p "/etc/mysql/conf.d"
   echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
   cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
@@ -337,10 +353,12 @@ package_install() {
   echo postfix postfix/mailname string vvv | debconf-set-selections
 
   # Provide our custom apt sources before running `apt-get update`
-  ln -sf /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
-  echo "Linked custom apt sources"
-
-  if [[ ! $( apt-key list | grep 'NodeSource') ]]; then
+  echo " * Copying custom apt sources"
+  cp -f /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
+  
+  echo " * Checking Apt Keys"
+  keys=$( apt-key list )
+  if [[ ! $( echo $keys | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
     echo "Applying NodeSource NodeJS signing key..."
     apt-key add /srv/config/apt-keys/nodesource.gpg.key
@@ -349,34 +367,38 @@ package_install() {
   # Before running `apt-get update`, we should add the public keys for
   # the packages that we are installing from non standard sources via
   # our appended apt source.list
-  if [[ ! $( apt-key list | grep 'nginx') ]]; then
+  if [[ ! $( echo $keys | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo "Applying Nginx signing key..."
     apt-key add /srv/config/apt-keys/nginx_signing.key
   fi
 
-  if [[ ! $( apt-key list | grep 'Ondřej') ]]; then
+  if [[ ! $( echo $keys | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo "Applying the Ondřej PHP signing key..."
     apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( apt-key list | grep 'Varying Vagrant Vagrants') ]]; then
+  if [[ ! $( echo $keys | grep 'Varying Vagrant Vagrants') ]]; then
     # Apply the VVV signing key
     echo "Applying the Varying Vagrant Vagrants mirror signing key..."
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( apt-key list | grep 'MariaDB') ]]; then
-    # Apply the MariaDB signing key
+  if [[ ! $( echo $keys | grep 'MariaDB') ]]; then
+    # Apply the MariaDB signing keyg
     echo "Applying the MariaDB signing key..."
     apt-key add /srv/config/apt-keys/mariadb.key
   fi
 
-  if [[ ! $( apt-key list | grep 'git-lfs') ]]; then
+  if [[ ! $( echo $keys | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
     echo "Applying the PackageCloud Git-LFS signing key..."
     apt-key add /srv/config/apt-keys/git-lfs.key
+  fi
+  if [[ ! $( echo $keys | grep 'MongoDB 4.0') ]]; then
+    echo "Applying the MongoDB 4.0 signing key..."
+    apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
   fi
 
   # Update all of the package references before installing anything
@@ -386,6 +408,7 @@ package_install() {
   # Install required packages
   echo "Installing apt-get packages..."
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+    echo "Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean
     return 1
   fi
@@ -395,6 +418,7 @@ package_install() {
   apt-get autoremove -y
 
   # Clean up apt caches
+  echo "Cleaning apt caches..."
   apt-get clean
 
   return 0
@@ -417,6 +441,20 @@ tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /srv/config/homebin/xdebug_off
 
+  echo "Checking for NVM"
+  if [[ -f ~/.nvm ]]; then
+    echo ".nvm folder found, switching to system node, and removing NVM folders"
+    nvm use system
+    rm -rf ~/.nvm ~/.npm ~/.bower /srv/config/nvm
+    echo "NVM folders removed"
+  fi
+  
+  if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then
+    echo "Downgrading to Node v10."
+    apt remove nodejs -y
+    apt install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken nodejs
+  fi
+  
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
@@ -436,15 +474,15 @@ tools_install() {
     curl -s https://beyondgrep.com/ack-2.16-single-file > "/usr/bin/ack" && chmod +x "/usr/bin/ack"
   fi
 
-  # Make sure the composer cache is not owned by root
+  echo "Making sure the composer cache is not owned by root"
   mkdir -p /usr/local/src/composer
   mkdir -p /usr/local/src/composer/cache
   chown -R vagrant:www-data /usr/local/src/composer
   chown -R vagrant:www-data /usr/local/bin
 
   # COMPOSER
-  #
-  # Install Composer if it is not yet available.
+
+  echo "Checking for Composer"
   exists_composer="$(which composer)"
   if [[ "/usr/local/bin/composer" != "${exists_composer}" ]]; then
     echo "Installing Composer..."
@@ -453,7 +491,11 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  if [[ -f /srv/provision/github.token ]]; then
+  github_token=`cat ${VVV_CONFIG} | shyaml get-value general.github_token 2> /dev/null`
+  if [[ ! -z $github_token ]]; then
+    rm /srv/provision/github.token
+    echo $github_token >> /srv/provision/github.token
+    echo "A personal GitHub token was found, configuring composer"
     ghtoken=`cat /srv/provision/github.token`
     noroot composer config --global github-oauth.github.com $ghtoken
     echo "Your personal GitHub token is set for Composer."
@@ -463,26 +505,27 @@ tools_install() {
   # the master branch on its GitHub repository.
   if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
     echo "Updating Composer..."
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --no-progress --no-interaction
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:6.* phpunit/php-invoker:1.1.* mockery/mockery:0.9.* d11wtq/boris:v1.0.8
-    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
   fi
 
 
   function install_grunt() {
     echo "Installing Grunt CLI"
-    npm install -g grunt-cli
-    hack_avoid_gyp_errors & npm install -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm install -g grunt-cssjanus
-    npm install -g grunt-rtlcss
+    noroot npm install -g grunt grunt-cli --no-optional
+    hack_avoid_gyp_errors & noroot npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
+    noroot npm install -g grunt-cssjanus --no-optional
+    noroot npm install -g grunt-rtlcss --no-optional
   }
+  
   function update_grunt() {
     echo "Updating Grunt CLI"
-    npm update -g grunt-cli
+    npm update -g grunt grunt-cli --no-optional
     hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm update -g grunt-cssjanus
-    npm update -g grunt-rtlcss
+    npm update -g grunt-cssjanus --no-optional
+    npm update -g grunt-rtlcss --no-optional
   }
   # Grunt
   #
@@ -505,13 +548,12 @@ tools_install() {
     done
     rm /tmp/stop_gyp_hack
   }
-  exists_grunt="$(which grunt)"
-  if [[ "/usr/bin/grunt" != "${exists_grunt}" ]]; then
+  chown -R vagrant:vagrant /usr/lib/node_modules/
+  if command -v grunt >/dev/null 2>&1; then
     install_grunt
   else
     update_grunt
   fi
-  chown -R vagrant:vagrant /usr/lib/node_modules/
 
   # Graphviz
   #
@@ -759,7 +801,7 @@ php_codesniff() {
   echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
   echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /srv/provision/phpcs
-  composer update --no-ansi --no-autoloader --no-progress
+  noroot composer update --no-ansi --no-autoloader --no-progress
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
   # that it can be used on the host in an editor with matching rules
