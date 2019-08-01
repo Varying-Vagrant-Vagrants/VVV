@@ -105,6 +105,8 @@ vm_config:
   memory: 2048
   # CPU cores:
   cores: 2
+  # Disk size. Requires plugin vagrant-disksize
+  disksize: 10GB
 
   # this tells VVV to use the prebuilt box copied from the USB drive at contributor days
   # once set to false, do not change back to true, and reprovision
