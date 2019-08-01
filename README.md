@@ -1,6 +1,6 @@
 # Varying Vagrant Vagrants ( VVV )
 
-VVV is local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and VirtualBox, and can be used to build sites and contribute to WordPress.
+VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and VirtualBox, and can be used to build sites and contribute to WordPress.
 
 ## How To Use
 
