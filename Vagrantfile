@@ -279,6 +279,10 @@ if show_logo then
     platform = platform + 'vagrant-vbguest '
   end
 
+  if Vagrant.has_plugin?('vagrant-disksize') then
+    platform = platform + 'vagrant-disksize '
+  end
+
   if Vagrant::Util::Platform.fs_case_sensitive? then
     platform = platform + 'CaseSensitiveFS '
   end
