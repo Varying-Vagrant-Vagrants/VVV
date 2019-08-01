@@ -230,6 +230,7 @@ end
 defaults = Hash.new
 defaults['memory'] = 2048
 defaults['cores'] = 1
+defaults['disksize'] = '10GB'
 # This should rarely be overridden, so it's not included in the default vvv-config.yml file.
 defaults['private_network_ip'] = '192.168.50.4'
 
@@ -449,6 +450,21 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.hostname = "vvv"
+
+  # Specify disk size
+  #
+  # If the Vagrant plugin disksize (https://github.com/sprotheroe/vagrant-disksize) is
+  # installed, the following will automatically configure your local machine's disk size
+  # to be the specified size. This plugin only works on VirtualBox.
+  #
+  # Warning: This plugin only resizes up, not down, so don't set this to less than 10GB,
+  # and if you need to downsize, be sure to destroy and reprovision.
+  #
+  if defined?(Vagrant::Disksize)
+    config.vm.provider :virtualbox do |v, override|
+      override.disksize.size = vvv_config['vm_config']['disksize']
+    end
+  end
 
   # Private Network (default)
   #
