@@ -553,9 +553,9 @@ tools_install() {
   }
   chown -R vagrant:vagrant /usr/lib/node_modules/
   if command -v grunt >/dev/null 2>&1; then
-    install_grunt
-  else
     update_grunt
+  else
+    install_grunt
   fi
 
   # Graphviz
