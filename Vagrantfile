@@ -549,13 +549,13 @@ SCRIPT
   # This directory is used to maintain default database scripts as well as backed
   # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/sql/", "/srv/database"
-  use_db_share = true
+  use_db_share = false
 
   if defined? vvv_config['general']['db_share_type'] then
-    if vvv_config['general']['db_share_type'] != false then
-      use_db_share = true
-    else
+    if vvv_config['general']['db_share_type'] != true then
       use_db_share = false
+    else
+      use_db_share = true
     end
   end
   if use_db_share == true then
