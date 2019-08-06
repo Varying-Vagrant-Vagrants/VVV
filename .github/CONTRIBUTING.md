@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Contributing to VVV
 permalink: /docs/en-US/contributing/
 ---
