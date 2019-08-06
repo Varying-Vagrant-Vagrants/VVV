@@ -45,11 +45,14 @@ sites:
     hosts:
       - two.wordpress.test
 
+  # The following commented out site configuration will create a standard WordPress
+  # site in www/example-site/ available at http://mysite.test.
+  # Remember, whitespace is significant! Tabs and spaces mean different things
   #mysite:
   #  description: "My website"
   #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
   #  hosts:
-  #    - mysite.com
+  #    - mysite.test
 
   # The wordpress-develop configuration is useful for contributing to WordPress Core.
   # It uses the built WP to serve the site
@@ -60,6 +63,12 @@ sites:
     hosts:
       - trunk.wordpress.test
 
+  # The following commented out site configuration will create a environment useful
+  # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
+  wordpress-meta-environment:
+    skip_provisioning: true # disabled by default, this takes a long time to provision
+    repo: https://github.com/WordPress/meta-environment.git
+
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.test.
   # Remember, whitespace is significant! Tabs and spaces mean different things
@@ -68,25 +77,18 @@ sites:
   #  hosts:
   #    - my-example-site.test
 
-  # The following commented out site configuration will create a environment useful
-  # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
-  wordpress-meta-environment:
-    skip_provisioning: true # disabled by default, this takes a long time to provision
-    repo: https://github.com/WordPress/meta-environment.git
-
-
 # Utilities https://varyingvagrantvagrants.org/docs/en-US/utilities/ 
-# are system level items rather than sites, that install tools or packages
+# are system level items that aren't websites, that install tools or packages
 # the core utilities install tools such as phpmyadmin
 utilities:
   core: # The core VVV utility
-    - memcached-admin # Object cache management
-    - opcache-status # opcache management
+    - tls-ca # HTTPS SSL/TLS certificates
     - phpmyadmin # Web based database client
-    - webgrind # PHP Debugging
-    - tls-ca # SSL/TLS certificates
-    - mongodb # needed for Tideways/XHGui
-    - tideways # PHP profiling tool, also installs xhgui check https://varyingvagrantvagrants.org/docs/en-US/references/tideways-xhgui/
+    #- memcached-admin # Object cache management
+    #- opcache-status # opcache management
+    #- webgrind # PHP Debugging
+    #- mongodb # needed for Tideways/XHGui
+    #- tideways # PHP profiling tool, also installs xhgui check https://varyingvagrantvagrants.org/docs/en-US/references/tideways-xhgui/
     #- php56
     #- php70
     #- php71
