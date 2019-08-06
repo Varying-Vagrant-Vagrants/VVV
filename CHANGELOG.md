@@ -13,6 +13,7 @@ In v3.1.1 if the option isn't set, it will instead store the database inside the
 ### Enhancements
 
  - Improved the default `vvv-config.yml` to show new site template parameters
+ = VVV installs less out of the box with a simplified `vvv-config.yml`, uncomment utilities to add software back in
 
 ### Bug Fixes
 
