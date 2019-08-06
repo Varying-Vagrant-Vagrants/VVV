@@ -2,7 +2,7 @@
 name: Problems Provisioning on Windows
 about: For when running vagrant up --provision or vagrant provision
 title: ''
-labels: ''
+labels: 'Windows'
 assignees: ''
 
 ---
