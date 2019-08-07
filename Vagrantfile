@@ -509,20 +509,34 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "#{vagrant_dir}/vvv-custom.yml", destination: "/home/vagrant/vvv-custom.yml"
   $script = <<-SCRIPT
 # cleanup
-rm -rf /vagrant/* 
 mkdir -p /vagrant
+# change ownership for /vagrant folder
+sudo chown -R vagrant:vagrant /vagrant
+
+rm -f /vagrant/provisioned_at
+rm -f /vagrant/version
+rm -f /vagrant/vvv-custom.yml
+
 touch /vagrant/provisioned_at
 echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
+
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
 cp -f /home/vagrant/vvv-custom.yml /vagrant
 
+sudo chmod 0644 /vagrant/vvv-custom.yml
+sudo chmod 0644 /vagrant/version
+sudo chmod 0644 /vagrant/provisioned_at
+
 # symlink the certificates folder for older site templates compat
-ln -s /srv/certificates /vagrant/certificates
+if [[ ! -d /vagrant/certificates ]]; then
+  ln -s /srv/certificates /vagrant/certificates
+fi
+
+# fix no tty warnings in provisioner logs
 sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
-# change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
+
 SCRIPT
 
   config.vm.provision "initial-setup", type: "shell" do |s|
@@ -535,13 +549,13 @@ SCRIPT
   # This directory is used to maintain default database scripts as well as backed
   # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
   config.vm.synced_folder "database/sql/", "/srv/database"
-  use_db_share = true
+  use_db_share = false
 
   if defined? vvv_config['general']['db_share_type'] then
-    if vvv_config['general']['db_share_type'] != false then
-      use_db_share = true
-    else
+    if vvv_config['general']['db_share_type'] != true then
       use_db_share = false
+    else
+      use_db_share = true
     end
   end
   if use_db_share == true then

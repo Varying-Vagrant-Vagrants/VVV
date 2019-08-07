@@ -438,6 +438,7 @@ latest_github_release() {
 }
 
 tools_install() {
+  echo " * Running tools_install"
   # Disable xdebug before any composer provisioning.
   sh /srv/config/homebin/xdebug_off
 
@@ -513,19 +514,21 @@ tools_install() {
 
 
   function install_grunt() {
-    echo "Installing Grunt CLI"
-    noroot npm install -g grunt grunt-cli --no-optional
-    hack_avoid_gyp_errors & noroot npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
-    noroot npm install -g grunt-cssjanus --no-optional
-    noroot npm install -g grunt-rtlcss --no-optional
+    echo " * Installing Grunt CLI"
+    npm install -g grunt grunt-cli --no-optional
+    hack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
+    npm install -g grunt-cssjanus --no-optional
+    npm install -g grunt-rtlcss --no-optional
+    echo " * Installed Grunt CLI"
   }
   
   function update_grunt() {
-    echo "Updating Grunt CLI"
+    echo " * Updating Grunt CLI"
     npm update -g grunt grunt-cli --no-optional
     hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
     npm update -g grunt-cssjanus --no-optional
     npm update -g grunt-rtlcss --no-optional
+    echo " * Updated Grunt CLI"
   }
   # Grunt
   #
@@ -550,9 +553,9 @@ tools_install() {
   }
   chown -R vagrant:vagrant /usr/lib/node_modules/
   if command -v grunt >/dev/null 2>&1; then
-    install_grunt
-  else
     update_grunt
+  else
+    install_grunt
   fi
 
   # Graphviz

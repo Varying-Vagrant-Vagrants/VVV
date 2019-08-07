@@ -4,7 +4,28 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
-## 3.1.0 ( TBD 2019 )
+## 3.1.1 ( 2019 August 6th )
+
+This is a quick update that changes a default parameter when undefined. In VVV 2 the database was stored inside the VM, and in VVV 3 we put it in a shared folder. This didn't work for some people, so we added a config option to disable this. If this option wasn't set, VVV would use the shared folder.
+
+In v3.1.1 if the option isn't set, it will instead store the database inside the VM. This makes it work out of the box for everybody. If you have a working VVV with the shared folder, you can restore this behaviour by setting `db_share_type: true` in `vvv-custom.yml` and reprovisioning, see `vvv-config.yml` for an example of where this setting goes
+
+### Enhancements
+
+ - Improved the default `vvv-config.yml` to show new site template parameters
+ = VVV installs less out of the box with a simplified `vvv-config.yml`, uncomment utilities to add software back in
+
+### Bug Fixes
+
+ - Fixes the grunt installation
+ - Fixes to file permissions in the `/vagrant` folder
+ - Removed typos in the readme
+ - Switched to a new box for VMWare
+ - Shared folder warning fixes for VMWare
+ - Trailing whitespace removed from the editorconfig file
+ - Visiting the dashboard before it's provisioned now no longer gives a PHP error
+
+## 3.1.0 ( 2019 July 4th )
 
 This is primarily a reliability update. Note that updating to v3.1 requires a `vagrant destroy` and a `vagrant up --provision`. If you've turned off shared database folders, backup beforehand.
 
