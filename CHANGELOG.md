@@ -23,6 +23,7 @@ In v3.1.1 if the option isn't set, it will instead store the database inside the
  - Switched to a new box for VMWare
  - Shared folder warning fixes for VMWare
  - Trailing whitespace removed from the editorconfig file
+ - Visiting the dashboard before it's provisioned now no longer gives a PHP error
 
 ## 3.1.0 ( 2019 July 4th )
 
