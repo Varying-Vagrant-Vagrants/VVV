@@ -116,6 +116,8 @@ vm_config:
   memory: 2048
   # CPU cores:
   cores: 2
+  # VM hostname:
+  hostname: vvv
 
   # this tells VVV to use the prebuilt box copied from the USB drive at contributor days
   # once set to false, do not change back to true, and reprovision

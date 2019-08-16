@@ -437,7 +437,14 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  config.vm.hostname = 'vvv'
+  # Enable hostnames to be set via vm_config.hostname, but default to "vvv".
+  if defined? vvv_config['vm_config']['hostname'] then
+    config.vm.hostname = vvv_config['vm_config']['hostname']
+    config.vm.define vvv_config['vm_config']['hostname']
+  else
+    config.vm.hostname = 'vvv'
+    config.vm.define 'vvv'
+  end
 
   # Specify disk size
   #
