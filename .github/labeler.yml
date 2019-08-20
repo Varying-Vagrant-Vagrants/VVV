@@ -2,3 +2,4 @@
 "documentation": *.md
 "provisioner:core": *.sh
 "provisioner:vvv-custom.yml": *.yml
+"GitHub": .github/*
