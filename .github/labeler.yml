@@ -1,4 +1,4 @@
-"provisioner:vagrantfile": Vagrantfile
-"documentation": *.md
-"provisioner:core": *.sh
-"provisioner:vvv-custom.yml": *.yml
+"provisioner:vagrantfile": "Vagrantfile"
+"documentation": "*.md"
+"provisioner:core": "*.sh"
+"provisioner:vvv-custom.yml": "*.yml"
