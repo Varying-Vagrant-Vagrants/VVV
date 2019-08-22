@@ -93,7 +93,7 @@ creset="\033[0m"
 
 versionfile = File.open("#{vagrant_dir}/version", "r")
 version = versionfile.read
-version = version.gsub('\n','')
+version = version.gsub("\n",'')
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 if [ 'up', 'resume', 'status', 'provision', 'reload' ].include? ARGV[0] then
