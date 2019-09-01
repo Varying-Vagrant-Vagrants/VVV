@@ -2,6 +2,9 @@
 *.sublime*
 .DS_Store
 .idea
+Icon?
+Icon\r
+Icon\r\r
 
 # Because this really is a working directory, ignore vagrant's files
 /.vagrant
