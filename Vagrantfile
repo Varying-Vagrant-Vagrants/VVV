@@ -326,9 +326,16 @@ if show_logo then
     platform = platform + 'shared_db_folder_default '
   end
 
-  splashsecond = <<-HEREDOC
+  if vvv_config['vm_config']['provider'] == 'virtualbox' then
+    virtualbox_version = virtualbox_version()
+  else
+    virtualbox_version = "N/A"
+  end
+
+splashsecond = <<-HEREDOC
 #{yellow}Platform:   #{yellow}#{platform}
-#{green}Vagrant:    #{green}v#{Vagrant::VERSION},	#{blue}VirtualBox: #{blue}v#{virtualbox_version()}
+#{green}Vagrant:    #{green}v#{Vagrant::VERSION}
+#{blue}VirtualBox: #{blue}v#{virtualbox_version}
 #{purple}VVV Path:   "#{vagrant_dir}"
 
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
