@@ -333,10 +333,8 @@ if show_logo then
   end
 
 splashsecond = <<-HEREDOC
-#{yellow}Platform:   #{yellow}#{platform}
-#{green}Vagrant:    #{green}v#{Vagrant::VERSION}
-#{blue}VirtualBox: #{blue}v#{virtualbox_version}
-#{purple}VVV Path:   "#{vagrant_dir}"
+#{yellow}Platform: #{yellow}#{platform}, #{purple}VVV Path: "#{vagrant_dir}"
+#{green}Vagrant: #{green}v#{Vagrant::VERSION}, #{blue}VirtualBox: #{blue}v#{virtualbox_version}
 
 #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
 #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
