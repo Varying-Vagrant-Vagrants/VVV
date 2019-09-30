@@ -1,7 +1,7 @@
 " The .vimrc file lets you customize your vim environment.  Some of the most annoying
-" vim behaviors have been remedied by the included configs.  Feel free to modify on 
+" vim behaviors have been remedied by the included configs.  Feel free to modify on
 " your own - check out brandwaffle's .vimrc file for some good ideas.
-" https://github.com/brandwaffle/dotfiles/blob/master/.vimrc   
+" https://github.com/brandwaffle/dotfiles/blob/master/.vimrc
 
 " For when you forget to sudo.. Really Write the file.
     cmap w!! w !sudo tee % >/dev/null
