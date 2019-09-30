@@ -6,48 +6,131 @@
 
 #
 # IMPORTANT, if you change this file, you have to reprovision,  no exceptions
+# Do this by running either this command:
 # vagrant reload --provision
+
+# Or, if your machine is already turned on:
+# vagrant provision
 #
 
 # These are your websites, and their names map on to the folders they're
 # located in. See the docs for how to define these, and what all the keys
 # and options are
 sites:
-  # The wordpress-default configuration provides a default installation of the
-  # latest version of WordPress.
-  wordpress-default:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-default.git
-    hosts:
-      - local.wordpress.test
 
-  # The wordpress-develop configuration is useful for contributing to WordPress.
-  wordpress-develop:
-    repo: https://github.com/Varying-Vagrant-Vagrants/vvv-wordpress-develop.git
+  # latest version of WordPress, can be used for client work and testing
+  # Check the readme at https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+  wordpress-one:
+    skip_provisioning: false
+    description: "A standard WP install, useful for building plugins, testing things, etc"
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
     hosts:
-      - src.wordpress-develop.test
-      - build.wordpress-develop.test
+      - one.wordpress.test
+    custom:
+      wpconfig_constants:
+        WP_DEBUG: true
+        WP_DEBUG_LOG: true
+        WP_DISABLE_FATAL_ERROR_HANDLER: true # To disable in WP 5.2 the FER mode
+
+  wordpress-two:
+    skip_provisioning: false
+    description: "A standard WP install, useful for building plugins, testing things, etc"
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
+    custom:
+      # locale: it_IT
+      delete_default_plugins: true
+      install_plugins:
+        - query-monitor
+    hosts:
+      - two.wordpress.test
 
   # The following commented out site configuration will create a standard WordPress
-  # site in www/example-site/ available at http://my-example-site.dev.
+  # site in www/example-site/ available at http://mysite.test.
   # Remember, whitespace is significant! Tabs and spaces mean different things
+  #mysite:
+  #  description: "My website"
+  #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
+  #  hosts:
+  #    - mysite.test
 
+  # The wordpress-develop configuration is useful for contributing to WordPress Core.
+  # It uses the built WP to serve the site
+  wordpress-trunk:
+    skip_provisioning: true # provisioning this one takes longer, so it's disabled by default
+    description: "An svn based WP Core trunk dev setup, useful for contributor days, Trac tickets, patches"
+    repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop.git
+    hosts:
+      - trunk.wordpress.test
+
+  # The following commented out site configuration will create a environment useful
+  # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
+  wordpress-meta-environment:
+    skip_provisioning: true # disabled by default, this takes a long time to provision
+    description: "An environment useful for contributions to the WordPress meta team."
+    repo: https://github.com/WordPress/meta-environment.git
+    hosts:
+      - wp-meta.test
+    custom:
+      provision_site:
+        "buddypressorg.test": true
+        "jobs.wordpressnet.test": true
+        "wordcamp.test": true
+        "wordpressorg.test": true
+        "wordpresstv.test": true
+
+  # The following commented out site configuration will create a standard WordPress
+  # site in www/example-site/ available at http://my-example-site.test.
+  # Remember, whitespace is significant! Tabs and spaces mean different things
   #example-site:
   #  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
   #  hosts:
   #    - my-example-site.test
 
-  # The following commented out site configuration will create a environment useful
-  # for contributions to the WordPress meta team:
-  
-  #wordpress-meta-environment:
-  #  repo: https://github.com/WordPress/meta-environment.git
-
-
-# Utilities are system level items rather than sites, that install tools or packages
+# Utilities https://varyingvagrantvagrants.org/docs/en-US/utilities/
+# are system level items that aren't websites, that install tools or packages
 # the core utilities install tools such as phpmyadmin
 utilities:
-  core:
-    - memcached-admin
-    - opcache-status
-    - phpmyadmin
-    - webgrind
+  core: # The core VVV utility
+    - tls-ca # HTTPS SSL/TLS certificates
+    - phpmyadmin # Web based database client
+    #- memcached-admin # Object cache management
+    #- opcache-status # opcache management
+    #- webgrind # PHP Debugging
+    #- mongodb # needed for Tideways/XHGui
+    #- tideways # PHP profiling tool, also installs xhgui check https://varyingvagrantvagrants.org/docs/en-US/references/tideways-xhgui/
+    #- php56
+    #- php70
+    #- php71
+    #- php72
+    #- php73
+
+# vm_config controls how Vagrant provisions the virtual machine, and can be used to
+# increase the memory given to VVV and the number of CPU cores.
+# It can also be used to override the default provider being used within Vagrant.
+
+vm_config:
+  # For WP core development we recommend at least 2GB ( 2048 ),
+  # If you have 4GB of RAM, lower this to 768MB or you may encounter issues
+  memory: 2048
+  # CPU cores:
+  cores: 2
+
+  # this tells VVV to use the prebuilt box copied from the USB drive at contributor days
+  # once set to false, do not change back to true, and reprovision
+  # wordcamp_contributor_day_box: false
+
+  # Due to a limitation within Vagrant, the specified provider is only respected on a clean `vagrant up`
+  # as Vagrant currently restricts you to one provider per machine
+  # https://www.vagrantup.com/docs/providers/basic_usage.html#vagrant-up
+  # provider: vmware_workstation
+
+# General VVV options
+general:
+  # Backup the databases to the database/backups subfolder on halt/suspend/destroy, set to false to disable
+  db_backup: true
+  # Import the databases if they're missing from backups
+  db_restore: true
+  # set to true to use a synced shared folder for MariaDB database storage
+  db_share_type: false
+  # GitHub token to use from composer
+  #github_token: xxxxxx

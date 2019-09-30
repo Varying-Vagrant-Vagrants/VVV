@@ -7,6 +7,24 @@
 # Look for a custom trigger file. If this exists, we'll assume that
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
-if [[ -f /home/vagrant/bin/vagrant_up_custom ]]; then
-	vagrant_up_custom
+
+echo "Post Vagrant up script"
+
+if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
+	echo "Custom vagrant up script found, executing vagrant_up_custom"
+	/srv/config/homebin/vagrant_up_custom
 fi
+
+echo "Restarting Nginx and MySQL"
+sudo service nginx restart
+sudo service mysql restart
+
+green="\033[01;32m"
+echo ""
+echo -e "${green}         yay  "
+echo -e "${green}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                __ __ __ __"
+echo -e "${green}   █▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
+echo -e "${green}    █░░█░░░░░█░░█     using        \_/\_/\_/"
+echo -e "${green} ▄▄  █░░░▀█▀░░░█  ▄▄ "
+echo -e "${green}█░░█ ▀▄░░░░░░░▄▀ █░░█ Vagrant Up has finished! Visit http://vvv.test"
+echo -e "\033[0m"
