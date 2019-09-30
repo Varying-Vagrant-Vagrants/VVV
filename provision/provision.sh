@@ -330,7 +330,7 @@ package_install() {
     echo " * creating mysql group"
     groupadd -g 9001 mysql
   fi
-  
+
   if id -u mysql >/dev/null 2>&1; then
     echo " * mysql user present and has uid $(id -u mysql)"
   else
@@ -355,7 +355,7 @@ package_install() {
   # Provide our custom apt sources before running `apt-get update`
   echo " * Copying custom apt sources"
   cp -f /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
-  
+
   echo " * Checking Apt Keys"
   keys=$( apt-key list )
   if [[ ! $( echo $keys | grep 'NodeSource') ]]; then
@@ -449,13 +449,13 @@ tools_install() {
     rm -rf ~/.nvm ~/.npm ~/.bower /srv/config/nvm
     echo "NVM folders removed"
   fi
-  
+
   if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then
     echo "Downgrading to Node v10."
     apt remove nodejs -y
     apt install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken nodejs
   fi
-  
+
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
@@ -521,7 +521,7 @@ tools_install() {
     npm install -g grunt-rtlcss --no-optional
     echo " * Installed Grunt CLI"
   }
-  
+
   function update_grunt() {
     echo " * Updating Grunt CLI"
     npm update -g grunt grunt-cli --no-optional
@@ -634,19 +634,19 @@ phpfpm_setup() {
   # Copy php-fpm configuration from local
   echo " * Copying /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
   cp -f "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
-  
+
   echo " * Copying /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
   cp -f "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
-  
+
   echo " * Copying /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
   cp -f "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
-  
+
   echo " * Copying /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
   cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
-  
+
   echo " * Copying /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
   cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
-  
+
   echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
   cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.2/mods-available/mailhog.ini"
 
