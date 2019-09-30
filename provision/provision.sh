@@ -711,7 +711,7 @@ mysql_setup() {
     # Copy mysql configuration from local
     cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
     cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
-    sudo chmod 0644 "/home/vagrant/.my.cnf"
+    chmod 0644 "/home/vagrant/.my.cnf"
 
     echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
