@@ -107,7 +107,7 @@ if [[ true == $SKIP_PROVISIONING ]]; then
 fi
 
 if [[ false != "${REPO}" ]]; then
-  if [[ -d ${VM_DIR} ]]; then
+  if [[ -d ${VM_DIR} ]] && [[ ! -z "$(ls -A ${VM_DIR})" ]]; then
     if [[ -d ${VM_DIR}/.git ]]; then
     	echo -e "\nUpdating ${SITE} in ${VM_DIR}..."
     	cd ${VM_DIR}
