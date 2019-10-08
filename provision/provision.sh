@@ -763,7 +763,7 @@ services_restart() {
   # Disable PHP Xdebug module by default
   phpdismod xdebug
 
-  # Enable PHP mailcatcher sendmail settings by default
+  # Enable PHP MailHog sendmail settings by default
   phpenmod -s fpm mailhog
 
   # Restart all php-fpm versions
