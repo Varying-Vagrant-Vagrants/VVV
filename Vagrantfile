@@ -564,6 +564,7 @@ echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
 
+sudo chmod 0644 /srv/config/config.yml
 sudo chmod 0644 /vagrant/version
 sudo chmod 0644 /vagrant/provisioned_at
 
