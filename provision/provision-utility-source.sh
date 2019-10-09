@@ -28,7 +28,7 @@ if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   fi
 else
   if [[ false == "${NAME}" && false == "${REPO}" ]]; then
-    echo "Error: VVV tried to provision a utility, but no name or git repo was supplied, double check your vvv-custom.yml file is correct and has the right indentation"
+    echo "Error: VVV tried to provision a utility, but no name or git repo was supplied, double check your config/config.yml file is correct and has the right indentation"
     exit 1
   fi
   if [[ false == "${NAME}" ]]; then

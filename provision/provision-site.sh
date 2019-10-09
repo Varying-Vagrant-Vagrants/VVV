@@ -18,9 +18,9 @@ touch "${logfile}"
 exec > >(tee -a "${logfile}" )
 exec 2> >(tee -a "${logfile}" >&2 )
 
-VVV_CONFIG=/vagrant/vvv-config.yml
-if [[ -f /vagrant/vvv-custom.yml ]]; then
-	VVV_CONFIG=/vagrant/vvv-custom.yml
+VVV_CONFIG=/srv/config/default-config.yml
+if [[ -f /srv/config/config.yml ]]; then
+	VVV_CONFIG=/srv/config/config.yml
 fi
 
 noroot() {
@@ -122,7 +122,7 @@ if [[ false != "${REPO}" ]]; then
     	git pull origin ${BRANCH} -q
     	git checkout ${BRANCH} -q
     else
-      echo "Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the vvv-custom.yml entry"
+      echo "Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry"
     fi
   else
     # Clone or pull the site repository

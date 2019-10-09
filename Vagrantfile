@@ -125,9 +125,11 @@ end
 
 # Load the config file before the second section of the splash screen
 
-if File.file?(File.join(vagrant_dir, 'vvv-custom.yml')) == false then
-  puts "#{yellow}Copying #{red}vvv-config.yml#{yellow} to #{green}vvv-custom.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}vvv-custom.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
-  FileUtils.cp( File.join(vagrant_dir, 'vvv-config.yml'), File.join(vagrant_dir, 'vvv-custom.yml') )
+vvv_config_file = File.join(vagrant_dir, 'config/config.yml')
+
+if File.file?(vvv_config_file) == false then
+  puts "#{yellow}Copying #{red}config/default-config.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
+  FileUtils.cp( File.join(vagrant_dir, 'default-config.yml'), vvv_config_file )
 end
 
 old_db_backup_dir = File.join(vagrant_dir, 'database/backups/' )
@@ -137,18 +139,16 @@ if ( File.directory?( old_db_backup_dir ) == true ) && ( File.directory?( new_db
   FileUtils.mv( old_db_backup_dir, new_db_backup_dir )
 end
 
-vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml')
-
 begin
   vvv_config = YAML.load_file(vvv_config_file)
   if ! vvv_config['sites'].kind_of? Hash then
     vvv_config['sites'] = Hash.new
 
-    puts "#{red}vvv-config.yml is missing a sites section.#{creset}\n\n"
+    puts "#{red}config/config.yml is missing a sites section.#{creset}\n\n"
   end
 
 rescue Exception => e
-  puts "#{red}vvv-config.yml isn't a valid YAML file.#{creset}\n\n"
+  puts "#{red}config/config.yml isn't a valid YAML file.#{creset}\n\n"
   puts "#{red}VVV cannot be executed!#{creset}\n\n"
 
   STDERR.puts e.message
@@ -240,7 +240,7 @@ end
 defaults = Hash.new
 defaults['memory'] = 2048
 defaults['cores'] = 1
-# This should rarely be overridden, so it's not included in the default vvv-config.yml file.
+# This should rarely be overridden, so it's not included in the default-config.yml file.
 defaults['private_network_ip'] = '192.168.50.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
@@ -544,7 +544,6 @@ Vagrant.configure("2") do |config|
   # Disable the default synced folder to avoid overlapping mounts
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provision "file", source: "#{vagrant_dir}/version", destination: "/home/vagrant/version"
-  config.vm.provision "file", source: "#{vagrant_dir}/vvv-custom.yml", destination: "/home/vagrant/vvv-custom.yml"
   $script = <<-SCRIPT
 # cleanup
 mkdir -p /vagrant
@@ -553,16 +552,13 @@ sudo chown -R vagrant:vagrant /vagrant
 
 rm -f /vagrant/provisioned_at
 rm -f /vagrant/version
-rm -f /vagrant/vvv-custom.yml
 
 touch /vagrant/provisioned_at
 echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
 
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
-cp -f /home/vagrant/vvv-custom.yml /vagrant
 
-sudo chmod 0644 /vagrant/vvv-custom.yml
 sudo chmod 0644 /vagrant/version
 sudo chmod 0644 /vagrant/provisioned_at
 
@@ -847,7 +843,7 @@ SCRIPT
   # enter a password for Vagrant to access your hosts file.
   #
   # By default, we'll include the domains set up by VVV through the vvv-hosts file
-  # located in the www/ directory and in vvv-config.yml.
+  # located in the www/ directory and in config/config.yml.
   if defined?(VagrantPlugins::HostsUpdater)
 
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
