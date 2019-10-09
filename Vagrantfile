@@ -246,7 +246,7 @@ end
 defaults = Hash.new
 defaults['memory'] = 2048
 defaults['cores'] = 1
-# This should rarely be overridden, so it's not included in the default-config.yml file.
+# This should rarely be overridden, so it's not included in the config/default-config.yml file.
 defaults['private_network_ip'] = '192.168.50.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
@@ -558,6 +558,7 @@ sudo chown -R vagrant:vagrant /vagrant
 
 rm -f /vagrant/provisioned_at
 rm -f /vagrant/version
+rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
 touch /vagrant/provisioned_at
