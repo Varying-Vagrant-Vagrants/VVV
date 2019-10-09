@@ -550,42 +550,7 @@ Vagrant.configure("2") do |config|
   # Disable the default synced folder to avoid overlapping mounts
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provision "file", source: "#{vagrant_dir}/version", destination: "/home/vagrant/version"
-  $script = <<-SCRIPT
-# cleanup
-mkdir -p /vagrant
-# change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
 
-rm -f /vagrant/provisioned_at
-rm -f /vagrant/version
-rm -f /vagrant/vvv-custom.yml
-rm -f /vagrant/config.yml
-
-touch /vagrant/provisioned_at
-echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
-
-# copy over version and config files
-cp -f /home/vagrant/version /vagrant
-cp -f /srv/config/config.yml /vagrant
-
-sudo chmod 0644 /vagrant/config.yml
-sudo chmod 0644 /vagrant/version
-sudo chmod 0644 /vagrant/provisioned_at
-
-# symlink the certificates folder for older site templates compat
-if [[ ! -d /vagrant/certificates ]]; then
-  ln -s /srv/certificates /vagrant/certificates
-fi
-
-# fix no tty warnings in provisioner logs
-sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
-
-
-SCRIPT
-
-  config.vm.provision "initial-setup", type: "shell" do |s|
-    s.inline = $script
-  end
   # /srv/database/
   #
   # If a database directory exists in the same directory as your Vagrantfile,
