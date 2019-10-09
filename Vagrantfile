@@ -126,6 +126,11 @@ end
 # Load the config file before the second section of the splash screen
 
 vvv_config_file = File.join(vagrant_dir, 'config/config.yml')
+old_vvv_config_file = File.join(vagrant_dir, 'vvv-custom.yml' )
+if ( File.file?( old_vvv_config_file ) == true ) && ( File.file?( vvv_config_file ) == false ) then
+  puts "Moving config file to config/config.yml"
+  FileUtils.mv( old_vvv_config_file, vvv_config_file )
+end
 
 if File.file?(vvv_config_file) == false then
   puts "#{yellow}Copying #{red}config/default-config.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
