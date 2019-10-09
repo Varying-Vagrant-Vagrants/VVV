@@ -11,6 +11,7 @@ Icon\r\r
 
 # This is a file intended for hooking in a custom Vagrant configuration on up
 /Customfile
+/vvv-custom.yml
 /config/config.yml
 
 # Allow for custom provisioning scripts that are not included with the repo
