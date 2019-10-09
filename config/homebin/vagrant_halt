@@ -11,10 +11,10 @@ if [[ -f /srv/config/homebin/vagrant_halt_custom ]]; then
 	echo "Executing vagrant_halt_custom"
 	/srv/config/homebin/vagrant_halt_custom
 else
-    # Load vvv-config.yml
-    VVV_CONFIG=/vagrant/vvv-config.yml
-    if [[ -f /vagrant/vvv-custom.yml ]]; then
-        VVV_CONFIG=/vagrant/vvv-custom.yml
+    # Load config.yml
+    VVV_CONFIG=/srv/config/default-config.yml
+    if [[ -f /srv/config/config.yml ]]; then
+        VVV_CONFIG=/srv/config/config.yml
     fi
 
     # Check if backups are turned on or off
