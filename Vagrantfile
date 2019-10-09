@@ -317,7 +317,7 @@ if show_logo then
 
   if defined? vvv_config['vm_config']['box'] then
     if vvv_config['vm_config']['box'] != nil then
-      puts "Custom Box: Box overriden via VVV config, this won't take effect until a destroy + reprovision happens"
+      puts "Custom Box: Box overriden via config/config.yml , this won't take effect until a destroy + reprovision happens"
       platform = platform + 'box_override:' + vvv_config['vm_config']['box'] + ' '
     end
   end
@@ -731,7 +731,7 @@ SCRIPT
 
   # Customfile - POSSIBLY UNSTABLE
   #
-  # Use this to insert your own (and possibly rewrite) Vagrant config lines. Helpful
+  # Use this to insert your own additional Vagrant config lines. Helpful
   # for mapping additional drives. If a file 'Customfile' exists in the same directory
   # as this Vagrantfile, it will be evaluated as ruby inline as it loads.
   #
