@@ -9,6 +9,7 @@
 
 # cleanup
 mkdir -p /vagrant
+rm -rf /srv/provision/resources ## remove deprecated folder
 # change ownership for /vagrant folder
 sudo chown -R vagrant:vagrant /vagrant
 
