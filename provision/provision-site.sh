@@ -101,10 +101,17 @@ function vvv_provision_hosts_file() {
   done
 }
 
+GREEN="\033[38;5;2m"
+BLUE="\033[38;5;4m"
+YELLOW="\033[38;5;3m"
+CRESET="\033[0m"
+
 if [[ true == $SKIP_PROVISIONING ]]; then
-  echo "Skipping provisioning of ${SITE}"
+  echo -e "${YELLOW}Skipping provisioning of ${SITE}${CRESET}"
   return
 fi
+
+echo -e "${BLUE}Running provisioner for site ${SITE}${CRESET}"
 
 if [[ false != "${REPO}" ]]; then
   if [[ -d ${VM_DIR} ]] && [[ ! -z "$(ls -A ${VM_DIR})" ]]; then
@@ -220,4 +227,4 @@ fi
 echo "Reloading Nginx"
 service nginx reload
 
-
+echo -e "${GREEN}${SITE} was provisioned properly${CRESET}"
