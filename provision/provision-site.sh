@@ -147,13 +147,21 @@ if [[ ! -d ${VM_DIR} ]]; then
   echo "Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site!"
 fi
 
+function vvv_run_site_template_script() {
+  echo "Found ${2} at ${1}/${1}"
+  echo "Script output will be logged to: ${logfile}"
+  ( cd "${DIR}" && source $1  2>&1 | tee -a $logfile )
+  echo "${2} has completed with return code: ${?}"
+}
+
 # Look for site setup scripts
+echo "Searching for site template provisioner, vvv-init.sh"
 if [[ -f "${VM_DIR}/.vvv/vvv-init.sh" ]]; then
-  ( cd "${VM_DIR}/.vvv" && source vvv-init.sh )
+  vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}/.vvv"
 elif [[ -f "${VM_DIR}/provision/vvv-init.sh" ]]; then
-  ( cd "${VM_DIR}/provision" && source vvv-init.sh )
+  vvv_run_site_template_script "vvv-init.sh" "${VM_DIR/provision}"
 elif [[ -f "${VM_DIR}/vvv-init.sh" ]]; then
-  ( cd "${VM_DIR}" && source vvv-init.sh )
+  vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}"
 else
   echo "Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
   SITE_INIT_SCRIPTS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-init.conf');
@@ -162,7 +170,7 @@ else
   else
     for SITE_INIT_SCRIPT in $SITE_INIT_SCRIPTS; do
       DIR="$(dirname "$SITE_INIT_SCRIPT")"
-      ( cd "${DIR}" &&  source vvv-init.sh )
+      vvv_run_site_template_script "vvv-init.sh" "${DIR}"
     done
   fi
 fi
