@@ -111,7 +111,7 @@ if [[ true == $SKIP_PROVISIONING ]]; then
   return
 fi
 
-echo -e "${BLUE}Running provisioner for site ${SITE}${CRESET}"
+echo -e "${GREEN}Running provisioner for site ${SITE}${CRESET}"
 
 if [[ false != "${REPO}" ]]; then
   if [[ -d ${VM_DIR} ]] && [[ ! -z "$(ls -A ${VM_DIR})" ]]; then
@@ -148,10 +148,10 @@ if [[ ! -d ${VM_DIR} ]]; then
 fi
 
 function vvv_run_site_template_script() {
-  echo "Found ${2} at ${1}/${1}"
+  echo "Found ${1} at ${2}/${1}"
   echo "Script output will be logged to: ${logfile}"
-  ( cd "${DIR}" && source $1  2>&1 | tee -a $logfile )
-  echo "${2} has completed with return code: ${?}"
+  ( cd "${2}" && source "${1}" >> $logfile )
+  echo "${2}/${1} has completed with return code: ${?}"
 }
 
 # Look for site setup scripts
@@ -159,7 +159,7 @@ echo "Searching for site template provisioner, vvv-init.sh"
 if [[ -f "${VM_DIR}/.vvv/vvv-init.sh" ]]; then
   vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}/.vvv"
 elif [[ -f "${VM_DIR}/provision/vvv-init.sh" ]]; then
-  vvv_run_site_template_script "vvv-init.sh" "${VM_DIR/provision}"
+  vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}/provision"
 elif [[ -f "${VM_DIR}/vvv-init.sh" ]]; then
   vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}"
 else
