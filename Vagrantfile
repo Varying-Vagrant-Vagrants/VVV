@@ -697,16 +697,16 @@ SCRIPT
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding VMware mount options.
   config.vm.provider :vmware_desktop do |v, override|
-    override.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", :mount_options => []
+    override.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", :mount_options => [ "umask=002"  ]
 
-    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
-    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: []
-    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: []
-    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: []
+    override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: [ "umask=000" ]
+    override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: [ "umask=000" ]
+    override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: [ "umask=000" ]
+    override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: [ "umask=000" ]
 
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => []
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => [ "umask=002" ]
       end
     end
   end
