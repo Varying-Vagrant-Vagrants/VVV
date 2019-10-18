@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
  - `my.cnf` is now readable by the vagrant user
  - Fixes to newline substitution in the splash screen and some rearrangement
  - MySQL binary logging is now disabled
+ - Synced folder permission fixes for VMWare
 
 ## 3.1.1 ( 2019 August 6th )
 
