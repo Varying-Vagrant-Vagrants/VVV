@@ -10,7 +10,7 @@ To use it, download and install [Vagrant](https://www.vagrantup.com) and [Virtua
 vagrant plugin install vagrant-hostsupdater --local
 vagrant up --provision
 ```
-When it's done, visit http://vvv.test.
+When it's done, visit http://vvv.test
 
 The online documentation contains more detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 
