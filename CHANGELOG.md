@@ -22,6 +22,8 @@ permalink: /docs/en-US/changelog/
  - Fixes to newline substitution in the splash screen and some rearrangement
  - MySQL binary logging is now disabled
  - Synced folder permission fixes for VMWare
+ - Shared DB mounts are now mounted on Parallels and VMWare
+ - Fixed `/var/log` being mounted on Parallels and VMWare
 
 ## 3.1.1 ( 2019 August 6th )
 
