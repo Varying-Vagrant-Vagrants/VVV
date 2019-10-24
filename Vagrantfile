@@ -674,7 +674,6 @@ SCRIPT
     v.vmname = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
 
     override.vm.synced_folder "www/", "/srv/www", :owner => "vagrant", :group => "www-data", :mount_options => [ "dir_mode=0775", "file_mode=0774" ]
-    override.vm.synced_folder "log/", "/var/log", :owner => "vagrant", :mount_options => []
 
     if use_db_share == true then
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
