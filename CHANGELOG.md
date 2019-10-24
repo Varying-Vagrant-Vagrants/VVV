@@ -22,6 +22,7 @@ permalink: /docs/en-US/changelog/
  - Fixes to newline substitution in the splash screen and some rearrangement
  - MySQL binary logging is now disabled
  - Synced folder permission fixes for VMWare
+ - Removed `/var/log` for Microsoft Hyper-V
 
 ## 3.1.1 ( 2019 August 6th )
 
