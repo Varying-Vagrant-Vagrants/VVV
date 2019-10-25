@@ -138,4 +138,4 @@ general:
 
 # Settings for the vagrant plugins supported by VVV
 vagrant-plugins:
-  disksize: 10GB
+  disksize: 10GB # requires the disk size vagrant plugin
