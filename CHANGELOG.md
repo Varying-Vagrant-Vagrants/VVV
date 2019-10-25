@@ -23,7 +23,8 @@ permalink: /docs/en-US/changelog/
  - MySQL binary logging is now disabled
  - Synced folder permission fixes for VMWare
  - Shared DB mounts are now mounted on Parallels and VMWare
- - Fixed `/var/log` being mounted on Parallels and VMWare
+ - Fixed `/var/log` being mounted on Parallels, HyperV, and VMWare
+
 
 ## 3.1.1 ( 2019 August 6th )
 
