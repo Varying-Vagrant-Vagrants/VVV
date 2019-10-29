@@ -12,6 +12,7 @@ permalink: /docs/en-US/changelog/
  - Updated the default config to reference PHP 7.4 support
  - webgrind is now provisioned using composer
  - Added support for the vagrant-disksize plugin if available
+ - Site provisioner output is now piped to the log file to simplify the terminal output. Errors should still be sent to the terminal
 
 ### Bug Fixes
 
