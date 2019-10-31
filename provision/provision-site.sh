@@ -28,10 +28,7 @@ touch "${logfile}"
 exec > >(tee -a "${logfile}" )
 exec 2> >(tee -a "${logfile}" >&2 )
 
-VVV_CONFIG=/srv/config/default-config.yml
-if [[ -f /srv/config/config.yml ]]; then
-	VVV_CONFIG=/srv/config/config.yml
-fi
+VVV_CONFIG=/vagrant/config.yml
 
 noroot() {
   sudo -EH -u "vagrant" "$@";
