@@ -2,6 +2,9 @@
 *.sublime*
 .DS_Store
 .idea
+Icon?
+Icon\r
+Icon\r\r
 
 # Because this really is a working directory, ignore vagrant's files
 /.vagrant
@@ -9,6 +12,7 @@
 # This is a file intended for hooking in a custom Vagrant configuration on up
 /Customfile
 /vvv-custom.yml
+/config/config.yml
 
 # Allow for custom provisioning scripts that are not included with the repo
 /provision/provision-custom.sh

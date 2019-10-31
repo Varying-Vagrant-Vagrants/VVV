@@ -52,7 +52,7 @@
 ### unencrypted passwords in the auth/ area.  The default is
 ### 'ask', which means that Subversion will ask you before
 ### saving a password to disk in unencrypted form.  Note that
-### this option has no effect if either 'store-passwords' or 
+### this option has no effect if either 'store-passwords' or
 ### 'store-auth-creds' is set to 'no'.
 ###
 ### Set store-ssl-client-cert-pp to 'no' to avoid storing ssl
@@ -74,7 +74,7 @@
 ### store unencrypted passphrases in the auth/ area.  The default
 ### is 'ask', which means that Subversion will prompt before
 ### saving a passphrase to disk in unencrypted form.  Note that
-### this option has no effect if either 'store-auth-creds' or 
+### this option has no effect if either 'store-auth-creds' or
 ### 'store-ssl-client-cert-pp' is set to 'no'.
 ###
 ### Set store-auth-creds to 'no' to avoid storing any Subversion
@@ -136,8 +136,8 @@
 ### overrides defaults, not explicitly matched server names.
 ###
 ### 'ssl-authority-files' is a semicolon-delimited list of files,
-### each pointing to a PEM-encoded Certificate Authority (CA) 
-### SSL certificate.  See details above for overriding security 
+### each pointing to a PEM-encoded Certificate Authority (CA)
+### SSL certificate.  See details above for overriding security
 ### due to SSL.
 [global]
 # http-proxy-exceptions = *.exception.com, www.internal-site.org

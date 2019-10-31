@@ -8,11 +8,29 @@ touch "${logfile}"
 exec > >(tee -a "${logfile}" )
 exec 2> >(tee -a "${logfile}" >&2 )
 
+GREEN="\033[38;5;2m"
+RED="\033[38;5;9m"
+BLUE="\033[38;5;4m"
+YELLOW="\033[38;5;3m"
+CRESET="\033[0m"
+
 PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 
+VVV_CONFIG=/vagrant/config.yml
+
 if [[ -f $PROVISIONER ]]; then
-	echo "Running utility provisioner for '${1}/${2}'"
-    ${PROVISIONER}
+	echo -e "${GREEN} * Running utility provisioner for '${1}/${2}'${CRESET}"
+	start_seconds="$(date +%s)"
+    ( ${PROVISIONER} >> $logfile )
+    SUCCESS=$?
+    end_seconds="$(date +%s)"
+	if [ $? -eq 0 ]; then
+		echo -e "${GREEN} * The '${1}/${2}' provisioner completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+		exit 0
+	else
+		echo -e "${RED} * The '${1}/${2}' provisioner ran into problems, check the full log in log/provisioners/${date_time}/provisioner-utility-${1}-${2}.log for more details! It completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+		exit 1
+	fi
 else
-	echo "Tried to run the utility provisioner for '${1}/${2}' but ${PROVISIONER} doesn't exist"
+	echo -e "${RED} ! VVV Tried to run the utility provisioner for '${1}/${2}' but ${PROVISIONER} doesn't exist${CRESET}"
 fi

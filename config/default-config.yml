@@ -1,6 +1,5 @@
 ---
 
-
 # This file is a YAML formatted file. YAML indenting is done in spaces not
 # tabs, and whitespace is significant. If you don't stick to this, it will
 # fail on provision
@@ -9,7 +8,7 @@
 # IMPORTANT, if you change this file, you have to reprovision,  no exceptions
 # Do this by running either this command:
 # vagrant reload --provision
-# 
+
 # Or, if your machine is already turned on:
 # vagrant provision
 #
@@ -41,7 +40,7 @@ sites:
       # locale: it_IT
       delete_default_plugins: true
       install_plugins:
-         - query-monitor
+        - query-monitor
     hosts:
       - two.wordpress.test
 
@@ -67,7 +66,17 @@ sites:
   # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
   wordpress-meta-environment:
     skip_provisioning: true # disabled by default, this takes a long time to provision
+    description: "An environment useful for contributions to the WordPress meta team."
     repo: https://github.com/WordPress/meta-environment.git
+    hosts:
+      - wp-meta.test
+    custom:
+      provision_site:
+        "buddypressorg.test": true
+        "jobs.wordpressnet.test": true
+        "wordcamp.test": true
+        "wordpressorg.test": true
+        "wordpresstv.test": true
 
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.test.
@@ -77,7 +86,7 @@ sites:
   #  hosts:
   #    - my-example-site.test
 
-# Utilities https://varyingvagrantvagrants.org/docs/en-US/utilities/ 
+# Utilities https://varyingvagrantvagrants.org/docs/en-US/utilities/
 # are system level items that aren't websites, that install tools or packages
 # the core utilities install tools such as phpmyadmin
 utilities:
@@ -94,9 +103,10 @@ utilities:
     #- php71
     #- php72
     #- php73
+    #- php74
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
-# increase the memory given to VVV and the number of CPU cores. 
+# increase the memory given to VVV and the number of CPU cores.
 # It can also be used to override the default provider being used within Vagrant.
 
 vm_config:
@@ -121,8 +131,11 @@ general:
   db_backup: true
   # Import the databases if they're missing from backups
   db_restore: true
-  # set to true to use a synced shared folder for MariaDB database storage 
+  # set to true to use a synced shared folder for MariaDB database storage
   db_share_type: false
   # GitHub token to use from composer
   #github_token: xxxxxx
 
+# Settings for the vagrant plugins supported by VVV
+vagrant-plugins:
+  disksize: 10GB # requires the disk size vagrant plugin

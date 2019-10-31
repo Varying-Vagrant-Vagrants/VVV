@@ -6,16 +6,17 @@
 # other provisioners
 
 network_detection() {
+  echo " * Testing network connection"
   # Network Detection
   #
   # Make an HTTP request to ppa.launchpad.net to determine if outside access is available
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
   if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://ppa.launchpad.net 2>&1 | grep 'connected')" ]]; then
-    echo "Succesful Network connection to ppa.launchpad.net detected..."
+    echo " * Succesful Network connection to ppa.launchpad.net detected..."
     ping_result="Connected"
   else
-    echo "Network connection not detected. Unable to reach ppa.launchpad.net..."
+    echo " * Network connection not detected. Unable to reach ppa.launchpad.net..."
     ping_result="Not Connected"
   fi
 }

@@ -4,6 +4,30 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 3.2.0 ( 2019 )
+
+### Enhancements
+
+ - Improved output of `xdebug_on` and `xdebug_off`
+ - Updated the default config to reference PHP 7.4 support
+ - webgrind is now provisioned using composer
+ - Added support for the vagrant-disksize plugin if available
+ - Site provisioner output is now piped to the log file to simplify the terminal output. Errors should still be sent to the terminal
+ - Utility provisioner is now piped to the log file to simplify terminal output
+
+### Bug Fixes
+
+ - Fixed cloning site provisioners into empty directories
+ - Enabled MailHog for all PHP versions
+ - Removed trailing spaces from all provisioner files and configs
+ - `my.cnf` is now readable by the vagrant user
+ - Fixes to newline substitution in the splash screen and some rearrangement
+ - MySQL binary logging is now disabled
+ - Synced folder permission fixes for VMWare
+ - Shared DB mounts are now mounted on Parallels and VMWare
+ - Fixed `/var/log` being mounted on Parallels, HyperV, and VMWare
+
+
 ## 3.1.1 ( 2019 August 6th )
 
 This is a quick update that changes a default parameter when undefined. In VVV 2 the database was stored inside the VM, and in VVV 3 we put it in a shared folder. This didn't work for some people, so we added a config option to disable this. If this option wasn't set, VVV would use the shared folder.

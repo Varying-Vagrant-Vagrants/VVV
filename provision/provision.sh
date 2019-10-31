@@ -7,10 +7,37 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
+GREEN="\033[38;5;2m"
+RED="\033[38;5;9m"
+BLUE="\033[38;5;4m"
+YELLOW="\033[38;5;3m"
+CRESET="\033[0m"
+
+# By storing the date now, we can calculate the duration of provisioning at the
+# end of this script.
+start_seconds="$(date +%s)"
+
+# fix no tty warnings in provisioner logs
+sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
+
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 export COMPOSER_ALLOW_SUPERUSER=1
 export COMPOSER_NO_INTERACTION=1
+
+# cleanup
+mkdir -p /vagrant
+
+# change ownership for /vagrant folder
+sudo chown -R vagrant:vagrant /vagrant
+
+rm -f /vagrant/provisioned_at
+rm -f /vagrant/version
+rm -f /vagrant/vvv-custom.yml
+rm -f /vagrant/config.yml
+
+touch /vagrant/provisioned_at
+echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
 
 date_time=`cat /vagrant/provisioned_at`
 logfolder="/var/log/provisioners/${date_time}"
@@ -19,6 +46,28 @@ mkdir -p "${logfolder}"
 touch "${logfile}"
 exec > >(tee -a "${logfile}" )
 exec 2> >(tee -a "${logfile}" >&2 )
+
+echo -e "${GREEN} * Beginning Main VVV Provisioner, if this is the first provision this may take a few minutes${CRESET}"
+
+if [ -d /srv/provision/resources ]; then
+  echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
+  rm -rf /srv/provision/resources ## remove deprecated folder
+fi
+
+# copy over version and config files
+cp -f /home/vagrant/version /vagrant
+cp -f /srv/config/config.yml /vagrant
+VVV_CONFIG=/vagrant/config.yml
+
+
+sudo chmod 0644 /vagrant/config.yml
+sudo chmod 0644 /vagrant/version
+sudo chmod 0644 /vagrant/provisioned_at
+
+# symlink the certificates folder for older site templates compat
+if [[ ! -d /vagrant/certificates ]]; then
+  ln -s /srv/certificates /vagrant/certificates
+fi
 
 codename=$(lsb_release --codename | cut -f2)
 if [[ $codename == "trusty" ]]; then
@@ -83,10 +132,6 @@ if [[ $codename == "trusty" ]]; then
 fi
 
 source /srv/provision/provision-network-functions.sh
-
-# By storing the date now, we can calculate the duration of provisioning at the
-# end of this script.
-start_seconds="$(date +%s)"
 
 # PACKAGE INSTALLATION
 #
@@ -330,7 +375,7 @@ package_install() {
     echo " * creating mysql group"
     groupadd -g 9001 mysql
   fi
-  
+
   if id -u mysql >/dev/null 2>&1; then
     echo " * mysql user present and has uid $(id -u mysql)"
   else
@@ -355,12 +400,12 @@ package_install() {
   # Provide our custom apt sources before running `apt-get update`
   echo " * Copying custom apt sources"
   cp -f /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
-  
+
   echo " * Checking Apt Keys"
   keys=$( apt-key list )
   if [[ ! $( echo $keys | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
-    echo "Applying NodeSource NodeJS signing key..."
+    echo " * Applying NodeSource NodeJS signing key..."
     apt-key add /srv/config/apt-keys/nodesource.gpg.key
   fi
 
@@ -369,56 +414,56 @@ package_install() {
   # our appended apt source.list
   if [[ ! $( echo $keys | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
-    echo "Applying Nginx signing key..."
+    echo " * Applying Nginx signing key..."
     apt-key add /srv/config/apt-keys/nginx_signing.key
   fi
 
   if [[ ! $( echo $keys | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
-    echo "Applying the Ondřej PHP signing key..."
+    echo " * Applying the Ondřej PHP signing key..."
     apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
   if [[ ! $( echo $keys | grep 'Varying Vagrant Vagrants') ]]; then
     # Apply the VVV signing key
-    echo "Applying the Varying Vagrant Vagrants mirror signing key..."
+    echo " * Applying the Varying Vagrant Vagrants mirror signing key..."
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
   if [[ ! $( echo $keys | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing keyg
-    echo "Applying the MariaDB signing key..."
+    echo " * Applying the MariaDB signing key..."
     apt-key add /srv/config/apt-keys/mariadb.key
   fi
 
   if [[ ! $( echo $keys | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
-    echo "Applying the PackageCloud Git-LFS signing key..."
+    echo " * Applying the PackageCloud Git-LFS signing key..."
     apt-key add /srv/config/apt-keys/git-lfs.key
   fi
   if [[ ! $( echo $keys | grep 'MongoDB 4.0') ]]; then
-    echo "Applying the MongoDB 4.0 signing key..."
+    echo " * Applying the MongoDB 4.0 signing key..."
     apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
   fi
 
   # Update all of the package references before installing anything
-  echo "Running apt-get update..."
+  echo " * Running apt-get update..."
   apt-get -y update
 
   # Install required packages
-  echo "Installing apt-get packages..."
+  echo " * Installing apt-get packages..."
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
-    echo "Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean
     return 1
   fi
 
   # Remove unnecessary packages
-  echo "Removing unnecessary packages..."
+  echo " * Removing unnecessary packages..."
   apt-get autoremove -y
 
   # Clean up apt caches
-  echo "Cleaning apt caches..."
+  echo " * Cleaning apt caches..."
   apt-get clean
 
   return 0
@@ -442,26 +487,26 @@ tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /srv/config/homebin/xdebug_off
 
-  echo "Checking for NVM"
+  echo " * Checking for NVM"
   if [[ -f ~/.nvm ]]; then
-    echo ".nvm folder found, switching to system node, and removing NVM folders"
+    echo " * .nvm folder found, switching to system node, and removing NVM folders"
     nvm use system
     rm -rf ~/.nvm ~/.npm ~/.bower /srv/config/nvm
-    echo "NVM folders removed"
+    echo " * NVM folders removed"
   fi
-  
+
   if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then
-    echo "Downgrading to Node v10."
+    echo " * Downgrading to Node v10."
     apt remove nodejs -y
     apt install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken nodejs
   fi
-  
+
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
-  echo "Installing/updating npm..."
+  echo " * Installing/updating npm..."
   npm install -g npm
-  echo "Installing/updating npm-check-updates..."
+  echo " * Installing/updating npm-check-updates..."
   npm install -g npm-check-updates
 
   # ack-grep
@@ -469,13 +514,13 @@ tools_install() {
   # Install ack-rep directory from the version hosted at beyondgrep.com as the
   # PPAs for Ubuntu Precise are not available yet.
   if [[ -f /usr/bin/ack ]]; then
-    echo "ack-grep already installed"
+    echo " * ack-grep already installed"
   else
-    echo "Installing ack-grep as ack"
+    echo " * Installing ack-grep as ack"
     curl -s https://beyondgrep.com/ack-2.16-single-file > "/usr/bin/ack" && chmod +x "/usr/bin/ack"
   fi
 
-  echo "Making sure the composer cache is not owned by root"
+  echo " * Making sure the composer cache is not owned by root"
   mkdir -p /usr/local/src/composer
   mkdir -p /usr/local/src/composer/cache
   chown -R vagrant:www-data /usr/local/src/composer
@@ -483,10 +528,10 @@ tools_install() {
 
   # COMPOSER
 
-  echo "Checking for Composer"
+  echo " * Checking for Composer"
   exists_composer="$(which composer)"
   if [[ "/usr/local/bin/composer" != "${exists_composer}" ]]; then
-    echo "Installing Composer..."
+    echo " * Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
     mv "composer.phar" "/usr/local/bin/composer"
@@ -496,16 +541,16 @@ tools_install() {
   if [[ ! -z $github_token ]]; then
     rm /srv/provision/github.token
     echo $github_token >> /srv/provision/github.token
-    echo "A personal GitHub token was found, configuring composer"
+    echo " * A personal GitHub token was found, configuring composer"
     ghtoken=`cat /srv/provision/github.token`
     noroot composer config --global github-oauth.github.com $ghtoken
-    echo "Your personal GitHub token is set for Composer."
+    echo " * Your personal GitHub token is set for Composer."
   fi
 
   # Update both Composer and any global packages. Updates to Composer are direct from
   # the master branch on its GitHub repository.
   if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
-    echo "Updating Composer..."
+    echo " * Updating Composer..."
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --no-progress --no-interaction
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --no-update --no-progress --no-interaction phpunit/phpunit:6.* phpunit/php-invoker:1.1.* mockery/mockery:0.9.* d11wtq/boris:v1.0.8
@@ -521,7 +566,7 @@ tools_install() {
     npm install -g grunt-rtlcss --no-optional
     echo " * Installed Grunt CLI"
   }
-  
+
   function update_grunt() {
     echo " * Updating Grunt CLI"
     npm update -g grunt grunt-cli --no-optional
@@ -562,25 +607,25 @@ tools_install() {
   #
   # Set up a symlink between the Graphviz path defined in the default Webgrind
   # config and actual path.
-  echo "Adding graphviz symlink for Webgrind..."
+  echo " * Adding graphviz symlink for Webgrind..."
   ln -sf "/usr/bin/dot" "/usr/local/bin/dot"
 
   # Shyaml
   #
   # Used for passing custom parameters to the bash provisioning scripts
-  echo "Installing Shyaml for bash provisioning.."
+  echo " * Installing Shyaml for bash provisioning.."
   sudo pip install shyaml
 }
 
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
-    echo "Generating Nginx server private key..."
+    echo " * Generating Nginx server private key..."
     vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
     echo "$vvvgenrsa"
   fi
   if [[ ! -e /etc/nginx/server-2.1.0.crt ]]; then
-    echo "Sign the certificate using the above private key..."
+    echo " * Sign the certificate using the above private key..."
     vvvsigncert="$(openssl req -new -x509 \
             -key /etc/nginx/server-2.1.0.key \
             -out /etc/nginx/server-2.1.0.crt \
@@ -589,7 +634,7 @@ nginx_setup() {
     echo "$vvvsigncert"
   fi
 
-  echo -e "\nSetup configuration files..."
+  echo -e "\n * Setup configuration files..."
 
   # Used to ensure proper services are started on `vagrant up`
   echo " * Copying /srv/config/init/vvv-start.conf               to /etc/init/vvv-start.conf"
@@ -624,7 +669,7 @@ nginx_setup() {
 
   rm -rf /etc/nginx/custom-{dashboard-extensions,utilities}/*
 
-  echo "Making sure the Nginx log files and folder exist"
+  echo " * Making sure the Nginx log files and folder exist"
   mkdir -p /var/log/nginx/
   touch /var/log/nginx/error.log
   touch /var/log/nginx/access.log
@@ -634,19 +679,19 @@ phpfpm_setup() {
   # Copy php-fpm configuration from local
   echo " * Copying /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
   cp -f "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
-  
+
   echo " * Copying /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
   cp -f "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
-  
+
   echo " * Copying /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
   cp -f "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
-  
+
   echo " * Copying /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
   cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
-  
+
   echo " * Copying /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
   cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
-  
+
   echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
   cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.2/mods-available/mailhog.ini"
 
@@ -706,11 +751,12 @@ mysql_setup() {
 
   exists_mysql="$(service mysql status)"
   if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
-    echo -e "\nSetup MySQL configuration file links..."
+    echo -e "\n * Setup MySQL configuration file links..."
 
     # Copy mysql configuration from local
     cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
     cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
+    chmod 0644 "/home/vagrant/.my.cnf"
 
     echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
@@ -719,10 +765,10 @@ mysql_setup() {
     # happens after a `vagrant halt`. Check to see if it's running before
     # deciding whether to start or restart.
     if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
-      echo "service mysql start"
+      echo " * service mysql start"
       service mysql start
       else
-      echo "service mysql restart"
+      echo " * service mysql restart"
       service mysql restart
     fi
 
@@ -732,21 +778,21 @@ mysql_setup() {
     # the mysqldump files located in database/backups/
     if [[ -f "/srv/database/init-custom.sql" ]]; then
       mysql -u "root" -p"root" < "/srv/database/init-custom.sql"
-      echo -e "\nInitial custom MySQL scripting..."
+      echo -e "\n * Initial custom MySQL scripting..."
     else
-      echo -e "\nNo custom MySQL scripting found in database/init-custom.sql, skipping..."
+      echo -e "\n * No custom MySQL scripting found in database/init-custom.sql, skipping..."
     fi
 
     # Setup MySQL by importing an init file that creates necessary
     # users and databases that our vagrant setup relies on.
     mysql -u "root" -p"root" < "/srv/database/init.sql"
-    echo "Initial MySQL prep..."
+    echo " * Initial MySQL prep..."
 
     # Process each mysqldump SQL file in database/backups to import
     # an initial data set for MySQL.
     "/srv/database/import-sql.sh"
   else
-    echo -e "\nMySQL is not installed. No databases imported."
+    echo -e "\n * MySQL is not installed. No databases imported."
   fi
 }
 
@@ -754,7 +800,7 @@ services_restart() {
   # RESTART SERVICES
   #
   # Make sure the services we expect to be running are running.
-  echo -e "\nRestarting services..."
+  echo -e "\n * Restarting services..."
   service nginx restart
   service memcached restart
   service mailhog restart
@@ -762,8 +808,8 @@ services_restart() {
   # Disable PHP Xdebug module by default
   phpdismod xdebug
 
-  # Enable PHP mailcatcher sendmail settings by default
-  phpenmod mailhog
+  # Enable PHP MailHog sendmail settings by default
+  phpenmod -s fpm mailhog
 
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
@@ -779,13 +825,13 @@ wp_cli() {
 
   # Remove old wp-cli symlink, if it exists.
   if [[ -L "/usr/local/bin/wp" ]]; then
-    echo "\nRemoving old wp-cli"
+    echo "\n * Removing old wp-cli"
     rm -f /usr/local/bin/wp
   fi
 
   exists_wpcli="$(which wp)"
   if [[ "/usr/local/bin/wp" != "${exists_wpcli}" ]]; then
-    echo -e "\nDownloading wp-cli, see http://wp-cli.org"
+    echo -e "\n * Downloading wp-cli, see http://wp-cli.org"
     curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
     chmod +x wp-cli-nightly.phar
     sudo mv wp-cli-nightly.phar /usr/local/bin/wp
@@ -793,7 +839,7 @@ wp_cli() {
     # Install bash completions
     curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
   else
-    echo -e "\nUpdating wp-cli..."
+    echo -e "\n * Updating wp-cli..."
     wp --allow-root cli update --nightly --yes
   fi
 }
@@ -801,8 +847,8 @@ wp_cli() {
 php_codesniff() {
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
   # Sniffs WordPress Coding Standards
-  echo -e "\nInstall/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
-  echo -e "\nInstall/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
+  echo -e "\n * Install/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
+  echo -e "\n * Install/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
   cd /srv/provision/phpcs
   noroot composer update --no-ansi --no-autoloader --no-progress
 
@@ -838,13 +884,14 @@ wpsvn_check() {
 }
 
 cleanup_vvv(){
-  echo "Cleaning up Nginx configs"
+  echo " * Cleaning up Nginx configs"
   # Kill previously symlinked Nginx configs
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 
   # Cleanup the hosts file
-  echo "Cleaning the virtual machine's /etc/hosts file..."
+  echo " * Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
+  echo "127.0.0.1 vvv # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
   if [[ `is_utility_installed core tideways` ]]; then
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
@@ -865,10 +912,10 @@ profile_setup
 network_check
 # Package and Tools Install
 echo " "
-echo "Main packages check and install."
+echo " * Main packages check and install."
 git_ppa_check
 if ! package_install; then
-  echo "Main packages check and install failed, halting provision"
+  echo "${RED} ! Main packages check and install failed, halting provision${CRESET}"
   exit 1
 fi
 
@@ -883,7 +930,7 @@ mysql_setup
 network_check
 # WP-CLI and debugging tools
 echo " "
-echo "Installing/updating wp-cli and debugging tools"
+echo " * Installing/updating wp-cli and debugging tools"
 
 wp_cli
 php_codesniff
@@ -901,6 +948,6 @@ cleanup_vvv
 #set +xv
 # And it's done
 end_seconds="$(date +%s)"
-echo "-----------------------------"
-echo "Provisioning complete in "$(( end_seconds - start_seconds ))" seconds"
-echo "For further setup instructions, visit http://vvv.test"
+echo -e "${GREEN} -----------------------------${CRESET}"
+echo -e "${GREEN} * Provisioning complete in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+echo -e "${GREEN} * For further setup instructions, visit http://vvv.test${CRESET}"
