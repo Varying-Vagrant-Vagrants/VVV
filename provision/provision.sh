@@ -7,9 +7,27 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
+GREEN="\033[38;5;2m"
+RED="\033[38;5;9m"
+BLUE="\033[38;5;4m"
+YELLOW="\033[38;5;3m"
+CRESET="\033[0m"
+
+# By storing the date now, we can calculate the duration of provisioning at the
+# end of this script.
+start_seconds="$(date +%s)"
+
+# fix no tty warnings in provisioner logs
+sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
+
+export DEBIAN_FRONTEND=noninteractive
+export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+export COMPOSER_ALLOW_SUPERUSER=1
+export COMPOSER_NO_INTERACTION=1
+
 # cleanup
 mkdir -p /vagrant
-rm -rf /srv/provision/resources ## remove deprecated folder
+
 # change ownership for /vagrant folder
 sudo chown -R vagrant:vagrant /vagrant
 
@@ -20,6 +38,21 @@ rm -f /vagrant/config.yml
 
 touch /vagrant/provisioned_at
 echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
+
+date_time=`cat /vagrant/provisioned_at`
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-main.log"
+mkdir -p "${logfolder}"
+touch "${logfile}"
+exec > >(tee -a "${logfile}" )
+exec 2> >(tee -a "${logfile}" >&2 )
+
+echo -e "${GREEN} * Beginning Main VVV Provisioner, if this is the first provision this may take a few minutes${CRESET}"
+
+if [ -d /srv/provision/resources ]; then
+  echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
+  rm -rf /srv/provision/resources ## remove deprecated folder
+fi
 
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
@@ -33,22 +66,6 @@ sudo chmod 0644 /vagrant/provisioned_at
 if [[ ! -d /vagrant/certificates ]]; then
   ln -s /srv/certificates /vagrant/certificates
 fi
-
-# fix no tty warnings in provisioner logs
-sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
-
-export DEBIAN_FRONTEND=noninteractive
-export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-export COMPOSER_ALLOW_SUPERUSER=1
-export COMPOSER_NO_INTERACTION=1
-
-date_time=`cat /vagrant/provisioned_at`
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-main.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
 
 codename=$(lsb_release --codename | cut -f2)
 if [[ $codename == "trusty" ]]; then
@@ -113,10 +130,6 @@ if [[ $codename == "trusty" ]]; then
 fi
 
 source /srv/provision/provision-network-functions.sh
-
-# By storing the date now, we can calculate the duration of provisioning at the
-# end of this script.
-start_seconds="$(date +%s)"
 
 # PACKAGE INSTALLATION
 #
@@ -932,6 +945,6 @@ cleanup_vvv
 #set +xv
 # And it's done
 end_seconds="$(date +%s)"
-echo "-----------------------------"
-echo "Provisioning complete in "$(( end_seconds - start_seconds ))" seconds"
-echo "For further setup instructions, visit http://vvv.test"
+echo -e "${GREEN}-----------------------------${CRESET}"
+echo -e "${GREEN}Provisioning complete in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+echo -e "${GREEN}For further setup instructions, visit http://vvv.test${CRESET}"
