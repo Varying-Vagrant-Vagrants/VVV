@@ -162,6 +162,7 @@ function vvv_run_site_template_script() {
   fi
 }
 
+SUCCESS=1
 # Look for site setup scripts
 echo " * Searching for a site template provisioner, vvv-init.sh"
 if [[ -f "${VM_DIR}/.vvv/vvv-init.sh" ]]; then
@@ -174,10 +175,10 @@ elif [[ -f "${VM_DIR}/vvv-init.sh" ]]; then
   vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}"
   SUCCESS=$?
 else
-  echo "  * Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
+  echo " * Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
   SITE_INIT_SCRIPTS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-init.conf');
   if [[ -z $SITE_INIT_SCRIPTS ]] ; then
-    echo "Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
+    echo " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
   else
     for SITE_INIT_SCRIPT in $SITE_INIT_SCRIPTS; do
       DIR="$(dirname "$SITE_INIT_SCRIPT")"
@@ -194,10 +195,10 @@ elif [[ -f "${VM_DIR}/provision/vvv-nginx.conf" ]]; then
 elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
   vvv_provision_site_nginx $SITE "${VM_DIR}/vvv-nginx.conf"
 else
-  echo "Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
+  echo " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
   NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
   if [[ -z $NGINX_CONFIGS ]] ; then
-    echo "${RED}Warning: No nginx config was found, VVV will not know how to serve this site${CRESET}"
+    echo -e " * ${RED}Warning: No nginx config was found, VVV will not know how to serve this site${CRESET}"
   else
     for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
       vvv_provision_site_nginx $SITE $SITE_CONFIG_FILE
