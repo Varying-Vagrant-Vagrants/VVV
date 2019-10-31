@@ -16,6 +16,8 @@ CRESET="\033[0m"
 
 PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 
+VVV_CONFIG=/vagrant/config.yml
+
 if [[ -f $PROVISIONER ]]; then
 	echo -e "${GREEN} * Running utility provisioner for '${1}/${2}'${CRESET}"
 	start_seconds="$(date +%s)"
