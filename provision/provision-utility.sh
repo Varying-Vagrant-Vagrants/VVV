@@ -24,10 +24,10 @@ if [[ -f $PROVISIONER ]]; then
     end_seconds="$(date +%s)"
 	if [ $? -eq 0 ]; then
 		echo -e "${GREEN} * The '${1}/${2}' provisioner completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
-		return 0
+		exit 0
 	else
 		echo -e "${RED} * The '${1}/${2}' provisioner ran into problems, check the full log in log/provisioners/${date_time}/provisioner-utility-${1}-${2}.log for more details! It completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
-		return 1
+		exit 1
 	fi
 else
 	echo -e "${RED} ! VVV Tried to run the utility provisioner for '${1}/${2}' but ${PROVISIONER} doesn't exist${CRESET}"
