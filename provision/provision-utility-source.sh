@@ -5,6 +5,12 @@ REPO=$2
 BRANCH=${3:-master}
 DIR="/srv/provision/utilities/${NAME}"
 
+GREEN="\033[38;5;2m"
+RED="\033[38;5;9m"
+BLUE="\033[38;5;4m"
+YELLOW="\033[38;5;3m"
+CRESET="\033[0m"
+
 date_time=`cat /vagrant/provisioned_at`
 logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-utility-source-${NAME}.log"
@@ -16,28 +22,28 @@ exec 2> >(tee -a "${logfile}" >&2 )
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
   if [[ ! -d ${DIR}/.git ]]; then
-    echo "Cloning the \"${NAME}\" utility, see \"${REPO}\""
+    echo -e "${GREEN} * Cloning the \"${NAME}\" utility, see \"${REPO}\"${CRESET}"
     git clone ${REPO} --branch ${BRANCH} ${DIR} -q
     cd ${DIR}
     git checkout ${BRANCH} -q
   else
-    echo  "Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch..."
+    echo -e "${GREEN} * Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch...${CRESET}"
     cd ${DIR}
     git pull origin ${BRANCH} -q
     git checkout ${BRANCH} -q
   fi
 else
   if [[ false == "${NAME}" && false == "${REPO}" ]]; then
-    echo "Error: VVV tried to provision a utility, but no name or git repo was supplied, double check your config/config.yml file is correct and has the right indentation"
+    echo -e "${RED}Error: VVV tried to provision a utility, but no name or git repo was supplied, double check your config/config.yml file is correct and has the right indentation${CRESET}"
     exit 1
   fi
   if [[ false == "${NAME}" ]]; then
-    echo -e "Error: While processing a utility, a utility with a blank name was found, with the git repo ${REPO}"
+    echo -e "${RED}Error: While processing a utility, a utility with a blank name was found, with the git repo ${REPO}${CRESET}"
     exit 1
   fi
 
   if [[ false == "${REPO}" ]]; then
-    echo -e "Error: While processing the ${NAME} utility, VVV could not find a git repository to clone"
+    echo -e "${RED}Error: While processing the ${NAME} utility, VVV could not find a git repository to clone${CRESET}"
   fi
 fi
 
