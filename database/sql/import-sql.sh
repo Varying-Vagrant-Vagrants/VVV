@@ -18,9 +18,9 @@
 #
 # Let's begin...
 
-VVV_CONFIG=/vagrant/vvv-config.yml
-if [[ -f /vagrant/vvv-custom.yml ]]; then
-	VVV_CONFIG=/vagrant/vvv-custom.yml
+VVV_CONFIG=/srv/config/default-config.yml
+if [[ -f /srv/config/config.yml ]]; then
+	VVV_CONFIG=/srv/config/config.yml
 fi
 
 run_restore=`cat ${VVV_CONFIG} | shyaml get-value general.db_restore 2> /dev/null`

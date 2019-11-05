@@ -12,6 +12,8 @@ permalink: /docs/en-US/changelog/
  - Updated the default config to reference PHP 7.4 support
  - webgrind is now provisioned using composer
  - Added support for the vagrant-disksize plugin if available
+ - Site provisioner output is now piped to the log file to simplify the terminal output. Errors should still be sent to the terminal
+ - Utility provisioner is now piped to the log file to simplify terminal output
 
 ### Bug Fixes
 
@@ -22,6 +24,9 @@ permalink: /docs/en-US/changelog/
  - Fixes to newline substitution in the splash screen and some rearrangement
  - MySQL binary logging is now disabled
  - Synced folder permission fixes for VMWare
+ - Shared DB mounts are now mounted on Parallels and VMWare
+ - Fixed `/var/log` being mounted on Parallels, HyperV, and VMWare
+
 
 ## 3.1.1 ( 2019 August 6th )
 
