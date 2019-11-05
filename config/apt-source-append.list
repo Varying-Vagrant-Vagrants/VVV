@@ -15,8 +15,8 @@ deb-src https://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic mai
 
 # MariaDB 10.3 repository list - created 2018-06-19 13:36 UTC
 # https://downloads.mariadb.org/mariadb/repositories/
-deb [arch=amd64,i386] https://mirrors.coreix.net/mariadb/repo/10.3/ubuntu bionic main
-deb-src https://mirrors.coreix.net/mariadb/repo/10.3/ubuntu bionic main
+deb [arch=amd64,i386] https://mirror.herrbischoff.com/mariadb/repo/10.3/ubuntu bionic main
+deb-src https://mirror.herrbischoff.com/mariadb/repo/10.3/ubuntu bionic main
 
 # Provides Node.js
 deb https://deb.nodesource.com/node_10.x bionic main
