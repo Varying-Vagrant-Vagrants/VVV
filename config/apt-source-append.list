@@ -6,12 +6,12 @@ deb https://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb-src https://nginx.org/packages/mainline/ubuntu/ bionic nginx
 
 # Provides PHP7
-deb https://ppa.launchpad.net/ondrej/php/ubuntu bionic main
-deb-src https://ppa.launchpad.net/ondrej/php/ubuntu bionic main
+deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
+deb-src http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
 
 # VVV mirror packages
-deb https://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
-deb-src https://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
+deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
+deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
 
 # MariaDB 10.3 repository list - created 2018-06-19 13:36 UTC
 # https://downloads.mariadb.org/mariadb/repositories/
