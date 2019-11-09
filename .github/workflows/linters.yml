@@ -1,6 +1,6 @@
 name: Syntax Checking and Linting
 on:
-  [push,pull_request]
+  [pull_request]
     
 jobs:
   build:
