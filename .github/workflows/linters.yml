@@ -1,0 +1,20 @@
+name: Syntax Checking and Linting
+on:
+  [push,pull_request]
+    
+jobs:
+  build:
+    name: Linting
+    # This job runs on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: YAML Lint
+        uses: ibiqlik/action-yamllint@v0.0.1
+      - name: ShellCheck-Linter-Action
+        uses: zbeekman/ShellCheck-Linter-Action@v1.0.1
+      - name: PHP Syntax Checker (Lint) PHP 7.3
+        uses: StephaneBour/actions-php-lint@7.3
+        with:
+          dir: '.'
+      - name: whitespace-linter
+        uses: nosborn/github-action-whitespace-linter@v1
