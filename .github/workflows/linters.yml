@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: YAML Lint
         uses: ibiqlik/action-yamllint@v0.0.1
-      - name: ShellCheck-Linter-Action
-        uses: zbeekman/ShellCheck-Linter-Action@v1.0.1
         with:
           file_or_dir: ./**/*val*.yml
+      - name: ShellCheck-Linter-Action
+        uses: zbeekman/ShellCheck-Linter-Action@v1.0.1
       - name: PHP Syntax Checker (Lint) PHP 7.3
         uses: StephaneBour/actions-php-lint@7.3
         with:
