@@ -11,7 +11,7 @@ jobs:
       - name: YAML Lint
         uses: ibiqlik/action-yamllint@v0.0.1
         with:
-          file_or_dir: ./**/*val*.yml
+          file_or_dir: ./*.yml
       - name: ShellCheck-Linter-Action
         uses: zbeekman/ShellCheck-Linter-Action@v1.0.1
       - name: PHP Syntax Checker (Lint) PHP 7.3
