@@ -12,8 +12,6 @@ jobs:
         uses: ibiqlik/action-yamllint@v0.0.1
         with:
           file_or_dir: .
-      - name: Shellcheck Action
-        uses: fearphage/shellcheck-action@0.1.0-debug1
       - name: PHP Syntax Checker (Lint) PHP 7.3
         uses: StephaneBour/actions-php-lint@7.3
         with:
