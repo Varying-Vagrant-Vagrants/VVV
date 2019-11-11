@@ -18,3 +18,7 @@ jobs:
           dir: '.'
       - name: whitespace-linter
         uses: nosborn/github-action-whitespace-linter@v1
+      - name: shellcheck
+        uses: ludeeus/action-shellcheck@0.0.1
+      - name: EditorConfig-Action
+        uses: zbeekman/EditorConfig-Action@v1.0.0
