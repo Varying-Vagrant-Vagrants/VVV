@@ -3,6 +3,15 @@
 Vagrant.require_version ">= 2.2.4"
 require 'yaml'
 require 'fileutils'
+require 'optparse'
+require 'ostruct'
+
+options = OpenStruct.new
+OptionParser.new do |opt|
+  opt.on('-w', '--website site-folder', 'Site name in config.yml') { |o| options.website = o }
+  opt.on('-c', '--command your-command', 'Command to execute') { |o| options.command = o }
+  opt.on('-s', '--script script', 'Scripts from config/homebin/') { |o| options.script = o }
+end.parse!
 
 def virtualbox_path()
     @vboxmanage_path = nil
@@ -824,6 +833,25 @@ Vagrant.configure("2") do |config|
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
+  end
+  if options.script
+    splash = <<-HEREDOC
+      #{yellow}Executing #{red}#{options.script}#{creset}
+    HEREDOC
+    puts splash
+
+    config.vm.provision "shell", keep_color: true,run: 'always', inline: "/srv/config/homebin/#{options.script}"
+    exit()
+  end
+
+  if options.website && options.command
+    splash = <<-HEREDOC
+      #{yellow}Executing command #{red}#{options.command} #{yellow}in #{red}#{options.website}#{creset}
+    HEREDOC
+    puts splash
+
+    config.vm.provision "shell", keep_color: true, inline: "/srv/www/#{options.website}/#{options.command}"
+    exit()
   end
 
   # Vagrant Triggers
