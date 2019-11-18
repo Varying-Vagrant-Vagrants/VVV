@@ -882,11 +882,10 @@ class VVVScripts < Vagrant.plugin(2, :command)
   end
 
   def execute
-      puts "#{$yellow}Executing #{$red}#{ARGV[1]}#{$creset}\n\n"
-      Vagrant.configure("2") do |config|
-        config.vm.provision "shell", keep_color: true, run: 'always', path: "/srv/config/homebin/#{ARGV[1]}"
-      end
-    0
+    with_target_vms(nil, single_target: true) do |vm|
+      @env.ui.output "#{$yellow}Executing #{$red}#{ARGV[1]}#{$creset}\n"
+      vm.action(:ssh_run, ssh_run_command: "/srv/config/homebin/#{ARGV[1]}" )
+    end
   end
 end
 
@@ -896,11 +895,10 @@ class VVVCommand < Vagrant.plugin(2, :command)
   end
 
   def execute
-      puts "#{$yellow}Executing in #{$red}#{ARGV[1]} #{$yellow}: #{$red}#{ARGV[2]}#{$creset}\n\n"
-      Vagrant.configure("2") do |config|
-        config.vm.provision "shell", keep_color: true, run: 'always', path: "/srv/www/#{ARGV[1]}/public_html; #{ARGV[2]}"
-      end
-    0
+    with_target_vms(nil, single_target: true) do |vm|
+      @env.ui.output "#{$yellow}Executing in #{$red}#{ARGV[1]} #{$yellow}: #{$red}#{ARGV[2]}#{$creset}\n"
+      vm.action(:ssh_run, ssh_run_command: "cd /srv/www/#{ARGV[1]}/public_html; #{ARGV[2]}")
+    end
   end
 end
 
