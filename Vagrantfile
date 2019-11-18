@@ -3,15 +3,6 @@
 Vagrant.require_version ">= 2.2.4"
 require 'yaml'
 require 'fileutils'
-require 'optparse'
-require 'ostruct'
-
-options = OpenStruct.new
-OptionParser.new do |opt|
-  opt.on('-w', '--website site-folder', 'Site name in config.yml') { |o| options.website = o }
-  opt.on('-c', '--command your-command', 'Command to execute') { |o| options.command = o }
-  opt.on('-s', '--script script', 'Scripts from config/homebin/') { |o| options.script = o }
-end.parse!
 
 def virtualbox_path()
     @vboxmanage_path = nil
@@ -834,25 +825,6 @@ Vagrant.configure("2") do |config|
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
   end
-  if options.script
-    splash = <<-HEREDOC
-      #{yellow}Executing #{red}#{options.script}#{creset}
-    HEREDOC
-    puts splash
-
-    config.vm.provision "shell", keep_color: true,run: 'always', inline: "/srv/config/homebin/#{options.script}"
-    exit()
-  end
-
-  if options.website && options.command
-    splash = <<-HEREDOC
-      #{yellow}Executing command #{red}#{options.command} #{yellow}in #{red}#{options.website}#{creset}
-    HEREDOC
-    puts splash
-
-    config.vm.provision "shell", keep_color: true, inline: "/srv/www/#{options.website}/#{options.command}"
-    exit()
-  end
 
   # Vagrant Triggers
   #
@@ -901,5 +873,44 @@ Vagrant.configure("2") do |config|
     trigger.name = "VVV Pre-Destroy"
     trigger.run_remote = { inline: "/srv/config/homebin/vagrant_destroy" }
     trigger.on_error = :continue
+  end
+end
+
+class VVVScripts < Vagrant.plugin(2, :command)
+  def self.synopsis
+    "Execute script from /config/homebin/"
+  end
+
+  def execute
+      puts "#{$yellow}Executing #{$red}#{ARGV[1]}#{$creset}\n\n"
+      Vagrant.configure("2") do |config|
+        config.vm.provision "shell", keep_color: true, run: 'always', path: "/srv/config/homebin/#{ARGV[1]}"
+      end
+    0
+  end
+end
+
+class VVVCommand < Vagrant.plugin(2, :command)
+  def self.synopsis
+    "Execute custom command inside site folder"
+  end
+
+  def execute
+      puts "#{$yellow}Executing in #{$red}#{ARGV[1]} #{$yellow}: #{$red}#{ARGV[2]}#{$creset}\n\n"
+      Vagrant.configure("2") do |config|
+        config.vm.provision "shell", keep_color: true, run: 'always', path: "/srv/www/#{ARGV[1]}/public_html; #{ARGV[2]}"
+      end
+    0
+  end
+end
+
+class VVVPlugin < Vagrant.plugin(2)
+  name "VVV commands"
+
+  command "script" do
+    VVVScripts
+  end
+  command "command" do
+    VVVCommand
   end
 end
