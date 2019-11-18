@@ -896,7 +896,7 @@ class VVVCommand < Vagrant.plugin(2, :command)
 
   def execute
     with_target_vms(nil, single_target: true) do |vm|
-      @env.ui.output "#{$yellow}Executing in #{$red}#{ARGV[1]} #{$yellow}: #{$red}#{ARGV[2]}#{$creset}\n"
+      @env.ui.output "#{$yellow}Executing in #{$red}#{ARGV[1]}#{$yellow}: #{$red}#{ARGV[2]}#{$creset}\n"
       vm.action(:ssh_run, ssh_run_command: "cd /srv/www/#{ARGV[1]}/public_html; #{ARGV[2]}")
     end
   end
