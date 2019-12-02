@@ -4,6 +4,13 @@ title: Changelog
 permalink: /docs/en-US/changelog/
 ---
 
+## 3.3.0 ( WIP )
+
+### Bug Fixes
+
+ - installs the ntp date packages and starts the ntp service to fix time drift on sleep
+
+
 ## 3.2.0 ( 2019 )
 
 ### Enhancements

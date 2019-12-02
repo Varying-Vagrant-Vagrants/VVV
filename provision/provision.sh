@@ -203,6 +203,8 @@ apt_package_install_list=(
 
   # ntp service to keep clock current
   ntp
+  ntpdate
+  ntpsec-ntpdate
 
   # Required for i18n tools
   gettext
@@ -804,6 +806,7 @@ services_restart() {
   service nginx restart
   service memcached restart
   service mailhog restart
+  service ntp restart
 
   # Disable PHP Xdebug module by default
   phpdismod xdebug
