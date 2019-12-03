@@ -23,7 +23,7 @@ if [[ -f /srv/config/config.yml ]]; then
 	VVV_CONFIG=/srv/config/config.yml
 fi
 
-run_restore=$(cat ${VVV_CONFIG} | shyaml get-value general.db_restore 2> /dev/null)
+run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
 
 if [[ $run_restore == "False" ]]
 then
