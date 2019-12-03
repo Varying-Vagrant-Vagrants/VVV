@@ -40,7 +40,6 @@ permalink: /docs/en-US/changelog/
 * Shared DB mounts are now mounted on Parallels and VMWare
 * Fixed `/var/log` being mounted on Parallels, HyperV, and VMWare
 
-
 ## 3.1.1 ( 2019 August 6th )
 
 This is a quick update that changes a default parameter when undefined. In VVV 2 the database was stored inside the VM, and in VVV 3 we put it in a shared folder. This didn't work for some people, so we added a config option to disable this. If this option wasn't set, VVV would use the shared folder.
@@ -365,7 +364,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * PHPUnit: Set the `WP_CORE_DIR` path so PHPUnit tests are run against WordPress trunk. See [#783](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/783).
 * Provision: Rewrite `provision.sh` to be more modular. This improves readability and may one day aid in testability. See [#659](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/659).
 * Vagrant: Set the default box name to that of the working directory to allow for multiple instances of VVV without conflict. See [#706](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/706).
-* Vagrant: Allow for a custom trigger, `vagrant_up` to fire during `vagrant up` and `vagrant reload`. See [#778](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/778).
+* Vagrant: Allow for a custom trigger, `vagrant_up` to fire during `vagrant up` and `vagrant reload`. See g[#778](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/778).
 * Vagrant: Make it easier and more forward-compatible to modify the virtual machine's IP address. See [#781](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/781).
 * Vagrant: Clarify default setting of 1 CPU when creating the virtual machine. See [#625](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/625/).
 * WordPress: Provide better support for testing with xip.io by accounting for these requests in `wp-config.php`. See [#559](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/559).
