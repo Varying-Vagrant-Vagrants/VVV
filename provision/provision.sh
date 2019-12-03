@@ -905,7 +905,7 @@ cleanup_vvv(){
 
 network_check
 # Profile_setup
-echo "Bash profile setup and directories."
+echo " * Bash profile setup and directories."
 cleanup_terminal_splash
 profile_setup
 
@@ -915,7 +915,7 @@ echo " "
 echo " * Main packages check and install."
 git_ppa_check
 if ! package_install; then
-  echo "${RED} ! Main packages check and install failed, halting provision${CRESET}"
+  echo -e "${RED} ! Main packages check and install failed, halting provision${CRESET}"
   exit 1
 fi
 
