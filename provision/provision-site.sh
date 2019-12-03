@@ -116,10 +116,10 @@ fi
 echo -e "${GREEN} * Running provisioner for site ${SITE}${CRESET}"
 
 if [[ false != "${REPO}" ]]; then
-  if [[ -d ${VM_DIR} ]] && [[ ! -z "$(ls -A ${VM_DIR})" ]]; then
-    if [[ -d ${VM_DIR}/.git ]]; then
+  if [[ -d "${VM_DIR}" ]] && [[ ! -z "$(ls -A "${VM_DIR}")" ]]; then
+    if [[ -d "${VM_DIR}/.git" ]]; then
     	echo " * Updating ${SITE} in ${VM_DIR}..."
-    	cd ${VM_DIR}
+    	cd "${VM_DIR}"
     	git reset "origin/${BRANCH}" --hard -q
     	git pull origin "${BRANCH}" -q
     	git checkout "${BRANCH}" -q
@@ -140,19 +140,19 @@ if [[ false != "${REPO}" ]]; then
   fi
 else
   echo "The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
-  if [[ ! -d ${VM_DIR} ]]; then
+  if [[ ! -d "${VM_DIR}" ]]; then
     echo "${RED}Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV${CRESET}"
   fi
 fi
 
-if [[ ! -d ${VM_DIR} ]]; then
+if [[ ! -d "${VM_DIR}" ]]; then
   echo "${RED} Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
 fi
 
 function vvv_run_site_template_script() {
   echo " * Found ${1} at ${2}/${1}"
   echo " * Script output will be logged to: log/provisioners/${date_time}/provisioner-site-${SITE}.log"
-  ( cd "${2}" && source "${1}" >> $logfile )
+  ( cd "${2}" && source "${1}" >> "$logfile" )
   if [ $? -eq 0 ]; then
     echo -e "${GREEN} * Site provisioner script finished successfully${CRESET}"
     return 0
@@ -196,7 +196,7 @@ elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
   vvv_provision_site_nginx "${SITE}" "${VM_DIR}/vvv-nginx.conf"
 else
   echo " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
-  NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
+  NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
   if [[ -z $NGINX_CONFIGS ]] ; then
     echo -e " * ${RED}Warning: No nginx config was found, VVV will not know how to serve this site${CRESET}"
   else
