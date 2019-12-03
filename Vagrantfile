@@ -412,7 +412,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
-  if !Vagrant.has_plugin?("vagrant-hostsupdater")
+  unless Vagrant.has_plugin?("vagrant-hostsupdater")
       if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
         system("vagrant plugin install " + File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
         File.delete(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
@@ -472,7 +472,7 @@ Vagrant.configure("2") do |config|
   end
 
   if defined? vvv_config['vm_config']['box']
-    if vvv_config['vm_config']['box'] != nil
+    if !vvv_config['vm_config']['box'].nil?
       config.vm.box  = vvv_config['vm_config']['box']
     end
   end
@@ -766,7 +766,7 @@ Vagrant.configure("2") do |config|
 
   vvv_config['utilities'].each do |name, utilities|
 
-    if ! utilities.kind_of? Array
+    unless utilities.kind_of? Array
       utilities = Hash.new
     end
     utilities.each do |utility|
@@ -786,7 +786,7 @@ Vagrant.configure("2") do |config|
   end
 
   vvv_config['sites'].each do |site, args|
-    if args['skip_provisioning'] === false
+    if !args['skip_provisioning']
       config.vm.provision "site-#{site}",
         type: "shell",
         keep_color: true,
