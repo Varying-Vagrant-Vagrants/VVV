@@ -39,7 +39,7 @@ cd /srv/database/backups/
 
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
-sql_count=$(ls -1 *.sql 2>/dev/null | wc -l)
+sql_count=$(ls -1 ./*.sql 2>/dev/null | wc -l)
 if [ $sql_count != 0 ]
 then
 	for file in $( ls *.sql )
@@ -51,7 +51,7 @@ then
 	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`$pre_dot\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
 	mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
-	db_exist=`mysql -u root -proot --skip-column-names -e "$mysql_cmd"`
+	db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
 	if [ "$?" != "0" ]
 	then
 		echo " * Error - Create ${pre_dot} database via init-custom.sql before attempting import"
@@ -59,7 +59,7 @@ then
 		if [ "" == "$db_exist" ]
 		then
 			echo "mysql -u root -proot ${pre_dot} < ${pre_dot}.sql"
-			mysql -u root -proot ${pre_dot} < ${pre_dot}.sql
+			mysql -u root -proot "${pre_dot}" < "${pre_dot}.sql"
 			echo " * Import of ${pre_dot} successful"
 		else
 			echo " * Skipped import of ${pre_dot} - tables exist"
