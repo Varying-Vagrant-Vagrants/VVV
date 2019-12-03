@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SITE=$1
-SITE_ESCAPED=`echo ${SITE} | sed 's/\./\\\\./g'`
+SITE_ESCAPED=$(echo ${SITE} | sed 's/\./\\\\./g')
 REPO=$2
 BRANCH=$3
 VM_DIR=$4
@@ -20,7 +20,7 @@ CRESET="\033[0m"
 # end of this script.
 start_seconds="$(date +%s)"
 
-date_time=`cat /vagrant/provisioned_at`
+date_time=$(cat /vagrant/provisioned_at)
 logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-site-${SITE}.log"
 mkdir -p "${logfolder}"
@@ -35,24 +35,24 @@ noroot() {
 }
 
 # Takes 2 values, a key to fetch a value for, and an optional default value
-# e.g. echo `get_config_value 'key' 'defaultvalue'`
+# e.g. echo $(get_config_value 'key' 'defaultvalue')
 get_config_value() {
-  local value=`cat ${VVV_CONFIG} | shyaml get-value sites.${SITE_ESCAPED}.custom.${1} 2> /dev/null`
+  local value=$(cat ${VVV_CONFIG} | shyaml get-value "sites.${SITE_ESCAPED}.custom.${1}" 2> /dev/null)
   echo ${value:-$2}
 }
 
 get_hosts() {
-  local value=`cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null`
+  local value=$(cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null)
   echo ${value:-$@}
 }
 
 get_primary_host() {
-  local value=`cat ${VVV_CONFIG} | shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" 2> /dev/null`
+  local value=$(cat ${VVV_CONFIG} | shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" 2> /dev/null)
   echo ${value:-$1}
 }
 
 is_utility_installed() {
-  local utilities=`cat ${VVV_CONFIG} | shyaml get-values "utilities.${1}" 2> /dev/null`
+  local utilities=$(cat ${VVV_CONFIG} | shyaml get-values "utilities.${1}" 2> /dev/null)
   for utility in ${utilities}; do
     if [[ "${utility}" == "${2}" ]]; then
       return 0
@@ -80,7 +80,7 @@ function vvv_provision_site_nginx() {
   sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
-  if [ -n "$(type -t is_utility_installed)" ] && [ "$(type -t is_utility_installed)" = function ] && `is_utility_installed core tls-ca`; then
+  if [ -n "$(type -t is_utility_installed)" ] && [ "$(type -t is_utility_installed)" = function ] && $(is_utility_installed core tls-ca); then
     sed -i "s#{vvv_tls_cert}#ssl_certificate /srv/certificates/${VVV_SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
     sed -i "s#{vvv_tls_key}#ssl_certificate_key /srv/certificates/${VVV_SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   else
@@ -211,7 +211,7 @@ fi
 #
 # Domains should be entered on new lines.
 echo " * Adding domains to the virtual machine's /etc/hosts file..."
-hosts=`cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null`
+hosts=$(cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null)
 if [ ${#hosts[@]} -eq 0 ]; then
   echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
   if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then
@@ -236,7 +236,7 @@ if [ ${#hosts[@]} -eq 0 ]; then
   fi
 else
   echo " * Adding hosts from the VVV config entry"
-  for line in `cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null`; do
+  for line in $(cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null); do
     if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
       echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
       echo "   - Added ${line} from ${VVV_CONFIG}"
