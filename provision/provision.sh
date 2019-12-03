@@ -222,7 +222,7 @@ apt_package_install_list=(
 ### FUNCTIONS
 
 is_utility_installed() {
-  local utilities=$(cat "${VVV_CONFIG}" | shyaml get-values utilities.${1} 2> /dev/null)
+  local utilities=$(cat "${VVV_CONFIG}" | shyaml get-values "utilities.${1}" 2> /dev/null)
   for utility in ${utilities}; do
     if [[ "${utility}" == "${2}" ]]; then
       return 0
