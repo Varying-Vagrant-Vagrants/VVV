@@ -47,11 +47,11 @@ def virtualbox_path()
           end
         end
         elsif Vagrant::Util::Platform.wsl?
-        if !Vagrant::Util::Platform.wsl_windows_access?
+        unless Vagrant::Util::Platform.wsl_windows_access?
           raise Vagrant::Errors::WSLVirtualBoxWindowsAccessError
         end
         @vboxmanage_path = Vagrant::Util::Which.which("VBoxManage") || Vagrant::Util::Which.which("VBoxManage.exe")
-        if !@vboxmanage_path
+        unless @vboxmanage_path
           # If we still don't have one, try to find it using common locations
           drive = "/mnt/c"
           [
@@ -127,9 +127,9 @@ end
 
 # Perform file migrations from older versions
 vvv_config_file = File.join(vagrant_dir, 'config/config.yml')
-if ( File.file?( vvv_config_file ) == false )
+unless File.file?( vvv_config_file )
   old_vvv_config = File.join(vagrant_dir, 'vvv-custom.yml')
-  if ( File.file?( old_vvv_config ) )
+  if File.file?( old_vvv_config )
     puts "#{yellow}Migrating #{red}vvv-custom.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow}.#{creset}\n\n"
     FileUtils.mv( old_vvv_config, vvv_config_file )
   else
@@ -147,7 +147,7 @@ end
 
 begin
   vvv_config = YAML.load_file(vvv_config_file)
-  if ! vvv_config['sites'].kind_of? Hash
+  unless vvv_config['sites'].kind_of? Hash
     vvv_config['sites'] = Hash.new
 
     puts "#{red}config/config.yml is missing a sites section.#{creset}\n\n"
@@ -161,7 +161,7 @@ rescue Exception => e
   exit
 end
 
-if ! vvv_config['hosts'].kind_of? Hash
+unless vvv_config['hosts'].kind_of? Hash
   vvv_config['hosts'] = Array.new
 end
 
@@ -174,7 +174,7 @@ vvv_config['sites'].each do |site, args|
       args['repo'] = repo
   end
 
-  if ! args.kind_of? Hash
+  unless args.kind_of? Hash
       args = Hash.new
   end
 
@@ -202,22 +202,22 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site].delete('hosts')
 end
 
-if ! vvv_config['utility-sources'].kind_of? Hash
+unless vvv_config['utility-sources'].kind_of? Hash
   vvv_config['utility-sources'] = Hash.new
 else
   vvv_config['utility-sources'].each do |name, args|
     if args.kind_of? String
-        repo = args
-        args = Hash.new
-        args['repo'] = repo
-        args['branch'] = 'master'
+      repo = args
+      args = Hash.new
+      args['repo'] = repo
+      args['branch'] = 'master'
 
-        vvv_config['utility-sources'][name] = args
+      vvv_config['utility-sources'][name] = args
     end
   end
 end
 
-if ! vvv_config['dashboard']
+unless vvv_config['dashboard']
   vvv_config['dashboard'] = Hash.new
 end
 dashboard_defaults = Hash.new
@@ -225,21 +225,21 @@ dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashbo
 dashboard_defaults['branch'] = 'master'
 vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
 
-if ! vvv_config['utility-sources'].key?('core')
+unless vvv_config['utility-sources'].key?('core')
   vvv_config['utility-sources']['core'] = Hash.new
   vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
   vvv_config['utility-sources']['core']['branch'] = 'master'
 end
 
-if ! vvv_config['utilities'].kind_of? Hash
+unless vvv_config['utilities'].kind_of? Hash
   vvv_config['utilities'] = Hash.new
 end
 
-if ! vvv_config['vm_config'].kind_of? Hash
+unless vvv_config['vm_config'].kind_of? Hash
   vvv_config['vm_config'] = Hash.new
 end
 
-if ! vvv_config['general'].kind_of? Hash
+unless vvv_config['general'].kind_of? Hash
   vvv_config['general'] = Hash.new
 end
 
@@ -252,7 +252,7 @@ defaults['private_network_ip'] = '192.168.50.4'
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
-if ! vvv_config['vagrant-plugins']
+unless vvv_config['vagrant-plugins']
   vvv_config['vagrant-plugins'] = Hash.new
 end
 
@@ -316,7 +316,7 @@ if show_logo
   end
 
   if defined? vvv_config['vm_config']['box']
-    unless vvv_config['vm_config']['box']
+    unless vvv_config['vm_config']['box'].nil?
       puts "Custom Box: Box overriden via config/config.yml , this won't take effect until a destroy + reprovision happens"
       platform = platform + 'box_override:' + vvv_config['vm_config']['box'] + ' '
     end
