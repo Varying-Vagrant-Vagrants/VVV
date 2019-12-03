@@ -9,8 +9,6 @@
 
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
-BLUE="\033[38;5;4m"
-YELLOW="\033[38;5;3m"
 CRESET="\033[0m"
 
 # By storing the date now, we can calculate the duration of provisioning at the
@@ -37,9 +35,9 @@ rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
 touch /vagrant/provisioned_at
-echo `date "+%Y%m%d-%H%M%S"` > /vagrant/provisioned_at
+echo $(date "+%Y%m%d-%H%M%S") > /vagrant/provisioned_at
 
-date_time=`cat /vagrant/provisioned_at`
+date_time=$(cat /vagrant/provisioned_at)
 logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-main.log"
 mkdir -p "${logfolder}"
@@ -224,7 +222,7 @@ apt_package_install_list=(
 ### FUNCTIONS
 
 is_utility_installed() {
-  local utilities=`cat ${VVV_CONFIG} | shyaml get-values utilities.${1} 2> /dev/null`
+  local utilities=$(cat "${VVV_CONFIG}" | shyaml get-values utilities.${1} 2> /dev/null)
   for utility in ${utilities}; do
     if [[ "${utility}" == "${2}" ]]; then
       return 0
@@ -404,7 +402,7 @@ package_install() {
 
   echo " * Checking Apt Keys"
   keys=$( apt-key list )
-  if [[ ! $( echo $keys | grep 'NodeSource') ]]; then
+  if [[ ! $( echo "${keys}" | grep 'NodeSource') ]]; then
     # Retrieve the NodeJS signing key from nodesource.com
     echo " * Applying NodeSource NodeJS signing key..."
     apt-key add /srv/config/apt-keys/nodesource.gpg.key
@@ -413,36 +411,36 @@ package_install() {
   # Before running `apt-get update`, we should add the public keys for
   # the packages that we are installing from non standard sources via
   # our appended apt source.list
-  if [[ ! $( echo $keys | grep 'nginx') ]]; then
+  if [[ ! $( echo "${keys}" | grep 'nginx') ]]; then
     # Retrieve the Nginx signing key from nginx.org
     echo " * Applying Nginx signing key..."
     apt-key add /srv/config/apt-keys/nginx_signing.key
   fi
 
-  if [[ ! $( echo $keys | grep 'Ondřej') ]]; then
+  if [[ ! $( echo "${keys}" | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
     echo " * Applying the Ondřej PHP signing key..."
     apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( echo $keys | grep 'Varying Vagrant Vagrants') ]]; then
+  if [[ ! $( echo "${keys}" | grep 'Varying Vagrant Vagrants') ]]; then
     # Apply the VVV signing key
     echo " * Applying the Varying Vagrant Vagrants mirror signing key..."
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( echo $keys | grep 'MariaDB') ]]; then
+  if [[ ! $( echo "${keys}" | grep 'MariaDB') ]]; then
     # Apply the MariaDB signing keyg
     echo " * Applying the MariaDB signing key..."
     apt-key add /srv/config/apt-keys/mariadb.key
   fi
 
-  if [[ ! $( echo $keys | grep 'git-lfs') ]]; then
+  if [[ ! $( echo "${keys}" | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
     echo " * Applying the PackageCloud Git-LFS signing key..."
     apt-key add /srv/config/apt-keys/git-lfs.key
   fi
-  if [[ ! $( echo $keys | grep 'MongoDB 4.0') ]]; then
+  if [[ ! $( echo "${keys}" | grep 'MongoDB 4.0') ]]; then
     echo " * Applying the MongoDB 4.0 signing key..."
     apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
   fi
@@ -538,13 +536,13 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  github_token=`cat ${VVV_CONFIG} | shyaml get-value general.github_token 2> /dev/null`
+  github_token=$(cat ${VVV_CONFIG} | shyaml get-value general.github_token 2> /dev/null)
   if [[ ! -z $github_token ]]; then
     rm /srv/provision/github.token
     echo $github_token >> /srv/provision/github.token
     echo " * A personal GitHub token was found, configuring composer"
-    ghtoken=`cat /srv/provision/github.token`
-    noroot composer config --global github-oauth.github.com $ghtoken
+    ghtoken=$(cat /srv/provision/github.token)
+    noroot composer config --global github-oauth.github.com "$ghtoken"
     echo " * Your personal GitHub token is set for Composer."
   fi
 
@@ -895,7 +893,7 @@ cleanup_vvv(){
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
   echo "127.0.0.1 vvv # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
-  if [[ `is_utility_installed core tideways` ]]; then
+  if [[ $(is_utility_installed core tideways) ]]; then
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
     echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
