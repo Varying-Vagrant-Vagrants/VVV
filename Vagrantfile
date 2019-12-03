@@ -190,7 +190,7 @@ vvv_config['sites'].each do |site, args|
 
   vvv_config['sites'][site] = defaults.merge(args)
 
-  if ! vvv_config['sites'][site]['skip_provisioning']
+  unless vvv_config['sites'][site]['skip_provisioning']
     site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
     vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
       lines = File.readlines(path).map(&:chomp)
@@ -316,7 +316,7 @@ if show_logo
   end
 
   if defined? vvv_config['vm_config']['box']
-    if vvv_config['vm_config']['box'] != nil
+    unless vvv_config['vm_config']['box']
       puts "Custom Box: Box overriden via config/config.yml , this won't take effect until a destroy + reprovision happens"
       platform = platform + 'box_override:' + vvv_config['vm_config']['box'] + ' '
     end
@@ -472,7 +472,7 @@ Vagrant.configure("2") do |config|
   end
 
   if defined? vvv_config['vm_config']['box']
-    if !vvv_config['vm_config']['box'].nil?
+    unless vvv_config['vm_config']['box'].nil?
       config.vm.box  = vvv_config['vm_config']['box']
     end
   end
@@ -786,7 +786,7 @@ Vagrant.configure("2") do |config|
   end
 
   vvv_config['sites'].each do |site, args|
-    if !args['skip_provisioning']
+    unless args['skip_provisioning']
       config.vm.provision "site-#{site}",
         type: "shell",
         keep_color: true,
