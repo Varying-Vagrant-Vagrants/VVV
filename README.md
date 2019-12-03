@@ -15,16 +15,16 @@ When it's done, visit [http://vvv.test](http://vvv.test).
 
 The online documentation contains more detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 
-- **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
-- **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
+* **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
+* **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
 ## Minimum System requirements
 
-- [Vagrant](https://www.vagrantup.com) 2.2.4+
-- [Virtualbox](https://www.virtualbox.org) 5.2+
-- 8GB+ of RAM
-- Virtualisation ( VT-X ) enabled in the BIOS ( Windows/Linux )
-- Hyper-V turned off ( Windows )
+* [Vagrant](https://www.vagrantup.com) 2.2.4+
+* [Virtualbox](https://www.virtualbox.org) 5.2+
+* 8GB+ of RAM
+* Virtualisation ( VT-X ) enabled in the BIOS ( Windows/Linux )
+* Hyper-V turned off ( Windows )
 
 ## Software included
 
