@@ -24,7 +24,7 @@ This was a fresh install
 This was an attempt to upgrade to a new version of VVV
 This was a reprovision of an already working VVV
 
-## Logs/What Broke?
+## Logs/What Broke
 
 <!---
 If describing a bug, tell us what happens instead of the expected behavior.
