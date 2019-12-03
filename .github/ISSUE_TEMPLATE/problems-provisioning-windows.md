@@ -11,13 +11,13 @@ assignees: ''
 <!--- Please use the Title field to provide a clear summary of the issue. -->
 <!-- Have you tried the develop branch? Your problem might already be fixed! -->
 
-## What was The Command Used To Provision?
+## What was The Command Used To Provision
 
 ```shell
 command goes here
 ```
 
-## What Kind of VVV Provision Was This?
+## What Kind of VVV Provision Was This
 
 <!-- delete all but one: -->
 This was a fresh install
@@ -31,7 +31,11 @@ If describing a bug, tell us what happens instead of the expected behavior.
 
 Provisioner logs would be super helpful, copy paste the entire log including the VVV logo into a code block, or link to a gist
 
-Also, your `vvv-custom.yml` would be super handy -->
+Also, your `config/config.yml` would be super handy -->
+
+```yaml
+config/config.yml goes here
+```
 
 ## Possible Solution
 <!--- Not obligatory, but suggest a fix/reason for the bug, -->
