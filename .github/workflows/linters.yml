@@ -16,5 +16,3 @@ jobs:
         uses: StephaneBour/actions-php-lint@7.3
         with:
           dir: '.'
-      - name: whitespace-linter
-        uses: nosborn/github-action-whitespace-linter@v1
