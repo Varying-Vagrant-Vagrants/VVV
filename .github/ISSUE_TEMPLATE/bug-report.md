@@ -40,7 +40,6 @@ log into a gist at gist.github.com and paste the link here. -->
 <!--- We need to know your machine setup to help -->
 <!-- If you don't know it, copy paste the splash screen with the colourful VVV logo from the terminal, it has everything we need to know to help you -->
 
-
 ## Logs
 
 <!-- give us a full log of the provision, a copy paste from the terminal will do, or a gist, just remember to put it in code block tags with 3 backticks before and after, don't forget the splash screen with the logo! -->
