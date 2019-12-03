@@ -21,7 +21,7 @@ def virtualbox_path()
           # split by the separator ";" and see which is a good one.
           path.split(";").each do |single|
             # Make sure it ends with a \
-            single += "\\" if !single.end_with?("\\")
+            single += "\\" unless single.end_with?("\\")
 
             # If the executable exists, then set it as the main path
             # and break out
@@ -72,7 +72,7 @@ def virtualbox_path()
     return @vboxmanage_path
 end
 
-def virtualbox_version()
+def get_virtualbox_version()
     vboxmanage = virtualbox_path()
     s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
     return s.stdout.strip!
@@ -91,10 +91,11 @@ yellow_underlined="\033[4;38;5;3m"#136m"
 url=yellow_underlined
 creset="\033[0m"
 
-versionfile = File.open("#{vagrant_dir}/version", "r")
-version = versionfile.read
-version = version.gsub("\n",'')
-
+version = "?"
+File.open("#{vagrant_dir}/version", "r") do |f|
+  version = f.read
+  version = version.gsub("\n",'')
+end
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 if [ 'up', 'resume', 'status', 'provision', 'reload' ].include? ARGV[0]
   show_logo = true
@@ -246,6 +247,7 @@ end
 defaults = Hash.new
 defaults['memory'] = 2048
 defaults['cores'] = 1
+defaults['provider'] = 'virtualbox'
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
 defaults['private_network_ip'] = '192.168.50.4'
 
@@ -332,10 +334,10 @@ if show_logo
     platform = platform + 'shared_db_folder_default '
   end
 
-  if vvv_config['vm_config']['provider'] == 'virtualbox'
-    virtualbox_version = virtualbox_version()
-  else
-    virtualbox_version = "N/A"
+  virtualbox_version = "N/A"
+
+  unless vvv_config['vm_config']['provider'] != 'virtualbox'
+    virtualbox_version = get_virtualbox_version()
   end
 
 splashsecond = <<-HEREDOC
@@ -403,7 +405,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Configuration options for Hyper-V provider.
-  config.vm.provider :hyperv do |v, override|
+  config.vm.provider :hyperv do |v|
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']
     v.enable_virtualization_extensions = true
