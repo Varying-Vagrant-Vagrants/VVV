@@ -153,7 +153,7 @@ begin
     puts "#{red}config/config.yml is missing a sites section.#{creset}\n\n"
   end
 
-rescue Exception => e
+rescue StandardError => e
   puts "#{red}config/config.yml isn't a valid YAML file.#{creset}\n\n"
   puts "#{red}VVV cannot be executed!#{creset}\n\n"
 
@@ -509,7 +509,7 @@ Vagrant.configure("2") do |config|
   #
   config.vm.network :private_network, id: "vvv_primary", ip: vvv_config['vm_config']['private_network_ip']
 
-  config.vm.provider :hyperv do |v, override|
+  config.vm.provider :hyperv do |_v, override|
     override.vm.network :private_network, id: "vvv_primary", ip: nil
   end
 
