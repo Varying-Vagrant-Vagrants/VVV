@@ -305,7 +305,7 @@ if show_logo
   if Vagrant::Util::Platform.fs_case_sensitive?
     platform = platform + 'CaseSensitiveFS '
   end
-  if ! Vagrant::Util::Platform.terminal_supports_colors?
+  unless Vagrant::Util::Platform.terminal_supports_colors?
     platform = platform + 'NoColour '
   end
 
@@ -385,7 +385,6 @@ Vagrant.configure("2") do |config|
     v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//srv/config", "1"]
 
     # Set the box name in VirtualBox to match the working directory.
-    vvv_pwd = Dir.pwd
     v.name = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
   end
 
@@ -488,8 +487,8 @@ Vagrant.configure("2") do |config|
   # Warning: This plugin only resizes up, not down, so don't set this to less than 10GB,
   # and if you need to downsize, be sure to destroy and reprovision.
   #
-  if vvv_config['vagrant-plugins']['disksize'] != nil && defined?(Vagrant::Disksize)
-    config.vm.provider :virtualbox do |v, override|
+  if !vvv_config['vagrant-plugins']['disksize'].nil? && defined?(Vagrant::Disksize)
+    config.vm.provider :virtualbox do |_v, override|
       override.disksize.size = vvv_config['vagrant-plugins']['disksize']
     end
   end
@@ -574,11 +573,11 @@ Vagrant.configure("2") do |config|
     # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
     # those are specific to Virtualbox. The folder is therefore overridden with one that
     # uses corresponding Parallels mount options.
-    config.vm.provider :parallels do |v, override|
+    config.vm.provider :parallels do |_v, override|
       override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => []
     end
     # Neither does the HyperV provider
-    config.vm.provider :hyperv do |v, override|
+    config.vm.provider :hyperv do |_v, override|
       override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => [ "dir_mode=0775", "file_mode=0664" ]
     end
   end
@@ -626,7 +625,7 @@ Vagrant.configure("2") do |config|
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
-  config.vm.provider :parallels do |v, override|
+  config.vm.provider :parallels do |_v, override|
     override.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => []
 
     override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
@@ -675,7 +674,7 @@ Vagrant.configure("2") do |config|
   # The VMware Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding VMware mount options.
-  config.vm.provider :vmware_desktop do |v, override|
+  config.vm.provider :vmware_desktop do |_v, override|
     override.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", :mount_options => [ "umask=002"  ]
 
     override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: [ "umask=000" ]
