@@ -47,11 +47,11 @@ def virtualbox_path()
           end
         end
         elsif Vagrant::Util::Platform.wsl?
-        if !Vagrant::Util::Platform.wsl_windows_access?
+        unless Vagrant::Util::Platform.wsl_windows_access?
           raise Vagrant::Errors::WSLVirtualBoxWindowsAccessError
         end
         @vboxmanage_path = Vagrant::Util::Which.which("VBoxManage") || Vagrant::Util::Which.which("VBoxManage.exe")
-        if !@vboxmanage_path
+        unless @vboxmanage_path
           # If we still don't have one, try to find it using common locations
           drive = "/mnt/c"
           [
@@ -96,19 +96,19 @@ version = versionfile.read
 version = version.gsub("\n",'')
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
-if [ 'up', 'resume', 'status', 'provision', 'reload' ].include? ARGV[0] then
+if [ 'up', 'resume', 'status', 'provision', 'reload' ].include? ARGV[0]
   show_logo = true
 end
-if ENV['VVV_SKIP_LOGO'] then
+if ENV['VVV_SKIP_LOGO']
   show_logo = false
 end
 
 # Show the initial splash screen
 
-if show_logo then
+if show_logo
   git_or_zip = "zip-no-vcs"
   branch = ''
-  if File.directory?("#{vagrant_dir}/.git") then
+  if File.directory?("#{vagrant_dir}/.git")
     git_or_zip = "git::"
     branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
     branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
@@ -127,9 +127,9 @@ end
 
 # Perform file migrations from older versions
 vvv_config_file = File.join(vagrant_dir, 'config/config.yml')
-if ( File.file?( vvv_config_file ) == false ) then
+unless File.file?( vvv_config_file )
   old_vvv_config = File.join(vagrant_dir, 'vvv-custom.yml')
-  if ( File.file?( old_vvv_config ) ) then
+  if File.file?( old_vvv_config )
     puts "#{yellow}Migrating #{red}vvv-custom.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow}.#{creset}\n\n"
     FileUtils.mv( old_vvv_config, vvv_config_file )
   else
@@ -140,14 +140,14 @@ end
 
 old_db_backup_dir = File.join(vagrant_dir, 'database/backups/' )
 new_db_backup_dir = File.join(vagrant_dir, 'database/sql/backups/' )
-if ( File.directory?( old_db_backup_dir ) == true ) && ( File.directory?( new_db_backup_dir ) == false ) then
+if ( File.directory?( old_db_backup_dir ) == true ) && ( File.directory?( new_db_backup_dir ) == false )
   puts "Moving db backup directory into database/sql/backups"
   FileUtils.mv( old_db_backup_dir, new_db_backup_dir )
 end
 
 begin
   vvv_config = YAML.load_file(vvv_config_file)
-  if ! vvv_config['sites'].kind_of? Hash then
+  unless vvv_config['sites'].kind_of? Hash
     vvv_config['sites'] = Hash.new
 
     puts "#{red}config/config.yml is missing a sites section.#{creset}\n\n"
@@ -161,25 +161,25 @@ rescue Exception => e
   exit
 end
 
-if ! vvv_config['hosts'].kind_of? Hash then
+unless vvv_config['hosts'].kind_of? Hash
   vvv_config['hosts'] = Array.new
 end
 
 vvv_config['hosts'] += ['vvv.test']
 
 vvv_config['sites'].each do |site, args|
-  if args.kind_of? String then
+  if args.kind_of? String
       repo = args
       args = Hash.new
       args['repo'] = repo
   end
 
-  if ! args.kind_of? Hash then
+  unless args.kind_of? Hash
       args = Hash.new
   end
 
   defaults = Hash.new
-  defaults['repo']   = false
+  defaults['repo'] = false
   defaults['vm_dir'] = "/srv/www/#{site}"
   defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
   defaults['branch'] = 'master'
@@ -190,7 +190,7 @@ vvv_config['sites'].each do |site, args|
 
   vvv_config['sites'][site] = defaults.merge(args)
 
-  if ! vvv_config['sites'][site]['skip_provisioning'] then
+  unless vvv_config['sites'][site]['skip_provisioning']
     site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
     vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
       lines = File.readlines(path).map(&:chomp)
@@ -202,22 +202,22 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site].delete('hosts')
 end
 
-if ! vvv_config['utility-sources'].kind_of? Hash then
+unless vvv_config['utility-sources'].kind_of? Hash
   vvv_config['utility-sources'] = Hash.new
 else
   vvv_config['utility-sources'].each do |name, args|
-    if args.kind_of? String then
-        repo = args
-        args = Hash.new
-        args['repo'] = repo
-        args['branch'] = 'master'
+    if args.kind_of? String
+      repo = args
+      args = Hash.new
+      args['repo'] = repo
+      args['branch'] = 'master'
 
-        vvv_config['utility-sources'][name] = args
+      vvv_config['utility-sources'][name] = args
     end
   end
 end
 
-if ! vvv_config['dashboard']
+unless vvv_config['dashboard']
   vvv_config['dashboard'] = Hash.new
 end
 dashboard_defaults = Hash.new
@@ -225,21 +225,21 @@ dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashbo
 dashboard_defaults['branch'] = 'master'
 vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
 
-if ! vvv_config['utility-sources'].key?('core')
+unless vvv_config['utility-sources'].key?('core')
   vvv_config['utility-sources']['core'] = Hash.new
   vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
   vvv_config['utility-sources']['core']['branch'] = 'master'
 end
 
-if ! vvv_config['utilities'].kind_of? Hash then
+unless vvv_config['utilities'].kind_of? Hash
   vvv_config['utilities'] = Hash.new
 end
 
-if ! vvv_config['vm_config'].kind_of? Hash then
+unless vvv_config['vm_config'].kind_of? Hash
   vvv_config['vm_config'] = Hash.new
 end
 
-if ! vvv_config['general'].kind_of? Hash then
+unless vvv_config['general'].kind_of? Hash
   vvv_config['general'] = Hash.new
 end
 
@@ -252,78 +252,78 @@ defaults['private_network_ip'] = '192.168.50.4'
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
-if ! vvv_config['vagrant-plugins']
+unless vvv_config['vagrant-plugins']
   vvv_config['vagrant-plugins'] = Hash.new
 end
 
 # Show the second splash screen section
 
-if show_logo then
+if show_logo
   platform = 'platform-' + Vagrant::Util::Platform.platform + ' '
-  if Vagrant::Util::Platform.windows? then
+  if Vagrant::Util::Platform.windows?
     platform = platform + 'windows '
-    if Vagrant::Util::Platform.wsl? then
+    if Vagrant::Util::Platform.wsl?
       platform = platform + 'wsl '
     end
-    if Vagrant::Util::Platform.msys? then
+    if Vagrant::Util::Platform.msys?
       platform = platform + 'msys '
     end
-    if Vagrant::Util::Platform.cygwin? then
+    if Vagrant::Util::Platform.cygwin?
       platform = platform + 'cygwin '
     end
-    if Vagrant::Util::Platform.windows_hyperv_enabled? then
+    if Vagrant::Util::Platform.windows_hyperv_enabled?
       platform = platform + 'HyperV-Enabled '
     end
-    if Vagrant::Util::Platform.windows_hyperv_admin? then
+    if Vagrant::Util::Platform.windows_hyperv_admin?
       platform = platform + 'HyperV-Admin '
     end
-    if Vagrant::Util::Platform.windows_admin? then
+    if Vagrant::Util::Platform.windows_admin?
       platform = platform + 'HasWinAdminPriv '
     end
   else
 
-    if ENV['SHELL'] then
+    if ENV['SHELL']
       platform = platform + "shell:" + ENV['SHELL'] + ' '
     end
-    if Vagrant::Util::Platform.systemd? then
+    if Vagrant::Util::Platform.systemd?
       platform = platform + 'systemd '
     end
   end
 
-  if Vagrant.has_plugin?('vagrant-hostsupdater') then
+  if Vagrant.has_plugin?('vagrant-hostsupdater')
     platform = platform + 'vagrant-hostsupdater '
   end
 
-  if Vagrant.has_plugin?('vagrant-vbguest') then
+  if Vagrant.has_plugin?('vagrant-vbguest')
     platform = platform + 'vagrant-vbguest '
   end
 
-  if Vagrant.has_plugin?('vagrant-disksize') then
+  if Vagrant.has_plugin?('vagrant-disksize')
     platform = platform + 'vagrant-disksize '
   end
 
-  if Vagrant::Util::Platform.fs_case_sensitive? then
+  if Vagrant::Util::Platform.fs_case_sensitive?
     platform = platform + 'CaseSensitiveFS '
   end
-  if ! Vagrant::Util::Platform.terminal_supports_colors? then
+  unless Vagrant::Util::Platform.terminal_supports_colors?
     platform = platform + 'NoColour '
   end
 
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
+  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
+    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
       platform = platform + 'contributor_day_box '
     end
   end
 
-  if defined? vvv_config['vm_config']['box'] then
-    if vvv_config['vm_config']['box'] != nil then
+  if defined? vvv_config['vm_config']['box']
+    unless vvv_config['vm_config']['box'].nil?
       puts "Custom Box: Box overriden via config/config.yml , this won't take effect until a destroy + reprovision happens"
       platform = platform + 'box_override:' + vvv_config['vm_config']['box'] + ' '
     end
   end
 
-  if defined? vvv_config['general']['db_share_type'] then
-    if vvv_config['general']['db_share_type'] != true then
+  if defined? vvv_config['general']['db_share_type']
+    if vvv_config['general']['db_share_type'] != true
       platform = platform + 'shared_db_folder_disabled '
     else
       platform = platform + 'shared_db_folder_enabled '
@@ -332,7 +332,7 @@ if show_logo then
     platform = platform + 'shared_db_folder_default '
   end
 
-  if vvv_config['vm_config']['provider'] == 'virtualbox' then
+  if vvv_config['vm_config']['provider'] == 'virtualbox'
     virtualbox_version = virtualbox_version()
   else
     virtualbox_version = "N/A"
@@ -350,7 +350,7 @@ splashsecond = <<-HEREDOC
   puts splashsecond
 end
 
-if defined? vvv_config['vm_config']['provider'] then
+if defined? vvv_config['vm_config']['provider']
   # Override or set the vagrant provider.
   ENV['VAGRANT_DEFAULT_PROVIDER'] = vvv_config['vm_config']['provider']
 end
@@ -385,7 +385,6 @@ Vagrant.configure("2") do |config|
     v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//srv/config", "1"]
 
     # Set the box name in VirtualBox to match the working directory.
-    vvv_pwd = Dir.pwd
     v.name = File.basename(vagrant_dir) + "_" + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
   end
 
@@ -412,8 +411,8 @@ Vagrant.configure("2") do |config|
   end
 
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
-  if !Vagrant.has_plugin?("vagrant-hostsupdater") then
-      if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem')) then
+  unless Vagrant.has_plugin?("vagrant-hostsupdater")
+      if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
         system("vagrant plugin install " + File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
         File.delete(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
         puts "#{yellow}VVV has completed installing local plugins. Please run the requested command again.#{creset}"
@@ -449,14 +448,14 @@ Vagrant.configure("2") do |config|
   #config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
 
   # If we're at a contributor day, switch the base box to the prebuilt one
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box'] then
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true then
-	    config.vm.box  = "vvv/contribute"
+  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
+    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
+	    config.vm.box = "vvv/contribute"
     end
   end
 
   # The Parallels Provider uses a different naming scheme.
-  config.vm.provider :parallels do |v, override|
+  config.vm.provider :parallels do |_v, override|
     override.vm.box = "parallels/ubuntu-18.04"
   end
 
@@ -467,13 +466,13 @@ Vagrant.configure("2") do |config|
   end
 
   # Hyper-V uses a different base box.
-  config.vm.provider :hyperv do |v, override|
+  config.vm.provider :hyperv do |_v, override|
     override.vm.box = "bento/ubuntu-18.04"
   end
 
-  if defined? vvv_config['vm_config']['box'] then
-    if vvv_config['vm_config']['box'] != nil then
-      config.vm.box  = vvv_config['vm_config']['box']
+  if defined? vvv_config['vm_config']['box']
+    unless vvv_config['vm_config']['box'].nil?
+      config.vm.box = vvv_config['vm_config']['box']
     end
   end
 
@@ -488,8 +487,8 @@ Vagrant.configure("2") do |config|
   # Warning: This plugin only resizes up, not down, so don't set this to less than 10GB,
   # and if you need to downsize, be sure to destroy and reprovision.
   #
-  if vvv_config['vagrant-plugins']['disksize'] != nil && defined?(Vagrant::Disksize)
-    config.vm.provider :virtualbox do |v, override|
+  if !vvv_config['vagrant-plugins']['disksize'].nil? && defined?(Vagrant::Disksize)
+    config.vm.provider :virtualbox do |_v, override|
       override.disksize.size = vvv_config['vagrant-plugins']['disksize']
     end
   end
@@ -560,25 +559,25 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "database/sql/", "/srv/database"
   use_db_share = false
 
-  if defined? vvv_config['general']['db_share_type'] then
-    if vvv_config['general']['db_share_type'] != true then
+  if defined? vvv_config['general']['db_share_type']
+    if vvv_config['general']['db_share_type'] != true
       use_db_share = false
     else
       use_db_share = true
     end
   end
-  if use_db_share == true then
+  if use_db_share == true
     # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
     config.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, mount_options: [ "dmode=775", "fmode=664" ]
 
     # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
     # those are specific to Virtualbox. The folder is therefore overridden with one that
     # uses corresponding Parallels mount options.
-    config.vm.provider :parallels do |v, override|
+    config.vm.provider :parallels do |_v, override|
       override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => []
     end
     # Neither does the HyperV provider
-    config.vm.provider :hyperv do |v, override|
+    config.vm.provider :hyperv do |_v, override|
       override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 9001, group: 9001, :mount_options => [ "dir_mode=0775", "file_mode=0664" ]
     end
   end
@@ -618,7 +617,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", mount_options: [ "dmode=775", "fmode=774" ]
 
   vvv_config['sites'].each do |site, args|
-    if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+    if args['local_dir'] != File.join(vagrant_dir, 'www', site)
       config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
     end
   end
@@ -626,7 +625,7 @@ Vagrant.configure("2") do |config|
   # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
-  config.vm.provider :parallels do |v, override|
+  config.vm.provider :parallels do |_v, override|
     override.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => []
 
     override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
@@ -634,13 +633,13 @@ Vagrant.configure("2") do |config|
     override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: []
     override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: []
 
-    if use_db_share == true then
+    if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
       override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: []
     end
 
     vvv_config['sites'].each do |site, args|
-      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
       end
     end
@@ -655,7 +654,7 @@ Vagrant.configure("2") do |config|
 
     override.vm.synced_folder "www/", "/srv/www", :owner => "vagrant", :group => "www-data", :mount_options => [ "dir_mode=0775", "file_mode=0774" ]
 
-    if use_db_share == true then
+    if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
       override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "dir_mode=0775", "file_mode=0664" ]
     end
@@ -666,7 +665,7 @@ Vagrant.configure("2") do |config|
     override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: [ "dir_mode=0777", "file_mode=0666" ]
 
     vvv_config['sites'].each do |site, args|
-      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "vagrant", :group => "www-data", :mount_options => [ "dir_mode=0775", "file_mode=0774" ]
       end
     end
@@ -675,7 +674,7 @@ Vagrant.configure("2") do |config|
   # The VMware Provider does not understand "dmode"/"fmode" in the "mount_options" as
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding VMware mount options.
-  config.vm.provider :vmware_desktop do |v, override|
+  config.vm.provider :vmware_desktop do |_v, override|
     override.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", :mount_options => [ "umask=002"  ]
 
     override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: [ "umask=000" ]
@@ -683,13 +682,13 @@ Vagrant.configure("2") do |config|
     override.vm.synced_folder "log/php", "/var/log/php", create: true, owner: "root", group: "syslog", mount_options: [ "umask=000" ]
     override.vm.synced_folder "log/provisioners", "/var/log/provisioners", create: true, owner: "root", group: "syslog", mount_options: [ "umask=000" ]
 
-    if use_db_share == true then
+    if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
       override.vm.synced_folder "database/data/", "/var/lib/mysql", create: true, owner: 112, group: 115, mount_options: [ "umask=000" ]
     end
 
     vvv_config['sites'].each do |site, args|
-      if args['local_dir'] != File.join(vagrant_dir, 'www', site) then
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => [ "umask=002" ]
       end
     end
@@ -703,14 +702,14 @@ Vagrant.configure("2") do |config|
   #
   # Note that if you find yourself using a Customfile for anything crazy or specifying
   # different provisioning, then you may want to consider a new Vagrantfile entirely.
-  if File.exists?(File.join(vagrant_dir,'Customfile')) then
+  if File.exists?(File.join(vagrant_dir,'Customfile'))
     puts "Running Custom Vagrant file with additional vagrant configs at #{File.join(vagrant_dir,'Customfile')}\n\n"
     eval(IO.read(File.join(vagrant_dir,'Customfile')), binding)
     puts "Finished running Custom Vagrant file with additional vagrant configs, resuming normal vagrantfile execution\n\n"
   end
 
   vvv_config['sites'].each do |site, args|
-    if args['allow_customfile'] then
+    if args['allow_customfile']
       paths = Dir[File.join(args['local_dir'], '**', 'Customfile')]
       paths.each do |file|
         puts "Running additional site vagrant customfile at #{file}\n\n"
@@ -726,7 +725,7 @@ Vagrant.configure("2") do |config|
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
-  if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-pre.sh'))
     config.vm.provision "pre", type: "shell", keep_color: true, path: File.join( "provision", "provision-pre.sh" )
   end
 
@@ -736,7 +735,7 @@ Vagrant.configure("2") do |config|
   # provision directory. If it is detected that a provision-custom.sh script has been
   # created, that is run as a replacement. This is an opportunity to replace the entirety
   # of the provisioning provided by default.
-  if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-custom.sh'))
     config.vm.provision "custom", type: "shell", keep_color: true, path: File.join( "provision", "provision-custom.sh" )
   else
     config.vm.provision "default", type: "shell", keep_color: true, path: File.join( "provision", "provision.sh" )
@@ -766,11 +765,11 @@ Vagrant.configure("2") do |config|
 
   vvv_config['utilities'].each do |name, utilities|
 
-    if ! utilities.kind_of? Array then
+    unless utilities.kind_of? Array
       utilities = Hash.new
     end
     utilities.each do |utility|
-        if utility == 'tideways' then
+        if utility == 'tideways'
           vvv_config['hosts'] += ['tideways.vvv.test']
           vvv_config['hosts'] += ['xhgui.vvv.test']
         end
@@ -786,7 +785,7 @@ Vagrant.configure("2") do |config|
   end
 
   vvv_config['sites'].each do |site, args|
-    if args['skip_provisioning'] === false then
+    unless args['skip_provisioning']
       config.vm.provision "site-#{site}",
         type: "shell",
         keep_color: true,
@@ -806,7 +805,7 @@ Vagrant.configure("2") do |config|
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
   # put into this file. This provides a good opportunity to install additional packages
   # without having to replace the entire default provisioning script.
-  if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','provision-post.sh'))
     config.vm.provision "post", type: "shell", keep_color: true, path: File.join( "provision", "provision-post.sh" )
   end
 
