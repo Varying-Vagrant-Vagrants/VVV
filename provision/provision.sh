@@ -204,7 +204,6 @@ apt_package_install_list=(
   # ntp service to keep clock current
   ntp
   ntpdate
-  ntpsec-ntpdate
 
   # Required for i18n tools
   gettext
