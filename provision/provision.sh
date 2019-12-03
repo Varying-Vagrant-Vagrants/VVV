@@ -87,7 +87,7 @@ if [[ $codename == "trusty" ]]; then
   echo -e " "
   echo -e "\e[1;4;33mImportant: Destroying and reprovisioning will erase the database${r}"
   echo -e " "
-  sqlcount=$(cd /srv/database/backups; ls -1q *.sql | wc -l)
+  sqlcount=$(cd /srv/database/backups; ls -1q ./*.sql | wc -l)
   if [[ $sqlcount -gt 0 ]]; then
     echo -e "\e[0;33m "
     echo -e "\e[0;33mLuckily, VVV backs up the database to database/backups, and "
@@ -633,7 +633,7 @@ nginx_setup() {
     echo "$vvvsigncert"
   fi
 
-  echo -e "\n * Setup configuration files..."
+  echo " * Setup configuration files..."
 
   # Used to ensure proper services are started on `vagrant up`
   echo " * Copying /srv/config/init/vvv-start.conf               to /etc/init/vvv-start.conf"

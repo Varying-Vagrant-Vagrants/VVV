@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-date_time=`cat /vagrant/provisioned_at`
+date_time=$(cat /vagrant/provisioned_at)
 logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-utility-${1}-${2}.log"
 mkdir -p "${logfolder}"
@@ -10,8 +10,6 @@ exec 2> >(tee -a "${logfile}" >&2 )
 
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
-BLUE="\033[38;5;4m"
-YELLOW="\033[38;5;3m"
 CRESET="\033[0m"
 
 PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
@@ -19,10 +17,10 @@ PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 if [[ -f $PROVISIONER ]]; then
 	echo -e "${GREEN} * Running utility provisioner for '${1}/${2}'${CRESET}"
 	start_seconds="$(date +%s)"
-    ( ${PROVISIONER} >> $logfile )
+    ( ${PROVISIONER} >> "${logfile}" )
     SUCCESS=$?
     end_seconds="$(date +%s)"
-	if [ $? -eq 0 ]; then
+	if [ "${SUCCESS}" -eq 0 ]; then
 		echo -e "${GREEN} * The '${1}/${2}' provisioner completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
 		exit 0
 	else
