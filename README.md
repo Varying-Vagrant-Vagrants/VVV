@@ -1,6 +1,6 @@
-# Varying Vagrant Vagrants ( VVV )
+# VVV ( Varying Vagrant Vagrants )
 
-VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and VirtualBox, and can be used to build sites and contribute to WordPress.
+VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and VirtualBox, and can be used to build sites, and contribute to WordPress.
 
 ## How To Use
 
@@ -15,8 +15,8 @@ When it's done, visit http://vvv.test.
 The online documentation contains more detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 
 
-* **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
-* **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
+- **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
+- **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
 
 ## Minimum System requirements
