@@ -2,7 +2,7 @@
 
 NAME=$1
 REPO=$2
-BRANCH=${3:-master}
+BRANCH="${3:-master}"
 DIR="/srv/provision/utilities/${NAME}"
 
 GREEN="\033[38;5;2m"
@@ -10,7 +10,7 @@ RED="\033[38;5;9m"
 BLUE="\033[38;5;4m"
 CRESET="\033[0m"
 
-date_time=`cat /vagrant/provisioned_at`
+date_time=$(cat /vagrant/provisioned_at)
 logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-utility-source-${NAME}.log"
 mkdir -p "${logfolder}"
@@ -27,7 +27,7 @@ if [[ false != "${NAME}" && false != "${REPO}" ]]; then
     git checkout "${BRANCH}" -q
   else
     echo -e "${GREEN} * Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch...${CRESET}"
-    cd ${DIR}
+    cd "${DIR}"
     git pull origin "${BRANCH}" -q
     git checkout "${BRANCH}" -q
   fi

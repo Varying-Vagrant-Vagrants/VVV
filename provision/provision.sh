@@ -539,7 +539,7 @@ tools_install() {
   github_token=$(shyaml get-value general.github_token 2> /dev/null < ${VVV_CONFIG})
   if [[ ! -z $github_token ]]; then
     rm /srv/provision/github.token
-    echo $github_token >> /srv/provision/github.token
+    echo "$github_token" >> /srv/provision/github.token
     echo " * A personal GitHub token was found, configuring composer"
     ghtoken=$(cat /srv/provision/github.token)
     noroot composer config --global github-oauth.github.com "$ghtoken"
@@ -825,13 +825,13 @@ wp_cli() {
 
   # Remove old wp-cli symlink, if it exists.
   if [[ -L "/usr/local/bin/wp" ]]; then
-    echo "\n * Removing old wp-cli"
+    echo " * Removing old wp-cli"
     rm -f /usr/local/bin/wp
   fi
 
   exists_wpcli="$(which wp)"
   if [[ "/usr/local/bin/wp" != "${exists_wpcli}" ]]; then
-    echo -e "\n * Downloading wp-cli, see http://wp-cli.org"
+    echo " * Downloading wp-cli, see http://wp-cli.org"
     curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
     chmod +x wp-cli-nightly.phar
     sudo mv wp-cli-nightly.phar /usr/local/bin/wp
@@ -839,7 +839,7 @@ wp_cli() {
     # Install bash completions
     curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
   else
-    echo -e "\n * Updating wp-cli..."
+    echo " * Updating wp-cli..."
     wp --allow-root cli update --nightly --yes
   fi
 }
