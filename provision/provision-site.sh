@@ -236,7 +236,7 @@ if [ ${#hosts[@]} -eq 0 ]; then
   fi
 else
   echo " * Adding hosts from the VVV config entry"
-  for line in $(cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null); do
+  for line in $(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG}); do
     if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
       echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
       echo "   - Added ${line} from ${VVV_CONFIG}"
