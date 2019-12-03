@@ -37,22 +37,22 @@ noroot() {
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo $(get_config_value 'key' 'defaultvalue')
 get_config_value() {
-  local value=$(cat ${VVV_CONFIG} | shyaml get-value "sites.${SITE_ESCAPED}.custom.${1}" 2> /dev/null)
+  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.custom.${1}" 2> /dev/null < ${VVV_CONFIG})
   echo ${value:-$2}
 }
 
 get_hosts() {
-  local value=$(cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null)
+  local value=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
   echo ${value:-$@}
 }
 
 get_primary_host() {
-  local value=$(cat ${VVV_CONFIG} | shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" 2> /dev/null)
+  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" 2> /dev/null < ${VVV_CONFIG})
   echo ${value:-$1}
 }
 
 is_utility_installed() {
-  local utilities=$(cat ${VVV_CONFIG} | shyaml get-values "utilities.${1}" 2> /dev/null)
+  local utilities=$(shyaml get-values "utilities.${1}" 2> /dev/null < ${VVV_CONFIG})
   for utility in ${utilities}; do
     if [[ "${utility}" == "${2}" ]]; then
       return 0
@@ -211,7 +211,7 @@ fi
 #
 # Domains should be entered on new lines.
 echo " * Adding domains to the virtual machine's /etc/hosts file..."
-hosts=$(cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null)
+hosts=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
 if [ ${#hosts[@]} -eq 0 ]; then
   echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
   if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then

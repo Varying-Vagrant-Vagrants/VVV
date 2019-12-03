@@ -222,7 +222,7 @@ apt_package_install_list=(
 ### FUNCTIONS
 
 is_utility_installed() {
-  local utilities=$(cat "${VVV_CONFIG}" | shyaml get-values "utilities.${1}" 2> /dev/null)
+  local utilities=$(shyaml get-values "utilities.${1}" 2> /dev/null < ${VVV_CONFIG})
   for utility in ${utilities}; do
     if [[ "${utility}" == "${2}" ]]; then
       return 0
@@ -536,7 +536,7 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  github_token=$(cat ${VVV_CONFIG} | shyaml get-value general.github_token 2> /dev/null)
+  github_token=$(shyaml get-value general.github_token 2> /dev/null < ${VVV_CONFIG})
   if [[ ! -z $github_token ]]; then
     rm /srv/provision/github.token
     echo $github_token >> /srv/provision/github.token
