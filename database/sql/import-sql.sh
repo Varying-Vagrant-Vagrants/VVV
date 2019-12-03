@@ -33,6 +33,8 @@ fi
 
 # Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
 echo " * Starting MariaDB Database Import"
+# create the backup folder if it doesn't exist
+mkdir -p /srv/database/backups
 cd /srv/database/backups/
 
 # Parse through each file in the directory and use the file name to
