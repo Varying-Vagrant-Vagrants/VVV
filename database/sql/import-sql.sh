@@ -42,7 +42,7 @@ cd /srv/database/backups/
 sql_count=$(ls -1 ./*.sql 2>/dev/null | wc -l)
 if [ "$sql_count" != 0 ]
 then
-	for file in $( ls *.sql )
+	for file in $( ls ./*.sql )
 	do
 	pre_dot=${file%%.sql}
 
