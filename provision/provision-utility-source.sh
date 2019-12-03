@@ -7,7 +7,6 @@ DIR="/srv/provision/utilities/${NAME}"
 
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
-BLUE="\033[38;5;4m"
 CRESET="\033[0m"
 
 date_time=$(cat /vagrant/provisioned_at)
