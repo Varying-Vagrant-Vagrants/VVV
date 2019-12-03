@@ -8,7 +8,6 @@ DIR="/srv/provision/utilities/${NAME}"
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 BLUE="\033[38;5;4m"
-YELLOW="\033[38;5;3m"
 CRESET="\033[0m"
 
 date_time=`cat /vagrant/provisioned_at`
@@ -21,16 +20,16 @@ exec 2> >(tee -a "${logfile}" >&2 )
 
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
-  if [[ ! -d ${DIR}/.git ]]; then
+  if [[ ! -d "${DIR}/.git" ]]; then
     echo -e "${GREEN} * Cloning the \"${NAME}\" utility, see \"${REPO}\"${CRESET}"
-    git clone ${REPO} --branch ${BRANCH} ${DIR} -q
-    cd ${DIR}
-    git checkout ${BRANCH} -q
+    git clone "${REPO}" --branch "${BRANCH}" "${DIR}" -q
+    cd "${DIR}"
+    git checkout "${BRANCH}" -q
   else
     echo -e "${GREEN} * Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch...${CRESET}"
     cd ${DIR}
-    git pull origin ${BRANCH} -q
-    git checkout ${BRANCH} -q
+    git pull origin "${BRANCH}" -q
+    git checkout "${BRANCH}" -q
   fi
 else
   if [[ false == "${NAME}" && false == "${REPO}" ]]; then
