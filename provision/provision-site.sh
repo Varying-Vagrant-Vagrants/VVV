@@ -60,12 +60,11 @@ is_utility_installed() {
 }
 
 function vvv_provision_site_nginx() {
-  SITE_NAME=$1
   SITE_NGINX_FILE=$2
   DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
   DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
   DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
-  DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "$SITE_NGINX_FILE" | cut -c1-32).conf"
+  DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
   VVV_HOSTS=$(get_hosts)
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
@@ -107,7 +106,7 @@ function vvv_provision_hosts_file() {
 }
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
-  echo -e "${YELLOW}Skipping provisioning of ${SITE}${CRESET}"
+  echo -e "${YELLOW} * Skipping provisioning of ${SITE}${CRESET}"
   return
 fi
 
@@ -126,25 +125,25 @@ if [[ false != "${REPO}" ]]; then
     fi
   else
     # Clone or pull the site repository
-    echo -e "\nDownloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
+    echo -e " * Downloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
     git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
     if [ $? -eq 0 ]; then
-      echo "${SITE} Site Template clone succesful"
+      echo " * ${SITE} Site Template clone succesful"
     else
-      echo "${RED}Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
-      echo "${RED}VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"
+      echo "${RED} ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
+      echo "${RED} ! VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"
       exit 1
     fi
   fi
 else
-  echo "The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
+  echo " * The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
   if [[ ! -d "${VM_DIR}" ]]; then
-    echo "${RED}Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV${CRESET}"
+    echo "${RED} ! Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV${CRESET}"
   fi
 fi
 
 if [[ ! -d "${VM_DIR}" ]]; then
-  echo "${RED} Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
+  echo "${RED} ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
 fi
 
 function vvv_run_site_template_script() {
@@ -196,7 +195,7 @@ else
   echo " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
   NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
   if [[ -z $NGINX_CONFIGS ]] ; then
-    echo -e " * ${RED}Warning: No nginx config was found, VVV will not know how to serve this site${CRESET}"
+    echo -e "${RED} ! Warning: No nginx config was found, VVV will not know how to serve this site${CRESET}"
   else
     for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
       vvv_provision_site_nginx "${SITE}" "${SITE_CONFIG_FILE}"
@@ -225,7 +224,7 @@ if [ ${#hosts[@]} -eq 0 ]; then
     echo " * Searching subfolders 4 levels down for a vvv-hosts file ( this can be skipped by using ./vvv-hosts, .vvv/vvv-hosts, or provision/vvv-hosts"
     HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
     if [[ -z $HOST_FILES ]] ; then
-      echo -e "${RED}Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible${CRESET}"
+      echo -e "${RED} ! Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible${CRESET}"
     else
       for HOST_FILE in $HOST_FILES; do
         vvv_provision_hosts_file "$HOST_FILE"
