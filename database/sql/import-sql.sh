@@ -40,7 +40,7 @@ cd /srv/database/backups/
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
 sql_count=$(ls -1 ./*.sql 2>/dev/null | wc -l)
-if [ $sql_count != 0 ]
+if [ "$sql_count" != 0 ]
 then
 	for file in $( ls *.sql )
 	do

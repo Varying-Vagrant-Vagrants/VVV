@@ -12,7 +12,6 @@ VVV_SITE_NAME=${SITE}
 
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
-BLUE="\033[38;5;4m"
 YELLOW="\033[38;5;3m"
 CRESET="\033[0m"
 
@@ -38,17 +37,17 @@ noroot() {
 # e.g. echo $(get_config_value 'key' 'defaultvalue')
 get_config_value() {
   local value=$(shyaml get-value "sites.${SITE_ESCAPED}.custom.${1}" 2> /dev/null < ${VVV_CONFIG})
-  echo ${value:-$2}
+  echo "${value:-$2}"
 }
 
 get_hosts() {
   local value=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
-  echo ${value:-$@}
+  echo "${value:-$@}"
 }
 
 get_primary_host() {
   local value=$(shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" 2> /dev/null < ${VVV_CONFIG})
-  echo ${value:-$1}
+  echo "${value:-$1}"
 }
 
 is_utility_installed() {
@@ -108,7 +107,7 @@ function vvv_provision_hosts_file() {
   done
 }
 
-if [[ true == $SKIP_PROVISIONING ]]; then
+if [[ true == "${SKIP_PROVISIONING}" ]]; then
   echo -e "${YELLOW}Skipping provisioning of ${SITE}${CRESET}"
   return
 fi
@@ -176,7 +175,7 @@ elif [[ -f "${VM_DIR}/vvv-init.sh" ]]; then
   SUCCESS=$?
 else
   echo " * Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
-  SITE_INIT_SCRIPTS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-init.conf');
+  SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.conf');
   if [[ -z $SITE_INIT_SCRIPTS ]] ; then
     echo " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
   else
