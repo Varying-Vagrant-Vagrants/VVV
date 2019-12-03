@@ -7,7 +7,6 @@ BRANCH=$3
 VM_DIR=$4
 SKIP_PROVISIONING=$5
 NGINX_UPSTREAM=$6
-VVV_PATH_TO_SITE=${VM_DIR}
 VVV_SITE_NAME=${SITE}
 
 GREEN="\033[38;5;2m"
@@ -73,11 +72,11 @@ function vvv_provision_site_nginx() {
   # while still having an Nginx config which works.
   #env
   DIR="$(dirname "$SITE_NGINX_FILE")"
-  sed "s#{vvv_path_to_folder}#$DIR#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_path_to_site}#$VM_DIR#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_site_name}#$SITE#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_hosts}#$VVV_HOSTS#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{upstream}#$NGINX_UPSTREAM#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed "s#{vvv_path_to_folder}#${DIR}#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_path_to_site}#${VM_DIR}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_site_name}#${SITE}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
   if [ -n "$(type -t is_utility_installed)" ] && [ "$(type -t is_utility_installed)" = function ] && $(is_utility_installed core tls-ca); then
     sed -i "s#{vvv_tls_cert}#ssl_certificate /srv/certificates/${VVV_SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
