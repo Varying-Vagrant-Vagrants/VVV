@@ -6,18 +6,17 @@ VVV is a local developer environment, mainly aimed at [WordPress](https://wordpr
 
 To use it, download and install [Vagrant](https://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/). Then, clone this repository and run:
 
-```
+```shell
 vagrant plugin install vagrant-hostsupdater --local
 vagrant up --provision
 ```
-When it's done, visit http://vvv.test.
+
+When it's done, visit [http://vvv.test](http://vvv.test).
 
 The online documentation contains more detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 
-
 - **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
 - **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
-
 
 ## Minimum System requirements
 
@@ -30,4 +29,3 @@ The online documentation contains more detailed [installation instructions](http
 ## Software included
 
 For a comprehensive list, please see the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).
-
