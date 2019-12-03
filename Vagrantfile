@@ -450,12 +450,12 @@ Vagrant.configure("2") do |config|
   # If we're at a contributor day, switch the base box to the prebuilt one
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
     if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
-	    config.vm.box  = "vvv/contribute"
+	    config.vm.box = "vvv/contribute"
     end
   end
 
   # The Parallels Provider uses a different naming scheme.
-  config.vm.provider :parallels do |v, override|
+  config.vm.provider :parallels do |_v, override|
     override.vm.box = "parallels/ubuntu-18.04"
   end
 
@@ -466,13 +466,13 @@ Vagrant.configure("2") do |config|
   end
 
   # Hyper-V uses a different base box.
-  config.vm.provider :hyperv do |v, override|
+  config.vm.provider :hyperv do |_v, override|
     override.vm.box = "bento/ubuntu-18.04"
   end
 
   if defined? vvv_config['vm_config']['box']
     unless vvv_config['vm_config']['box'].nil?
-      config.vm.box  = vvv_config['vm_config']['box']
+      config.vm.box = vvv_config['vm_config']['box']
     end
   end
 
