@@ -42,17 +42,17 @@ get_config_value() {
 }
 
 get_hosts() {
-  local value=`cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`
+  local value=`cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null`
   echo ${value:-$@}
 }
 
 get_primary_host() {
-  local value=`cat ${VVV_CONFIG} | shyaml get-value sites.${SITE_ESCAPED}.hosts.0 2> /dev/null`
+  local value=`cat ${VVV_CONFIG} | shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" 2> /dev/null`
   echo ${value:-$1}
 }
 
 is_utility_installed() {
-  local utilities=`cat ${VVV_CONFIG} | shyaml get-values utilities.${1} 2> /dev/null`
+  local utilities=`cat ${VVV_CONFIG} | shyaml get-values "utilities.${1}" 2> /dev/null`
   for utility in ${utilities}; do
     if [[ "${utility}" == "${2}" ]]; then
       return 0
@@ -120,16 +120,16 @@ if [[ false != "${REPO}" ]]; then
     if [[ -d ${VM_DIR}/.git ]]; then
     	echo " * Updating ${SITE} in ${VM_DIR}..."
     	cd ${VM_DIR}
-    	git reset origin/${BRANCH} --hard -q
-    	git pull origin ${BRANCH} -q
-    	git checkout ${BRANCH} -q
+    	git reset "origin/${BRANCH}" --hard -q
+    	git pull origin "${BRANCH}" -q
+    	git checkout "${BRANCH}" -q
     else
       echo "${RED}Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
     fi
   else
     # Clone or pull the site repository
     echo -e "\nDownloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
-    git clone --recursive --branch ${BRANCH} ${REPO} ${VM_DIR} -q
+    git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
     if [ $? -eq 0 ]; then
       echo "${SITE} Site Template clone succesful"
     else
@@ -189,11 +189,11 @@ fi
 
 # Look for Nginx vhost files, symlink them into the custom sites dir
 if [[ -f "${VM_DIR}/.vvv/vvv-nginx.conf" ]]; then
-  vvv_provision_site_nginx $SITE "${VM_DIR}/.vvv/vvv-nginx.conf"
+  vvv_provision_site_nginx "${SITE}" "${VM_DIR}/.vvv/vvv-nginx.conf"
 elif [[ -f "${VM_DIR}/provision/vvv-nginx.conf" ]]; then
-  vvv_provision_site_nginx $SITE "${VM_DIR}/provision/vvv-nginx.conf"
+  vvv_provision_site_nginx "${SITE}" "${VM_DIR}/provision/vvv-nginx.conf"
 elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
-  vvv_provision_site_nginx $SITE "${VM_DIR}/vvv-nginx.conf"
+  vvv_provision_site_nginx "${SITE}" "${VM_DIR}/vvv-nginx.conf"
 else
   echo " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
   NGINX_CONFIGS=$(find ${VM_DIR} -maxdepth 3 -name 'vvv-nginx.conf');
@@ -201,7 +201,7 @@ else
     echo -e " * ${RED}Warning: No nginx config was found, VVV will not know how to serve this site${CRESET}"
   else
     for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
-      vvv_provision_site_nginx $SITE $SITE_CONFIG_FILE
+      vvv_provision_site_nginx "${SITE}" "${SITE_CONFIG_FILE}"
     done
   fi
 fi
@@ -211,32 +211,32 @@ fi
 #
 # Domains should be entered on new lines.
 echo " * Adding domains to the virtual machine's /etc/hosts file..."
-hosts=`cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`
+hosts=`cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null`
 if [ ${#hosts[@]} -eq 0 ]; then
   echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
   if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then
     echo -e "${GREEN} * Found a .vvv/vvv-hosts file${CRESET}"
-    vvv_provision_hosts_file $SITE "${VM_DIR}/.vvv/vvv-hosts"
+    vvv_provision_hosts_file "${SITE}" "${VM_DIR}/.vvv/vvv-hosts"
   elif [[ -f "${VM_DIR}/provision/vvv-hosts" ]]; then
     echo -e "${GREEN} * Found a provision/vvv-hosts file${CRESET}"
-    vvv_provision_hosts_file $SITE "${VM_DIR}/provision/vvv-hosts"
+    vvv_provision_hosts_file "${SITE}" "${VM_DIR}/provision/vvv-hosts"
   elif [[ -f "${VM_DIR}/vvv-hosts" ]]; then
     echo -e "${GREEN} * Found a vvv-hosts file${CRESET}"
-    vvv_provision_hosts_file $SITE "${VM_DIR}/vvv-hosts"
+    vvv_provision_hosts_file "${SITE}" "${VM_DIR}/vvv-hosts"
   else
     echo " * Searching subfolders 4 levels down for a vvv-hosts file ( this can be skipped by using ./vvv-hosts, .vvv/vvv-hosts, or provision/vvv-hosts"
-    HOST_FILES=$(find ${VM_DIR} -maxdepth 4 -name 'vvv-hosts');
+    HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
     if [[ -z $HOST_FILES ]] ; then
       echo -e "${RED}Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible${CRESET}"
     else
       for HOST_FILE in $HOST_FILES; do
-        vvv_provision_hosts_file $HOST_FILE
+        vvv_provision_hosts_file "$HOST_FILE"
       done
     fi
   fi
 else
   echo " * Adding hosts from the VVV config entry"
-  for line in `cat ${VVV_CONFIG} | shyaml get-values sites.${SITE_ESCAPED}.hosts 2> /dev/null`; do
+  for line in `cat ${VVV_CONFIG} | shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null`; do
     if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
       echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
       echo "   - Added ${line} from ${VVV_CONFIG}"
