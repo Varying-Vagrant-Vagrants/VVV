@@ -9,7 +9,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
  - installs the ntp date packages and starts the ntp service to fix time drift on sleep
-
+ - fixes an issue with the ntpsec package by removing it
 
 ## 3.2.0 ( 2019 )
 
