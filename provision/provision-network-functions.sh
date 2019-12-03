@@ -5,6 +5,10 @@
 # This file is for common network helper functions that get called in
 # other provisioners
 
+GREEN="\033[38;5;2m"
+RED="\033[38;5;9m"
+CRESET="\033[0m"
+
 network_detection() {
   echo " * Testing network connection"
   # Network Detection
@@ -13,10 +17,10 @@ network_detection() {
   # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
   # skip a few things further in provisioning rather than create a bunch of errors.
   if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://ppa.launchpad.net 2>&1 | grep 'connected')" ]]; then
-    echo " * Succesful Network connection to ppa.launchpad.net detected..."
+    echo -e "${GREEN} * Succesful Network connection to ppa.launchpad.net detected...${CRESET}"
     ping_result="Connected"
   else
-    echo " * Network connection not detected. Unable to reach ppa.launchpad.net..."
+    echo -e "${RED} ! Network connection not detected. Unable to reach ppa.launchpad.net...${CRESET}"
     ping_result="Not Connected"
   fi
 }
@@ -24,7 +28,7 @@ network_detection() {
 network_check() {
   network_detection
   if [[ ! "$ping_result" == "Connected" ]]; then
-    echo " "
+    echo -e "${RED} "
     echo "#################################################################"
     echo " "
     echo "Problem:"
@@ -60,7 +64,7 @@ network_check() {
     echo " "
     echo "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
     echo " "
-    echo "#################################################################"
+    echo "#################################################################${CRESET}"
 
     exit 1
   fi
