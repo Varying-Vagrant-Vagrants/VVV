@@ -103,7 +103,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
 
 This version moves to an Ubuntu 18.04 box. It also moves the database data directory to a mounted folder. This means you can destroy and rebuild the VM without loss, but it also means **a `vagrant destroy` is necessary to update**. **Be sure to back up database tables you need beforehand**.
 
-If you have issues provisioning with the new shared database folder, you can disable it by adding `db_share_type: false` to the `general:` section of `vvv-custom.yml` then reprovisioning. This will return you to the VVV 2 behaviour. 
+If you have issues provisioning with the new shared database folder, you can disable it by adding `db_share_type: false` to the `general:` section of `vvv-custom.yml` then reprovisioning. This will return you to the VVV 2 behaviour.
 
 In the near future, we expect to use a box with PHP/etc preinstalled, this will be VVV 4.0.
 
@@ -373,17 +373,18 @@ The decision to include breaking changes in a release is not made lightly. The n
 * WP-CLI: Add an external configuration for WP-CLI so that a locally installed copy can be used outside of the VM. See [#564](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/564).
 
 ## 1.2.0 (December 14, 2014)
+
 * VVV is now [MIT Licensed](https://github.com/Varying-Vagrant-Vagrants/VVV/blob/master/LICENSE).
 * ***Possible Breaking:*** By default, database files are no longer mapped to a local location.
-	* A full `vagrant destroy` and the removal of MySQL data from `{vvv-dir}/database/data/` is recommended.
-	* If database files already exist from an earlier version of VVV, data will continue to be mapped locally until removed.
-	* Database data will continue to exist on the virtual machine through `vagrant halt` and `vagrant suspend`.
-	* Database data will no longer exist on the virtual machine after `vagrant destroy`.
-	* A `db_backup` script is provided by default that creates local backups of each database on halt, suspend, and destroy if the vagrant-triggers plugin is installed.
+* A full `vagrant destroy` and the removal of MySQL data from `{vvv-dir}/database/data/` is recommended.
+* If database files already exist from an earlier version of VVV, data will continue to be mapped locally until removed.
+* Database data will continue to exist on the virtual machine through `vagrant halt` and `vagrant suspend`.
+* Database data will no longer exist on the virtual machine after `vagrant destroy`.
+* A `db_backup` script is provided by default that creates local backups of each database on halt, suspend, and destroy if the vagrant-triggers plugin is installed.
 * ***Possible Breaking:*** Ubuntu has been upgraded from 12.04 LTS to 14.04 LTS. We have also moved from 32bit to 64bit.
-	* A full `vagrant destroy` is recommended for best results.
-	* A new box will be downloaded for the base virtual machine. If you'd like to free space, remove the old box with `vagrant box remove precise32`. Running `vagrant box list` will show you all base VMs on your local machine.
-	* With a new operating system comes a new RSA key. If you are connecting via SSH through an application that relies on your machines `known_hosts` file, you will need to clear the old key for 192.168.50.4. [See #365](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/365)
+* A full `vagrant destroy` is recommended for best results.
+* A new box will be downloaded for the base virtual machine. If you'd like to free space, remove the old box with `vagrant box remove precise32`. Running `vagrant box list` will show you all base VMs on your local machine.
+* With a new operating system comes a new RSA key. If you are connecting via SSH through an application that relies on your machines `known_hosts` file, you will need to clear the old key for 192.168.50.4. [See #365](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/365)
 * Init scripts are now fired with `source` rather than `bash`. Due to this change, something like `cd "$(dirname $0)"` no longer works as expected. See [#373](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/373) and [#370](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/370) for reasoning and discussion.
 * WordPress: Add `develop_git` to convert the default SVN checkout to Git.
 * PHP: Update to PHP 5.5.x
@@ -402,6 +403,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Nginx: Install using the mainline repository, currently 1.7.x.
 
 ## 1.1
+
 * Transition to [Varying Vagrant Vagrants organization](https://github.com/Varying-Vagrant-Vagrants).
 * Add a CONTRIBUTING document.
 * Add `--allow-root` to all `wp-cli` calls in VVV core.
@@ -411,6 +413,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Remove `tcp_nodelay` config in Nginx. Reasoning in 0cce79501.
 
 ## 1.0
+
 * **Introduce** [Auto Site Setup](https://github.com/varying-vagrant-vagrants/VVV/wiki/Auto-site-Setup) during provisioning to allow for easy new project configuration.
 * **Happy Fix** `vagrant up` after halt meets expectations and no longer requires provisioning to be reapplied.
 * Begin implementing best practices from Google's [shell style guide](http://google-styleguide.googlecode.com/svn/trunk/shell.xml) in our provisioning scripts.
@@ -420,19 +423,20 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Reduce size of the included `my.cnf` file to exclude unrequired changes. Increase `max_allowed_packet` setting.
 
 ## 0.9
+
 * **Possible Annoying:** Use `precise32` for the Vagrant box name for better cross project box caching.
-    * **Note:** This will probably cause a new Vagrant box to download. Use `vagrant box remove std-precise32` after a `vagrant destroy` to remove the old one and start with this.
+* **Note:** This will probably cause a new Vagrant box to download. Use `vagrant box remove std-precise32` after a `vagrant destroy` to remove the old one and start with this.
 * **Possible Breaking:** Change VM hostname to `vvv.dev`
-    * **Note:** If you had anything setup to rely on the hostname of precise32-dev, this may break.
+* **Note:** If you had anything setup to rely on the hostname of precise32-dev, this may break.
 * **Possible Breaking:** Change MySQL root password to `root`
-	* **Note:** If anything is setup to rely on the previous password of `blank`, this  may break.
-	* You can also now access `mysql -u root` without a password.
+* **Note:** If anything is setup to rely on the previous password of `blank`, this  may break.
+* You can also now access `mysql -u root` without a password.
 * **Introduce** support for the WordPress develop.svn
-	* This was added pretty much the day it was available. Such a pleasure to work with!
-	* Allowed us to remove the old `wordpress-unit-tests` in favor of the new `wordpress-develop/tests`
+* This was added pretty much the day it was available. Such a pleasure to work with!
+* Allowed us to remove the old `wordpress-unit-tests` in favor of the new `wordpress-develop/tests`
 * **Introduce** support for the Vagrant hostsupdater plugin
-	* Use `vagrant plugin install vagrant-hostsupdater` to install.
-	* Very, very much recommended for an easier and happier life.
+* Use `vagrant plugin install vagrant-hostsupdater` to install.
+* Very, very much recommended for an easier and happier life.
 * **Introduce** Postfix with a default config. Mail works! (But check your spam)
 * **Introduce** the WordPress i18n Tools, including `config/homebin/makepot`
 * **Introduce** PHP_CodeSniffer, WordPress-Coding-Standards, and Webgrind
@@ -449,6 +453,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Provide default certs for SSL in Nginx
 
 ## 0.8
+
 * Enable SSH agent forwarding
 * Wrap update/installation procedures with a network status check
 * Enable WP_DEBUG by default
@@ -479,9 +484,10 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Bump default memcached memory allocation to 128M
 * Introduce custom `apc.ini` file, bump `apc.shm_size` to 128M
 * Provide a phpinfo URL at `http://192.168.50.4/phpinfo/`
-* Set WP_DEBUG to true by default for included installations of WordPress
+* Set `WP_DEBUG` to true by default for included installations of WordPress
 
 ## 0.6
+
 * Add [WordPress Unit Tests](http://unit-tests.svn.wordpress.org/trunk/)
 * Option for custom shell provisioning file
 * Pre/Post provisioning hooks via additional shell scripts
@@ -492,11 +498,13 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Move [wp-cli](https://github.com/wp-cli/wp-cli) to /srv/www/ for easier contributions
 
 ## 0.5
+
 * Repository moved under [10up organization](http://github.com/10up/varying-vagrant-vagrants)
 * Wrap provisioning in an initial run flag, speed up subsequent boots
 * Add support for a Customfile to pull in desired local modifications
 
 ## 0.4
+
 * Add default .vimrc file with some helpful tricks
 * Clarify sample SQL commands
 * Add WordPress trunk installation to default setup
@@ -505,6 +513,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * General documentation improvements
 
 ## 0.3
+
 * Add Mockery
 * Vagrant version requirement changes
 * Add wp-cli
@@ -512,9 +521,11 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Add subversion
 
 ## 0.2.1
+
 * Bug fix on importing SQL files
 
 ## 0.2
+
 * Add ack-grep
 * Move to Vagrant 1.1 style Vagrantfile
 * Better DB handling all around
@@ -523,4 +534,5 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Add XDebug
 
 ## 0.1
+
 * Initial version, lots of junk from untracked versions. :)
