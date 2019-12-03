@@ -14,17 +14,19 @@ exec 2> >(tee -a "${logfile}" >&2 )
 
 if [[ false != "dashboard" && false != "${REPO}" ]]; then
   # Clone or pull the resources repository
-  if [[ ! -d ${DIR}/.git ]]; then
-    echo -e "\nDownloading dashboard, see ${REPO}"
-    git clone ${REPO} --branch "${BRANCH}" ${DIR} -q
-    cd ${DIR}
+  if [[ ! -d "${DIR}/.git" ]]; then
+    echo -e " *  Downloading dashboard, see ${REPO}"
+    git clone "${REPO}" --branch "${BRANCH}" "${DIR}" -q
+    cd "${DIR}"
     git checkout "${BRANCH}" -q
   else
-    echo -e "\nUpdating dashboard on the "${BRANCH}" branch..."
-    cd ${DIR}
+    echo -e " * Updating dashboard on the '${BRANCH}' branch..."
+    cd "${DIR}"
     git pull origin "${BRANCH}" -q
     git checkout "${BRANCH}" -q
   fi
+else
+  echo " * Skipping dashboard provisioning, set to false in config"
 fi
 
 exit 0
