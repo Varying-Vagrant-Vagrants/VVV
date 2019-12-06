@@ -44,25 +44,28 @@ if [ "$sql_count" != 0 ]
 then
 	for file in $( ls ./*.sql )
 	do
+	# get rid of the extension
 	pre_dot=${file%%.sql}
+	# get rid of the ./
+	db_name=${predot##./}
 
-	echo " * Creating the ${pre_dot} table if it doesn't already exist, and granting the wp user access"
-	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`$pre_dot\`"
-	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`$pre_dot\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+	echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
+	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
+	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
-	mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
+	mysql_cmd="SHOW TABLES FROM \`${pre_dot}\`" # Required to support hypens in database names
 	db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
 	if [ "$?" != "0" ]
 	then
-		echo " * Error - Create ${pre_dot} database via init-custom.sql before attempting import"
+		echo " * Error - Create \`${db_name}\` database via init-custom.sql before attempting import"
 	else
-		if [ "" == "$db_exist" ]
+		if [ "" == "${db_exist}" ]
 		then
-			echo "mysql -u root -proot ${pre_dot} < ${pre_dot}.sql"
-			mysql -u root -proot "${pre_dot}" < "${pre_dot}.sql"
-			echo " * Import of ${pre_dot} successful"
+			echo "mysql -u root -proot \"${db_name}\" < \"${db_name}.sql\""
+			mysql -u root -proot "${db_name}" < "${db_name}.sql"
+			echo " * Import of \`${db_name}\` successful"
 		else
-			echo " * Skipped import of ${pre_dot} - tables exist"
+			echo " * Skipped import of \`${db_name}\` - tables exist"
 		fi
 	fi
 	done
