@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SITE=$1
-SITE_ESCAPED=$(echo "${SITE}" | sed 's/\./\\\\./g')
+SITE_ESCAPED="${SITE//./\\.}"
 REPO=$2
 BRANCH=$3
 VM_DIR=$4
