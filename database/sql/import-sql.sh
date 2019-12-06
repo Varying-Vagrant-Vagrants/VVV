@@ -47,7 +47,7 @@ then
 	# get rid of the extension
 	pre_dot=${file%%.sql}
 	# get rid of the ./
-	db_name=${predot##./}
+  db_name=${pre_dot##./}
 
 	echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
 	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
