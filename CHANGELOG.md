@@ -16,6 +16,7 @@ permalink: /docs/en-US/changelog/
 
 * Installs the ntp date packages and starts the ntp service to fix time drift on sleep
 * Fixes an issue with the ntpsec package by removing it
+* Fixed the use of dots in site names breaking provisioning
 
 ## 3.2.0 ( 2019 )
 
