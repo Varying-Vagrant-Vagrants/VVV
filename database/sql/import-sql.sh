@@ -53,7 +53,7 @@ then
 	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
 	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
-	mysql_cmd="SHOW TABLES FROM \`${pre_dot}\`" # Required to support hypens in database names
+	mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hypens in database names
 	db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
 	if [ "$?" != "0" ]
 	then
