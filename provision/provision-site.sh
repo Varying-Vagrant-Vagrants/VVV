@@ -41,7 +41,7 @@ get_config_value() {
 }
 
 get_hosts() {
-  local value=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml get-values-0 "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
   echo "${value:-$@}"
 }
 
