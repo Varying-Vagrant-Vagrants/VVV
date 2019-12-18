@@ -274,8 +274,8 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/50-landscape-sysinfo ]]; then
     rm /etc/update-motd.d/50-landscape-sysinfo
   fi
-  if [[ -f /etc/update-motd.d/80-live-patch ]]; then
-    rm /etc/update-motd.d/80-live-patch
+  if [[ -f /etc/update-motd.d/80-livepatch ]]; then
+    rm /etc/update-motd.d/80-livepatch
   fi
   if [[ -f /etc/update-motd.d/90-updates-available ]]; then
     rm /etc/update-motd.d/90-updates-available
