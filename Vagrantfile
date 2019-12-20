@@ -256,6 +256,9 @@ if ! vvv_config['vagrant-plugins']
   vvv_config['vagrant-plugins'] = Hash.new
 end
 
+# Create a global variable to use in functions and classes
+$vvv_config = vvv_config
+
 # Show the second splash screen section
 
 if show_logo then
@@ -895,9 +898,16 @@ class VVVCommand < Vagrant.plugin(2, :command)
   end
 
   def execute
+    vm_dir = "/srv/www/#{ARGV[1]}/public_html"
+    $vvv_config['sites'].each do |site, args|
+      if site == ARGV[1]
+        vm_dir = args['vm_dir']
+      end
+    end
+
     with_target_vms(nil, single_target: true) do |vm|
       @env.ui.output "#{$yellow}Executing in #{$red}#{ARGV[1]}#{$yellow}: #{$red}#{ARGV[2]}#{$creset}\n"
-      vm.action(:ssh_run, ssh_run_command: "cd /srv/www/#{ARGV[1]}/public_html; #{ARGV[2]}")
+      vm.action(:ssh_run, ssh_run_command: "cd #{$vm_dir}; #{ARGV[2]}")
     end
   end
 end
