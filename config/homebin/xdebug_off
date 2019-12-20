@@ -2,10 +2,6 @@
 echo "Disabling XDebug if it's present"
 sudo phpdismod xdebug
 
-echo "Enabling tideways_xhprof and xhgui if installed"
-sudo phpenmod tideways_xhprof
-sudo phpenmod xhgui
-
 echo "Restarting PHP FPM's"
 find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 
