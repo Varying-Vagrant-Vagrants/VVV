@@ -1,7 +1,11 @@
 #!/bin/bash
-echo "Disabling tideways_xhprof/xhgui if present"
-sudo phpdismod tideways_xhprof
-sudo phpdismod xhgui
+
+if [[ $(is_utility_installed core tideways) ]]; then
+  echo "Disabling tideways_xhprof/xhgui"
+  sudo phpdismod tideways_xhprof
+  sudo phpdismod xhgui
+fi
+
 echo "Enabling XDebug"
 sudo phpenmod xdebug
 
