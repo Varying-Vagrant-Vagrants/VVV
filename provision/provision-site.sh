@@ -50,16 +50,6 @@ get_primary_host() {
   echo "${value:-$1}"
 }
 
-is_utility_installed() {
-  local utilities=$(shyaml get-values "utilities.${1}" 2> /dev/null < ${VVV_CONFIG})
-  for utility in ${utilities}; do
-    if [[ "${utility}" == "${2}" ]]; then
-      return 0
-    fi
-  done
-  return 1
-}
-
 function vvv_provision_site_nginx() {
   SITE_NGINX_FILE=$2
   DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
@@ -83,7 +73,7 @@ function vvv_provision_site_nginx() {
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
-  if [ -n "$(type -t is_utility_installed)" ] && [ "$(type -t is_utility_installed)" = function ] && $(is_utility_installed core tls-ca); then
+  if [[ $(is_utility_installed core tls-ca) ]]; then
     sed -i "s#{vvv_tls_cert}#ssl_certificate /srv/certificates/${VVV_SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
     sed -i "s#{vvv_tls_key}#ssl_certificate_key /srv/certificates/${VVV_SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   else
