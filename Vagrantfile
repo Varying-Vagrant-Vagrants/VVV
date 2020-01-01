@@ -458,7 +458,7 @@ Vagrant.configure("2") do |config|
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
-    override.vm.box = "parallels/ubuntu-18.04"
+    override.vm.box = "bento/ubuntu-18.04"
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
@@ -628,7 +628,7 @@ Vagrant.configure("2") do |config|
   # those are specific to Virtualbox. The folder is therefore overridden with one that
   # uses corresponding Parallels mount options.
   config.vm.provider :parallels do |_v, override|
-    override.vm.synced_folder "www/", "/srv/www", :owner => "www-data", :mount_options => []
+    override.vm.synced_folder "www/", "/srv/www", owner: "vagrant", group: "www-data", :mount_options => []
 
     override.vm.synced_folder "log/memcached", "/var/log/memcached", owner: "root", create: true,  group: "syslog", mount_options: []
     override.vm.synced_folder "log/nginx", "/var/log/nginx", owner: "root", create: true,  group: "syslog", mount_options: []
@@ -642,7 +642,7 @@ Vagrant.configure("2") do |config|
 
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], :owner => "www-data", :mount_options => []
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: "vagrant", group: "www-data", :mount_options => []
       end
     end
   end
