@@ -26,12 +26,6 @@ elif [ -d "/srv/www/wordpress-develop/public_html/src/" ]; then
     export WP_CORE_DIR=/srv/www/wordpress-develop/public_html/src/
 fi
 
-# add autocomplete for grunt
-[ ! type "grunt" > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
-
-# add autocomplete for wp-cli
-[ -s "/srv/config/wp-cli/wp-completion.bash" ] && . /srv/config/wp-cli/wp-completion.bash
-
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
 
@@ -40,4 +34,13 @@ export PATH="$PATH:/srv/config/homebin/"
 
 # nvm path
 export NVM_DIR="/srv/config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+
+if [ -n "$BASH" ]; then
+	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+
+	# add autocomplete for grunt
+	[ ! type "grunt" > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
+
+	# add autocomplete for wp-cli
+	[ -s "/srv/config/wp-cli/wp-completion.bash" ] && . /srv/config/wp-cli/wp-completion.bash
+fi
