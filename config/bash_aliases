@@ -27,10 +27,10 @@ elif [ -d "/srv/www/wordpress-develop/public_html/src/" ]; then
 fi
 
 # add autocomplete for grunt
-eval "$(grunt --completion=bash)"
+[ ! type "grunt" > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
 
 # add autocomplete for wp-cli
-. /srv/config/wp-cli/wp-completion.bash
+[ -s "/srv/config/wp-cli/wp-completion.bash" ] && . /srv/config/wp-cli/wp-completion.bash
 
 # PHPCS path
 export PATH="$PATH:/srv/www/phpcs/scripts/"
