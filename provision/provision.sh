@@ -293,6 +293,11 @@ profile_setup() {
   rm -f "/home/vagrant/.bash_aliases"
   noroot cp -f "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
 
+  echo " * Copying /srv/config/bash_aliases                      to $HOME/.bash_aliases"
+  rm -f "$HOME/.bash_aliases"
+  cp -f "/srv/config/bash_aliases" "$HOME/.bash_aliases"
+  . "$HOME/.bash_aliases"
+
   echo " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
   rm -f "/home/vagrant/.vimrc"
   noroot cp -f "/srv/config/vimrc" "/home/vagrant/.vimrc"
