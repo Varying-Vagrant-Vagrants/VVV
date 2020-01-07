@@ -1,7 +1,6 @@
 #!/bin/bash
-if [[ $(is_utility_installed core tideways) ]]; then
-  tideways_off
-fi
+
+tideways_off
 
 echo "Enabling XDebug"
 sudo phpenmod xdebug
