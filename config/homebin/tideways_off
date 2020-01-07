@@ -1,8 +1,4 @@
 #!/bin/bash
-if [[ ! $(is_utility_installed core tideways) ]]; then
-  echo "Tideways is not installed"
-  exit 0
-fi
 
 echo "Disabling tideways_xhprof/xhgui"
 sudo phpdismod tideways_xhprof
