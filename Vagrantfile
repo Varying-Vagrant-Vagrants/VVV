@@ -258,6 +258,9 @@ unless vvv_config['vagrant-plugins']
   vvv_config['vagrant-plugins'] = Hash.new
 end
 
+# Create a global variable to use in functions and classes
+$vvv_config = vvv_config
+
 # Show the second splash screen section
 
 if show_logo
