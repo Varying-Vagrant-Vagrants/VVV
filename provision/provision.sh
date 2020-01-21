@@ -714,7 +714,7 @@ mailhog_setup() {
   fi
 
   if [[ ! -e /etc/systemd/system/mailhog.service ]]; then
-
+    echo " * Mailhog service file missing, setting up"
     # Make it start on reboot
     tee /etc/systemd/system/mailhog.service <<EOL
 [Unit]
@@ -729,9 +729,10 @@ EOL
   fi
 
   # Start on reboot
+  echo " * Enabling MailHog Service"
   systemctl enable mailhog
 
-  echo " * Starting MailHog"
+  echo " * Starting MailHog Service"
   systemctl start mailhog
 }
 
@@ -745,10 +746,10 @@ mysql_setup() {
 
     # Copy mysql configuration from local
     cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
+    echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
+
     cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
     chmod 0644 "/home/vagrant/.my.cnf"
-
-    echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
 
     # MySQL gives us an error if we restart a non running service, which
@@ -797,10 +798,12 @@ services_restart() {
   service ntp restart
 
   # Disable PHP Xdebug module by default
+  echo " * Disabling XDebug PHP extension"
   phpdismod xdebug
 
   # Enable PHP MailHog sendmail settings by default
-  phpenmod -s fpm mailhog
+  echo " * Enabling MailHog for PHP"
+  phpenmod mailhog
 
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
@@ -816,17 +819,18 @@ wp_cli() {
 
   # Remove old wp-cli symlink, if it exists.
   if [[ -L "/usr/local/bin/wp" ]]; then
-    echo " * Removing old wp-cli"
+    echo " * Removing old wp-cli symlink"
     rm -f /usr/local/bin/wp
   fi
 
   exists_wpcli="$(which wp)"
   if [[ "/usr/local/bin/wp" != "${exists_wpcli}" ]]; then
-    echo " * Downloading wp-cli, see http://wp-cli.org"
+    echo " * Downloading wp-cli nightly, see http://wp-cli.org"
     curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
     chmod +x wp-cli-nightly.phar
     sudo mv wp-cli-nightly.phar /usr/local/bin/wp
 
+    echo " * Grabbing WP CLI bash completions"
     # Install bash completions
     curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
   else
