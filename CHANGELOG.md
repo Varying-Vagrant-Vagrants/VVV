@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Improvements to the ruby code in the vagrant file
+* Added the pcov PHP extension to speed up coverage tests in PHPUnit
 
 ### Bug Fixes
 
