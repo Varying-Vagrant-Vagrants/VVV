@@ -73,7 +73,7 @@ function vvv_provision_site_nginx() {
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
-  if [[ $(is_utility_installed core tls-ca) ]]; then
+  if [[ $(/srv/config/homebin/is_utility_installed core tls-ca) ]]; then
     sed -i "s#{vvv_tls_cert}#ssl_certificate /srv/certificates/${VVV_SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
     sed -i "s#{vvv_tls_key}#ssl_certificate_key /srv/certificates/${VVV_SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   else
