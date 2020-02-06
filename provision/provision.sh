@@ -808,7 +808,7 @@ services_restart() {
 
   # Enable PHP MailHog sendmail settings by default
   echo " * Enabling MailHog for PHP"
-  phpenmod mailhog
+  phpenmod -s ALL mailhog
 
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
