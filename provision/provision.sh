@@ -163,6 +163,7 @@ apt_package_install_list=(
   php-ssh2
   php-xdebug
   php-yaml
+  php-ldap
   php7.2-bcmath
   php7.2-curl
   php7.2-gd
