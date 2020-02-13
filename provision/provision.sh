@@ -614,6 +614,11 @@ tools_install() {
 
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
+  if [[ ! -e /root/.rnd ]]; then
+    echo " * Generating Random Number for cert generation..."
+    vvvgenrnd="$(openssl rand -out /root/.rnd -hex 256 2>&1)"
+    echo "$vvvgenrnd"
+  fi
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
     echo " * Generating Nginx server private key..."
     vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
