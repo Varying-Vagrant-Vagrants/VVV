@@ -893,7 +893,7 @@ cleanup_vvv(){
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
   echo "127.0.0.1 vvv # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
-  if [[ $(is_utility_installed core tideways) ]]; then
+  if is_utility_installed core tideways; then
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
     echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
