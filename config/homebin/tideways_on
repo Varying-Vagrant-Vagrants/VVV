@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ ! $(is_utility_installed core tideways) ]]; then
+if ! is_utility_installed core tideways; then
   echo "Tideways is not installed"
   exit 0
 fi
