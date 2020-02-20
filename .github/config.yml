@@ -1,0 +1,9 @@
+# Configuration for update-docs - https://github.com/behaviorbot/update-docs
+
+# Comment to be posted to on PRs that don't update documentation
+updateDocsComment: >
+  Thanks for opening this pull request! Make sure `CHANGELOG.md` gets updated with this change, additionaly any docs that need updated can be found at https://github.com/Varying-Vagrant-Vagrants/varyingvagrantvagrants.org 
+  
+targetFiles:
+  - CHANGELOG.md
+
