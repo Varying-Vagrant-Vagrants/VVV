@@ -7,3 +7,17 @@ updateDocsComment: >
 targetFiles:
   - CHANGELOG.md
 
+# Comment to be posted to on first time issues
+newIssueWelcomeComment: >
+  Thanks for opening your first issue here! Be sure to follow the issue template and include your OS/Vagrant/VVV versions! Don't forget you can get support in the VVV slack at https://varyingvagrantvagrants.org/docs/en-US/slack/
+
+# Configuration for new-pr-welcome - https://github.com/behaviorbot/new-pr-welcome
+
+# Comment to be posted to on PRs from first time contributors in your repository
+newPRWelcomeComment: false
+
+# Configuration for first-pr-merge - https://github.com/behaviorbot/first-pr-merge
+
+# Comment to be posted to on pull requests merged by a first time user
+firstPRMergeComment: >
+  Congrats on merging your first pull request!
