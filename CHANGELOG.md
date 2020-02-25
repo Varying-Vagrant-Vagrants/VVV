@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.3.0 ( WIP )
+## 3.3.0 ( 2020 )
 
 ### Enhancements
 
@@ -17,8 +17,9 @@ permalink: /docs/en-US/changelog/
 * Installs the ntp date packages and starts the ntp service to fix time drift on sleep
 * Fixes an issue with the ntpsec package by removing it
 * Fixed the use of dots in site names breaking provisioning
+* Always set the database root user password to avoid having the default invalid password on fresh installs
 
-## 3.2.0 ( 2019 )
+## 3.2.0 ( 2019 Nov 5th )
 
 ### Enhancements
 
