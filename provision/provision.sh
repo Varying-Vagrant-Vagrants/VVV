@@ -762,7 +762,7 @@ mysql_setup() {
     chmod 0644 "/home/vagrant/.my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
     
-    echo " * Setting the default MariaSQL root password"
+    echo " * Setting the default database password for the root user"
     mysqladmin -u root password root
 
     # MySQL gives us an error if we restart a non running service, which
