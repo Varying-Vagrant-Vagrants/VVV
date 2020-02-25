@@ -35,7 +35,7 @@ rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
 touch /vagrant/provisioned_at
-echo $(date "+%Y%m%d-%H%M%S") > /vagrant/provisioned_at
+echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
 date_time=$(cat /vagrant/provisioned_at)
 logfolder="/var/log/provisioners/${date_time}"
