@@ -761,15 +761,18 @@ mysql_setup() {
     cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
     chmod 0644 "/home/vagrant/.my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
+    
+    echo " * Setting the default MariaSQL root password"
+    mysqladmin -u root password root
 
     # MySQL gives us an error if we restart a non running service, which
     # happens after a `vagrant halt`. Check to see if it's running before
     # deciding whether to start or restart.
     if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
-      echo " * service mysql start"
+      echo " * Starting the mysql service"
       service mysql start
-      else
-      echo " * service mysql restart"
+    else
+      echo " * Restarting mysql service"
       service mysql restart
     fi
 
