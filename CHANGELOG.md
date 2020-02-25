@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Improvements to the ruby code in the vagrant file
+* Improved the log folder names from `20200225-182126` to `2020.02.25-18-21-26`
 
 ### Bug Fixes
 
