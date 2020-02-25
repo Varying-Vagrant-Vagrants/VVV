@@ -752,13 +752,13 @@ mysql_setup() {
 
   exists_mysql="$(service mysql status)"
   if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
-    echo -e "\n * Setup MySQL configuration file links..."
+    echo -e "\n * Setting up database configuration file links..."
 
     # Copy mysql configuration from local
     cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
     echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
 
-    cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
+    cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
     chmod 0644 "/home/vagrant/.my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
     
@@ -781,8 +781,9 @@ mysql_setup() {
     # Create the databases (unique to system) that will be imported with
     # the mysqldump files located in database/backups/
     if [[ -f "/srv/database/init-custom.sql" ]]; then
+      echo " * Running custom init-custom.sql under the root user..."
       mysql -u "root" -p"root" < "/srv/database/init-custom.sql"
-      echo -e "\n * Initial custom MySQL scripting..."
+      echo " * init-custom.sql has run"
     else
       echo -e "\n * No custom MySQL scripting found in database/init-custom.sql, skipping..."
     fi
