@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#
+# This script will checkout the desired version of WordPress for the svn checkout defined
+# using the WP_TESTS_DIR environment variable.
+#
+# This is a wrapper around `svn switch`, with some logic to parse WordPress versions.
+#
+# ARGUMENTS:
+#
+# [<version>]  The version of WordPress to check out. Default is "trunk".
+#
+#              Please note that using major.minor format (e.g. "5.2") will use the corresponding
+#              branch, whereas major.minor.patch (e.g. 5.2.1) will use the tagged release.
+#
+# EXAMPLES:
+#
+#     # Switch to WordPress 5.2
+#     $ set_wp_version 5.2
+#
+#     # WordPress trunk
+#     $ set_wp_version trunk # OR simply "set_wp_version"
+
+set -e
+
+WP_VERSION=${1-trunk}
+
+if [ -z "$WP_TESTS_DIR" ]; then
+  echo "WP_TESTS_DIR is not set, aborting."
+  exit 1
+fi
+
+# Run the rest of the commands within the context of the SVN directory.
+cd "$WP_TESTS_DIR" && cd "$(svn info --show-item wc-root)"
+
+# If we're given a major.minor version, use the branch.
+if [[ $WP_VERSION =~ ^[0-9]+\.[0-9]+$ ]]; then
+  SVN_PATH="^/branches/${WP_VERSION}"
+
+# Versions in the format of major.minor.patch should use the tag.
+elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+
+  # Version x.x.0 are tagged as x.x, so strip the trailing zero.
+  if [[ $VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
+    SVN_PATH="^/tags/${WP_VERSION%??}"
+  else
+    SVN_PATH="^/tags/$WP_VERSION"
+  fi
+
+# Default to "trunk"
+else
+  if [ 'trunk' != "$WP_VERSION" ]; then
+    echo -e "\033[0;36mNotice:\033[0;0m Unrecognized identifier \"${WP_VERSION}\", using \"trunk\" instead."
+    WP_VERSION="trunk"
+  fi
+
+  SVN_PATH='^/trunk'
+fi
+
+svn switch "$SVN_PATH" && echo -e "\033[0;32mNow using wordpress-develop@${WP_VERSION}\033[0;0m"
