@@ -6,6 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.4.0
+
+### Enhancements
+
+* Added `set_wp_version` for changing branches/tags for `wordpress-trunk`.
+
 ## 3.3.0 ( 2020 )
 
 ### Enhancements
