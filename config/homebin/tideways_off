@@ -1,10 +1,4 @@
 #!/bin/bash
 
-echo "Disabling tideways_xhprof/xhgui"
-sudo phpdismod tideways_xhprof
-sudo phpdismod xhgui
+switch_php_debugmod none
 
-echo "Restarting PHP FPM's"
-find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
-
-echo "Tideways is turned off"
