@@ -12,6 +12,7 @@ permalink: /docs/en-US/changelog/
 
 * Improvements to the ruby code in the vagrant file
 * Improved the log folder names from `20200225-182126` to `2020.02.25-18-21-26`
+* Added a `switch_php_debugmod` to replace the `xdebug_on` `tideways_off` style scripts
 
 ### Bug Fixes
 
