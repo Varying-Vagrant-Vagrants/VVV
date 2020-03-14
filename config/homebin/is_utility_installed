@@ -3,8 +3,8 @@ VVV_CONFIG=/vagrant/config.yml
 
 utilities=$(shyaml get-values "utilities.${1}" 2> /dev/null < ${VVV_CONFIG})
 for utility in ${utilities}; do
-if [[ "${utility}" == "${2}" ]]; then
-  exit 0
-fi
+	if [[ "${utility}" == "${2}" ]]; then
+	  exit 0
+	fi
 done
 exit 1
