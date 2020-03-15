@@ -761,9 +761,13 @@ mysql_setup() {
     cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
     chmod 0644 "/home/vagrant/.my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
-    
-    echo " * Setting the default database password for the root user"
-    mysqladmin -u root password root
+
+    if [[ "ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)" != "$(mysql -u root -proot)" ]]; then
+      echo " * Setting the default database password for the root user"
+      mysqladmin -u root password root
+    else
+      echo " * The default database password for the root user is already configured"
+    fi
 
     # MySQL gives us an error if we restart a non running service, which
     # happens after a `vagrant halt`. Check to see if it's running before
