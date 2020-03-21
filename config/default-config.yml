@@ -123,7 +123,7 @@ vm_config:
   # Due to a limitation within Vagrant, the specified provider is only respected on a clean `vagrant up`
   # as Vagrant currently restricts you to one provider per machine
   # https://www.vagrantup.com/docs/providers/basic_usage.html#vagrant-up
-  # provider: vmware_workstation
+  # provider: vmware_desktop
 
 # General VVV options
 general:
