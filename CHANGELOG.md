@@ -6,6 +6,8 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+* Updated providers in default-config.yml
+
 ## 3.3.0 ( 2020 )
 
 ### Enhancements
