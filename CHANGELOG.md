@@ -6,6 +6,8 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+* Updated config/default-config.yml from vmware_workstation to vmware_desktop to match current VMWare provider in Vagrantfile for MacOS and Windows
+
 ## 3.3.0 ( 2020 )
 
 ### Enhancements
