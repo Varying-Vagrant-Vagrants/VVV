@@ -32,12 +32,7 @@ export PATH="$PATH:/srv/www/phpcs/scripts/"
 # Vagrant scripts
 export PATH="$PATH:/srv/config/homebin/"
 
-# nvm path
-export NVM_DIR="/srv/config/nvm"
-
 if [ -n "$BASH" ]; then
-	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-
 	# add autocomplete for grunt
 	[ ! type "grunt" > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
 
