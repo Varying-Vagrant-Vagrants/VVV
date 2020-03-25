@@ -762,13 +762,15 @@ mysql_setup() {
     chmod 0644 "/home/vagrant/.my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
     
-    mysql -u root -proot
+    mysql -u root -proot -e "SHOW DATABASES" 2$> /dev/null
     if [ $? -eq 1 ]; then
       echo " * Setting the default database password for the root user"
-      mysqladmin -u root password root
-      if [ $? -eq 1 ]; then
-        echo " * mysqladmin encountered an error"
-      fi
+      /etc/init.d/mysql stop 
+      mysqld_safe --skip-grant-tables &
+      mysql -uroot -e "use mysql;update user set authentication_string=PASSWORD("") where User='root';update user set plugin="mysql_native_password" where User='root';
+flush privileges;"
+      sudo /etc/init.d/mysql stop 
+      sudo /etc/init.d/mysql start
     fi
 
     # MySQL gives us an error if we restart a non running service, which
