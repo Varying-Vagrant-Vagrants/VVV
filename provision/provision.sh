@@ -761,12 +761,14 @@ mysql_setup() {
     cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
     chmod 0644 "/home/vagrant/.my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
-
-    if [[ "ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)" != "$(mysql -u root -proot)" ]]; then
+    
+    mysql -u root -proot
+    if [ $? -eq 0 ]; then
       echo " * Setting the default database password for the root user"
       mysqladmin -u root password root
-    else
-      echo " * The default database password for the root user is already configured"
+      if [ $? -eq 0 ]; then
+        echo " * mysqladmin encountered an error"
+      fi
     fi
 
     # MySQL gives us an error if we restart a non running service, which
