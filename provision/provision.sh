@@ -763,10 +763,10 @@ mysql_setup() {
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
     
     mysql -u root -proot
-    if [ $? -eq 0 ]; then
+    if [ $? -eq 1 ]; then
       echo " * Setting the default database password for the root user"
       mysqladmin -u root password root
-      if [ $? -eq 0 ]; then
+      if [ $? -eq 1 ]; then
         echo " * mysqladmin encountered an error"
       fi
     fi
