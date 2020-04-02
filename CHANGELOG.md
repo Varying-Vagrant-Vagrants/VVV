@@ -6,6 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+* Run rubocop on Vagrantfile in a move towards more idiomatic ruby
+
 ## 3.3.0 ( 2020 )
 
 ### Enhancements
