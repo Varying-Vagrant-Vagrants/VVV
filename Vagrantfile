@@ -231,8 +231,8 @@ vvv_config['vm_config'] = {} unless vvv_config['vm_config'].is_a? Hash
 vvv_config['general'] = {} unless vvv_config['general'].is_a? Hash
 
 defaults = {}
-defaults['memory'] = 4096
-defaults['cores'] = 2
+defaults['memory'] = 2048
+defaults['cores'] = 1
 defaults['provider'] = 'virtualbox'
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
 defaults['private_network_ip'] = '192.168.50.4'
