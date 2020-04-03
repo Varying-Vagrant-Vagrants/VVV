@@ -769,6 +769,7 @@ mysql_setup() {
       mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
       mysqld_safe --skip-grant-tables &
       mysql -uroot -e "use mysql;update user set authentication_string=PASSWORD('root') where User='root';update user set plugin='mysql_native_password' where User='root';flush privileges;"
+      service mysql stop
     fi
 
     # MySQL gives us an error if we restart a non running service, which
