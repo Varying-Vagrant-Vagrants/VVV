@@ -37,7 +37,7 @@ check_network_connection_to_host() {
   # If 3 attempts with a timeout of 5 seconds are not successful,
   # then we'll skip a few things further in provisioning rather
   # than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 "${url}" 2>&1 | grep 'connected')" ]]; then
+  if [[ "$(wget --tries=3 --timeout=10 --level=2 "${url}" 2>&1 | grep 'connected')" ]]; then
     echo -e "${GREEN} * Succesful Network connection to ${url} detected...${CRESET}"
     return 0
   fi

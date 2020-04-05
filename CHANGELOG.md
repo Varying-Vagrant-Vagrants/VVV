@@ -25,6 +25,7 @@ permalink: /docs/en-US/changelog/
 * Fixes an issue with the ntpsec package by removing it
 * Fixed the use of dots in site names breaking provisioning
 * Always set the database root user password to avoid having the default invalid password on fresh installs
+* Don't spider and recurse domains when checking for network connections
 
 ## 3.2.0 ( 2019 Nov 5th )
 
