@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
 * Added a `switch_php_debugmod` to replace the `xdebug_on` `tideways_off` style scripts
 * Checks the default password for MySQL root user during provision
 * Improved the provider examples in `default-config.yml`
+* Improved network checks to test more domains
 
 
 ### Bug Fixes
