@@ -6,13 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## Unreleased
-
-### Enhancements
-
-* Run rubocop on Vagrantfile in a move towards more idiomatic ruby
-
-## 3.3.0 ( 2020 )
+## 3.3.1 ( 2020 )
 
 ### Enhancements
 
@@ -22,7 +16,8 @@ permalink: /docs/en-US/changelog/
 * Checks the default password for MySQL root user during provision
 * Improved the provider examples in `default-config.yml`
 * Improved network checks to test more domains
-
+* ack-grep is now installed via `apt` rather than `beyondgrep.com`
+* Run rubocop on Vagrantfile in a move towards more idiomatic ruby
 
 ### Bug Fixes
 
