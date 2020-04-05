@@ -504,17 +504,6 @@ tools_install() {
   echo " * Installing/updating npm-check-updates..."
   npm_config_loglevel=error npm install -g npm-check-updates
 
-  # ack-grep
-  #
-  # Install ack-rep directory from the version hosted at beyondgrep.com as the
-  # PPAs for Ubuntu Precise are not available yet.
-  if [[ -f /usr/bin/ack ]]; then
-    echo " * ack-grep already installed"
-  else
-    echo " * Installing ack-grep as ack"
-    curl -s https://beyondgrep.com/ack-2.16-single-file > "/usr/bin/ack" && chmod +x "/usr/bin/ack"
-  fi
-
   echo " * Making sure the composer cache is not owned by root"
   mkdir -p /usr/local/src/composer
   mkdir -p /usr/local/src/composer/cache

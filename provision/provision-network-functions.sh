@@ -54,7 +54,6 @@ network_check() {
     "https://wordpress.org"
     "https://github.com"
     "https://raw.githubusercontent.com"
-    "https://beyondgrep.com"
     "https://getcomposer.org"
   )
   declare -a failed_hosts=()
