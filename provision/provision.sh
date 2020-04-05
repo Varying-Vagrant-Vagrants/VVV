@@ -736,26 +736,33 @@ EOL
 }
 
 check_mysql_root_password() {
-  mysql -u root -proot -e "SHOW DATABASES" &> /dev/null
+  echo " * Checking the root user password is root"
+  mysql -u root --password=root -e "SHOW DATABASES" &> /dev/null
   if [ $? -eq 0 ]; then
-    return
+    " * The root password is the expected value"
+    return 0
   fi
   echo " * The root password is not root, fixing"
   echo "   - stopping database"
   service mysql stop
   echo "   - checking /var/run/mysqld"
   mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
-  echo "   - starting the database in safe mode with networking turned off"
-  mysqld_safe --skip-grant-tables --skip-networking
-  echo "   - updating root user"
-  mysql -uroot -e cat <<-SQL
+  echo "   - starting the database in safe mode and updating the root user"
+  mysqld_safe --skip-grant-tables &
+  echo "   - waiting 2 seconds for database to finish starting"
+  sleep 2
+  echo "   - updating the root user"
+  sql=$( cat <<-SQL
       use mysql;
       update user set authentication_string=PASSWORD('root') where User='root';
       update user set plugin='mysql_native_password' where User='root';
       flush privileges;
 SQL
+  )
+  mysql -uroot -e "${sql}"
   echo "   - stopping database in safemode"
-  mysqladmin shutdown
+  mysqladmin -u root --password="root" shutdown
+  echo "   - root user password should now be root"
 }
 
 mysql_setup() {
@@ -923,7 +930,6 @@ cleanup_vvv(){
 ### SCRIPT
 #set -xv
 
-network_check
 # Profile_setup
 echo " * Bash profile setup and directories."
 cleanup_terminal_splash
@@ -940,14 +946,14 @@ if ! package_install; then
 fi
 
 tools_install
+
+mysql_setup
 nginx_setup
 mailhog_setup
 
 phpfpm_setup
 services_restart
-mysql_setup
 
-network_check
 # WP-CLI and debugging tools
 echo " "
 echo " * Installing/updating wp-cli and debugging tools"
