@@ -740,61 +740,71 @@ mysql_setup() {
   local exists_mysql
 
   exists_mysql="$(service mysql status)"
-  if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
-    echo -e "\n * Setting up database configuration file links..."
-
-    # Copy mysql configuration from local
-    cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
-    echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
-
-    cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
-    chmod 0644 "/home/vagrant/.my.cnf"
-    echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
-
-    mysql -u root -proot1 -e "SHOW DATABASES" &> /dev/null
-    if [ $? -eq 1 ]; then
-      echo " * Setting the default database password for the root user"
-      service mysql stop
-      mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
-      mysqld_safe --skip-grant-tables &
-      mysql -uroot -e "use mysql;update user set authentication_string=PASSWORD('root') where User='root';update user set plugin='mysql_native_password' where User='root';flush privileges;"
-      service mysql stop
-    fi
-
-    # MySQL gives us an error if we restart a non running service, which
-    # happens after a `vagrant halt`. Check to see if it's running before
-    # deciding whether to start or restart.
-    if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
-      echo " * Starting the mysql service"
-      service mysql start
-    else
-      echo " * Restarting mysql service"
-      service mysql restart
-    fi
-
-    # IMPORT SQL
-    #
-    # Create the databases (unique to system) that will be imported with
-    # the mysqldump files located in database/backups/
-    if [[ -f "/srv/database/init-custom.sql" ]]; then
-      echo " * Running custom init-custom.sql under the root user..."
-      mysql -u "root" -p"root" < "/srv/database/init-custom.sql"
-      echo " * init-custom.sql has run"
-    else
-      echo -e "\n * No custom MySQL scripting found in database/init-custom.sql, skipping..."
-    fi
-
-    # Setup MySQL by importing an init file that creates necessary
-    # users and databases that our vagrant setup relies on.
-    mysql -u "root" -p"root" < "/srv/database/init.sql"
-    echo " * Initial MySQL prep..."
-
-    # Process each mysqldump SQL file in database/backups to import
-    # an initial data set for MySQL.
-    "/srv/database/import-sql.sh"
-  else
+  if [[ "mysql: unrecognized service" == "${exists_mysql}" ]]; then
     echo -e "\n * MySQL is not installed. No databases imported."
+    return
   fi
+  echo -e "\n * Setting up database configuration file links..."
+
+  # Copy mysql configuration from local
+  cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
+  echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
+
+  cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
+  chmod 0644 "/home/vagrant/.my.cnf"
+  echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
+
+  mysql -u root -proot1 -e "SHOW DATABASES" &> /dev/null
+  if [ $? -eq 1 ]; then
+    echo " * The root password is not root, fixing"
+    echo "   - stopping database"
+    service mysql stop
+    echo "   - checking /var/run/mysqld"
+    mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
+    echo "   - starting the database in safe mode with networking turned off"
+    mysqld_safe --skip-grant-tables --skip-networking
+    echo "   - updating root user"
+    mysql -uroot -e cat <<-SQL
+      use mysql;
+      update user set authentication_string=PASSWORD('root') where User='root';
+      update user set plugin='mysql_native_password' where User='root';
+      flush privileges;
+SQL
+    echo "   - stopping database in safemode"
+    mysqladmin shutdown
+  fi
+
+  # MySQL gives us an error if we restart a non running service, which
+  # happens after a `vagrant halt`. Check to see if it's running before
+  # deciding whether to start or restart.
+  if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
+    echo " * Starting the mysql service"
+    service mysql start
+  else
+    echo " * Restarting mysql service"
+    service mysql restart
+  fi
+
+  # IMPORT SQL
+  #
+  # Create the databases (unique to system) that will be imported with
+  # the mysqldump files located in database/backups/
+  if [[ -f "/srv/database/init-custom.sql" ]]; then
+    echo " * Running custom init-custom.sql under the root user..."
+    mysql -u "root" -p"root" < "/srv/database/init-custom.sql"
+    echo " * init-custom.sql has run"
+  else
+    echo -e "\n * No custom MySQL scripting found in database/init-custom.sql, skipping..."
+  fi
+
+  # Setup MySQL by importing an init file that creates necessary
+  # users and databases that our vagrant setup relies on.
+  mysql -u "root" -p"root" < "/srv/database/init.sql"
+  echo " * Initial MySQL prep..."
+
+  # Process each mysqldump SQL file in database/backups to import
+  # an initial data set for MySQL.
+  "/srv/database/import-sql.sh"
 }
 
 services_restart() {
