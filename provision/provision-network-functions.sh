@@ -52,7 +52,7 @@ network_check() {
     "https://ppa.launchpad.net"
     "https://mirror.herrbischoff.com"
     "https://wordpress.org"
-    "https://github.xxxcom"
+    "https://github.com"
     "https://raw.githubusercontent.com"
     "https://beyondgrep.com"
     "https://getcomposer.org"
