@@ -735,13 +735,36 @@ EOL
   systemctl start mailhog
 }
 
+check_mysql_root_password() {
+  mysql -u root -proot -e "SHOW DATABASES" &> /dev/null
+  if [ $? -eq 0 ]; then
+    return
+  fi
+  echo " * The root password is not root, fixing"
+  echo "   - stopping database"
+  service mysql stop
+  echo "   - checking /var/run/mysqld"
+  mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
+  echo "   - starting the database in safe mode with networking turned off"
+  mysqld_safe --skip-grant-tables --skip-networking
+  echo "   - updating root user"
+  mysql -uroot -e cat <<-SQL
+      use mysql;
+      update user set authentication_string=PASSWORD('root') where User='root';
+      update user set plugin='mysql_native_password' where User='root';
+      flush privileges;
+SQL
+  echo "   - stopping database in safemode"
+  mysqladmin shutdown
+}
+
 mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
   local exists_mysql
 
   exists_mysql="$(service mysql status)"
   if [[ "mysql: unrecognized service" == "${exists_mysql}" ]]; then
-    echo -e "\n * MySQL is not installed. No databases imported."
+    echo -e "\n ! MySQL is not installed. No databases imported."
     return
   fi
   echo -e "\n * Setting up database configuration file links..."
@@ -754,25 +777,7 @@ mysql_setup() {
   chmod 0644 "/home/vagrant/.my.cnf"
   echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
 
-  mysql -u root -proot1 -e "SHOW DATABASES" &> /dev/null
-  if [ $? -eq 1 ]; then
-    echo " * The root password is not root, fixing"
-    echo "   - stopping database"
-    service mysql stop
-    echo "   - checking /var/run/mysqld"
-    mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
-    echo "   - starting the database in safe mode with networking turned off"
-    mysqld_safe --skip-grant-tables --skip-networking
-    echo "   - updating root user"
-    mysql -uroot -e cat <<-SQL
-      use mysql;
-      update user set authentication_string=PASSWORD('root') where User='root';
-      update user set plugin='mysql_native_password' where User='root';
-      flush privileges;
-SQL
-    echo "   - stopping database in safemode"
-    mysqladmin shutdown
-  fi
+  check_mysql_root_password
 
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
