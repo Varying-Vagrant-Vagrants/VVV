@@ -500,9 +500,9 @@ tools_install() {
   #
   # Make sure we have the latest npm version and the update checker module
   echo " * Installing/updating npm..."
-  npm install -g npm
+  npm_config_loglevel=error npm install -g npm
   echo " * Installing/updating npm-check-updates..."
-  npm install -g npm-check-updates
+  npm_config_loglevel=error npm install -g npm-check-updates
 
   # ack-grep
   #
@@ -555,19 +555,19 @@ tools_install() {
 
   function install_grunt() {
     echo " * Installing Grunt CLI"
-    npm install -g grunt grunt-cli --no-optional
-    hack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
-    npm install -g grunt-cssjanus --no-optional
-    npm install -g grunt-rtlcss --no-optional
+    npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional
+    hnpm_config_loglevel=error ack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
+    npm_config_loglevel=error npm install -g grunt-cssjanus --no-optional
+    npm_config_loglevel=error npm install -g grunt-rtlcss --no-optional
     echo " * Installed Grunt CLI"
   }
 
   function update_grunt() {
     echo " * Updating Grunt CLI"
-    npm update -g grunt grunt-cli --no-optional
-    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm update -g grunt-cssjanus --no-optional
-    npm update -g grunt-rtlcss --no-optional
+    npm_config_loglevel=error npm update -g grunt grunt-cli --no-optional
+    npm_config_loglevel=error hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm_config_loglevel=error npm update -g grunt-cssjanus --no-optional
+    npm_config_loglevel=error npm update -g grunt-rtlcss --no-optional
     echo " * Updated Grunt CLI"
   }
   # Grunt
@@ -761,9 +761,16 @@ mysql_setup() {
     cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
     chmod 0644 "/home/vagrant/.my.cnf"
     echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
-    
-    echo " * Setting the default database password for the root user"
-    mysqladmin -u root password root
+
+    mysql -u root -proot1 -e "SHOW DATABASES" &> /dev/null
+    if [ $? -eq 1 ]; then
+      echo " * Setting the default database password for the root user"
+      service mysql stop
+      mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
+      mysqld_safe --skip-grant-tables &
+      mysql -uroot -e "use mysql;update user set authentication_string=PASSWORD('root') where User='root';update user set plugin='mysql_native_password' where User='root';flush privileges;"
+      service mysql stop
+    fi
 
     # MySQL gives us an error if we restart a non running service, which
     # happens after a `vagrant halt`. Check to see if it's running before
