@@ -18,6 +18,8 @@ permalink: /docs/en-US/changelog/
 * Improved network checks to test more domains
 * ack-grep is now installed via `apt` rather than `beyondgrep.com`
 * Run rubocop on Vagrantfile in a move towards more idiomatic ruby
+* Added new bears to the various vagrant trigger scripts
+* Removed Ubuntu news MOTD
 
 ### Bug Fixes
 
