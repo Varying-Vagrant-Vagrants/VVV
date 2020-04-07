@@ -25,6 +25,7 @@ export COMPOSER_NO_INTERACTION=1
 
 # cleanup
 mkdir -p /vagrant
+mkdir -p /vagrant/failed_provisioners
 
 # change ownership for /vagrant folder
 sudo chown -R vagrant:vagrant /vagrant
@@ -35,6 +36,7 @@ rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
 touch /vagrant/provisioned_at
+touch /vagrant/failed_provisioners/provisioner_main_failed
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
 date_time=$(cat /vagrant/provisioned_at)
@@ -974,6 +976,11 @@ cleanup_vvv
 #set +xv
 # And it's done
 end_seconds="$(date +%s)"
+
+# if we reached this point then provisioning succeeded!
+rm -f /vagrant/failed_provisioners/provisioner_main_failed
+
 echo -e "${GREEN} -----------------------------${CRESET}"
-echo -e "${GREEN} * Provisioning complete in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+echo -e "${GREEN} * The main provisioner ran "$(( end_seconds - start_seconds ))" seconds${CRESET}"
 echo -e "${GREEN} * For further setup instructions, visit http://vvv.test${CRESET}"
+echo -e "${GREEN} -----------------------------${CRESET}"
