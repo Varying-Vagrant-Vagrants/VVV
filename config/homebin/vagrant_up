@@ -8,23 +8,43 @@
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
 
-echo "Post Vagrant up script"
-
 if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
-	echo "Custom vagrant up script found, executing vagrant_up_custom"
+	echo " * Custom vagrant up script found, executing vagrant_up_custom"
 	/srv/config/homebin/vagrant_up_custom
 fi
 
-echo "Restarting Nginx and MySQL"
+echo " * Restarting Nginx and MySQL"
 sudo service nginx restart
 sudo service mysql restart
 
-green="\033[01;32m"
-echo ""
-echo -e "${green}         yay  "
-echo -e "${green}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                __ __ __ __"
-echo -e "${green}   █▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
-echo -e "${green}    █░░█░░░░░█░░█     using        \_/\_/\_/"
-echo -e "${green} ▄▄  █░░░▀█▀░░░█  ▄▄ "
-echo -e "${green}█░░█ ▀▄░░░░░░░▄▀ █░░█ Vagrant Up has finished! Visit http://vvv.test"
-echo -e "\033[0m"
+RED="\033[38;5;9m"
+GREEN="\033[01;32m"
+BLUE="\033[38;5;4m"
+CYAN="\033[38;5;6m"
+CRESET="\033[0m"
+TEARS="${CYAN}░${RED}"
+EYE="${CYAN}█${RED}"
+URL="\033[4;38;5;3m"
+
+mkdir -p /vagrant/failed_provisioners
+if [ "$(ls -A /vagrant/failed_provisioners/)" ]; then
+	echo -e "${GREEN}"
+	echo -e "${GREEN}         yay  "
+	echo -e "${GREEN} ✧ ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ✧              __ __ __ __"
+	echo -e "${GREEN}  ✧█▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
+	echo -e "${GREEN}✧   █░░█░░░░░█░░█ ✧   using        \_/\_/\_/"
+	echo -e "${GREEN} ▄▄  █░░░▀█▀░░░█  ▄▄✧"
+	echo -e "${GREEN}█░░█ ▀▄░░░░░░░▄▀ █░░█ Vagrant Up has finished! Visit ${URL}http://vvv.test${CRESET}"
+	echo -e "${CRESET}"
+else
+	echo -e "${RED}"
+	echo -e "${RED}     oh noes :'( "
+	echo -e "${RED}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                 __ __ __ __"
+	echo -e "${RED}   █▒▒░░░░░░░░░▒▒█    Provisioning \ V\ V\ V /"
+	echo -e "${RED}    █░░${EYE}░░░░░${EYE}░░█     incomplete!   \_/\_/\_/"
+	echo -e "${RED}     █░${TEARS}░▀█▀░${TEARS}░█     "
+	echo -e "${RED}   ▄▄▀▄${TEARS}░░░░░${TEARS}▄▀▄▄    Check the logs and reprovision."
+	echo -e "${RED}                      If that fails, go to the VVV Slack or open an issue"
+	echo -e "${RED}                      on GitHub. Logs are in the logs/provisioners folder."
+	echo -e "${CRESET}"
+fi

@@ -24,4 +24,14 @@ else
     then
 	    /srv/config/homebin/db_backup
     fi
+
+    echo ""
+    echo -e "         !!!  "
+    echo -e "   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                  __ __ __ __"
+    echo -e "   █▒▒░░░░░░░░░▒▒█    Farewell      \ V\ V\ V /"
+    echo -e "    █░░X░░░░░X░░█     virtual world  \_/\_/\_/"
+    echo -e "     █░░░▀█▀░░░█   "
+    echo -e " ▄▄  ▀▄░░░░░░░▄▀ ▄▄   Don't forget to make a new teddy bear"
+    echo -e "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  with vagrant up --provision"
+    echo -e "\033[0m"
 fi

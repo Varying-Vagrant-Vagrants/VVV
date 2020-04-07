@@ -4,7 +4,7 @@
 # are imported automatically during an initial provision if
 # the databases exist per the import-sql.sh process.
 mkdir -p /srv/database/backups
-echo "Performing Database Backups"
+echo " * Performing Database Backups"
 mysql --user="root" --password="root" -e 'show databases' | \
 grep -v -F "information_schema" | \
 grep -v -F "performance_schema" | \
@@ -13,6 +13,7 @@ grep -v -F "test" | \
 grep -v -F "Database" | \
 while read dbname;
 do
-    echo "Backing up Database $dbname..."
-    mysqldump -uroot -proot "$dbname" > /srv/database/backups/"$dbname".sql && echo "Database $dbname backed up...";
+    echo "   - Backing up \"$dbname\" to database/backups/${dbname}.sql"
+    mysqldump -uroot -proot "$dbname" > "/srv/database/backups/${dbname}.sql";
 done
+echo " * Finished backing up databases"

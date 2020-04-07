@@ -25,6 +25,7 @@ export COMPOSER_NO_INTERACTION=1
 
 # cleanup
 mkdir -p /vagrant
+mkdir -p /vagrant/failed_provisioners
 
 # change ownership for /vagrant folder
 sudo chown -R vagrant:vagrant /vagrant
@@ -35,6 +36,7 @@ rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
 touch /vagrant/provisioned_at
+touch /vagrant/failed_provisioners/provisioner_main_failed
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
 date_time=$(cat /vagrant/provisioned_at)
@@ -256,6 +258,9 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/10-help-text ]]; then
     rm /etc/update-motd.d/10-help-text
   fi
+  if [[ -f /etc/update-motd.d/50-motd-news ]]; then
+    rm /etc/update-motd.d/50-motd-news
+  fi
   if [[ -f /etc/update-motd.d/51-cloudguest ]]; then
     rm /etc/update-motd.d/51-cloudguest
   fi
@@ -277,7 +282,7 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
     rm /etc/update-motd.d/98-cloudguest
   fi
-  cp "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
+  cp -f "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
   chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
@@ -739,7 +744,7 @@ check_mysql_root_password() {
   echo " * Checking the root user password is root"
   mysql -u root --password=root -e "SHOW DATABASES" &> /dev/null
   if [ $? -eq 0 ]; then
-    " * The root password is the expected value"
+    echo " * The root password is the expected value"
     return 0
   fi
   echo " * The root password is not root, fixing"
@@ -974,6 +979,11 @@ cleanup_vvv
 #set +xv
 # And it's done
 end_seconds="$(date +%s)"
+
+# if we reached this point then provisioning succeeded!
+rm -f /vagrant/failed_provisioners/provisioner_main_failed
+
 echo -e "${GREEN} -----------------------------${CRESET}"
-echo -e "${GREEN} * Provisioning complete in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+echo -e "${GREEN} * The main provisioner ran "$(( end_seconds - start_seconds ))" seconds${CRESET}"
 echo -e "${GREEN} * For further setup instructions, visit http://vvv.test${CRESET}"
+echo -e "${GREEN} -----------------------------${CRESET}"
