@@ -9,11 +9,6 @@ GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"
 
-
-test() {
-  echo $1
-  echo $2
-}
 containsElement () {
   declare -a array=("${!2}")
   for i in "${array[@]}"
