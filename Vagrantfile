@@ -797,7 +797,7 @@ Vagrant.configure('2') do |config|
   end
   config.trigger.before :provision do |trigger|
     trigger.name = 'VVV Pre-Provision'
-    trigger.info = "\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n Go make a cup of tea and sit back.\nIf you only wanted to turn VVV on, use vagrant up\n"
+    trigger.info = "\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n"
     trigger.on_error = :continue
   end
   config.trigger.after :provision do |trigger|
