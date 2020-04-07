@@ -22,11 +22,13 @@ containsElement () {
 
 network_detection() {
   url=${1:-"https://ppa.launchpad.net"}
-  check_network_connection_to_host $url
+  check_network_connection_to_host "${url}"
 }
+
 check_network_connection_to_host() {
   url=${1:-"https://ppa.launchpad.net"}
   echo " * Testing network connection to ${url}"
+
   # Network Detection
   #
   # If 3 attempts with a timeout of 5 seconds are not successful,
