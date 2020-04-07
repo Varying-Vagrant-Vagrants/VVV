@@ -796,11 +796,12 @@ Vagrant.configure('2') do |config|
     trigger.on_error = :continue
   end
   config.trigger.before :provision do |trigger|
-    trigger.info = '༼ つ ◕_◕ ༽つ Provisioning can take a few minutes, go make a cup of tea and sit back. If you only wanted to turn VVV on, use vagrant up'
+    trigger.name = 'VVV Pre-Provision'
+    trigger.info = "\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n Go make a cup of tea and sit back.\nIf you only wanted to turn VVV on, use vagrant up\n"
     trigger.on_error = :continue
   end
   config.trigger.after :provision do |trigger|
-    trigger.name = 'VVV Post-Provision'
+    trigger.name = 'VVV provisioning has reached the end'
     trigger.run_remote = { inline: '/srv/config/homebin/vagrant_provision' }
     trigger.on_error = :continue
   end
