@@ -258,6 +258,9 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/10-help-text ]]; then
     rm /etc/update-motd.d/10-help-text
   fi
+  if [[ -f /etc/update-motd.d/50-motd-news ]]; then
+    rm /etc/update-motd.d/50-motd-news
+  fi
   if [[ -f /etc/update-motd.d/51-cloudguest ]]; then
     rm /etc/update-motd.d/51-cloudguest
   fi
@@ -279,7 +282,7 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
     rm /etc/update-motd.d/98-cloudguest
   fi
-  cp "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
+  cp -f "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
   chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
@@ -741,7 +744,7 @@ check_mysql_root_password() {
   echo " * Checking the root user password is root"
   mysql -u root --password=root -e "SHOW DATABASES" &> /dev/null
   if [ $? -eq 0 ]; then
-    " * The root password is the expected value"
+    echo " * The root password is the expected value"
     return 0
   fi
   echo " * The root password is not root, fixing"
