@@ -35,10 +35,10 @@ check_network_connection_to_host() {
   # then we'll skip a few things further in provisioning rather
   # than create a bunch of errors.
   if [[ "$(wget --tries=3 --timeout=10 --level=2 "${url}" 2>&1 | grep 'connected')" ]]; then
-    echo -e "${GREEN} * Succesful Network connection to ${url} detected...${CRESET}"
+    echo -e "${GREEN} * Successful Network connection to ${url} detected${CRESET}"
     return 0
   fi
-  echo -e "${RED} ! Network connection issues found. Unable to reach ${url}...${CRESET}"
+  echo -e "${RED} ! Network connection issues found. Unable to reach ${url}${CRESET}"
   return 1
 }
 
@@ -66,8 +66,7 @@ network_check() {
     echo " "
     echo "! Network Problem:"
     echo " "
-    echo "Provisioning needs a network connection but none was found."
-    echo "VVV tried to ping several domains but some failed:"
+    echo "VVV tried to ping several domains it needs but some failed:"
     echo " "
     for i in "${hosts_to_test[@]}"; do
       local url="${i}"
