@@ -18,12 +18,14 @@ start_seconds="$(date +%s)"
 # fix no tty warnings in provisioner logs
 sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
-# fix commands from homebin not working with sudo, clean first and then append at the end
+# add homebin to secure_path setting for sudo, clean first and then append at the end
 sed -i -E \
   -e "s|:/srv/config/homebin||" \
   -e "s|/srv/config/homebin:||" \
   -e "s|(.*Defaults.*secure_path.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
   /etc/sudoers
+
+# source bash_aliases before anything else so that PATH is properly configured
 . "/srv/config/bash_aliases"
 
 export DEBIAN_FRONTEND=noninteractive
