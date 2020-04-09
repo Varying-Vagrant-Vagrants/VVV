@@ -27,10 +27,14 @@ elif [ -d "/srv/www/wordpress-develop/public_html/src/" ]; then
 fi
 
 # PHPCS path
-export PATH="$PATH:/srv/www/phpcs/scripts/"
+if [[ $PATH != *"/srv/www/phpcs/scripts"* ]]; then
+	export PATH="$PATH:/srv/www/phpcs/scripts"
+fi
 
 # Vagrant scripts
-export PATH="$PATH:/srv/config/homebin/"
+if [[ $PATH != *"/srv/config/homebin"* ]]; then
+	export PATH="$PATH:/srv/config/homebin"
+fi
 
 if [ -n "$BASH" ]; then
 	# add autocomplete for grunt
