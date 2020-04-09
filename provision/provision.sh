@@ -25,7 +25,15 @@ sed -i -E \
   -e "s|(.*Defaults.*secure_path.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
   /etc/sudoers
 
-# source bash_aliases before anything else so that PATH is properly configured
+# add homebin to the default environment, clean first and then append at the end
+sed -i -E \
+  -e "s|:/srv/config/homebin||" \
+  -e "s|/srv/config/homebin:||" \
+  -e "s|(.*PATH.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
+  /etc/environment
+
+# source bash_aliases before anything else so that PATH is properly configured on
+# this shell session
 . "/srv/config/bash_aliases"
 
 export DEBIAN_FRONTEND=noninteractive
