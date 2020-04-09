@@ -18,6 +18,14 @@ start_seconds="$(date +%s)"
 # fix no tty warnings in provisioner logs
 sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
+# fix commands from homebin not working with sudo, clean first and then append at the end
+sed -i -E \
+  -e "s|:/srv/config/homebin||" \
+  -e "s|/srv/config/homebin:||" \
+  -e "s|(.*Defaults.*secure_path.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
+  /etc/sudoers
+. "/srv/config/bash_aliases"
+
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 export COMPOSER_ALLOW_SUPERUSER=1
@@ -301,7 +309,6 @@ profile_setup() {
   echo " * Copying /srv/config/bash_aliases                      to $HOME/.bash_aliases"
   rm -f "$HOME/.bash_aliases"
   cp -f "/srv/config/bash_aliases" "$HOME/.bash_aliases"
-  . "$HOME/.bash_aliases"
 
   echo " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
   rm -f "/home/vagrant/.vimrc"
