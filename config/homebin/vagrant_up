@@ -27,7 +27,7 @@ EYE="${CYAN}█${RED}"
 URL="\033[4;38;5;3m"
 
 mkdir -p /vagrant/failed_provisioners
-if [ "$(ls -A /vagrant/failed_provisioners/)" ]; then
+if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then
 	echo -e "${GREEN}"
 	echo -e "${GREEN}         yay  "
 	echo -e "${GREEN} ✧ ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ✧              __ __ __ __"
