@@ -39,8 +39,10 @@ touch /vagrant/provisioned_at
 touch /vagrant/failed_provisioners/provisioner_main_failed
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
+source /srv/provision/provision-helpers.sh
+
 logfile="provisioner-main"
-. /srv/provision/helpers/log_to_file "${logfile}"
+log_to_file "${logfile}"
 
 echo -e "${GREEN} * Beginning Main VVV Provisioner, if this is the first provision this may take a few minutes${CRESET}"
 
@@ -125,8 +127,6 @@ if [[ $codename == "trusty" ]]; then
   echo -e " "
   exit 1
 fi
-
-source /srv/provision/provision-network-functions.sh
 
 # PACKAGE INSTALLATION
 #

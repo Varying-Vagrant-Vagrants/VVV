@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+source /srv/provision/provision-helpers.sh
+
 REPO=$1
 BRANCH=${2:-master}
 DIR="/srv/www/default/dashboard"
 
 logfile="provisioner-dashboard"
-. /srv/provision/helpers/log_to_file "${logfile}"
+log_to_file "${logfile}"
 
 if [[ false != "dashboard" && false != "${REPO}" ]]; then
   # Clone or pull the resources repository

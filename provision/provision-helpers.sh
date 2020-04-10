@@ -111,3 +111,14 @@ network_check() {
   echo -e "${GREEN} * Network checks succeeded${CRESET}"
   return 0
 }
+
+
+log_to_file() {
+	local date_time=$(cat /vagrant/provisioned_at)
+	local logfolder="/var/log/provisioners/${date_time}"
+	local logfile="${logfolder}/${1}.log"
+	mkdir -p "${logfolder}"
+	touch "${logfile}"
+	exec > >(tee -a "${logfile}" )
+	exec 2> >(tee -a "${logfile}" >&2 )
+}

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+source /srv/provision/provision-helpers.sh
+
 logfile="provisioner-utility-${1}-${2}"
-. /srv/provision/helpers/log_to_file "${logfile}"
+log_to_file "${logfile}"
 
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
