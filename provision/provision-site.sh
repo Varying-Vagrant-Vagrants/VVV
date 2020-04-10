@@ -178,7 +178,7 @@ function vvv_provision_site_repo() {
 function vvv_run_site_template_script() {
   echo " * Found ${1} at ${2}/${1}"
   echo " * Script output will be logged to: log/provisioners/${date_time}/provisioner-site-${SITE}.log"
-  ( cd "${2}" && source "${1}" >> "$logfile" )
+  ( cd "${2}" && source "${1}" )
   if [ $? -eq 0 ]; then
     echo -e "${GREEN} * Site provisioner script finished successfully${CRESET}"
     return 0
