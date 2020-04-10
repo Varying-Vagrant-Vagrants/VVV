@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-utility-${1}-${2}.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
+logfile="provisioner-utility-${1}-${2}"
+. /srv/config/homebin/utilities/log_to_file "${logfile}"
 
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
