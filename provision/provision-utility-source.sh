@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source /srv/provision/provision-helpers.sh
+
 NAME=$1
 REPO=$2
 BRANCH="${3:-master}"
@@ -10,7 +12,7 @@ RED="\033[38;5;9m"
 CRESET="\033[0m"
 
 logfile="provisioner-utility-source-${NAME}"
-. /srv/provision/helpers/log_to_file "${logfile}"
+log_to_file "${logfile}"
 
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source /srv/provision/provision-helpers.sh
+
 SITE=$1
 SITE_ESCAPED="${SITE//./\\.}"
 REPO=$2
@@ -22,7 +24,7 @@ SUCCESS=1
 start_seconds="$(date +%s)"
 
 logfile="provisioner-site-${SITE}"
-. /srv/provision/helpers/log_to_file "${logfile}"
+log_to_file "${logfile}"
 
 VVV_CONFIG=/vagrant/config.yml
 

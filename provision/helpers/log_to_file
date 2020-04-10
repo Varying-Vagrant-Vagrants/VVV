@@ -1,8 +1,0 @@
-#!/bin/bash
-date_time=$(cat /vvv/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/${1}.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
