@@ -630,10 +630,6 @@ nginx_setup() {
 
   echo " * Setup configuration files..."
 
-  # Used to ensure proper services are started on `vagrant up`
-  echo " * Copying /srv/config/init/vvv-start.conf               to /etc/init/vvv-start.conf"
-  cp -f "/srv/config/init/vvv-start.conf" "/etc/init/vvv-start.conf"
-
   # Copy nginx configuration from local
   echo " * Copying /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
   cp -f "/srv/config/nginx-config/nginx.conf" "/etc/nginx/nginx.conf"
