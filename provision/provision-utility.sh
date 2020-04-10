@@ -19,7 +19,7 @@ if [[ -f $PROVISIONER ]]; then
 		echo -e "${GREEN} * The '${1}/${2}' provisioner completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
 		exit 0
 	else
-		echo -e "${RED} * The '${1}/${2}' provisioner ran into problems, check the full log in log/provisioners/${date_time}/provisioner-utility-${1}-${2}.log for more details! It completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+		echo -e "${RED} * The '${1}/${2}' provisioner ran into problems, check the full log for more details! It completed in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
 		exit 1
 	fi
 else
