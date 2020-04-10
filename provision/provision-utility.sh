@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 logfile="provisioner-utility-${1}-${2}"
-. /srv/config/homebin/utilities/log_to_file "${logfile}"
+. /srv/provision/helpers/log_to_file "${logfile}"
 
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"

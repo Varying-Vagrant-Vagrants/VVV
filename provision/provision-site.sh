@@ -22,7 +22,7 @@ SUCCESS=1
 start_seconds="$(date +%s)"
 
 logfile="provisioner-site-${SITE}"
-. /srv/config/homebin/utilities/log_to_file "${logfile}"
+. /srv/provision/helpers/log_to_file "${logfile}"
 
 VVV_CONFIG=/vagrant/config.yml
 
