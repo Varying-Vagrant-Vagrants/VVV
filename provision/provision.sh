@@ -27,9 +27,6 @@ export COMPOSER_NO_INTERACTION=1
 mkdir -p /vagrant
 mkdir -p /vagrant/failed_provisioners
 
-# change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
-
 rm -f /vagrant/provisioned_at
 rm -f /vagrant/version
 rm -f /vagrant/vvv-custom.yml
@@ -38,6 +35,18 @@ rm -f /vagrant/config.yml
 touch /vagrant/provisioned_at
 touch /vagrant/failed_provisioners/provisioner_main_failed
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
+
+# copy over version and config files
+cp -f /home/vagrant/version /vagrant
+cp -f /srv/config/config.yml /vagrant
+VVV_CONFIG=/vagrant/config.yml
+
+sudo chmod 0644 /vagrant/config.yml
+sudo chmod 0644 /vagrant/version
+sudo chmod 0644 /vagrant/provisioned_at
+
+# change ownership for /vagrant folder
+sudo chown -R vagrant:vagrant /vagrant
 
 source /srv/provision/provision-helpers.sh
 
@@ -50,16 +59,6 @@ if [ -d /srv/provision/resources ]; then
   echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
   rm -rf /srv/provision/resources ## remove deprecated folder
 fi
-
-# copy over version and config files
-cp -f /home/vagrant/version /vagrant
-cp -f /srv/config/config.yml /vagrant
-VVV_CONFIG=/vagrant/config.yml
-
-
-sudo chmod 0644 /vagrant/config.yml
-sudo chmod 0644 /vagrant/version
-sudo chmod 0644 /vagrant/provisioned_at
 
 # symlink the certificates folder for older site templates compat
 if [[ ! -d /vagrant/certificates ]]; then
