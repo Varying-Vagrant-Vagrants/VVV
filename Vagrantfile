@@ -784,6 +784,9 @@ Vagrant.configure('2') do |config|
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
+  else
+    puts "! Neither the HostManager or HostsUpdater plugins are installed!!! Domains won't work without one of these plugins!"
+    puts "Run vagrant plugin install vagrant-hostmanager then try again."
   end
 
   # Vagrant Triggers
