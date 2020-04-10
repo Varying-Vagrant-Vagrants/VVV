@@ -20,6 +20,7 @@ permalink: /docs/en-US/changelog/
 * Run rubocop on Vagrantfile in a move towards more idiomatic ruby
 * Added new bears to the various vagrant trigger scripts
 * Removed Ubuntu news MOTD
+* Support for vagrant-hostmanager
 
 ### Bug Fixes
 
