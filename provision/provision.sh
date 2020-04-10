@@ -940,7 +940,9 @@ echo " * Bash profile setup and directories."
 cleanup_terminal_splash
 profile_setup
 
-network_check
+if ! network_check; then
+  exit 1
+fi
 # Package and Tools Install
 echo " "
 echo " * Main packages check and install."
@@ -966,7 +968,9 @@ echo " * Installing/updating wp-cli and debugging tools"
 wp_cli
 php_codesniff
 
-network_check
+if ! network_check; then
+  exit 1
+fi
 # Time for WordPress!
 echo " "
 

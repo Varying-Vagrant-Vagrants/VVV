@@ -94,7 +94,7 @@ network_check() {
     echo "Network ifconfig output:"
     echo " "
     ifconfig
-    echo " "
+    echo -e "${RED} "
     echo "Aborting provision. "
     echo "Try provisioning again once network connectivity is restored."
     echo "If that doesn't work, and you're sure you have a strong "
@@ -105,8 +105,7 @@ network_check() {
     echo " "
     echo "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
     echo " "
-    echo "#################################################################${CRESET}"
-
+    echo -e "${RED}#################################################################${CRESET}"
     return 1
   fi
   echo -e "${GREEN} * Network checks succeeded${CRESET}"
