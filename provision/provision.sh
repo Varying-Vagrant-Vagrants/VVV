@@ -40,7 +40,7 @@ touch /vagrant/failed_provisioners/provisioner_main_failed
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
 logfile="provisioner-main"
-. /srv/config/homebin/utilities/log_to_file "${logfile}"
+. /srv/provision/helpers/log_to_file "${logfile}"
 
 echo -e "${GREEN} * Beginning Main VVV Provisioner, if this is the first provision this may take a few minutes${CRESET}"
 

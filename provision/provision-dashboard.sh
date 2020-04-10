@@ -5,7 +5,7 @@ BRANCH=${2:-master}
 DIR="/srv/www/default/dashboard"
 
 logfile="provisioner-dashboard"
-. /srv/config/homebin/utilities/log_to_file "${logfile}"
+. /srv/provision/helpers/log_to_file "${logfile}"
 
 if [[ false != "dashboard" && false != "${REPO}" ]]; then
   # Clone or pull the resources repository
