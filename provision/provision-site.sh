@@ -21,13 +21,8 @@ SUCCESS=1
 # end of this script.
 start_seconds="$(date +%s)"
 
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-site-${SITE}.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
+logfile="provisioner-site-${SITE}"
+. /srv/config/homebin/utilities/log_to_file "${logfile}"
 
 VVV_CONFIG=/vagrant/config.yml
 

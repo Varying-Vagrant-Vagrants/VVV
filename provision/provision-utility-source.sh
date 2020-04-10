@@ -9,13 +9,8 @@ GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"
 
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-utility-source-${NAME}.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
+logfile="provisioner-utility-source-${NAME}"
+. /srv/config/homebin/utilities/log_to_file "${logfile}"
 
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository

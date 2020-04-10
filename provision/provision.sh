@@ -39,13 +39,8 @@ touch /vagrant/provisioned_at
 touch /vagrant/failed_provisioners/provisioner_main_failed
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-main.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
+logfile="provisioner-main"
+. /srv/config/homebin/utilities/log_to_file "${logfile}"
 
 echo -e "${GREEN} * Beginning Main VVV Provisioner, if this is the first provision this may take a few minutes${CRESET}"
 
