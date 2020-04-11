@@ -11,8 +11,6 @@ GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"
 
-touch /vagrant/failed_provisioners/provisioner_main_failed
-
 source /srv/provision/provision-helpers.sh
 
 if [ -d /srv/provision/resources ]; then
@@ -931,6 +929,3 @@ cleanup_vvv
 
 #set +xv
 # And it's done
-
-# if we reached this point then provisioning succeeded!
-rm -f /vagrant/failed_provisioners/provisioner_main_failed
