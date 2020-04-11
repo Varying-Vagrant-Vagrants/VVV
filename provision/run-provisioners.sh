@@ -129,6 +129,18 @@ utility_sources() {
   done
 }
 
+utility() {
+  local groups=($(get_config_keys utilities))
+  for group in ${groups[@]}; do
+    local utilities=($(get_config_values utilities.${group}))
+    for utility in ${utilities[@]}; do
+      provisioner_begin "utility-${group}-${utility}"
+      bash /srv/provision/provision-utility.sh ${group} ${utility}
+      provisioner_end "utility-${group}-${utility}"
+    done
+  done
+}
+
 main() {
   # provision.sh or provision-custom.sh
   #
@@ -151,4 +163,5 @@ pre_hook
 main
 dashboard
 utility_sources
+utility
 post_hook
