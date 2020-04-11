@@ -663,14 +663,6 @@ Vagrant.configure('2') do |config|
         vvv_config['hosts'] += ['tideways.vvv.test']
         vvv_config['hosts'] += ['xhgui.vvv.test']
       end
-      config.vm.provision "utility-#{name}-#{utility}",
-                          type: 'shell',
-                          keep_color: true,
-                          path: File.join('provision', 'provision-utility.sh'),
-                          args: [
-                            name,
-                            utility
-                          ]
     end
   end
 
