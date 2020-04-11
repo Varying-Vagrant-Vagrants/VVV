@@ -11,10 +11,6 @@ GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"
 
-# By storing the date now, we can calculate the duration of provisioning at the
-# end of this script.
-start_seconds="$(date +%s)"
-
 # fix no tty warnings in provisioner logs
 sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
@@ -70,8 +66,6 @@ source /srv/provision/provision-helpers.sh
 
 logfile="provisioner-main"
 log_to_file "${logfile}"
-
-echo -e "${GREEN} * Beginning Main VVV Provisioner, if this is the first provision this may take a few minutes${CRESET}"
 
 if [ -d /srv/provision/resources ]; then
   echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
@@ -989,12 +983,6 @@ cleanup_vvv
 
 #set +xv
 # And it's done
-end_seconds="$(date +%s)"
 
 # if we reached this point then provisioning succeeded!
 rm -f /vagrant/failed_provisioners/provisioner_main_failed
-
-echo -e "${GREEN} -----------------------------${CRESET}"
-echo -e "${GREEN} * The main provisioner ran "$(( end_seconds - start_seconds ))" seconds${CRESET}"
-echo -e "${GREEN} * For further setup instructions, visit http://vvv.test${CRESET}"
-echo -e "${GREEN} -----------------------------${CRESET}"

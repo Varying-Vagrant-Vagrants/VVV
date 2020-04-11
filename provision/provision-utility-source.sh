@@ -17,12 +17,12 @@ log_to_file "${logfile}"
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
   if [[ ! -d "${DIR}/.git" ]]; then
-    echo -e "${GREEN} * Cloning the \"${NAME}\" utility, see \"${REPO}\"${CRESET}"
+    echo "* Cloning the \"${NAME}\" utility, see \"${REPO}\""
     git clone "${REPO}" --branch "${BRANCH}" "${DIR}" -q
     cd "${DIR}"
     git checkout "${BRANCH}" -q
   else
-    echo -e "${GREEN} * Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch...${CRESET}"
+    echo -e "* Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch..."
     cd "${DIR}"
     git pull origin "${BRANCH}" -q
     git checkout "${BRANCH}" -q

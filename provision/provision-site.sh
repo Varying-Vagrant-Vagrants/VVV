@@ -21,7 +21,6 @@ SUCCESS=1
 
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
-start_seconds="$(date +%s)"
 
 logfile="provisioner-site-${SITE}"
 log_to_file "${logfile}"
@@ -176,10 +175,8 @@ function vvv_run_site_template_script() {
   echo " * Found ${1} at ${2}/${1}"
   ( cd "${2}" && source "${1}" )
   if [ $? -eq 0 ]; then
-    echo -e "${GREEN} * Site provisioner script finished successfully${CRESET}"
     return 0
   else
-    echo -e "${RED}---------------------------------------------${CRESET}\n\n${RED}! Site provisioner failed! Check the full log for more details${CRESET}\n\n${RED}---------------------------------------------${CRESET}" >&2
     return 1
   fi
 }
@@ -238,12 +235,11 @@ if [[ true == "${SKIP_PROVISIONING}" ]]; then
   return 0
 fi
 
-echo -e "${GREEN} * Running provisioner for site ${SITE}${CRESET}"
-
 vvv_provision_site_repo
 
 if [[ ! -d "${VM_DIR}" ]]; then
   echo "${RED} ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
+  return 1
 fi
 
 vvv_process_site_hosts
@@ -253,10 +249,7 @@ vvv_provision_site_nginx
 echo " * Reloading Nginx"
 service nginx reload
 
-end_seconds="$(date +%s)"
-
-if [ "${SUCCESS}" -eq "0" ]; then
-  echo -e "${GREEN} * ${SITE} provisioning finished in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
-else
-  echo -e "${RED} ! ${SITE} provisioning had some issues, check the log as the site may not function correctly, provisioning took "$(( end_seconds - start_seconds ))" seconds${CRESET}"
+if [ "${SUCCESS}" -ne "0" ]; then
+  echo -e "${RED} ! ${SITE} provisioning had some issues, check the log as the site may not function correctly.${CRESET}"
+  return 1
 fi
