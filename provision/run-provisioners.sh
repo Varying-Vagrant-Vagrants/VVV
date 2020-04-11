@@ -44,6 +44,7 @@ get_config_keys() {
 
 provisioner_begin() {
   log_to_file "provisioner-${1:-${FUNCNAME[1]}}"
+  touch "/vagrant/failed_provisioners/provisioner-${1:-${FUNCNAME[1]}}"
   PROVISION_SUCCESS="1"
   echo -e "------------------------------------------------------------------------------------"
   echo -e "${GREEN} ▷ Running the '${1:-${FUNCNAME[1]}}' provisioner...${CRESET}"
@@ -58,6 +59,7 @@ provisioner_end() {
     echo -e "------------------------------------------------------------------------------------"
     echo -e "${GREEN} ✔ The '${1:-${FUNCNAME[1]}}' provisioner completed in ${elapsed} seconds.${CRESET}"
     echo -e "------------------------------------------------------------------------------------"
+    rm -f "/vagrant/failed_provisioners/provisioner-${1:-${FUNCNAME[1]}}"
   else
     echo -e "------------------------------------------------------------------------------------"
     echo -e "${RED} ! The '${1:-${FUNCNAME[1]}}' provisioner ran into problems, check the full log for more details! It completed in ${elapsed} seconds.${CRESET}"
