@@ -661,18 +661,7 @@ Vagrant.configure('2') do |config|
     config.vm.provision 'pre', type: 'shell', keep_color: true, path: File.join('provision', 'provision-pre.sh')
   end
 
-  # provision.sh or provision-custom.sh
-  #
-  # By default, Vagrantfile is set to use the provision.sh bash script located in the
-  # provision directory. If it is detected that a provision-custom.sh script has been
-  # created, that is run as a replacement. This is an opportunity to replace the entirety
-  # of the provisioning provided by default.
-  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-custom.sh'))
-    config.vm.provision 'custom', type: 'shell', keep_color: true, path: File.join('provision', 'provision-custom.sh')
-	config.vm.provision 'custom-sub-provisioners', type: 'shell', keep_color: true, path: File.join('provision', 'run-sub-provisioners.sh')
-  else
-    config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'provision.sh')
-  end
+  config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'run-provisioners.sh')
 
   vvv_config['utilities'].each do |name, utilities|
     utilities = {} unless utilities.is_a? Array
