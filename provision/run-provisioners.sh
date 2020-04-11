@@ -102,5 +102,24 @@ utility_sources() {
   done
 }
 
+main() {
+  # provision.sh or provision-custom.sh
+  #
+  # By default, Vagrantfile is set to use the provision.sh bash script located in the
+  # provision directory. If it is detected that a provision-custom.sh script has been
+  # created, that is run as a replacement. This is an opportunity to replace the entirety
+  # of the provisioning provided by default.
+  if [[ -f "/srv/provision/provision-custom.sh" ]]; then
+    provisioner_begin "main-custom"
+    bash /srv/provision/provision-custom.sh
+    provisioner_end "main-custom"
+  else
+    provisioner_begin
+    bash /srv/provision/provision.sh
+    provisioner_end
+  fi
+}
+
+main
 dashboard
 utility_sources
