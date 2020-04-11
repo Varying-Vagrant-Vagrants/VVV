@@ -165,22 +165,13 @@ vvv_config['hosts'] = [] unless vvv_config['hosts'].is_a? Hash
 vvv_config['hosts'] += ['vvv.test']
 
 vvv_config['sites'].each do |site, args|
-  if args.is_a? String
-    repo = args
-    args = {}
-    args['repo'] = repo
-  end
-
   args = {} unless args.is_a? Hash
 
   defaults = {}
-  defaults['repo'] = false
   defaults['vm_dir'] = "/srv/www/#{site}"
   defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
-  defaults['branch'] = 'master'
   defaults['skip_provisioning'] = false
   defaults['allow_customfile'] = false
-  defaults['nginx_upstream'] = 'php'
   defaults['hosts'] = []
 
   vvv_config['sites'][site] = defaults.merge(args)
@@ -664,23 +655,6 @@ Vagrant.configure('2') do |config|
         vvv_config['hosts'] += ['xhgui.vvv.test']
       end
     end
-  end
-
-  vvv_config['sites'].each do |site, args|
-    next if args['skip_provisioning']
-
-    config.vm.provision "site-#{site}",
-                        type: 'shell',
-                        keep_color: true,
-                        path: File.join('provision', 'provision-site.sh'),
-                        args: [
-                          site,
-                          args['repo'].to_s,
-                          args['branch'],
-                          args['vm_dir'],
-                          args['skip_provisioning'].to_s,
-                          args['nginx_upstream']
-                        ]
   end
 
   # Local Machine Hosts

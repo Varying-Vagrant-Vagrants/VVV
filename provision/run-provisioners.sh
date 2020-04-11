@@ -146,6 +146,30 @@ utility() {
   done
 }
 
+sites() {
+  local sites=($(get_config_keys sites))
+  local site
+  for site in ${sites[@]}; do
+    local skip_provisioning=$(get_config_value "sites.${site}.skip_provisioning" "False")
+    if [[ $skip_provisioning == "True" ]]; then
+      continue
+    fi
+    local repo=$(get_config_type "sites.${site}")
+    if [[ "${repo}" == "str" ]]; then
+      repo=$(get_config_value "sites.${site}" "")
+    else
+      repo=$(get_config_value "sites.${site}.repo" "")
+    fi
+    local branch=$(get_config_value "sites.${site}.branch" "master")
+    local vm_dir=$(get_config_value "sites.${site}.vm_dir" "/srv/www/${site}")
+    local nginx_upstream=$(get_config_value "sites.${site}.nginx_upstream" "php")
+
+    provisioner_begin "site-${site}"
+    bash /srv/provision/provision-site.sh "${site}" "${repo}" "${branch}" "${vm_dir}" "${skip_provisioning}" "${nginx_upstream}"
+    provisioner_end "site-${site}"
+  done
+}
+
 main() {
   # provision.sh or provision-custom.sh
   #
@@ -169,4 +193,5 @@ main
 dashboard
 utility_sources
 utility
+sites
 post_hook
