@@ -197,27 +197,6 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site].delete('hosts')
 end
 
-if vvv_config['utility-sources'].is_a? Hash
-  vvv_config['utility-sources'].each do |name, args|
-    next unless args.is_a? String
-
-    repo = args
-    args = {}
-    args['repo'] = repo
-    args['branch'] = 'master'
-
-    vvv_config['utility-sources'][name] = args
-  end
-else
-  vvv_config['utility-sources'] = {}
-end
-
-unless vvv_config['utility-sources'].key?('core')
-  vvv_config['utility-sources']['core'] = {}
-  vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
-  vvv_config['utility-sources']['core']['branch'] = 'master'
-end
-
 vvv_config['utilities'] = {} unless vvv_config['utilities'].is_a? Hash
 
 vvv_config['vm_config'] = {} unless vvv_config['vm_config'].is_a? Hash
@@ -693,18 +672,6 @@ Vagrant.configure('2') do |config|
 	config.vm.provision 'custom-sub-provisioners', type: 'shell', keep_color: true, path: File.join('provision', 'run-sub-provisioners.sh')
   else
     config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'provision.sh')
-  end
-
-  vvv_config['utility-sources'].each do |name, args|
-    config.vm.provision "utility-source-#{name}",
-                        type: 'shell',
-                        keep_color: true,
-                        path: File.join('provision', 'provision-utility-source.sh'),
-                        args: [
-                          name,
-                          args['repo'].to_s,
-                          args['branch']
-                        ]
   end
 
   vvv_config['utilities'].each do |name, utilities|
