@@ -7,6 +7,7 @@ VVV_CONFIG=/vagrant/config.yml;
 
 containsElement () {
   declare -a array=("${2}")
+  local i
   for i in "${array[@]}"
   do
       if [ "${i}" == "${1}" ] ; then
@@ -43,7 +44,7 @@ provisioner_begin() {
 
 provisioner_end() {
   end_seconds="$(date +%s)" 
-  elapsed="$(( end_seconds - start_seconds ))"
+  local elapsed="$(( end_seconds - start_seconds ))"
   echo -e "${BOLD}Provisioner ended: ${1:-${FUNCNAME[1]}}. Took ${elapsed}s.${CRESET}"
 }
 
@@ -78,17 +79,17 @@ post_hook() {
 
 dashboard() {
   provisioner_begin
-  dashboard_repo=$(get_config_value "dashboard.repo" "https://github.com/Varying-Vagrant-Vagrants/dashboard.git")
-  dashboard_branch=$(get_config_value "dashboard.branch" "master")
+  local dashboard_repo=$(get_config_value "dashboard.repo" "https://github.com/Varying-Vagrant-Vagrants/dashboard.git")
+  local dashboard_branch=$(get_config_value "dashboard.branch" "master")
 
   bash /srv/provision/provision-dashboard.sh ${dashboard_repo} ${dashboard_branch}
   provisioner_end
 }
 
 utility_sources() {
-  name=()
-  repo=()
-  branch=()
+  local name=()
+  local repo=()
+  local branch=()
 
   local key="utility-sources"
 
@@ -110,6 +111,7 @@ utility_sources() {
     branch+=("master")
   fi
 
+  local utility
   for utility in "${utilities[@]}"; do
     type=$(get_config_type "${key}.${utility}")
     name+=(${utility})
@@ -122,6 +124,7 @@ utility_sources() {
     fi
   done
 
+  local i
   for i in ${!name[@]}; do
     provisioner_begin "utility-source-${name[$i]}"
     bash /srv/provision/provision-utility-source.sh ${name[$i]} ${repo[$i]} ${branch[$i]}
@@ -131,6 +134,8 @@ utility_sources() {
 
 utility() {
   local groups=($(get_config_keys utilities))
+  local group
+  local utility
   for group in ${groups[@]}; do
     local utilities=($(get_config_values utilities.${group}))
     for utility in ${utilities[@]}; do
