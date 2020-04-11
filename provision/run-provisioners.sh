@@ -38,14 +38,26 @@ get_config_keys() {
 }
 
 provisioner_begin() {
-  echo -e "${BOLD}Running provisioner: ${1:-${FUNCNAME[1]}}...${CRESET}"
+  PROVISION_SUCCESS="1"
+  echo -e "------------------------------------------------------------------------------------"
+  echo -e "${GREEN} ▷ Running the '${1:-${FUNCNAME[1]}}' provisioner...${CRESET}"
+  echo -e "------------------------------------------------------------------------------------"
   start_seconds="$(date +%s)"
 }
 
 provisioner_end() {
   end_seconds="$(date +%s)" 
   local elapsed="$(( end_seconds - start_seconds ))"
-  echo -e "${BOLD}Provisioner ended: ${1:-${FUNCNAME[1]}}. Took ${elapsed}s.${CRESET}"
+  if [[ $PROVISION_SUCCESS -eq "0" ]]; then
+    echo -e "------------------------------------------------------------------------------------"
+    echo -e "${GREEN} ✔ The '${1:-${FUNCNAME[1]}}' provisioner completed in ${elapsed} seconds.${CRESET}"
+    echo -e "------------------------------------------------------------------------------------"
+  else
+    echo -e "------------------------------------------------------------------------------------"
+    echo -e "${RED} ! The '${1:-${FUNCNAME[1]}}' provisioner ran into problems, check the full log for more details! It completed in ${elapsed} seconds.${CRESET}"
+    echo -e "------------------------------------------------------------------------------------"
+  fi
+  echo ""
 }
 
 # provisioners
@@ -59,6 +71,7 @@ pre_hook() {
   if [[ -f "/srv/provision/provision-pre.sh" ]]; then
     provisioner_begin "pre"
     bash /srv/provision/provision-pre.sh
+    PROVISION_SUCCESS=$?
     provisioner_end "pre"
   fi
 }
@@ -73,6 +86,7 @@ post_hook() {
   if [[ -f "/srv/provision/provision-post.sh" ]]; then
     provisioner_begin "post"
     bash /srv/provision/provision-post.sh
+    PROVISION_SUCCESS=$?
     provisioner_end "post"
   fi
 }
@@ -83,6 +97,7 @@ dashboard() {
   local dashboard_branch=$(get_config_value "dashboard.branch" "master")
 
   bash /srv/provision/provision-dashboard.sh ${dashboard_repo} ${dashboard_branch}
+  PROVISION_SUCCESS=$?
   provisioner_end
 }
 
@@ -128,6 +143,7 @@ utility_sources() {
   for i in ${!name[@]}; do
     provisioner_begin "utility-source-${name[$i]}"
     bash /srv/provision/provision-utility-source.sh ${name[$i]} ${repo[$i]} ${branch[$i]}
+    PROVISION_SUCCESS=$?
     provisioner_end "utility-source-${name[$i]}"
   done
 }
@@ -141,6 +157,7 @@ utility() {
     for utility in ${utilities[@]}; do
       provisioner_begin "utility-${group}-${utility}"
       bash /srv/provision/provision-utility.sh ${group} ${utility}
+      PROVISION_SUCCESS=$?
       provisioner_end "utility-${group}-${utility}"
     done
   done
@@ -166,6 +183,7 @@ sites() {
 
     provisioner_begin "site-${site}"
     bash /srv/provision/provision-site.sh "${site}" "${repo}" "${branch}" "${vm_dir}" "${skip_provisioning}" "${nginx_upstream}"
+    PROVISION_SUCCESS=$?
     provisioner_end "site-${site}"
   done
 }
@@ -180,10 +198,12 @@ main() {
   if [[ -f "/srv/provision/provision-custom.sh" ]]; then
     provisioner_begin "main-custom"
     bash /srv/provision/provision-custom.sh
+    PROVISION_SUCCESS=$?
     provisioner_end "main-custom"
   else
     provisioner_begin
     bash /srv/provision/provision.sh
+    PROVISION_SUCCESS=$?
     provisioner_end
   fi
 }
