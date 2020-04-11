@@ -998,3 +998,5 @@ echo -e "${GREEN} -----------------------------${CRESET}"
 echo -e "${GREEN} * The main provisioner ran "$(( end_seconds - start_seconds ))" seconds${CRESET}"
 echo -e "${GREEN} * For further setup instructions, visit http://vvv.test${CRESET}"
 echo -e "${GREEN} -----------------------------${CRESET}"
+
+bash /srv/provision/run-sub-provisioners.sh
