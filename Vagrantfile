@@ -653,13 +653,6 @@ Vagrant.configure('2') do |config|
   # Provisioning
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
-  #
-  # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
-  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
-  # file) should go in this script. If it does not exist, no extra provisioning will run.
-  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-pre.sh'))
-    config.vm.provision 'pre', type: 'shell', keep_color: true, path: File.join('provision', 'provision-pre.sh')
-  end
 
   config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'run-provisioners.sh')
 
@@ -696,14 +689,6 @@ Vagrant.configure('2') do |config|
                           args['skip_provisioning'].to_s,
                           args['nginx_upstream']
                         ]
-  end
-
-  # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
-  # run after the shell commands laid out in provision.sh or provision-custom.sh should be
-  # put into this file. This provides a good opportunity to install additional packages
-  # without having to replace the entire default provisioning script.
-  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-post.sh'))
-    config.vm.provision 'post', type: 'shell', keep_color: true, path: File.join('provision', 'provision-post.sh')
   end
 
   # Local Machine Hosts

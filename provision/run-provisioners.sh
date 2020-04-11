@@ -49,6 +49,33 @@ provisioner_end() {
 
 # provisioners
 
+pre_hook() {
+  # provison-pre.sh
+  #
+  # acts as a pre-hook to our default provisioning script. Anything that
+  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
+  # file) should go in this script. If it does not exist, no extra provisioning will run.
+  if [[ -f "/srv/provision/provision-pre.sh" ]]; then
+    provisioner_begin "pre"
+    bash /srv/provision/provision-pre.sh
+    provisioner_end "pre"
+  fi
+}
+
+post_hook() {
+  # provision-post.sh
+  #
+  # acts as a post-hook to the default provisioning. Anything that should
+  # run after the shell commands laid out in provision.sh or provision-custom.sh should be
+  # put into this file. This provides a good opportunity to install additional packages
+  # without having to replace the entire default provisioning script.
+  if [[ -f "/srv/provision/provision-post.sh" ]]; then
+    provisioner_begin "post"
+    bash /srv/provision/provision-post.sh
+    provisioner_end "post"
+  fi
+}
+
 dashboard() {
   provisioner_begin
   dashboard_repo=$(get_config_value "dashboard.repo" "https://github.com/Varying-Vagrant-Vagrants/dashboard.git")
@@ -120,6 +147,8 @@ main() {
   fi
 }
 
+pre_hook
 main
 dashboard
 utility_sources
+post_hook
