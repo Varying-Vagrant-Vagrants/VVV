@@ -22,9 +22,6 @@ SUCCESS=1
 # By storing the date now, we can calculate the duration of provisioning at the
 # end of this script.
 
-logfile="provisioner-site-${SITE}"
-log_to_file "${logfile}"
-
 VVV_CONFIG=/vagrant/config.yml
 
 function noroot() {

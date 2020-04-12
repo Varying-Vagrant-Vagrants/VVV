@@ -5,6 +5,11 @@ CRESET="\033[0m"
 BOLD="\033[1m"
 VVV_CONFIG=/vagrant/config.yml;
 
+ORIGINAL_STDOUT=$(readlink -f /proc/$$/fd/1)
+ORIGINAL_STDERR=$(readlink -f /proc/$$/fd/2)
+
+source /srv/provision/provision-helpers.sh
+
 containsElement () {
   declare -a array=("${2}")
   local i
@@ -38,6 +43,7 @@ get_config_keys() {
 }
 
 provisioner_begin() {
+  log_to_file "provisioner-${1:-${FUNCNAME[1]}}"
   PROVISION_SUCCESS="1"
   echo -e "------------------------------------------------------------------------------------"
   echo -e "${GREEN} ▷ Running the '${1:-${FUNCNAME[1]}}' provisioner...${CRESET}"

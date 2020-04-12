@@ -119,6 +119,10 @@ log_to_file() {
 	local logfile="${logfolder}/${1}.log"
 	mkdir -p "${logfolder}"
 	touch "${logfile}"
+	# reset output otherwise it will log to previous files
+	exec > $ORIGINAL_STDOUT
+	exec 2> $ORIGINAL_STDERR
+	# pipe to file
 	exec > >(tee -a "${logfile}" )
 	exec 2> >(tee -a "${logfile}" >&2 )
 }
