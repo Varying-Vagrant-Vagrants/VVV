@@ -275,29 +275,6 @@ profile_setup() {
   systemctl reload ssh
 }
 
-not_installed() {
-  dpkg -s "$1" 2>&1 | grep -q 'Version:'
-  if [[ "$?" -eq 0 ]]; then
-    apt-cache policy "$1" | grep 'Installed: (none)'
-    return "$?"
-  else
-    return 0
-  fi
-}
-
-print_pkg_info() {
-  local pkg="$1"
-  local pkg_version="$2"
-  local space_count
-  local pack_space_count
-  local real_space
-
-  space_count="$(( 20 - ${#pkg} ))" #11
-  pack_space_count="$(( 30 - ${#pkg_version} ))"
-  real_space="$(( space_count + pack_space_count + ${#pkg_version} ))"
-  printf " * $pkg %${real_space}.${#pkg_version}s ${pkg_version}\n"
-}
-
 package_install() {
 
   # MariaDB/MySQL
@@ -408,19 +385,6 @@ package_install() {
   apt-get clean
 
   return 0
-}
-
-# taken from <https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c>
-latest_github_release() {
-    local LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$1/releases/latest") # Get latest release from GitHub api
-    local GITHUB_RELEASE_REGEXP="\"tag_name\": \"([^\"]+)\""
-
-    if [[ $LATEST_RELEASE =~ $GITHUB_RELEASE_REGEXP ]]; then
-        echo "${BASH_REMATCH[1]}"
-        return 0
-    fi
-
-    return 1
 }
 
 tools_install() {
