@@ -5,9 +5,18 @@
 # This file is for common network helper functions that get called in
 # other provisioners
 
-GREEN="\033[38;5;2m"
-RED="\033[38;5;9m"
-CRESET="\033[0m"
+export YELLOW="\033[38;5;3m"
+export GREEN="\033[38;5;2m"
+export RED="\033[38;5;9m"
+export CRESET="\033[0m"
+export BOLD="\033[1m"
+
+VVV_CONFIG=/vagrant/vvv-custom.yml
+if [[ -f /vagrant/config.yml ]]; then
+	VVV_CONFIG=/vagrant/config.yml
+fi
+
+export VVV_CONFIG
 
 containsElement () {
   declare -a array=("${!2}")

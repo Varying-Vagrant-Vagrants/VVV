@@ -5,10 +5,6 @@ REPO=$2
 BRANCH="${3:-master}"
 DIR="/srv/provision/utilities/${NAME}"
 
-GREEN="\033[38;5;2m"
-RED="\033[38;5;9m"
-CRESET="\033[0m"
-
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
   if [[ ! -d "${DIR}/.git" ]]; then

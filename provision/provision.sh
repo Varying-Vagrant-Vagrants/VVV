@@ -7,10 +7,6 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-GREEN="\033[38;5;2m"
-RED="\033[38;5;9m"
-CRESET="\033[0m"
-
 if [ -d /srv/provision/resources ]; then
   echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
   rm -rf /srv/provision/resources ## remove deprecated folder
