@@ -11,9 +11,6 @@ GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"
 
-logfile="provisioner-utility-source-${NAME}"
-log_to_file "${logfile}"
-
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
   if [[ ! -d "${DIR}/.git" ]]; then

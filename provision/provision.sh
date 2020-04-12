@@ -15,9 +15,6 @@ touch /vagrant/failed_provisioners/provisioner_main_failed
 
 source /srv/provision/provision-helpers.sh
 
-logfile="provisioner-main"
-log_to_file "${logfile}"
-
 if [ -d /srv/provision/resources ]; then
   echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
   rm -rf /srv/provision/resources ## remove deprecated folder

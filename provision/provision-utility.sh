@@ -2,9 +2,6 @@
 
 source /srv/provision/provision-helpers.sh
 
-logfile="provisioner-utility-${1}-${2}"
-log_to_file "${logfile}"
-
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"
