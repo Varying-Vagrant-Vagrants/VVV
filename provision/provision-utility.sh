@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-
-GREEN="\033[38;5;2m"
-RED="\033[38;5;9m"
-CRESET="\033[0m"
-
 PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 
 if [[ -f $PROVISIONER ]]; then

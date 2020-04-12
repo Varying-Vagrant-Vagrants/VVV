@@ -1,9 +1,4 @@
 #!/bin/bash
-GREEN="\033[38;5;2m"
-RED="\033[38;5;9m"
-CRESET="\033[0m"
-BOLD="\033[1m"
-VVV_CONFIG=/vagrant/config.yml;
 
 ORIGINAL_STDOUT=$(readlink -f /proc/$$/fd/1)
 ORIGINAL_STDERR=$(readlink -f /proc/$$/fd/2)
@@ -90,17 +85,16 @@ provisioner_init() {
   rm -f /vagrant/provisioned_at
   rm -f /vagrant/version
   rm -f /vagrant/vvv-custom.yml
-  rm -f /vagrant/config.yml
+  rm -f "${VVV_CONFIG}"
 
   touch /vagrant/provisioned_at
   echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
   # copy over version and config files
   cp -f /home/vagrant/version /vagrant
-  cp -f /srv/config/config.yml /vagrant
-  VVV_CONFIG=/vagrant/config.yml
+  cp -f /srv/config/config.yml "${VVV_CONFIG}"
 
-  sudo chmod 0644 /vagrant/config.yml
+  sudo chmod 0644 "${VVV_CONFIG}"
   sudo chmod 0644 /vagrant/version
   sudo chmod 0644 /vagrant/provisioned_at
 

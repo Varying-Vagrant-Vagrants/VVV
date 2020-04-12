@@ -10,10 +10,7 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 
-GREEN="\033[38;5;2m"
-RED="\033[38;5;9m"
-YELLOW="\033[38;5;3m"
-CRESET="\033[0m"
+
 
 SUCCESS=1
 
