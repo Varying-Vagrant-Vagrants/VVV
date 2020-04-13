@@ -11,56 +11,7 @@ GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"
 
-# fix no tty warnings in provisioner logs
-sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
-
-# add homebin to secure_path setting for sudo, clean first and then append at the end
-sed -i -E \
-  -e "s|:/srv/config/homebin||" \
-  -e "s|/srv/config/homebin:||" \
-  -e "s|(.*Defaults.*secure_path.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
-  /etc/sudoers
-
-# add homebin to the default environment, clean first and then append at the end
-sed -i -E \
-  -e "s|:/srv/config/homebin||" \
-  -e "s|/srv/config/homebin:||" \
-  -e "s|(.*PATH.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
-  /etc/environment
-
-# source bash_aliases before anything else so that PATH is properly configured on
-# this shell session
-. "/srv/config/bash_aliases"
-
-export DEBIAN_FRONTEND=noninteractive
-export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-export COMPOSER_ALLOW_SUPERUSER=1
-export COMPOSER_NO_INTERACTION=1
-
-# cleanup
-mkdir -p /vagrant
-mkdir -p /vagrant/failed_provisioners
-
-rm -f /vagrant/provisioned_at
-rm -f /vagrant/version
-rm -f /vagrant/vvv-custom.yml
-rm -f /vagrant/config.yml
-
-touch /vagrant/provisioned_at
 touch /vagrant/failed_provisioners/provisioner_main_failed
-echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
-
-# copy over version and config files
-cp -f /home/vagrant/version /vagrant
-cp -f /srv/config/config.yml /vagrant
-VVV_CONFIG=/vagrant/config.yml
-
-sudo chmod 0644 /vagrant/config.yml
-sudo chmod 0644 /vagrant/version
-sudo chmod 0644 /vagrant/provisioned_at
-
-# change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
 
 source /srv/provision/provision-helpers.sh
 
