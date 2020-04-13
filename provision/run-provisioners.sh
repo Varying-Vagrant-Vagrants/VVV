@@ -10,18 +10,6 @@ ORIGINAL_STDERR=$(readlink -f /proc/$$/fd/2)
 
 source /srv/provision/provision-helpers.sh
 
-containsElement () {
-  declare -a array=("${2}")
-  local i
-  for i in "${array[@]}"
-  do
-      if [ "${i}" == "${1}" ] ; then
-          return 0
-      fi
-  done
-  return 1
-}
-
 get_config_value() {
   local value=$(shyaml get-value "${1}" 2> /dev/null < ${VVV_CONFIG})
   echo "${value:-$2}"

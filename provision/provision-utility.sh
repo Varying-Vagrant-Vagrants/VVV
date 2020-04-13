@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /srv/provision/provision-helpers.sh
-
 GREEN="\033[38;5;2m"
 RED="\033[38;5;9m"
 CRESET="\033[0m"

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /srv/provision/provision-helpers.sh
-
 SITE=$1
 SITE_ESCAPED="${SITE//./\\.}"
 REPO=$2
@@ -23,10 +21,6 @@ SUCCESS=1
 # end of this script.
 
 VVV_CONFIG=/vagrant/config.yml
-
-function noroot() {
-  sudo -EH -u "vagrant" "$@";
-}
 
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo $(get_config_value 'key' 'defaultvalue')

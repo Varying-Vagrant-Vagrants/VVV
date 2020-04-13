@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /srv/provision/provision-helpers.sh
-
 REPO=$1
 BRANCH=${2:-master}
 DIR="/srv/www/default/dashboard"
