@@ -645,7 +645,7 @@ Vagrant.configure('2') do |config|
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
 
-  config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'run-provisioners.sh')
+  config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'run-provisioners.sh'), args: ( ENV.key?('VVV_PROVISION') ? ENV['VVV_PROVISION'] : [] )
 
   vvv_config['utilities'].each do |name, utilities|
     utilities = {} unless utilities.is_a? Array

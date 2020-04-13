@@ -25,8 +25,29 @@ function get_config_keys() {
   echo "${value:-$2}"
 }
 
+export VVV_PROVISION_ARGS="$@"
+export VVV_PROVISION_ARGN="$#"
+
+function should_run() {
+  if [[ "${VVV_PROVISION_ARGN}" -eq "0" ]]; then
+    return 0
+  fi
+
+  local prov
+  for prov in $VVV_PROVISION_ARGS; do
+    if [[ "$prov" == "$1" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 function provisioner_begin() {
   log_to_file "provisioner-${1:-${FUNCNAME[1]}}"
+  if ! should_run "${1:-${FUNCNAME[1]}}"; then
+    return 1
+  fi
   touch "/vagrant/failed_provisioners/provisioner-${1:-${FUNCNAME[1]}}"
   PROVISION_SUCCESS="1"
   echo -e "------------------------------------------------------------------------------------"
@@ -114,6 +135,9 @@ function pre_hook() {
   # file) should go in this script. If it does not exist, no extra provisioning will run.
   if [[ -f "/srv/provision/provision-pre.sh" ]]; then
     provisioner_begin "pre"
+    if [[ $? -ne "0" ]]; then
+      return 0
+    fi
     bash /srv/provision/provision-pre.sh
     PROVISION_SUCCESS=$?
     provisioner_end "pre"
@@ -129,6 +153,9 @@ function post_hook() {
   # without having to replace the entire default provisioning script.
   if [[ -f "/srv/provision/provision-post.sh" ]]; then
     provisioner_begin "post"
+    if [[ $? -ne "0" ]]; then
+      return 0
+    fi
     bash /srv/provision/provision-post.sh
     PROVISION_SUCCESS=$?
     provisioner_end "post"
@@ -137,6 +164,9 @@ function post_hook() {
 
 function dashboard() {
   provisioner_begin
+  if [[ $? -ne "0" ]]; then
+    return 0
+  fi
   local dashboard_repo=$(get_config_value "dashboard.repo" "https://github.com/Varying-Vagrant-Vagrants/dashboard.git")
   local dashboard_branch=$(get_config_value "dashboard.branch" "master")
 
@@ -186,6 +216,9 @@ function utility_sources() {
   local i
   for i in ${!name[@]}; do
     provisioner_begin "utility-source-${name[$i]}"
+    if [[ $? -ne "0" ]]; then
+      return 0
+    fi
     bash /srv/provision/provision-utility-source.sh "${name[$i]}" "${repo[$i]}" "${branch[$i]}"
     PROVISION_SUCCESS=$?
     provisioner_end "utility-source-${name[$i]}"
@@ -200,6 +233,9 @@ function utility() {
     local utilities=($(get_config_values utilities."${group}"))
     for utility in ${utilities[@]}; do
       provisioner_begin "utility-${group}-${utility}"
+      if [[ $? -ne "0" ]]; then
+        return 0
+      fi
       bash /srv/provision/provision-utility.sh "${group}" "${utility}"
       PROVISION_SUCCESS=$?
       provisioner_end "utility-${group}-${utility}"
@@ -226,6 +262,9 @@ function sites() {
     local nginx_upstream=$(get_config_value "sites.${site}.nginx_upstream" "php")
 
     provisioner_begin "site-${site}"
+    if [[ $? -ne "0" ]]; then
+      return 0
+    fi
     bash /srv/provision/provision-site.sh "${site}" "${repo}" "${branch}" "${vm_dir}" "${skip_provisioning}" "${nginx_upstream}"
     PROVISION_SUCCESS=$?
     provisioner_end "site-${site}"
@@ -241,11 +280,17 @@ function main() {
   # of the provisioning provided by default.
   if [[ -f "/srv/provision/provision-custom.sh" ]]; then
     provisioner_begin "main-custom"
+    if [[ $? -ne "0" ]]; then
+      return 0
+    fi
     bash /srv/provision/provision-custom.sh
     PROVISION_SUCCESS=$?
     provisioner_end "main-custom"
   else
     provisioner_begin
+    if [[ $? -ne "0" ]]; then
+      return 0
+    fi
     bash /srv/provision/provision.sh
     PROVISION_SUCCESS=$?
     provisioner_end
