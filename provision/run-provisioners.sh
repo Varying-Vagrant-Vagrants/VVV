@@ -85,21 +85,23 @@ provisioner_init() {
   rm -f /vagrant/provisioned_at
   rm -f /vagrant/version
   rm -f /vagrant/vvv-custom.yml
-  rm -f "${VVV_CONFIG}"
+  rm -f /vagrant/config.yml
 
   touch /vagrant/provisioned_at
   echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
   # copy over version and config files
   cp -f /home/vagrant/version /vagrant
-  cp -f /srv/config/config.yml "${VVV_CONFIG}"
+  cp -f /srv/config/config.yml /vagrant
 
-  sudo chmod 0644 "${VVV_CONFIG}"
+  sudo chmod 0644 /vagrant/config.yml
   sudo chmod 0644 /vagrant/version
   sudo chmod 0644 /vagrant/provisioned_at
 
   # change ownership for /vagrant folder
   sudo chown -R vagrant:vagrant /vagrant
+
+  VVV_CONFIG=/vagrant/config.yml
 }
 
 # provisioners
