@@ -133,8 +133,8 @@ log_to_file() {
 	mkdir -p "${logfolder}"
 	touch "${logfile}"
 	# reset output otherwise it will log to previous files
-	exec > $ORIGINAL_STDOUT
-	exec 2> $ORIGINAL_STDERR
+	exec 1>&6
+	exec 2>&7
 	# pipe to file
 	exec > >(tee -a "${logfile}" )
 	exec 2> >(tee -a "${logfile}" >&2 )
