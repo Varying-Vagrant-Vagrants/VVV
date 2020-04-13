@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source /srv/provision/provision-helpers.sh
-
 NAME=$1
 REPO=$2
 BRANCH="${3:-master}"

@@ -11,6 +11,7 @@ CRESET="\033[0m"
 
 containsElement () {
   declare -a array=("${!2}")
+  local i
   for i in "${array[@]}"
   do
       if [ "${i}" == "${1}" ] ; then
@@ -19,11 +20,13 @@ containsElement () {
   done
   return 1
 }
+export -f containsElement
 
 network_detection() {
   url=${1:-"https://ppa.launchpad.net"}
   check_network_connection_to_host "${url}"
 }
+export -f network_detection
 
 check_network_connection_to_host() {
   url=${1:-"https://ppa.launchpad.net"}
@@ -41,6 +44,7 @@ check_network_connection_to_host() {
   echo -e "${RED} ! Network connection issues found. Unable to reach ${url}${CRESET}"
   return 1
 }
+export -f check_network_connection_to_host
 
 network_check() {
   # Make an HTTP request to ppa.launchpad.net to determine if
@@ -111,7 +115,7 @@ network_check() {
   echo -e "${GREEN} * Network checks succeeded${CRESET}"
   return 0
 }
-
+export -f network_check
 
 log_to_file() {
 	local date_time=$(cat /vagrant/provisioned_at)
@@ -126,3 +130,9 @@ log_to_file() {
 	exec > >(tee -a "${logfile}" )
 	exec 2> >(tee -a "${logfile}" >&2 )
 }
+export -f log_to_file
+
+noroot() {
+  sudo -EH -u "vagrant" "$@";
+}
+export -f noroot
