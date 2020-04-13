@@ -5,27 +5,27 @@ exec 7>&2
 
 source /srv/provision/provision-helpers.sh
 
-get_config_value() {
+function get_config_value() {
   local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 
-get_config_values() {
+function get_config_values() {
   local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 
-get_config_type() {
+function get_config_type() {
   local value=$(shyaml get-type "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value}"
 }
 
-get_config_keys() {
+function get_config_keys() {
   local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 
-provisioner_begin() {
+function provisioner_begin() {
   log_to_file "provisioner-${1:-${FUNCNAME[1]}}"
   touch "/vagrant/failed_provisioners/provisioner-${1:-${FUNCNAME[1]}}"
   PROVISION_SUCCESS="1"
@@ -35,7 +35,7 @@ provisioner_begin() {
   start_seconds="$(date +%s)"
 }
 
-provisioner_end() {
+function provisioner_end() {
   end_seconds="$(date +%s)" 
   local elapsed="$(( end_seconds - start_seconds ))"
   if [[ $PROVISION_SUCCESS -eq "0" ]]; then
@@ -51,7 +51,7 @@ provisioner_end() {
   echo ""
 }
 
-provisioner_init() {
+function provisioner_init() {
   # fix no tty warnings in provisioner logs
   sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
@@ -106,7 +106,7 @@ provisioner_init() {
 
 # provisioners
 
-pre_hook() {
+function pre_hook() {
   # provison-pre.sh
   #
   # acts as a pre-hook to our default provisioning script. Anything that
@@ -120,7 +120,7 @@ pre_hook() {
   fi
 }
 
-post_hook() {
+function post_hook() {
   # provision-post.sh
   #
   # acts as a post-hook to the default provisioning. Anything that should
@@ -135,7 +135,7 @@ post_hook() {
   fi
 }
 
-dashboard() {
+function dashboard() {
   provisioner_begin
   local dashboard_repo=$(get_config_value "dashboard.repo" "https://github.com/Varying-Vagrant-Vagrants/dashboard.git")
   local dashboard_branch=$(get_config_value "dashboard.branch" "master")
@@ -145,7 +145,7 @@ dashboard() {
   provisioner_end
 }
 
-utility_sources() {
+function utility_sources() {
   local name=()
   local repo=()
   local branch=()
@@ -192,7 +192,7 @@ utility_sources() {
   done
 }
 
-utility() {
+function utility() {
   local groups=($(get_config_keys utilities))
   local group
   local utility
@@ -207,7 +207,7 @@ utility() {
   done
 }
 
-sites() {
+function sites() {
   local sites=($(get_config_keys sites))
   local site
   for site in ${sites[@]}; do
@@ -232,7 +232,7 @@ sites() {
   done
 }
 
-main() {
+function main() {
   # provision.sh or provision-custom.sh
   #
   # By default, Vagrantfile is set to use the provision.sh bash script located in the
