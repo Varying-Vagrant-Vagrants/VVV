@@ -51,7 +51,7 @@ function provisioner_begin() {
   touch "/vagrant/failed_provisioners/provisioner-${1:-${FUNCNAME[1]}}"
   PROVISION_SUCCESS="1"
   echo -e "------------------------------------------------------------------------------------"
-  echo -e "${GREEN} ▷ Running the '${1:-${FUNCNAME[1]}}' provisioner...${CRESET}"
+  vvv_success " ▷ Running the '${1:-${FUNCNAME[1]}}' provisioner..."
   echo -e "------------------------------------------------------------------------------------"
   start_seconds="$(date +%s)"
 }
@@ -61,12 +61,12 @@ function provisioner_end() {
   local elapsed="$(( end_seconds - start_seconds ))"
   if [[ $PROVISION_SUCCESS -eq "0" ]]; then
     echo -e "------------------------------------------------------------------------------------"
-    echo -e "${GREEN} ✔ The '${1:-${FUNCNAME[1]}}' provisioner completed in ${elapsed} seconds.${CRESET}"
+    vvv_success " ✔ The '${1:-${FUNCNAME[1]}}' provisioner completed in ${elapsed} seconds."
     echo -e "------------------------------------------------------------------------------------"
     rm -f "/vagrant/failed_provisioners/provisioner-${1:-${FUNCNAME[1]}}"
   else
     echo -e "------------------------------------------------------------------------------------"
-    echo -e "${RED} ! The '${1:-${FUNCNAME[1]}}' provisioner ran into problems, check the full log for more details! It completed in ${elapsed} seconds.${CRESET}"
+    vvv_error " ! The '${1:-${FUNCNAME[1]}}' provisioner ran into problems, check the full log for more details! It completed in ${elapsed} seconds."
     echo -e "------------------------------------------------------------------------------------"
   fi
   echo ""
@@ -188,7 +188,7 @@ function utility_sources() {
   else
     utilities=$(get_config_value "${key}")
     if [[ ! -z "${utilities}" ]]; then
-      echo -e "${RED}Malformed ${key} config${CRESET}"
+      vvv_error "Malformed ${key} config"
     fi
     utilities=()
   fi
