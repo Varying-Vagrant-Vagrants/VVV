@@ -149,11 +149,14 @@ export -f noroot
 function vvv_error() {
 	echo -e "${RED}${1}${CRESET}"
 }
+export -f vvv_error
 
 function vvv_warn() {
 	echo -e "${YELLOW}${1}${CRESET}"
 }
+export -f vvv_warn
 
 function vvv_success() {
 	echo -e "${GREEN}${1}${CRESET}"
 }
+export -f vvv_success
