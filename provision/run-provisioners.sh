@@ -6,22 +6,22 @@ exec 7>&2
 source /srv/provision/provision-helpers.sh
 
 get_config_value() {
-  local value=$(shyaml get-value "${1}" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 
 get_config_values() {
-  local value=$(shyaml get-values "${1}" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 
 get_config_type() {
-  local value=$(shyaml get-type "${1}" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml get-type "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value}"
 }
 
 get_config_keys() {
-  local value=$(shyaml keys "${1}" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 
@@ -140,7 +140,7 @@ dashboard() {
   local dashboard_repo=$(get_config_value "dashboard.repo" "https://github.com/Varying-Vagrant-Vagrants/dashboard.git")
   local dashboard_branch=$(get_config_value "dashboard.branch" "master")
 
-  bash /srv/provision/provision-dashboard.sh ${dashboard_repo} ${dashboard_branch}
+  bash /srv/provision/provision-dashboard.sh "${dashboard_repo}" "${dashboard_branch}"
   PROVISION_SUCCESS=$?
   provisioner_end
 }
@@ -163,7 +163,7 @@ utility_sources() {
     utilities=()
   fi
 
-  containsElement "core" ${utilities}
+  containsElement "core" "${utilities}"
   if [[ $? -ne 0 ]]; then
     name+=("core")
     repo+=("https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git")
@@ -186,7 +186,7 @@ utility_sources() {
   local i
   for i in ${!name[@]}; do
     provisioner_begin "utility-source-${name[$i]}"
-    bash /srv/provision/provision-utility-source.sh ${name[$i]} ${repo[$i]} ${branch[$i]}
+    bash /srv/provision/provision-utility-source.sh "${name[$i]}" "${repo[$i]}" "${branch[$i]}"
     PROVISION_SUCCESS=$?
     provisioner_end "utility-source-${name[$i]}"
   done
@@ -197,10 +197,10 @@ utility() {
   local group
   local utility
   for group in ${groups[@]}; do
-    local utilities=($(get_config_values utilities.${group}))
+    local utilities=($(get_config_values utilities."${group}"))
     for utility in ${utilities[@]}; do
       provisioner_begin "utility-${group}-${utility}"
-      bash /srv/provision/provision-utility.sh ${group} ${utility}
+      bash /srv/provision/provision-utility.sh "${group}" "${utility}"
       PROVISION_SUCCESS=$?
       provisioner_end "utility-${group}-${utility}"
     done
