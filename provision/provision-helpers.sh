@@ -19,7 +19,7 @@ fi
 export VVV_CONFIG
 
 containsElement () {
-  declare -a array=("${!2}")
+  declare -a array=(${2})
   local i
   for i in "${array[@]}"
   do
