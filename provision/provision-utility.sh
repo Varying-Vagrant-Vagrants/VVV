@@ -11,4 +11,5 @@ if [[ -f $PROVISIONER ]]; then
 	fi
 else
 	vvv_error " ! VVV Tried to run the utility provisioner for '${1}/${2}' but ${PROVISIONER} doesn't exist."
+	exit 1
 fi
