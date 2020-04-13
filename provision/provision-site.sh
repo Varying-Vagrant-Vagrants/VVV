@@ -54,7 +54,7 @@ function vvv_provision_site_nginx_config() {
   sed -i "s#{vvv_hosts}#${VVV_HOSTS}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
   if [ 'php' != "${NGINX_UPSTREAM}" ] && [ ! -f "/etc/nginx/upstreams/${NGINX_UPSTREAM}.conf" ]; then
-    echo -e "${YELLOW} * Upstream value '${NGINX_UPSTREAM}' doesn't match a valid upstream. Defaulting to 'php'.${CRESET}"
+    vvv_warn " * Upstream value '${NGINX_UPSTREAM}' doesn't match a valid upstream. Defaulting to 'php'.${CRESET}"
     NGINX_UPSTREAM='php'
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
@@ -97,19 +97,19 @@ function vvv_process_site_hosts() {
   if [ ${#hosts[@]} -eq 0 ]; then
     echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
     if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then
-      echo -e "${GREEN} * Found a .vvv/vvv-hosts file${CRESET}"
+      vvv_success " * Found a .vvv/vvv-hosts file"
       vvv_provision_hosts_file "${SITE}" "${VM_DIR}/.vvv/vvv-hosts"
     elif [[ -f "${VM_DIR}/provision/vvv-hosts" ]]; then
-      echo -e "${GREEN} * Found a provision/vvv-hosts file${CRESET}"
+      vvv_success " * Found a provision/vvv-hosts file"
       vvv_provision_hosts_file "${SITE}" "${VM_DIR}/provision/vvv-hosts"
     elif [[ -f "${VM_DIR}/vvv-hosts" ]]; then
-      echo -e "${GREEN} * Found a vvv-hosts file${CRESET}"
+      vvv_success " * Found a vvv-hosts file"
       vvv_provision_hosts_file "${SITE}" "${VM_DIR}/vvv-hosts"
     else
       echo " * Searching subfolders 4 levels down for a vvv-hosts file ( this can be skipped by using ./vvv-hosts, .vvv/vvv-hosts, or provision/vvv-hosts"
       HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
       if [[ -z $HOST_FILES ]] ; then
-        echo -e "${RED} ! Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible${CRESET}"
+        vvv_error " ! Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible"
       else
         for HOST_FILE in $HOST_FILES; do
           vvv_provision_hosts_file "$HOST_FILE"
@@ -207,7 +207,7 @@ function vvv_provision_site_nginx() {
     echo " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
     NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
     if [[ -z $NGINX_CONFIGS ]] ; then
-      echo -e "${RED} ! Warning: No nginx config was found, VVV will not know how to serve this site${CRESET}"
+      vvv_error " ! Warning: No nginx config was found, VVV will not know how to serve this site"
     else
       for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
         vvv_provision_site_nginx_config "${SITE}" "${SITE_CONFIG_FILE}"
@@ -219,7 +219,7 @@ function vvv_provision_site_nginx() {
 # -------------------------------
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
-  echo -e "${YELLOW} * Skipping provisioning of ${SITE}${CRESET}"
+  vvv_warn " * Skipping provisioning of ${SITE}${CRESET}"
   return 0
 fi
 
@@ -238,6 +238,6 @@ echo " * Reloading Nginx"
 service nginx reload
 
 if [ "${SUCCESS}" -ne "0" ]; then
-  echo -e "${RED} ! ${SITE} provisioning had some issues, check the log as the site may not function correctly.${CRESET}"
+  vvv_error " ! ${SITE} provisioning had some issues, check the log as the site may not function correctly."
   return 1
 fi

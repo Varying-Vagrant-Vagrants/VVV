@@ -20,16 +20,16 @@ if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   fi
 else
   if [[ false == "${NAME}" && false == "${REPO}" ]]; then
-    echo -e "${RED}Error: VVV tried to provision a utility, but no name or git repo was supplied, double check your config/config.yml file is correct and has the right indentation${CRESET}"
+    vvv_error "Error: VVV tried to provision a utility, but no name or git repo was supplied, double check your config/config.yml file is correct and has the right indentation"
     exit 1
   fi
   if [[ false == "${NAME}" ]]; then
-    echo -e "${RED}Error: While processing a utility, a utility with a blank name was found, with the git repo ${REPO}${CRESET}"
+    vvv_error "Error: While processing a utility, a utility with a blank name was found, with the git repo ${REPO}"
     exit 1
   fi
 
   if [[ false == "${REPO}" ]]; then
-    echo -e "${RED}Error: While processing the ${NAME} utility, VVV could not find a git repository to clone${CRESET}"
+    vvv_error "Error: While processing the ${NAME} utility, VVV could not find a git repository to clone"
   fi
 fi
 

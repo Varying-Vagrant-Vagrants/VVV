@@ -849,7 +849,7 @@ echo " "
 echo " * Main packages check and install."
 git_ppa_check
 if ! package_install; then
-  echo -e "${RED} ! Main packages check and install failed, halting provision${CRESET}"
+  vvv_error " ! Main packages check and install failed, halting provision"
   exit 1
 fi
 

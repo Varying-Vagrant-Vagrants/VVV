@@ -47,10 +47,10 @@ function check_network_connection_to_host() {
   # then we'll skip a few things further in provisioning rather
   # than create a bunch of errors.
   if [[ "$(wget --tries=3 --timeout=10 "${url}" -O /dev/null 2>&1 | grep 'connected')" ]]; then
-    echo -e "${GREEN} * Successful Network connection to ${url} detected${CRESET}"
+    vvv_success " * Successful Network connection to ${url} detected"
     return 0
   fi
-  echo -e "${RED} ! Network connection issues found. Unable to reach ${url}${CRESET}"
+  vvv_error " ! Network connection issues found. Unable to reach ${url}"
   return 1
 }
 export -f check_network_connection_to_host
@@ -118,10 +118,10 @@ function network_check() {
     echo " "
     echo "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
     echo " "
-    echo -e "${RED}#################################################################${CRESET}"
+    vvv_error "#################################################################"
     return 1
   fi
-  echo -e "${GREEN} * Network checks succeeded${CRESET}"
+  vvv_success " * Network checks succeeded"
   return 0
 }
 export -f network_check
@@ -145,3 +145,15 @@ function noroot() {
   sudo -EH -u "vagrant" "$@";
 }
 export -f noroot
+
+function vvv_error() {
+	echo -e "${RED}${1}${CRESET}"
+}
+
+function vvv_warn() {
+	echo -e "${YELLOW}${1}${CRESET}"
+}
+
+function vvv_success() {
+	echo -e "${GREEN}${1}${CRESET}"
+}
