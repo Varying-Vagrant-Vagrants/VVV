@@ -174,7 +174,7 @@ utility_sources() {
   for utility in "${utilities[@]}"; do
     type=$(get_config_type "${key}.${utility}")
     name+=(${utility})
-    if [[ "${utilities}" == "str" ]]; then
+    if [[ "${type}" == "str" ]]; then
       repo+=($(get_config_value "${key}.${utility}"))
       branch+=(master)
     else
