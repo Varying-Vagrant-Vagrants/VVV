@@ -8,26 +8,6 @@ export VVV_PROVISION_ARGN="$#"
 
 source /srv/provision/provision-helpers.sh
 
-function get_config_value() {
-  local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
-}
-
-function get_config_values() {
-  local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
-}
-
-function get_config_type() {
-  local value=$(shyaml get-type "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value}"
-}
-
-function get_config_keys() {
-  local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
-}
-
 function should_run() {
   if [[ "${VVV_PROVISION_ARGN}" -eq "0" ]]; then
     return 0

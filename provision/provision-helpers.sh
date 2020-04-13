@@ -160,3 +160,27 @@ function vvv_success() {
 	echo -e "${GREEN}${1}${CRESET}"
 }
 export -f vvv_success
+
+function get_config_value() {
+  local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  echo "${value:-$2}"
+}
+export -f get_config_value
+
+function get_config_values() {
+  local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  echo "${value:-$2}"
+}
+export -f get_config_values
+
+function get_config_type() {
+  local value=$(shyaml get-type "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  echo "${value}"
+}
+export -f get_config_type
+
+function get_config_keys() {
+  local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  echo "${value:-$2}"
+}
+export -f get_config_keys
