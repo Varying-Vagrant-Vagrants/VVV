@@ -225,22 +225,28 @@ function utility_sources() {
   done
 }
 
-function utility() {
+function provision_utilities() {
   local groups=($(get_config_keys utilities))
   local group
   local utility
   for group in ${groups[@]}; do
     local utilities=($(get_config_values utilities."${group}"))
     for utility in ${utilities[@]}; do
-      provisioner_begin "utility-${group}-${utility}"
-      if [[ $? -ne "0" ]]; then
-        return 0
-      fi
-      bash /srv/provision/provision-utility.sh "${group}" "${utility}"
-      PROVISION_SUCCESS=$?
-      provisioner_end "utility-${group}-${utility}"
+      provision_utility "${group}" "${utility}"
     done
   done
+}
+
+function provision_utility() {
+  local group=$1
+  local utility=$2
+  provisioner_begin "utility-${group}-${utility}"
+  if [[ $? -ne "0" ]]; then
+    return 0
+  fi
+  bash /srv/provision/provision-utility.sh "${group}" "${utility}"
+  PROVISION_SUCCESS=$?
+  provisioner_end "utility-${group}-${utility}"
 }
 
 function sites() {
@@ -302,6 +308,6 @@ pre_hook
 main
 dashboard
 utility_sources
-utility
+provision_utilities
 sites
 post_hook
