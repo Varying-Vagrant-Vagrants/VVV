@@ -217,7 +217,7 @@ function utility_sources() {
   for i in ${!name[@]}; do
     provisioner_begin "utility-source-${name[$i]}"
     if [[ $? -ne "0" ]]; then
-      return 0
+      continue
     fi
     bash /srv/provision/provision-utility-source.sh "${name[$i]}" "${repo[$i]}" "${branch[$i]}"
     PROVISION_SUCCESS=$?
@@ -269,7 +269,7 @@ function sites() {
 
     provisioner_begin "site-${site}"
     if [[ $? -ne "0" ]]; then
-      return 0
+      continue
     fi
     bash /srv/provision/provision-site.sh "${site}" "${repo}" "${branch}" "${vm_dir}" "${skip_provisioning}" "${nginx_upstream}"
     PROVISION_SUCCESS=$?
