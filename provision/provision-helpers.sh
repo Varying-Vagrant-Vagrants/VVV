@@ -18,7 +18,7 @@ fi
 
 export VVV_CONFIG
 
-containsElement () {
+function containsElement () {
   declare -a array=(${2})
   local i
   for i in "${array[@]}"
@@ -31,13 +31,13 @@ containsElement () {
 }
 export -f containsElement
 
-network_detection() {
+function network_detection() {
   url=${1:-"https://ppa.launchpad.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
 
-check_network_connection_to_host() {
+function check_network_connection_to_host() {
   url=${1:-"https://ppa.launchpad.net"}
   echo " * Testing network connection to ${url}"
 
@@ -55,7 +55,7 @@ check_network_connection_to_host() {
 }
 export -f check_network_connection_to_host
 
-network_check() {
+function network_check() {
   # Make an HTTP request to ppa.launchpad.net to determine if
   # outside access is available to us. Also check the mariadb
   declare -a hosts_to_test=(
@@ -126,7 +126,7 @@ network_check() {
 }
 export -f network_check
 
-log_to_file() {
+function log_to_file() {
 	local date_time=$(cat /vagrant/provisioned_at)
 	local logfolder="/var/log/provisioners/${date_time}"
 	local logfile="${logfolder}/${1}.log"
@@ -141,7 +141,7 @@ log_to_file() {
 }
 export -f log_to_file
 
-noroot() {
+function noroot() {
   sudo -EH -u "vagrant" "$@";
 }
 export -f noroot
