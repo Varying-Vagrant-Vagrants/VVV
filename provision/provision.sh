@@ -431,7 +431,7 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  github_token=$(shyaml get-value general.github_token 2> /dev/null < ${VVV_CONFIG})
+  github_token=$(shyaml get-value general.github_token 2> /dev/null < "${VVV_CONFIG}")
   if [[ ! -z $github_token ]]; then
     rm /srv/provision/github.token
     echo "$github_token" >> /srv/provision/github.token
