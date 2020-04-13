@@ -102,7 +102,7 @@ function provisioner_init() {
   # change ownership for /vagrant folder
   sudo chown -R vagrant:vagrant /vagrant
 
-  VVV_CONFIG=/vagrant/config.yml
+  export VVV_CONFIG=/vagrant/config.yml
 }
 
 # provisioners
