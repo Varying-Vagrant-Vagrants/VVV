@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ORIGINAL_STDOUT=$(readlink -f /proc/$$/fd/1)
-ORIGINAL_STDERR=$(readlink -f /proc/$$/fd/2)
+exec 6>&1
+exec 7>&2
 
 source /srv/provision/provision-helpers.sh
 
