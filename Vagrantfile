@@ -645,13 +645,6 @@ Vagrant.configure('2') do |config|
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
 
-  ARGV.each do |arg|
-    match = arg.match(/(--provision-with=)(.*)/i);
-    if match
-      _prefix, req_prov = match.captures
-      config.vm.provision "#{req_prov}", type: 'shell', keep_color: true, path: File.join('provision', 'run-provisioners.sh'), args: [ req_prov ]
-    end
-  end
 
   config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'run-provisioners.sh'), args: ( ENV.key?('VVV_PROVISION') ? ENV['VVV_PROVISION'] : [] )
 
