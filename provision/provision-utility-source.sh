@@ -35,4 +35,4 @@ else
   fi
 fi
 
-exit 0
+provisioner_success

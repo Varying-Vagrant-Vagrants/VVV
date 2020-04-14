@@ -23,4 +23,5 @@ else
   echo " * Skipping dashboard provisioning, set to false in config"
 fi
 
-exit 0
+provisioner_success
+

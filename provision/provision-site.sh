@@ -243,3 +243,5 @@ if [ "${SUCCESS}" -ne "0" ]; then
   vvv_error " ! ${SITE} provisioning had some issues, check the log as the site may not function correctly."
   return 1
 fi
+
+provisioner_success
