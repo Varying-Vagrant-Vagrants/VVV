@@ -21,7 +21,7 @@ function provisioner_begin() {
 }
 
 function provisioner_end() {
-  PROVISION_SUCCESS="$?"
+  PROVISION_SUCCESS="${1:-"1"}"
   end_seconds="$(date +%s)" 
   local elapsed="$(( end_seconds - start_seconds ))"
   if [[ $PROVISION_SUCCESS -eq "0" ]]; then
@@ -41,3 +41,9 @@ function provisioner_end() {
 if [[ ! -z $VVV_LOG ]]; then
   provisioner_begin "${VVV_LOG}"
 fi
+
+function provisioner_success() {
+  if [[ ! -z $VVV_LOG ]]; then
+    provisioner_end 0
+  fi
+}

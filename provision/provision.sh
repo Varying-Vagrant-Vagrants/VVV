@@ -937,3 +937,5 @@ cleanup_vvv
 
 #set +xv
 # And it's done
+
+provisioner_success
