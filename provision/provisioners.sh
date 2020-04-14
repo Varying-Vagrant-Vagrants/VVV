@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if ( type provisioner_begin &>/dev/null ); then
+	return
+fi
+
 exec 6>&1
 exec 7>&2
 
