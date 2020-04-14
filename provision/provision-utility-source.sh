@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. "/srv/provision/provisioners.sh"
+
 NAME=$1
 REPO=$2
 BRANCH="${3:-master}"

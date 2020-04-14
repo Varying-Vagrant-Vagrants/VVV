@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. "/srv/provision/provisioners.sh"
+
 SITE=$1
 SITE_ESCAPED="${SITE//./\\.}"
 REPO=$2

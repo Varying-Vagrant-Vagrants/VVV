@@ -165,13 +165,22 @@ vvv_config['hosts'] = [] unless vvv_config['hosts'].is_a? Hash
 vvv_config['hosts'] += ['vvv.test']
 
 vvv_config['sites'].each do |site, args|
+  if args.is_a? String
+    repo = args
+    args = {}
+    args['repo'] = repo
+  end
+
   args = {} unless args.is_a? Hash
 
   defaults = {}
+  defaults['repo'] = false
   defaults['vm_dir'] = "/srv/www/#{site}"
   defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
+  defaults['branch'] = 'master'
   defaults['skip_provisioning'] = false
   defaults['allow_customfile'] = false
+  defaults['nginx_upstream'] = 'php'
   defaults['hosts'] = []
 
   vvv_config['sites'][site] = defaults.merge(args)
@@ -186,6 +195,33 @@ vvv_config['sites'].each do |site, args|
     vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
   end
   vvv_config['sites'][site].delete('hosts')
+end
+
+if vvv_config['utility-sources'].is_a? Hash
+  vvv_config['utility-sources'].each do |name, args|
+    next unless args.is_a? String
+
+    repo = args
+    args = {}
+    args['repo'] = repo
+    args['branch'] = 'master'
+
+    vvv_config['utility-sources'][name] = args
+  end
+else
+  vvv_config['utility-sources'] = {}
+end
+
+vvv_config['dashboard'] = {} unless vvv_config['dashboard']
+dashboard_defaults = {}
+dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashboard.git'
+dashboard_defaults['branch'] = 'master'
+vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
+
+unless vvv_config['utility-sources'].key?('core')
+  vvv_config['utility-sources']['core'] = {}
+  vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+  vvv_config['utility-sources']['core']['branch'] = 'master'
 end
 
 vvv_config['utilities'] = {} unless vvv_config['utilities'].is_a? Hash
@@ -644,9 +680,49 @@ Vagrant.configure('2') do |config|
   # Provisioning
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
+  #
+  # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
+  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
+  # file) should go in this script. If it does not exist, no extra provisioning will run.
+  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-pre.sh'))
+    config.vm.provision 'pre', type: 'shell', keep_color: true, path: File.join('provision', 'provision-pre.sh'), env: { "VVV_LOG" => "pre" }
+  end
 
+  # provision.sh or provision-custom.sh
+  #
+  # By default, Vagrantfile is set to use the provision.sh bash script located in the
+  # provision directory. If it is detected that a provision-custom.sh script has been
+  # created, that is run as a replacement. This is an opportunity to replace the entirety
+  # of the provisioning provided by default.
+  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-custom.sh'))
+    config.vm.provision 'custom', type: 'shell', keep_color: true, path: File.join('provision', 'provision-custom.sh'), env: { "VVV_LOG" => "main-custom" }
+  else
+    config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'provision.sh'), env: { "VVV_LOG" => "main" }
+  end
 
-  config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'run-provisioners.sh'), args: ( ENV.key?('VVV_PROVISION') ? ENV['VVV_PROVISION'] : [] )
+  # Provision the dashboard that appears when you visit vvv.test
+  config.vm.provision 'dashboard',
+                      type: 'shell',
+                      keep_color: true,
+                      path: File.join('provision', 'provision-dashboard.sh'),
+                      args: [
+                        vvv_config['dashboard']['repo'],
+                        vvv_config['dashboard']['branch']
+                      ], 
+                      env: { "VVV_LOG" => "dashboard" }
+
+  vvv_config['utility-sources'].each do |name, args|
+    config.vm.provision "utility-source-#{name}",
+                        type: 'shell',
+                        keep_color: true,
+                        path: File.join('provision', 'provision-utility-source.sh'),
+                        args: [
+                          name,
+                          args['repo'].to_s,
+                          args['branch']
+                        ], 
+                        env: { "VVV_LOG" => "utility-source-#{name}" }
+  end
 
   vvv_config['utilities'].each do |name, utilities|
     utilities = {} unless utilities.is_a? Array
@@ -655,7 +731,42 @@ Vagrant.configure('2') do |config|
         vvv_config['hosts'] += ['tideways.vvv.test']
         vvv_config['hosts'] += ['xhgui.vvv.test']
       end
+      config.vm.provision "utility-#{name}-#{utility}",
+                          type: 'shell',
+                          keep_color: true,
+                          path: File.join('provision', 'provision-utility.sh'),
+                          args: [
+                            name,
+                            utility
+                          ],
+                          env: { "VVV_LOG" => "utility-#{name}-#{utility}" }
     end
+  end
+
+  vvv_config['sites'].each do |site, args|
+    next if args['skip_provisioning']
+
+    config.vm.provision "site-#{site}",
+                        type: 'shell',
+                        keep_color: true,
+                        path: File.join('provision', 'provision-site.sh'),
+                        args: [
+                          site,
+                          args['repo'].to_s,
+                          args['branch'],
+                          args['vm_dir'],
+                          args['skip_provisioning'].to_s,
+                          args['nginx_upstream']
+                        ],
+                        env: { "VVV_LOG" => "site-#{site}" }
+  end
+
+  # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
+  # run after the shell commands laid out in provision.sh or provision-custom.sh should be
+  # put into this file. This provides a good opportunity to install additional packages
+  # without having to replace the entire default provisioning script.
+  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-post.sh'))
+    config.vm.provision 'post', type: 'shell', keep_color: true, path: File.join('provision', 'provision-post.sh'), env: { "VVV_LOG" => "post" }
   end
 
   # Local Machine Hosts

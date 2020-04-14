@@ -58,6 +58,9 @@ sudo chown -R vagrant:vagrant /vagrant
 
 export VVV_CONFIG=/vagrant/config.yml
 
+# initialize provisioner helpers a bit later
+. "/srv/provision/provisioners.sh"
+
 if [ -d /srv/provision/resources ]; then
   echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
   rm -rf /srv/provision/resources ## remove deprecated folder
