@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. "/srv/provision/provisioners.sh"
+
 REPO=$1
 BRANCH=${2:-master}
 DIR="/srv/www/default/dashboard"

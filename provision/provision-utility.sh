@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+. "/srv/provision/provisioners.sh"
+
 PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 
 if [[ -f $PROVISIONER ]]; then
