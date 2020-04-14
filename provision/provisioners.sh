@@ -31,6 +31,7 @@ function provisioner_end() {
     echo -e "------------------------------------------------------------------------------------"
   fi
   echo ""
+  trap - EXIT
 }
 
 if [[ ! -z $VVV_LOG ]]; then
