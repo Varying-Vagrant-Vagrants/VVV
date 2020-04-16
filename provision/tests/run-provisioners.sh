@@ -3,9 +3,9 @@
 . "/srv/provision/tests/provisioners.sh"
 
 pre_hook
-main
-dashboard
-utility_sources
+provision_main
+provision_dashboard
+provision_utility_sources
 provision_utilities
-sites
+provision_sites
 post_hook

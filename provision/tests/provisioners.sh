@@ -30,7 +30,7 @@ function post_hook() {
   fi
 }
 
-function dashboard() {
+function provision_dashboard() {
   local dashboard_repo=$(get_config_value "dashboard.repo" "https://github.com/Varying-Vagrant-Vagrants/dashboard.git")
   local dashboard_branch=$(get_config_value "dashboard.branch" "master")
 
@@ -38,7 +38,7 @@ function dashboard() {
   bash /srv/provision/provision-dashboard.sh "${dashboard_repo}" "${dashboard_branch}"
 }
 
-function utility_sources() {
+function provision_utility_sources() {
   local name=()
   local repo=()
   local branch=()
@@ -102,7 +102,7 @@ function provision_utility() {
   bash /srv/provision/provision-utility.sh "${group}" "${utility}"
 }
 
-function sites() {
+function provision_sites() {
   local sites=($(get_config_keys sites))
   local site
   for site in ${sites[@]}; do
@@ -125,7 +125,7 @@ function sites() {
   done
 }
 
-function main() {
+function provision_main() {
   # provision.sh or provision-custom.sh
   #
   # By default, Vagrantfile is set to use the provision.sh bash script located in the
