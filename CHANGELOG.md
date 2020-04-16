@@ -6,11 +6,10 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.3.1 ( 2020 )
+## 3.4.0 ( 2020 TBA )
 
 ### Enhancements
 
-* Improvements to the ruby code in the vagrant file
 * Improved the log folder names from `20200225-182126` to `2020.02.25-18-21-26`
 * Added a `switch_php_debugmod` to replace the `xdebug_on` `tideways_off` style scripts
 * Checks the default password for MySQL root user during provision
@@ -23,11 +22,20 @@ permalink: /docs/en-US/changelog/
 
 ### Bug Fixes
 
+* Always set the database root user password to avoid having the default invalid password on fresh installs
+* Don't spider and recurse domains when checking for network connections
+
+## 3.3.0 ( 2020 Feb 26th )
+
+### Enhancements
+
+* Improvements to the ruby code in the vagrant file
+
+### Bug Fixes
+
 * Installs the ntp date packages and starts the ntp service to fix time drift on sleep
 * Fixes an issue with the ntpsec package by removing it
 * Fixed the use of dots in site names breaking provisioning
-* Always set the database root user password to avoid having the default invalid password on fresh installs
-* Don't spider and recurse domains when checking for network connections
 
 ## 3.2.0 ( 2019 Nov 5th )
 
