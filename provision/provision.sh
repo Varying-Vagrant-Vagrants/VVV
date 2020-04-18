@@ -561,7 +561,7 @@ tools_install() {
   function install_grunt() {
     echo " * Installing Grunt CLI"
     npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional
-    hnpm_config_loglevel=error ack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
+    npm_config_loglevel=error hack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
     npm_config_loglevel=error npm install -g grunt-cssjanus --no-optional
     npm_config_loglevel=error npm install -g grunt-rtlcss --no-optional
     echo " * Installed Grunt CLI"
