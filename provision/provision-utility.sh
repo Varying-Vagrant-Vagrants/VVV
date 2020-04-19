@@ -5,7 +5,7 @@
 PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 
 if [[ -f $PROVISIONER ]]; then
-    ( source "${PROVISIONER}" )
+    ( bash "${PROVISIONER}" >> "${VVV_CURRENT_LOG_FILE}" )
     SUCCESS=$?
 	if [ "${SUCCESS}" -eq 0 ]; then
 		provisioner_success; exit;
