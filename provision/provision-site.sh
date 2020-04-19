@@ -157,7 +157,7 @@ function vvv_provision_site_repo() {
       echo -e " * Downloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
       git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
       if [ $? -eq 0 ]; then
-        echo " * ${SITE} Site Template clone succesful"
+        echo " * ${SITE} Site Template clone successful"
       else
         echo "${RED} ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
         echo "${RED} ! VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"

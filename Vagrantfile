@@ -111,7 +111,7 @@ if show_logo
   if File.directory?("#{vagrant_dir}/.git")
     git_or_zip = 'git::'
     branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
-    branch = branch.chomp("\n"); # remove trailing newline so it doesnt break the ascii art
+    branch = branch.chomp("\n"); # remove trailing newline so it doesn't break the ascii art
   end
 
   splashfirst = <<~HEREDOC
@@ -285,7 +285,7 @@ if show_logo
 
   if defined? vvv_config['vm_config']['box']
     unless vvv_config['vm_config']['box'].nil?
-      puts "Custom Box: Box overriden via config/config.yml , this won't take effect until a destroy + reprovision happens"
+      puts "Custom Box: Box overridden via config/config.yml , this won't take effect until a destroy + reprovision happens"
       platform << 'box_override:' + vvv_config['vm_config']['box']
     end
   end

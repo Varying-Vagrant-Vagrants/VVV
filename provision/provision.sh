@@ -123,7 +123,7 @@ if [[ $codename == "trusty" ]]; then
     echo -e "in a while, take the following steps:"
     echo -e " "
     echo -e " 1. downgrade back to VVV 2:             git fetch --tags && git checkout 2.6.0"
-    echo -e " 2. turn on the VM but dont provision:   vagrant up"
+    echo -e " 2. turn on the VM but don't provision:  vagrant up"
     echo -e " 3. run the backup DB script:            vagrant ssh -c \"db_backup\""
     echo -e " 4. turn off the VM:                     vagrant halt"
     echo -e " 5. return to VVV 3+:                    git checkout develop"
