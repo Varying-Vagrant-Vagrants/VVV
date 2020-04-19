@@ -6,7 +6,7 @@ set -eo pipefail
 enabled_mods=$(php -m)
 enabled_mods=${enabled_mods,,}
 
-# These PHPMods all interfere with each others in some way
+# These PHPMods all interfere with each other in some way
 phpmods=(
 	"xdebug"
 	"xhgui"
