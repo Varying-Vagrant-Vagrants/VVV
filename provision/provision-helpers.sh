@@ -17,6 +17,7 @@ if [[ -f /vagrant/config.yml ]]; then
 fi
 
 export VVV_CONFIG
+export VVV_CURRENT_LOG_FILE=""
 
 function containsElement () {
   declare -a array=(${2})
@@ -138,6 +139,7 @@ function log_to_file() {
 	# pipe to file
 	exec > >(tee -a "${logfile}" )
 	exec 2> >(tee -a "${logfile}" >&2 )
+	VVV_CURRENT_LOG_FILE="${logfile}"
 }
 export -f log_to_file
 
