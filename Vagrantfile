@@ -373,14 +373,14 @@ Vagrant.configure('2') do |config|
   end
 
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
-  unless Vagrant.has_plugin?('vagrant-hostmanager')
-    if File.file?(File.join(vagrant_dir, 'vagrant-hostmanager.gem'))
-      system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-hostmanager.gem'))
-      File.delete(File.join(vagrant_dir, 'vagrant-hostmanager.gem'))
-      puts "#{yellow}VVV has completed installing the vagrant-hostmanager plugins. Please run the requested command again.#{creset}"
+  unless Vagrant.has_plugin?('vagrant-hostsupdater')
+    if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
+      system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
+      File.delete(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
+      puts "#{yellow}VVV has completed installing the vagrant-hostsupdater plugins. Please run the requested command again.#{creset}"
       exit
     else
-      config.vagrant.plugins = ['vagrant-hostmanager']
+      config.vagrant.plugins = ['vagrant-hostsupdater']
     end
   end
 
