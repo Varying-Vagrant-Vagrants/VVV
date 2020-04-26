@@ -31,6 +31,14 @@ if [[ $PATH != *"/srv/www/phpcs/scripts"* ]]; then
 	export PATH="$PATH:/srv/www/phpcs/scripts"
 fi
 
+
+# Ruby Gems
+if [ -d "$HOME/.gem/bin" ] ; then
+  if [[ $PATH != *"${HOME}/.gem/bin"* ]]; then
+	  export PATH="$PATH:${HOME}/.gem/bin"
+  fi
+fi
+
 # Vagrant scripts
 if [[ $PATH != *"/srv/config/homebin"* ]]; then
 	export PATH="$PATH:/srv/config/homebin"
