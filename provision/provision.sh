@@ -200,6 +200,7 @@ apt_package_install_list=(
   colordiff
   postfix
   python-pip
+  lftp
 
   # ntp service to keep clock current
   ntp
