@@ -84,7 +84,7 @@ function network_check() {
     echo " "
     for i in "${hosts_to_test[@]}"; do
       local url="${i}"
-      if containsElement "${i}" failed_hosts[@]; then
+      if containsElement "${i}" "${failed_hosts}"; then
         echo -e "${CRESET} [${RED}x${CRESET}] ${url}${RED}"
       else
         echo -e "${CRESET} [${GREEN}✓${CRESET}] ${url}${RED}"
