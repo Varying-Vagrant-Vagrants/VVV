@@ -61,7 +61,6 @@ function network_check() {
   # outside access is available to us. Also check the mariadb
   declare -a hosts_to_test=(
     "https://ppa.launchpad.net"
-    "https://mirror.herrbischoff.com"
     "https://wordpress.org"
     "https://github.com"
     "https://raw.githubusercontent.com"
