@@ -20,6 +20,7 @@ permalink: /docs/en-US/changelog/
 * Added new bears to the various vagrant trigger scripts
 * Removed Ubuntu news MOTD
 * Support for vagrant-hostmanager
+* Bumped MariaDB sources from 10.3 to 10.4
 
 ### Bug Fixes
 
