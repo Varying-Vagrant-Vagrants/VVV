@@ -25,6 +25,7 @@ permalink: /docs/en-US/changelog/
 
 * Always set the database root user password to avoid having the default invalid password on fresh installs
 * Don't spider and recurse domains when checking for network connections
+* Swap the MariaDB apt mirror used for a more reliable source
 
 ## 3.3.0 ( 2020 Feb 26th )
 
