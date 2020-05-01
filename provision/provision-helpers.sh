@@ -65,6 +65,7 @@ function network_check() {
     "https://github.com"
     "https://raw.githubusercontent.com"
     "https://getcomposer.org"
+    "http://ams2.mirrors.digitalocean.com"
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
