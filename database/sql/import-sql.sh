@@ -48,6 +48,10 @@ then
 	pre_dot=${file%%.sql}
 	# get rid of the ./
   db_name=${pre_dot##./}
+	if [[ True == $(get_config_value "sites.${db_name}.skip_provisioning" "False") ]]; then
+		vvv_warn " * Skipping importing ${db_name} database"
+		continue
+	fi
 
 	echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
 	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
@@ -57,7 +61,7 @@ then
 	db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
 	if [ "$?" != "0" ]
 	then
-		echo " * Error - Create \`${db_name}\` database via init-custom.sql before attempting import"
+		vvv_error  " * Error - Create \`${db_name}\` database via init-custom.sql before attempting import"
 	else
 		if [ "" == "${db_exist}" ]
 		then
@@ -65,7 +69,7 @@ then
 			mysql -u root -proot "${db_name}" < "${db_name}.sql"
 			echo " * Import of \`${db_name}\` successful"
 		else
-			echo " * Skipped import of \`${db_name}\` - tables exist"
+			vvv_warn  " * Skipped import of \`${db_name}\` - tables exist"
 		fi
 	fi
 	done
