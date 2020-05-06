@@ -47,10 +47,18 @@ then
 	# get rid of the extension
 	pre_dot=${file%%.sql}
 	# get rid of the ./
-  db_name=${pre_dot##./}
-	if [[ True == $(get_config_value "sites.${db_name}.skip_provisioning" "False") ]]; then
-		vvv_warn " * Skipping importing ${db_name} database"
-		continue
+	db_name=${pre_dot##./}
+	db_configured=$(get_config_value "sites.${db_name}.db_name")
+	if [[ "False" == $db_configured ]]; then
+		if [[ True == $(get_config_value "sites.${db_name}.skip_provisioning" "False") ]]; then
+			vvv_warn " * Skipping importing ${db_name} database"
+			continue
+		fi
+	else
+		if [[ $file == $db_configured ]]; then
+			vvv_warn " * Skipping importing ${db_name} database"
+			continue
+		fi
 	fi
 
 	echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
