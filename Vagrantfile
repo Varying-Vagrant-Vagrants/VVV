@@ -266,6 +266,7 @@ if show_logo
 
   platform << 'vagrant-hostmanager' if Vagrant.has_plugin?('vagrant-hostmanager')
   platform << 'vagrant-hostsupdater' if Vagrant.has_plugin?('vagrant-hostsupdater')
+  platform << 'vagrant-goodhosts' if Vagrant.has_plugin?('vagrant-goodhosts')
   platform << 'vagrant-vbguest' if Vagrant.has_plugin?('vagrant-vbguest')
   platform << 'vagrant-disksize' if Vagrant.has_plugin?('vagrant-disksize')
 
@@ -708,7 +709,7 @@ Vagrant.configure('2') do |config|
                       args: [
                         vvv_config['dashboard']['repo'],
                         vvv_config['dashboard']['branch']
-                      ], 
+                      ],
                       env: { "VVV_LOG" => "dashboard" }
 
   vvv_config['utility-sources'].each do |name, args|
@@ -720,7 +721,7 @@ Vagrant.configure('2') do |config|
                           name,
                           args['repo'].to_s,
                           args['branch']
-                        ], 
+                        ],
                         env: { "VVV_LOG" => "utility-source-#{name}" }
   end
 
@@ -787,12 +788,12 @@ Vagrant.configure('2') do |config|
     config.hostmanager.manage_guest = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
-  elsif defined?(VagrantPlugins::HostsUpdater)
+  elsif defined?(VagrantPlugins::HostsUpdater) || defined?(VagrantPlugins::GoodHosts)
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
   else
-    puts "! Neither the HostManager or HostsUpdater plugins are installed!!! Domains won't work without one of these plugins!"
+    puts "! Neither the HostManager, GoodHosts or HostsUpdater plugins are installed!!! Domains won't work without one of these plugins!"
     puts "Run vagrant plugin install vagrant-hostmanager then try again."
   end
 
