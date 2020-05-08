@@ -788,7 +788,10 @@ Vagrant.configure('2') do |config|
     config.hostmanager.manage_guest = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
-  elsif defined?(VagrantPlugins::HostsUpdater) || defined?(VagrantPlugins::GoodHosts)
+  elsif defined?(VagrantPlugins::GoodHosts)
+    config.goodhosts.aliases = vvv_config['hosts']
+    config.goodhosts.remove_on_suspend = true
+  elsif defined?(VagrantPlugins::HostsUpdater)
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
