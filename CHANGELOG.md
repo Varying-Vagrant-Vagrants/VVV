@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Cleaned up leftover `nvm` removal code from main provisioner ( #2185 )
+* Support for new plugin `vagrant-goodhosts` to replace in the future `vagrant-hostsupdater`
 
 ### Bug Fixes
 
