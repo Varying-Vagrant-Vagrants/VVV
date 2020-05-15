@@ -375,13 +375,13 @@ Vagrant.configure('2') do |config|
 
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
   unless Vagrant.has_plugin?('vagrant-hostsupdater') && Vagrant.has_plugin?('vagrant-goodhosts') && Vagrant.has_plugin?('vagrant-hostsmanager')
-    if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
-      system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
-      File.delete(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
-      puts "#{yellow}VVV has completed installing the vagrant-hostsupdater plugins. Please run the requested command again.#{creset}"
+    if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
+      system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
+      File.delete(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
+      puts "#{yellow}VVV has completed installing the vagrant-goodhosts plugins. Please run the requested command again.#{creset}"
       exit
     else
-      config.vagrant.plugins = ['vagrant-hostsupdater']
+      config.vagrant.plugins = ['vagrant-goodhosts']
     end
   end
 
@@ -772,7 +772,7 @@ Vagrant.configure('2') do |config|
 
   # Local Machine Hosts
   #
-  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+  # If the Vagrant plugin goodhosts (https://github.com/Mte90/vagrant-goodhosts/) is
   # installed, the following will automatically configure your local machine's hosts file to
   # be aware of the domains specified below. Watch the provisioning script as you may need to
   # enter a password for Vagrant to access your hosts file.
@@ -781,17 +781,17 @@ Vagrant.configure('2') do |config|
   # located in the www/ directory and in config/config.yml.
   #
 
-  if defined?(VagrantPlugins::HostManager)
+  if Vagrant.has_plugin?('vagrant-goodhosts')
+    config.goodhosts.aliases = vvv_config['hosts']
+    config.goodhosts.remove_on_suspend = true
+  elsif Vagrant.has_plugin?('vagrant-hostsmanager')
     config.hostmanager.aliases = vvv_config['hosts']
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
     config.hostmanager.manage_guest = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
-  elsif defined?(VagrantPlugins::GoodHosts)
-    config.goodhosts.aliases = vvv_config['hosts']
-    config.goodhosts.remove_on_suspend = true
-  elsif defined?(VagrantPlugins::HostsUpdater)
+  elsif Vagrant.has_plugin?('vagrant-hostsupdater')
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
