@@ -419,6 +419,9 @@ package_install() {
     apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
   fi
 
+  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+  rm /var/lib/dpkg/lock*
+  
   # Update all of the package references before installing anything
   echo " * Running apt-get update..."
   apt-get -y update
