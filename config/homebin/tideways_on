@@ -1,0 +1,3 @@
+#!/bin/bash
+
+switch_php_debugmod tideways

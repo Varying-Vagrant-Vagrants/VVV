@@ -18,53 +18,58 @@
 #
 # Let's begin...
 
-VVV_CONFIG=/vagrant/vvv-config.yml
-if [[ -f /vagrant/vvv-custom.yml ]]; then
-	VVV_CONFIG=/vagrant/vvv-custom.yml
+VVV_CONFIG=/srv/config/default-config.yml
+if [[ -f /srv/config/config.yml ]]; then
+	VVV_CONFIG=/srv/config/config.yml
 fi
 
-run_restore=`cat ${VVV_CONFIG} | shyaml get-value general.db_restore 2> /dev/null`
+run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
 
 if [[ $run_restore == "False" ]]
 then
-	echo "Skipping DB import script, disabled via the VVV config file\n"
+	echo " * Skipping DB import script, disabled via the VVV config file"
 	exit;
 fi
 
 # Move into the newly mapped backups directory, where mysqldump(ed) SQL files are stored
-printf "\nStarting MariaDB Database Import\n"
+echo " * Starting MariaDB Database Import"
+# create the backup folder if it doesn't exist
+mkdir -p /srv/database/backups
 cd /srv/database/backups/
 
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
-sql_count=`ls -1 *.sql 2>/dev/null | wc -l`
-if [ $sql_count != 0 ]
+sql_count=$(ls -1 ./*.sql 2>/dev/null | wc -l)
+if [ "$sql_count" != 0 ]
 then
-	for file in $( ls *.sql )
+	for file in $( ls ./*.sql )
 	do
+	# get rid of the extension
 	pre_dot=${file%%.sql}
+	# get rid of the ./
+  db_name=${pre_dot##./}
 
-	printf " * Creating the ${pre_dot} table if it doesn't already exist, and granting the wp user access"
-	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`$pre_dot\`"
-	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`$pre_dot\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+	echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
+	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
+	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
-	mysql_cmd='SHOW TABLES FROM `'$pre_dot'`' # Required to support hypens in database names
-	db_exist=`mysql -u root -proot --skip-column-names -e "$mysql_cmd"`
+	mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
+	db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
 	if [ "$?" != "0" ]
 	then
-		printf "  * Error - Create ${pre_dot} database via init-custom.sql before attempting import\n\n"
+		echo " * Error - Create \`${db_name}\` database via init-custom.sql before attempting import"
 	else
-		if [ "" == "$db_exist" ]
+		if [ "" == "${db_exist}" ]
 		then
-			printf "mysql -u root -proot ${pre_dot} < ${pre_dot}.sql\n"
-			mysql -u root -proot ${pre_dot} < ${pre_dot}.sql
-			printf "  * Import of ${pre_dot} successful\n"
+			echo "mysql -u root -proot \"${db_name}\" < \"${db_name}.sql\""
+			mysql -u root -proot "${db_name}" < "${db_name}.sql"
+			echo " * Import of \`${db_name}\` successful"
 		else
-			printf "  * Skipped import of ${pre_dot} - tables exist\n"
+			echo " * Skipped import of \`${db_name}\` - tables exist"
 		fi
 	fi
 	done
-	printf "Databases imported\n"
+	echo " * Databases imported"
 else
-	printf "No custom databases to import\n"
+	echo " * No custom databases to import"
 fi

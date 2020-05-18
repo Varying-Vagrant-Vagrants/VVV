@@ -1,10 +1,10 @@
 #!/bin/bash
-sudo phpdismod tideways_xhprof
-sudo phpdismod xhgui
-sudo phpenmod xdebug
 
-find /etc/init.d/ -name "php*-fpm" -exec bash -c 'echo "Restarting $(basename "$0" ) " && sudo service "$(basename "$0")" restart' {} \;
+switch_php_debugmod xdebug
 
 # Ensure the log file for xdebug is group writeable.
+echo "Making sure log/php/xdebug-remote.log is readable and present"
 sudo touch /var/log/php/xdebug-remote.log
 sudo chmod 664 /var/log/php/xdebug-remote.log
+
+echo "XDebug enabled! Note that XDebug doesn't always support the newest version of PHP immediately, check the XDebug site for more details"

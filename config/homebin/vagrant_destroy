@@ -11,10 +11,10 @@ if [[ -f /srv/config/homebin/vagrant_destroy_custom ]]; then
 	echo "Executing vagrant_destroy_custom"
 	/srv/config/homebin/vagrant_destroy_custom
 else
-    # Load vvv-config.yml
-    VVV_CONFIG=/vagrant/vvv-config.yml
-    if [[ -f /vagrant/vvv-custom.yml ]]; then
-        VVV_CONFIG=/vagrant/vvv-custom.yml
+    # Load config.yml
+    VVV_CONFIG=/srv/config/default-config.yml
+    if [[ -f /srv/config/config.yml ]]; then
+        VVV_CONFIG=/srv/config/config.yml
     fi
 
     # Check if backups are turned on or off
@@ -24,4 +24,14 @@ else
     then
 	    /srv/config/homebin/db_backup
     fi
+
+    echo ""
+    echo -e "         !!!  "
+    echo -e "   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                  __ __ __ __"
+    echo -e "   █▒▒░░░░░░░░░▒▒█    Farewell      \ V\ V\ V /"
+    echo -e "    █░░X░░░░░X░░█     virtual world  \_/\_/\_/"
+    echo -e "     █░░░▀█▀░░░█   "
+    echo -e " ▄▄  ▀▄░░░░░░░▄▀ ▄▄   Don't forget to make a new teddy bear"
+    echo -e "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  with vagrant up --provision"
+    echo -e "\033[0m"
 fi

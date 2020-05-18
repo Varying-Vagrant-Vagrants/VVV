@@ -12,6 +12,7 @@ Icon\r\r
 # This is a file intended for hooking in a custom Vagrant configuration on up
 /Customfile
 /vvv-custom.yml
+/config/config.yml
 
 # Allow for custom provisioning scripts that are not included with the repo
 /provision/provision-custom.sh
@@ -42,6 +43,9 @@ Icon\r\r
 
 # Ignore downloaded wp-cli bash completions
 /config/wp-cli/wp-completion.bash
+
+# ignore the tideways custom config
+/config/tideways.json
 
 # No need to share our mysql data with each other
 /database/data/*

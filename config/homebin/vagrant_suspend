@@ -11,10 +11,10 @@ if [[ -f /srv/config/homebin/vagrant_suspend_custom ]]; then
 	echo "Executing vagrant_suspend_custom"
 	/srv/config/homebin/vagrant_suspend_custom
 else
-    # Load vvv-config.yml
-    VVV_CONFIG=/vagrant/vvv-config.yml
-    if [[ -f /vagrant/vvv-custom.yml ]]; then
-        VVV_CONFIG=/vagrant/vvv-custom.yml
+    # Load config.yml
+    VVV_CONFIG=/srv/config/default-config.yml
+    if [[ -f /srv/config/config.yml ]]; then
+        VVV_CONFIG=/srv/config/config.yml
     fi
 
     # Check if backups are turned on or off
@@ -24,4 +24,19 @@ else
     then
 	    /srv/config/homebin/db_backup
     fi
+
+    RED="\033[38;5;9m"
+    GREEN="\033[01;32m"
+    BLUE="\033[38;5;4m"
+    CYAN="\033[38;5;6m"
+    CRESET="\033[0m"
+
+    echo -e " "
+    echo -e "${CYAN}❄   ❄   brrrr    ❄     ❅             ❄"
+    echo -e "${CYAN} ❆ ▄▀▀▀▄▄▄▄▄❆▄▀▀▀▄ ❄       ❄      __ __ __❅__"
+    echo -e "${CYAN}  ✧█▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
+    echo -e "${CYAN}❄   █░░█░░░░░█░░█ ❅   using  ❆     \_/\_/\_/"
+    echo -e "${CYAN} ▄▄❆ █░░░▀█▀░░░█❆ ▄▄✧  ❅        ❄       ❅"
+    echo -e "${CYAN}█░░█ ▀▄░░░░░░░▄▀ █░░█ Entering stasis! Run vagrant resume to thaw${CRESET}"
+    echo -e "${CRESET}"
 fi
