@@ -35,6 +35,7 @@ export COMPOSER_NO_INTERACTION=1
 
 # cleanup
 mkdir -p /vagrant
+rm -rf /vagrant/failed_provisioners
 mkdir -p /vagrant/failed_provisioners
 
 rm -f /vagrant/provisioned_at
