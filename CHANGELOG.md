@@ -10,24 +10,31 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
-* Improved the log folder names from `20200225-182126` to `2020.02.25-18-21-26`
-* Added a `switch_php_debugmod` to replace the `xdebug_on` `tideways_off` style scripts
-* Checks the default password for MySQL root user during provision
-* Improved the provider examples in `default-config.yml`
-* Improved network checks to test more domains
-* ack-grep is now installed via `apt` rather than `beyondgrep.com`
-* Run rubocop on Vagrantfile in a move towards more idiomatic ruby
-* Added new bears to the various vagrant trigger scripts
-* Removed Ubuntu news MOTD
-* Support for vagrant-hostmanager
-* Bumped MariaDB sources from 10.3 to 10.4
+* Improved the log folder names from `20200225-182126` to `2020.02.25-18-21-26` ( #2078 )
+* Added a `switch_php_debugmod` to replace the `xdebug_on` `tideways_off` style scripts ( #2084 )
+* Checks the default password for MySQL root user during provision ( #2077, #2085 )
+* Remove NVM support entirely ( #2088 )
+* Improved the provider examples in `default-config.yml` ( #2091 )
+* Run rubocop on Vagrantfile in a move towards more idiomatic ruby ( #2093 )
+* Improved network checks to test more domains ( #2099 )
+* ack-grep is now installed via `apt` rather than `beyondgrep.com` ( #2100 )
+* Refactor site provisioners ( #2102 )
+* Added new bears to the various vagrant trigger scripts ( #2105, #2108 )
+* Removed Ubuntu news MOTD ( #2105 )
+* Improve network checks wording ( #2106 )
+* Support for vagrant-hostmanager ( #2112 )
+* Bumped MariaDB sources from 10.3 to 10.4 ( #2140 )
+* Improve compatibility with globally installed gems on the guest ( #2138 )
+* Add LFTP tool ( #2137 )
 
 ### Bug Fixes
 
-* Always set the database root user password to avoid having the default invalid password on fresh installs
-* Don't spider and recurse domains when checking for network connections
-* Swap the MariaDB apt mirror used for a more reliable source
-* Fixed an issue with the dpkg lock file not being cleaned up sometimes
+* Fix check for utility installed that prevented SSL certificates to be generated ( #2073 )
+* Fix SSL issue on the base Ubuntu image ( #2074 )
+* Don't spider and recurse domains when checking for network connections ( #2103 )
+* Always set the database root user password to avoid having the default invalid password on fresh installs ( #2104 )
+* Swap the MariaDB apt mirror used for a more reliable source ( partially #2140 and in a217369 )
+* Fixed an issue with the dpkg lock file not being cleaned up sometimes ( #2151 )
 
 ## 3.3.0 ( 2020 Feb 26th )
 
