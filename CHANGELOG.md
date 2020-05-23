@@ -35,7 +35,7 @@ permalink: /docs/en-US/changelog/
 * Always set the database root user password to avoid having the default invalid password on fresh installs ( #2104 )
 * Swap the MariaDB apt mirror used for a more reliable source ( partially #2140 and in a217369 )
 * Fixed an issue with the dpkg lock file not being cleaned up sometimes ( #2151 )
-* Fix issues with the bear reporting failed provisioners when everything seem to have gone ok ( #2161 )
+* Fix issues with the sad bear showing at the end of provisioning despite provisioners being succesful( #2161 )
 
 ## 3.3.0 ( 2020 Feb 26th )
 
