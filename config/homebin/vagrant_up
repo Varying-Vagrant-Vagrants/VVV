@@ -48,7 +48,7 @@ else
 	echo -e "${RED}                      If that fails, go to the VVV Slack or open an issue"
 	echo -e "${RED}                      on GitHub. Logs are in the logs/provisioners folder."
 	echo -e "${RED}"
-	echo -e "${RED}   Logs relevant to this:"
+	echo -e "${RED}   The failed provisioners left these logs:"
 	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" echo -e "   * ${date_time}/LOGFILE.log"
 	echo -e "${CRESET}"
 fi
