@@ -26,6 +26,7 @@ permalink: /docs/en-US/changelog/
 * Bumped MariaDB sources from 10.3 to 10.4 ( #2140 )
 * Improve compatibility with globally installed gems on the guest ( #2138 )
 * Add LFTP tool ( #2137 )
+* List relevant log files when provisioners fail ( #2161 )
 
 ### Bug Fixes
 
@@ -35,7 +36,7 @@ permalink: /docs/en-US/changelog/
 * Always set the database root user password to avoid having the default invalid password on fresh installs ( #2104 )
 * Swap the MariaDB apt mirror used for a more reliable source ( partially #2140 and in a217369 )
 * Fixed an issue with the dpkg lock file not being cleaned up sometimes ( #2151 )
-* Fix issues with the sad bear showing at the end of provisioning despite provisioners being succesful( #2161 )
+* Fix issues with the sad bear showing at the end of provisioning despite provisioners being succesful ( #2161 )
 
 ## 3.3.0 ( 2020 Feb 26th )
 
