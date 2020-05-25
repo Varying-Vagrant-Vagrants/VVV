@@ -420,6 +420,7 @@ package_install() {
   fi
 
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+  echo " * Cleaning up dpkg lock file"
   rm /var/lib/dpkg/lock*
   
   # Update all of the package references before installing anything
@@ -435,7 +436,7 @@ package_install() {
   fi
 
   # Remove unnecessary packages
-  echo " * Removing unnecessary packages..."
+  echo " * Removing unnecessary apt packages..."
   apt-get autoremove -y
 
   # Clean up apt caches
