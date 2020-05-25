@@ -659,9 +659,10 @@ Vagrant.configure('2') do |config|
   # Note that if you find yourself using a Customfile for anything crazy or specifying
   # different provisioning, then you may want to consider a new Vagrantfile entirely.
   if File.exist?(File.join(vagrant_dir, 'Customfile'))
-    puts "Running Custom Vagrant file with additional vagrant configs at #{File.join(vagrant_dir, 'Customfile')}\n\n"
+    puts " ⚠ ! Running additional Vagrant code in Customfile located at #{File.join(vagrant_dir, 'Customfile')}\n"
+    puts " ⚠ ! Official support is not provided for this feature, it is assumed you are proficient with vagrant\n\n"
     eval(IO.read(File.join(vagrant_dir, 'Customfile')), binding)
-    puts "Finished running Custom Vagrant file with additional vagrant configs, resuming normal vagrantfile execution\n\n"
+    puts " ⚠ ! Finished running Customfile, resuming normal vagrantfile execution\n\n"
   end
 
   vvv_config['sites'].each do |site, args|
@@ -669,8 +670,10 @@ Vagrant.configure('2') do |config|
 
     paths = Dir[File.join(args['local_dir'], '**', 'Customfile')]
     paths.each do |file|
-      puts "Running additional site vagrant customfile at #{file}\n\n"
+      puts " ⚠ ! Running additional site customfile at #{file}\n"
+      puts " ⚠ ! Official support is not provided for this feature.\n\n"
       eval(IO.read(file), binding)
+      puts " ⚠ ! Finished running Customfile, resuming normal vagrantfile execution\n\n"
     end
   end
 
