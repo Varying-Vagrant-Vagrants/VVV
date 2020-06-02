@@ -32,9 +32,9 @@ function provisioner_end() {
     echo -e "------------------------------------------------------------------------------------"
     rm -f "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   else
-    echo -e "------------------------------------------------------------------------------------"
-    vvv_error " ! The '${VVV_PROVISIONER_RUNNING}' provisioner ran into problems, check the full log for more details! It completed in ${elapsed} seconds."
-    echo -e "------------------------------------------------------------------------------------"
+    >&2 echo -e "------------------------------------------------------------------------------------"
+    >&2 vvv_error " ! The '${VVV_PROVISIONER_RUNNING}' provisioner ran into problems, check the full log for more details! It completed in ${elapsed} seconds."
+    >&2 echo -e "------------------------------------------------------------------------------------"
   fi
   echo ""
   trap - EXIT
