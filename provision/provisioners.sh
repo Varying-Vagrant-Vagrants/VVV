@@ -1,9 +1,11 @@
 #!/bin/bash
 
+# don't allow inclusion of this file more than once
 if ( type provisioner_begin &>/dev/null ); then
 	return
 fi
 
+# backup original file descriptors
 exec 6>&1
 exec 7>&2
 
