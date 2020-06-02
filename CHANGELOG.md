@@ -37,6 +37,7 @@ permalink: /docs/en-US/changelog/
 * Swap the MariaDB apt mirror used for a more reliable source ( partially #2140 and in a217369 )
 * Fixed an issue with the dpkg lock file not being cleaned up sometimes ( #2151 )
 * Fix issues with the sad bear showing at the end of provisioning despite provisioners being succesful ( #2161 )
+* Fix provisioners printing all output to console (not just errors) ( #2174 )
 
 ## 3.3.0 ( 2020 Feb 26th )
 
