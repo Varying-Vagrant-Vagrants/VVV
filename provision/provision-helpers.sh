@@ -137,8 +137,8 @@ function log_to_file() {
 	exec 1>&6
 	exec 2>&7
 	# pipe to file
-	exec > >(tee -a "${logfile}" )
-	exec 2> >(tee -a "${logfile}" >&2 )
+	exec > >( tee -a "${logfile}" >/dev/null ) # stdout should not go to the console
+	exec 2> >( tee -a "${logfile}" >&2 )
 	VVV_CURRENT_LOG_FILE="${logfile}"
 }
 export -f log_to_file
