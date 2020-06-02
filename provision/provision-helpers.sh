@@ -133,7 +133,7 @@ function log_to_file() {
 	local logfile="${logfolder}/${1}.log"
 	mkdir -p "${logfolder}"
 	touch "${logfile}"
-	# reset output otherwise it will log to previous files
+	# reset output otherwise it will log to previous files. from backup made in provisioners.sh
 	exec 1>&6
 	exec 2>&7
 	# pipe to file
