@@ -137,7 +137,11 @@ function log_to_file() {
 	exec 1>&6
 	exec 2>&7
 	# pipe to file
-	exec > >( tee -a "${logfile}" >/dev/null ) # stdout should not go to the console
+	if [[ "${1}" == "provisioner-main" ]]; then
+		exec > >( tee -a "${logfile}" ) # main provisioner outputs everything
+	else
+		exec > >( tee -a "${logfile}" >/dev/null ) # others, only stderr
+	fi
 	exec 2> >( tee -a "${logfile}" >&2 )
 	VVV_CURRENT_LOG_FILE="${logfile}"
 }
