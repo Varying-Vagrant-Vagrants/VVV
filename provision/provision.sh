@@ -296,9 +296,9 @@ profile_setup() {
   rm -f "/home/vagrant/.bash_aliases"
   noroot cp -f "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
 
-  echo " * Copying /srv/config/bash_aliases                      to $HOME/.bash_aliases"
-  rm -f "$HOME/.bash_aliases"
-  cp -f "/srv/config/bash_aliases" "$HOME/.bash_aliases"
+  echo " * Copying /srv/config/bash_aliases                      to ${HOME}/.bash_aliases"
+  rm -f "${HOME}/.bash_aliases"
+  cp -f "/srv/config/bash_aliases" "${HOME}/.bash_aliases"
 
   echo " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
   rm -f "/home/vagrant/.vimrc"
@@ -323,9 +323,9 @@ profile_setup() {
     noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
 
-  echo " * Copying /srv/config/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
+  echo " * Copying /srv/config/ssh_known_hosts                   to /etc/ssh/ssh_known_hosts"
   cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
-  echo " * Copying /srv/config/sshd_config to /etc/ssh/sshd_config"
+  echo " * Copying /srv/config/sshd_config                       to /etc/ssh/sshd_config"
   cp -f /srv/config/sshd_config /etc/ssh/sshd_config
   echo " * Reloading SSH Daemon"
   systemctl reload ssh
@@ -356,7 +356,6 @@ package_install() {
     echo " * adding the mysql user"
     useradd -u 9001 -g mysql -G vboxsf -r mysql
   fi
-  id mysql
 
   mkdir -p "/etc/mysql/conf.d"
   echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"

@@ -152,6 +152,14 @@ function noroot() {
 }
 export -f noroot
 
+function vvv_info() {
+  echo -e "${CRESET}${1}${CRESET}"
+  if [ "${VVV_LOG}" != "main" ]; then
+    >&6 echo -e "${CRESET}${1}${CRESET}"
+  fi
+}
+export -f vvv_info
+
 function vvv_error() {
 	echo -e "${RED}${1}${CRESET}"
 }
@@ -159,11 +167,17 @@ export -f vvv_error
 
 function vvv_warn() {
 	echo -e "${YELLOW}${1}${CRESET}"
+  if [ "${VVV_LOG}" != "main" ]; then
+  	>&6 echo -e "${YELLOW}${1}${CRESET}"
+  fi
 }
 export -f vvv_warn
 
 function vvv_success() {
 	echo -e "${GREEN}${1}${CRESET}"
+  if [ "${VVV_LOG}" != "main" ]; then
+  	>&6 echo -e "${GREEN}${1}${CRESET}"
+  fi
 }
 export -f vvv_success
 
