@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.4.1 ( 2020 June )
+## 3.4.1 ( 2020 June 4th )
 
 ### Enhancements
 
