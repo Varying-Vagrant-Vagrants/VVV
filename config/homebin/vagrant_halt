@@ -20,8 +20,22 @@ else
     # Check if backups are turned on or off
     run_backups=`cat ${VVV_CONFIG} | shyaml get-value general.db_backup 2> /dev/null`
 
-    if [[ $run_backups != "False" ]]
-    then
+    if [[ $run_backups != "False" ]]; then
 	    /srv/config/homebin/db_backup
     fi
+    RED="\033[38;5;9m"
+    GREEN="\033[01;32m"
+    BLUE="\033[38;5;4m"
+    CYAN="\033[38;5;6m"
+    CRESET="\033[0m"
+    URL="\033[4;38;5;3m"
+
+    echo -e "${BLUE}   .  ★         ☁           ★          ."
+    echo -e "${BLUE}Z        ☽    ★         .        ☁"
+    echo -e "${BLUE} Z ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄   ★            __★__ __ __"
+    echo -e "${BLUE}☁ z█▒▒░░░░░░░░░▒▒█    Sleep tight \ V\ V\ V /"
+    echo -e "${BLUE} ★  █░░▁░░░░░▁░░█  ★               \_/\_/\_/"
+    echo -e "${BLUE}   . █░░░▀█▀░░░█ .          ★"
+    echo -e "${BLUE} ★   ▀▄░░░░░░░▄▀  ★     ."
+    echo -e "${CRESET}"
 fi

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# Grab the currently active PHP mods, and lowercase it for comparison
+enabled_mods=$(php -m)
+enabled_mods=${enabled_mods,,}
+
+# These PHPMods all interfere with each other in some way
+phpmods=(
+	"xdebug"
+	"xhgui"
+	"tideways_xhprof"
+	"pcov"
+)
+
+# The mod that the user wants enabled, `none` for vanilla PHP
+mod=${1:-none}
+mod=${mod,,}
+
+disable_phpmods() {
+	# declare that our first param is an array
+	declare -a mods=("${!1}")
+
+	# Take the mods array and turn it into a commar separated list
+	local mods_joined=$(printf ", %s" "${mods[@]}")
+	mods_joined=${mods_joined:1}
+	mods_joined="${mods_joined#"${mods_joined%%[![:space:]]*}"}"
+	echo " * Disabling if present: '${mods_joined}'"
+
+	for i in "${mods[@]}"
+	do
+		if [[ ${enabled_mods,,} == *"${i}"* ]]; then
+			echo " * Disabling active module: '${i}'"
+			sudo phpdismod "${i}"
+		fi
+	done
+}
+
+enable_phpmod() {
+	echo " * Enabling '${1}'"
+	sudo phpenmod "${1}"
+}
+
+restart_phpfpm() {
+	echo " * Restarting PHP FPM's so the change takes effect"
+	find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+}
+
+echo " * Disabling active debug PHP mods"
+disable_phpmods phpmods[@]
+
+if [[ "${mod}" == "none" ]]; then
+	restart_phpfpm
+	exit 0
+fi
+
+
+# Tideways needs 2 mods enabling
+if [[ "${mod}" == "tideways" ]]; then
+	enable_phpmod "xhgui"
+	enable_phpmod "tideways_xhprof"
+	restart_phpfpm
+	exit 0
+fi
+
+enable_phpmod "${mod}"
+restart_phpfpm

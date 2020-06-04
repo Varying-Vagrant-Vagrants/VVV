@@ -7,16 +7,26 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-GREEN="\033[38;5;2m"
-RED="\033[38;5;9m"
-CRESET="\033[0m"
-
-# By storing the date now, we can calculate the duration of provisioning at the
-# end of this script.
-start_seconds="$(date +%s)"
-
 # fix no tty warnings in provisioner logs
 sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
+
+# add homebin to secure_path setting for sudo, clean first and then append at the end
+sed -i -E \
+  -e "s|:/srv/config/homebin||" \
+  -e "s|/srv/config/homebin:||" \
+  -e "s|(.*Defaults.*secure_path.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
+  /etc/sudoers
+
+# add homebin to the default environment, clean first and then append at the end
+sed -i -E \
+  -e "s|:/srv/config/homebin||" \
+  -e "s|/srv/config/homebin:||" \
+  -e "s|(.*PATH.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
+  /etc/environment
+
+# source bash_aliases before anything else so that PATH is properly configured on
+# this shell session
+. "/srv/config/bash_aliases"
 
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
@@ -25,9 +35,8 @@ export COMPOSER_NO_INTERACTION=1
 
 # cleanup
 mkdir -p /vagrant
-
-# change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
+rm -rf /vagrant/failed_provisioners
+mkdir -p /vagrant/failed_provisioners
 
 rm -f /vagrant/provisioned_at
 rm -f /vagrant/version
@@ -35,32 +44,28 @@ rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
 touch /vagrant/provisioned_at
-echo $(date "+%Y%m%d-%H%M%S") > /vagrant/provisioned_at
+echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-main.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
+# copy over version and config files
+cp -f /home/vagrant/version /vagrant
+cp -f /srv/config/config.yml /vagrant
 
-echo -e "${GREEN} * Beginning Main VVV Provisioner, if this is the first provision this may take a few minutes${CRESET}"
+sudo chmod 0644 /vagrant/config.yml
+sudo chmod 0644 /vagrant/version
+sudo chmod 0644 /vagrant/provisioned_at
+
+# change ownership for /vagrant folder
+sudo chown -R vagrant:vagrant /vagrant
+
+export VVV_CONFIG=/vagrant/config.yml
+
+# initialize provisioner helpers a bit later
+. "/srv/provision/provisioners.sh"
 
 if [ -d /srv/provision/resources ]; then
   echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
   rm -rf /srv/provision/resources ## remove deprecated folder
 fi
-
-# copy over version and config files
-cp -f /home/vagrant/version /vagrant
-cp -f /srv/config/config.yml /vagrant
-VVV_CONFIG=/vagrant/config.yml
-
-
-sudo chmod 0644 /vagrant/config.yml
-sudo chmod 0644 /vagrant/version
-sudo chmod 0644 /vagrant/provisioned_at
 
 # symlink the certificates folder for older site templates compat
 if [[ ! -d /vagrant/certificates ]]; then
@@ -107,7 +112,7 @@ if [[ $codename == "trusty" ]]; then
     echo -e "in a while, take the following steps:"
     echo -e " "
     echo -e " 1. downgrade back to VVV 2:             git fetch --tags && git checkout 2.6.0"
-    echo -e " 2. turn on the VM but dont provision:   vagrant up"
+    echo -e " 2. turn on the VM but don't provision:  vagrant up"
     echo -e " 3. run the backup DB script:            vagrant ssh -c \"db_backup\""
     echo -e " 4. turn off the VM:                     vagrant halt"
     echo -e " 5. return to VVV 3+:                    git checkout develop"
@@ -128,8 +133,6 @@ if [[ $codename == "trusty" ]]; then
   echo -e " "
   exit 1
 fi
-
-source /srv/provision/provision-network-functions.sh
 
 # PACKAGE INSTALLATION
 #
@@ -198,6 +201,7 @@ apt_package_install_list=(
   colordiff
   postfix
   python-pip
+  lftp
 
   # ntp service to keep clock current
   ntp
@@ -243,10 +247,6 @@ git_ppa_check() {
   fi
 }
 
-noroot() {
-  sudo -EH -u "vagrant" "$@";
-}
-
 cleanup_terminal_splash() {
   # Dastardly Ubuntu tries to be helpful and suggest users update packages
   # themselves, but this can break things
@@ -255,6 +255,9 @@ cleanup_terminal_splash() {
   fi
   if [[ -f /etc/update-motd.d/10-help-text ]]; then
     rm /etc/update-motd.d/10-help-text
+  fi
+  if [[ -f /etc/update-motd.d/50-motd-news ]]; then
+    rm /etc/update-motd.d/50-motd-news
   fi
   if [[ -f /etc/update-motd.d/51-cloudguest ]]; then
     rm /etc/update-motd.d/51-cloudguest
@@ -277,7 +280,7 @@ cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/98-cloudguest ]]; then
     rm /etc/update-motd.d/98-cloudguest
   fi
-  cp "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
+  cp -f "/srv/config/update-motd.d/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
   chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
@@ -293,10 +296,9 @@ profile_setup() {
   rm -f "/home/vagrant/.bash_aliases"
   noroot cp -f "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
 
-  echo " * Copying /srv/config/bash_aliases                      to $HOME/.bash_aliases"
-  rm -f "$HOME/.bash_aliases"
-  cp -f "/srv/config/bash_aliases" "$HOME/.bash_aliases"
-  . "$HOME/.bash_aliases"
+  echo " * Copying /srv/config/bash_aliases                      to ${HOME}/.bash_aliases"
+  rm -f "${HOME}/.bash_aliases"
+  cp -f "/srv/config/bash_aliases" "${HOME}/.bash_aliases"
 
   echo " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
   rm -f "/home/vagrant/.vimrc"
@@ -321,35 +323,12 @@ profile_setup() {
     noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
 
-  echo " * Copying /srv/config/ssh_known_hosts to /etc/ssh/ssh_known_hosts"
+  echo " * Copying /srv/config/ssh_known_hosts                   to /etc/ssh/ssh_known_hosts"
   cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
-  echo " * Copying /srv/config/sshd_config to /etc/ssh/sshd_config"
+  echo " * Copying /srv/config/sshd_config                       to /etc/ssh/sshd_config"
   cp -f /srv/config/sshd_config /etc/ssh/sshd_config
   echo " * Reloading SSH Daemon"
   systemctl reload ssh
-}
-
-not_installed() {
-  dpkg -s "$1" 2>&1 | grep -q 'Version:'
-  if [[ "$?" -eq 0 ]]; then
-    apt-cache policy "$1" | grep 'Installed: (none)'
-    return "$?"
-  else
-    return 0
-  fi
-}
-
-print_pkg_info() {
-  local pkg="$1"
-  local pkg_version="$2"
-  local space_count
-  local pack_space_count
-  local real_space
-
-  space_count="$(( 20 - ${#pkg} ))" #11
-  pack_space_count="$(( 30 - ${#pkg_version} ))"
-  real_space="$(( space_count + pack_space_count + ${#pkg_version} ))"
-  printf " * $pkg %${real_space}.${#pkg_version}s ${pkg_version}\n"
 }
 
 package_install() {
@@ -377,7 +356,6 @@ package_install() {
     echo " * adding the mysql user"
     useradd -u 9001 -g mysql -G vboxsf -r mysql
   fi
-  id mysql
 
   mkdir -p "/etc/mysql/conf.d"
   echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
@@ -441,6 +419,10 @@ package_install() {
     apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
   fi
 
+  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+  echo " * Cleaning up dpkg lock file"
+  rm /var/lib/dpkg/lock*
+
   # Update all of the package references before installing anything
   echo " * Running apt-get update..."
   apt-get -y update
@@ -454,7 +436,7 @@ package_install() {
   fi
 
   # Remove unnecessary packages
-  echo " * Removing unnecessary packages..."
+  echo " * Removing unnecessary apt packages..."
   apt-get autoremove -y
 
   # Clean up apt caches
@@ -462,19 +444,6 @@ package_install() {
   apt-get clean
 
   return 0
-}
-
-# taken from <https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c>
-latest_github_release() {
-    local LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$1/releases/latest") # Get latest release from GitHub api
-    local GITHUB_RELEASE_REGEXP="\"tag_name\": \"([^\"]+)\""
-
-    if [[ $LATEST_RELEASE =~ $GITHUB_RELEASE_REGEXP ]]; then
-        echo "${BASH_REMATCH[1]}"
-        return 0
-    fi
-
-    return 1
 }
 
 tools_install() {
@@ -500,20 +469,9 @@ tools_install() {
   #
   # Make sure we have the latest npm version and the update checker module
   echo " * Installing/updating npm..."
-  npm install -g npm
+  npm_config_loglevel=error npm install -g npm
   echo " * Installing/updating npm-check-updates..."
-  npm install -g npm-check-updates
-
-  # ack-grep
-  #
-  # Install ack-rep directory from the version hosted at beyondgrep.com as the
-  # PPAs for Ubuntu Precise are not available yet.
-  if [[ -f /usr/bin/ack ]]; then
-    echo " * ack-grep already installed"
-  else
-    echo " * Installing ack-grep as ack"
-    curl -s https://beyondgrep.com/ack-2.16-single-file > "/usr/bin/ack" && chmod +x "/usr/bin/ack"
-  fi
+  npm_config_loglevel=error npm install -g npm-check-updates
 
   echo " * Making sure the composer cache is not owned by root"
   mkdir -p /usr/local/src/composer
@@ -532,7 +490,7 @@ tools_install() {
     mv "composer.phar" "/usr/local/bin/composer"
   fi
 
-  github_token=$(shyaml get-value general.github_token 2> /dev/null < ${VVV_CONFIG})
+  github_token=$(shyaml get-value general.github_token 2> /dev/null < "${VVV_CONFIG}")
   if [[ ! -z $github_token ]]; then
     rm /srv/provision/github.token
     echo "$github_token" >> /srv/provision/github.token
@@ -555,19 +513,19 @@ tools_install() {
 
   function install_grunt() {
     echo " * Installing Grunt CLI"
-    npm install -g grunt grunt-cli --no-optional
-    hack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
-    npm install -g grunt-cssjanus --no-optional
-    npm install -g grunt-rtlcss --no-optional
+    npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional
+    npm_config_loglevel=error hack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
+    npm_config_loglevel=error npm install -g grunt-cssjanus --no-optional
+    npm_config_loglevel=error npm install -g grunt-rtlcss --no-optional
     echo " * Installed Grunt CLI"
   }
 
   function update_grunt() {
     echo " * Updating Grunt CLI"
-    npm update -g grunt grunt-cli --no-optional
-    hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
-    npm update -g grunt-cssjanus --no-optional
-    npm update -g grunt-rtlcss --no-optional
+    npm_config_loglevel=error npm update -g grunt grunt-cli --no-optional
+    npm_config_loglevel=error hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
+    npm_config_loglevel=error npm update -g grunt-cssjanus --no-optional
+    npm_config_loglevel=error npm update -g grunt-rtlcss --no-optional
     echo " * Updated Grunt CLI"
   }
   # Grunt
@@ -614,6 +572,11 @@ tools_install() {
 
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
+  if [[ ! -e /root/.rnd ]]; then
+    echo " * Generating Random Number for cert generation..."
+    vvvgenrnd="$(openssl rand -out /root/.rnd -hex 256 2>&1)"
+    echo "$vvvgenrnd"
+  fi
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
     echo " * Generating Nginx server private key..."
     vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
@@ -630,10 +593,6 @@ nginx_setup() {
   fi
 
   echo " * Setup configuration files..."
-
-  # Used to ensure proper services are started on `vagrant up`
-  echo " * Copying /srv/config/init/vvv-start.conf               to /etc/init/vvv-start.conf"
-  cp -f "/srv/config/init/vvv-start.conf" "/etc/init/vvv-start.conf"
 
   # Copy nginx configuration from local
   echo " * Copying /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
@@ -741,55 +700,88 @@ EOL
   systemctl start mailhog
 }
 
+check_mysql_root_password() {
+  echo " * Checking the root user password is root"
+  mysql -u root --password=root -e "SHOW DATABASES" &> /dev/null
+  if [ $? -eq 0 ]; then
+    echo " * The root password is the expected value"
+    return 0
+  fi
+  echo " * The root password is not root, fixing"
+  echo "   - stopping database"
+  service mysql stop
+  echo "   - checking /var/run/mysqld"
+  mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
+  echo "   - starting the database in safe mode and updating the root user"
+  mysqld_safe --skip-grant-tables &
+  echo "   - waiting 2 seconds for database to finish starting"
+  sleep 2
+  echo "   - updating the root user"
+  sql=$( cat <<-SQL
+      use mysql;
+      update user set authentication_string=PASSWORD('root') where User='root';
+      update user set plugin='mysql_native_password' where User='root';
+      flush privileges;
+SQL
+  )
+  mysql -uroot -e "${sql}"
+  echo "   - stopping database in safemode"
+  mysqladmin -u root --password="root" shutdown
+  echo "   - root user password should now be root"
+}
+
 mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
   local exists_mysql
 
   exists_mysql="$(service mysql status)"
-  if [[ "mysql: unrecognized service" != "${exists_mysql}" ]]; then
-    echo -e "\n * Setup MySQL configuration file links..."
-
-    # Copy mysql configuration from local
-    cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
-    echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
-
-    cp "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
-    chmod 0644 "/home/vagrant/.my.cnf"
-    echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
-
-    # MySQL gives us an error if we restart a non running service, which
-    # happens after a `vagrant halt`. Check to see if it's running before
-    # deciding whether to start or restart.
-    if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
-      echo " * service mysql start"
-      service mysql start
-      else
-      echo " * service mysql restart"
-      service mysql restart
-    fi
-
-    # IMPORT SQL
-    #
-    # Create the databases (unique to system) that will be imported with
-    # the mysqldump files located in database/backups/
-    if [[ -f "/srv/database/init-custom.sql" ]]; then
-      mysql -u "root" -p"root" < "/srv/database/init-custom.sql"
-      echo -e "\n * Initial custom MySQL scripting..."
-    else
-      echo -e "\n * No custom MySQL scripting found in database/init-custom.sql, skipping..."
-    fi
-
-    # Setup MySQL by importing an init file that creates necessary
-    # users and databases that our vagrant setup relies on.
-    mysql -u "root" -p"root" < "/srv/database/init.sql"
-    echo " * Initial MySQL prep..."
-
-    # Process each mysqldump SQL file in database/backups to import
-    # an initial data set for MySQL.
-    "/srv/database/import-sql.sh"
-  else
-    echo -e "\n * MySQL is not installed. No databases imported."
+  if [[ "mysql: unrecognized service" == "${exists_mysql}" ]]; then
+    echo -e "\n ! MySQL is not installed. No databases imported."
+    return
   fi
+  echo -e "\n * Setting up database configuration file links..."
+
+  # Copy mysql configuration from local
+  cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
+  echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
+
+  cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
+  chmod 0644 "/home/vagrant/.my.cnf"
+  echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
+
+  check_mysql_root_password
+
+  # MySQL gives us an error if we restart a non running service, which
+  # happens after a `vagrant halt`. Check to see if it's running before
+  # deciding whether to start or restart.
+  if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
+    echo " * Starting the mysql service"
+    service mysql start
+  else
+    echo " * Restarting mysql service"
+    service mysql restart
+  fi
+
+  # IMPORT SQL
+  #
+  # Create the databases (unique to system) that will be imported with
+  # the mysqldump files located in database/backups/
+  if [[ -f "/srv/database/init-custom.sql" ]]; then
+    echo " * Running custom init-custom.sql under the root user..."
+    mysql -u "root" -p"root" < "/srv/database/init-custom.sql"
+    echo " * init-custom.sql has run"
+  else
+    echo -e "\n * No custom MySQL scripting found in database/init-custom.sql, skipping..."
+  fi
+
+  # Setup MySQL by importing an init file that creates necessary
+  # users and databases that our vagrant setup relies on.
+  mysql -u "root" -p"root" < "/srv/database/init.sql"
+  echo " * Initial MySQL prep..."
+
+  # Process each mysqldump SQL file in database/backups to import
+  # an initial data set for MySQL.
+  "/srv/database/import-sql.sh"
 }
 
 services_restart() {
@@ -893,7 +885,7 @@ cleanup_vvv(){
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
   echo "127.0.0.1 vvv # vvv-auto" >> "/etc/hosts"
   echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
-  if [[ $(is_utility_installed core tideways) ]]; then
+  if is_utility_installed core tideways; then
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
     echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
@@ -903,31 +895,32 @@ cleanup_vvv(){
 ### SCRIPT
 #set -xv
 
-network_check
 # Profile_setup
 echo " * Bash profile setup and directories."
 cleanup_terminal_splash
 profile_setup
 
-network_check
+if ! network_check; then
+  exit 1
+fi
 # Package and Tools Install
 echo " "
 echo " * Main packages check and install."
 git_ppa_check
 if ! package_install; then
-  echo -e "${RED} ! Main packages check and install failed, halting provision${CRESET}"
+  vvv_error " ! Main packages check and install failed, halting provision"
   exit 1
 fi
 
 tools_install
+
+mysql_setup
 nginx_setup
 mailhog_setup
 
 phpfpm_setup
 services_restart
-mysql_setup
 
-network_check
 # WP-CLI and debugging tools
 echo " "
 echo " * Installing/updating wp-cli and debugging tools"
@@ -935,7 +928,9 @@ echo " * Installing/updating wp-cli and debugging tools"
 wp_cli
 php_codesniff
 
-network_check
+if ! network_check; then
+  exit 1
+fi
 # Time for WordPress!
 echo " "
 
@@ -947,7 +942,5 @@ cleanup_vvv
 
 #set +xv
 # And it's done
-end_seconds="$(date +%s)"
-echo -e "${GREEN} -----------------------------${CRESET}"
-echo -e "${GREEN} * Provisioning complete in "$(( end_seconds - start_seconds ))" seconds${CRESET}"
-echo -e "${GREEN} * For further setup instructions, visit http://vvv.test${CRESET}"
+
+provisioner_success

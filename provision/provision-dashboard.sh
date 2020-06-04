@@ -1,16 +1,10 @@
 #!/usr/bin/env bash
 
+. "/srv/provision/provisioners.sh"
+
 REPO=$1
 BRANCH=${2:-master}
 DIR="/srv/www/default/dashboard"
-
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-dashboard.log"
-mkdir -p "${logfolder}"
-touch "${logfile}"
-exec > >(tee -a "${logfile}" )
-exec 2> >(tee -a "${logfile}" >&2 )
 
 if [[ false != "dashboard" && false != "${REPO}" ]]; then
   # Clone or pull the resources repository
@@ -29,4 +23,5 @@ else
   echo " * Skipping dashboard provisioning, set to false in config"
 fi
 
-exit 0
+provisioner_success
+

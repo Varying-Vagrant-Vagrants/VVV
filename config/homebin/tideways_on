@@ -1,17 +1,3 @@
 #!/bin/bash
-if [[ ! $(is_utility_installed core tideways) ]]; then
-  echo "Tideways is not installed"
-  exit 0
-fi
 
-echo "Disabling XDebug if it's present"
-sudo phpdismod xdebug
-
-echo "Enabling tideways_xhprof/xhgui"
-sudo phpenmod tideways_xhprof
-sudo phpenmod xhgui
-
-echo "Restarting PHP FPM's"
-find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
-
-echo "Tideways enabled!"
+switch_php_debugmod tideways

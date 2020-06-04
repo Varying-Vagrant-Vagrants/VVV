@@ -6,7 +6,40 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.3.0 ( WIP )
+## 3.4.1 ( 2020 June 4th )
+
+### Enhancements
+
+* Improved the log folder names from `20200225-182126` to `2020.02.25-18-21-26` ( #2078 )
+* Added a `switch_php_debugmod` to replace the `xdebug_on` `tideways_off` style scripts ( #2084 )
+* Checks the default password for MySQL root user during provision ( #2077, #2085 )
+* Remove NVM support entirely ( #2088 )
+* Improved the provider examples in `default-config.yml` ( #2091 )
+* Run rubocop on Vagrantfile in a move towards more idiomatic ruby ( #2093 )
+* Improved network checks to test more domains ( #2099 )
+* ack-grep is now installed via `apt` rather than `beyondgrep.com` ( #2100 )
+* Refactor site provisioners ( #2102 )
+* Added new bears to the various vagrant trigger scripts ( #2105, #2108 )
+* Removed Ubuntu news MOTD ( #2105 )
+* Improve network checks wording ( #2106 )
+* Support for vagrant-hostmanager ( #2112 )
+* Bumped MariaDB sources from 10.3 to 10.4 ( #2140 )
+* Improve compatibility with globally installed gems on the guest ( #2138 )
+* Add LFTP tool ( #2137 )
+* List relevant log files when provisioners fail ( #2161 )
+
+### Bug Fixes
+
+* Fix check for utility installed that prevented SSL certificates to be generated ( #2073 )
+* Fix SSL issue on the base Ubuntu image ( #2074 )
+* Don't spider and recurse domains when checking for network connections ( #2103 )
+* Always set the database root user password to avoid having the default invalid password on fresh installs ( #2104 )
+* Swap the MariaDB apt mirror used for a more reliable source ( partially #2140 and in a217369 )
+* Fixed an issue with the dpkg lock file not being cleaned up sometimes ( #2151 )
+* Fix issues with the sad bear showing at the end of provisioning despite provisioners being succesful ( #2161 )
+* Fix provisioners printing all output to console (not just errors) ( #2174 )
+
+## 3.3.0 ( 2020 Feb 26th )
 
 ### Enhancements
 
@@ -18,7 +51,7 @@ permalink: /docs/en-US/changelog/
 * Fixes an issue with the ntpsec package by removing it
 * Fixed the use of dots in site names breaking provisioning
 
-## 3.2.0 ( 2019 )
+## 3.2.0 ( 2019 Nov 5th )
 
 ### Enhancements
 
@@ -68,7 +101,7 @@ This is primarily a reliability update. Note that updating to v3.1 requires a `v
 
 ### Enhancements
 
-* The vagrant box can now be overriden using the `box` parameter in `vvv-custom.yml` under the `vm_config` section. This requires a `vagrant destroy` followed by a `vagrant up --provision` to recreate the VM using the new box
+* The vagrant box can now be overridden using the `box` parameter in `vvv-custom.yml` under the `vm_config` section. This requires a `vagrant destroy` followed by a `vagrant up --provision` to recreate the VM using the new box
 * The main provisioner now only fetches the apt keys once rather than on every key check
 * The TTY fix shell provisioner and the `/vagrant` setup shell provisioner were merged for a minor reduction in provisioning time.
 * Allow `db_backup` script to be run manually regardless if automatic DB backups are disabled
@@ -138,7 +171,7 @@ In the near future, we expect to use a box with PHP/etc preinstalled, this will 
 * Auto download plugin for vagrant, supported vagrant 2.2.0+
 * Autoset the locale inside the virtual machine to avoid errors in the console
 * Added a `vagrant_provision` and `vagrant_provision_custom` script to the homebin folder that run post-provision
-* Improved the messaging to tell the user at the end of a `vagrant up` or `vagrant provision` that it was succesful
+* Improved the messaging to tell the user at the end of a `vagrant up` or `vagrant provision` that it was successful
 * Added friendly splashes at the end of vagrant up and provision to make it obvious to end users when they've finished
 * The VVV install path is now in the splash screen, making it easier to debug GH issues
 * Added a `wordcamp_contributor_day_box` flag to the `vm_config` section of `vvv-config.yml` so that contributor day setup scripts are simpler
@@ -227,7 +260,7 @@ Note that to update to 2.2.1, you must remove the Vagrant triggers plugin and in
 * PHP 7.2 is now the default PHP version
 * Added the TLS CA authority, making HTTPS TLS/SSL connections to VVV sites easier, see [our docs on how to set this up](https://varyingvagrantvagrants.org/docs/en-US/references/https/)
 * The VVV terminal splash is now smaller, with better support for lighter colour schemes.
-* The dashboard is now a separate git repo cloned on provision, that can be overriden in `vvv-custom.yml`
+* The dashboard is now a separate git repo cloned on provision, that can be overridden in `vvv-custom.yml`
 * PHPCompatibility PHPCS standards are now installed
 * VVV now has a `version` file
 * Private network IP can now be changed via `vvv-custom.yml`, see [#1407](https://github.com/Varying-Vagrant-Vagrants/VVV/pull/1407)
