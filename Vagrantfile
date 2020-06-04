@@ -106,10 +106,10 @@ show_logo = false if ENV['VVV_SKIP_LOGO']
 # Show the initial splash screen
 
 if show_logo
-  git_or_zip = 'zip-no-vcs'
+  git_or_zip = "zip-no-vcs"
   branch = ''
   if File.directory?("#{vagrant_dir}/.git")
-    git_or_zip = 'git::'
+    git_or_zip = "git::"
     branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
     branch = branch.chomp("\n"); # remove trailing newline so it doesn't break the ascii art
   end
@@ -127,9 +127,9 @@ end
 
 # Perform file migrations from older versions
 vvv_config_file = File.join(vagrant_dir, 'config/config.yml')
-unless File.file?(vvv_config_file)
+unless File.file?( vvv_config_file )
   old_vvv_config = File.join(vagrant_dir, 'vvv-custom.yml')
-  if File.file?(old_vvv_config)
+  if File.file?( old_vvv_config )
     puts "#{yellow}Migrating #{red}vvv-custom.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow}.#{creset}\n\n"
     FileUtils.mv(old_vvv_config, vvv_config_file)
   else
@@ -147,11 +147,12 @@ end
 
 begin
   vvv_config = YAML.load_file(vvv_config_file)
-  unless vvv_config['sites'].is_a? Hash
-    vvv_config['sites'] = {}
+  unless vvv_config['sites'].kind_of? Hash
+    vvv_config['sites'] = Hash.new
 
     puts "#{red}config/config.yml is missing a sites section.#{creset}\n\n"
   end
+
 rescue StandardError => e
   puts "#{red}config/config.yml isn't a valid YAML file.#{creset}\n\n"
   puts "#{red}VVV cannot be executed!#{creset}\n\n"
@@ -160,20 +161,24 @@ rescue StandardError => e
   exit
 end
 
-vvv_config['hosts'] = [] unless vvv_config['hosts'].is_a? Hash
+unless vvv_config['hosts'].kind_of? Hash
+  vvv_config['hosts'] = Array.new
+end
 
 vvv_config['hosts'] += ['vvv.test']
 
 vvv_config['sites'].each do |site, args|
-  if args.is_a? String
-    repo = args
-    args = {}
-    args['repo'] = repo
+  if args.kind_of? String
+      repo = args
+      args = Hash.new
+      args['repo'] = repo
   end
 
-  args = {} unless args.is_a? Hash
+  unless args.kind_of? Hash
+      args = Hash.new
+  end
 
-  defaults = {}
+  defaults = Hash.new
   defaults['repo'] = false
   defaults['vm_dir'] = "/srv/www/#{site}"
   defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
@@ -186,7 +191,7 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site] = defaults.merge(args)
 
   unless vvv_config['sites'][site]['skip_provisioning']
-    site_host_paths = Dir.glob(Array.new(4) { |i| vvv_config['sites'][site]['local_dir'] + '/*' * (i + 1) + '/vvv-hosts' })
+    site_host_paths = Dir.glob(Array.new(4) {|i| vvv_config['sites'][site]['local_dir'] + '/*'*(i+1) + '/vvv-hosts'})
     vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
       lines = File.readlines(path).map(&:chomp)
       lines.grep(/\A[^#]/)
@@ -197,38 +202,48 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site].delete('hosts')
 end
 
-if vvv_config['utility-sources'].is_a? Hash
+unless vvv_config['utility-sources'].kind_of? Hash
+  vvv_config['utility-sources'] = Hash.new
+else
   vvv_config['utility-sources'].each do |name, args|
-    next unless args.is_a? String
+    if args.kind_of? String
+      repo = args
+      args = Hash.new
+      args['repo'] = repo
+      args['branch'] = 'master'
 
-    repo = args
-    args = {}
-    args['repo'] = repo
-    args['branch'] = 'master'
-
-    vvv_config['utility-sources'][name] = args
+      vvv_config['utility-sources'][name] = args
+    end
   end
 else
   vvv_config['utility-sources'] = {}
 end
 
-vvv_config['dashboard'] = {} unless vvv_config['dashboard']
-dashboard_defaults = {}
+unless vvv_config['dashboard']
+  vvv_config['dashboard'] = Hash.new
+end
+dashboard_defaults = Hash.new
 dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashboard.git'
 dashboard_defaults['branch'] = 'master'
 vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
 
 unless vvv_config['utility-sources'].key?('core')
-  vvv_config['utility-sources']['core'] = {}
+  vvv_config['utility-sources']['core'] = Hash.new
   vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
   vvv_config['utility-sources']['core']['branch'] = 'master'
 end
 
-vvv_config['utilities'] = {} unless vvv_config['utilities'].is_a? Hash
+unless vvv_config['utilities'].kind_of? Hash
+  vvv_config['utilities'] = Hash.new
+end
 
-vvv_config['vm_config'] = {} unless vvv_config['vm_config'].is_a? Hash
+unless vvv_config['vm_config'].kind_of? Hash
+  vvv_config['vm_config'] = Hash.new
+end
 
-vvv_config['general'] = {} unless vvv_config['general'].is_a? Hash
+unless vvv_config['general'].kind_of? Hash
+  vvv_config['general'] = Hash.new
+end
 
 defaults = {}
 defaults['memory'] = 2048
@@ -240,7 +255,9 @@ defaults['private_network_ip'] = '192.168.50.4'
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
-vvv_config['vagrant-plugins'] = {} unless vvv_config['vagrant-plugins']
+unless vvv_config['vagrant-plugins']
+  vvv_config['vagrant-plugins'] = Hash.new
+end
 
 # Create a global variable to use in functions and classes
 $vvv_config = vvv_config
