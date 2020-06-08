@@ -14,7 +14,7 @@ permalink: /docs/en-US/changelog/
 
 ### Bug Fixes
 
- * -
+* Fix mysql root password reset ( #2182 )
 
 ## 3.4.1 ( 2020 June 4th )
 
