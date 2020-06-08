@@ -703,32 +703,33 @@ EOL
 
 check_mysql_root_password() {
   echo " * Checking the root user password is root"
-  mysql -u root --password=root -e "SHOW DATABASES" &> /dev/null
-  if [ $? -eq 0 ]; then
+  # Get if root has correct password and mysql_native_password as plugin
+  sql=$( cat <<-SQL
+      SELECT count(*) from mysql.user WHERE
+      User='root' AND 
+      authentication_string=PASSWORD('root') AND 
+      plugin='mysql_native_password';
+SQL
+)
+  root_matches=$(mysql -u root --password=root -s -N -e "${sql}")
+  if [[ $? -eq 0 && $root_matches == "1" ]]; then
+    # mysql connected and the SQL above matched
     echo " * The root password is the expected value"
     return 0
   fi
+  # Do reset password in safemode
   echo " * The root password is not root, fixing"
-  echo "   - stopping database"
-  service mysql stop
-  echo "   - checking /var/run/mysqld"
-  mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
-  echo "   - starting the database in safe mode and updating the root user"
-  mysqld_safe --skip-grant-tables &
-  echo "   - waiting 2 seconds for database to finish starting"
-  sleep 2
-  echo "   - updating the root user"
   sql=$( cat <<-SQL
-      use mysql;
-      update user set authentication_string=PASSWORD('root') where User='root';
-      update user set plugin='mysql_native_password' where User='root';
-      flush privileges;
+      ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
+      FLUSH PRIVILEGES;
 SQL
-  )
-  mysql -uroot -e "${sql}"
-  echo "   - stopping database in safemode"
-  mysqladmin -u root --password="root" shutdown
-  echo "   - root user password should now be root"
+)
+  mysql -u root -proot -e "${sql}"
+  if [[ $? -eq 0 ]]; then
+    echo "   - root user password should now be root"
+  else
+    echo "   - could not reset root password"
+  fi
 }
 
 mysql_setup() {
