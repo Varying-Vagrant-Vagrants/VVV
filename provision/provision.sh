@@ -452,14 +452,6 @@ tools_install() {
   # Disable xdebug before any composer provisioning.
   sh /srv/config/homebin/xdebug_off
 
-  echo " * Checking for NVM"
-  if [[ -f ~/.nvm ]]; then
-    echo " * .nvm folder found, switching to system node, and removing NVM folders"
-    nvm use system
-    rm -rf ~/.nvm ~/.npm ~/.bower /srv/config/nvm
-    echo " * NVM folders removed"
-  fi
-
   if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then
     echo " * Downgrading to Node v10."
     apt remove nodejs -y
