@@ -728,7 +728,7 @@ SQL
   if [[ $? -eq 0 ]]; then
     echo "   - root user password should now be root"
   else
-    echo "   - could not reset root password"
+    vvv_warn "   - could not reset root password"
   fi
 }
 
