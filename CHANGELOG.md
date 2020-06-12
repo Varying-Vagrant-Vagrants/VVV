@@ -10,8 +10,6 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
-* -
-* Added `nvm` as an optional core utility ( #2185 )
 * Cleaned up leftover `nvm` removal code from main provisioner ( #2185 )
 
 ### Bug Fixes
