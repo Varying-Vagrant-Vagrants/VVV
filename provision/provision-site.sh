@@ -142,7 +142,7 @@ function vvv_clone_provisioner_repo() {
     else
       # Clone or pull the site repository
       echo -e " * Downloading ${SITE}, git cloning from ${PROVISIONER_REPO} into ${VM_DIR}"
-      git clone --recursive --PROVISIONER_BRANCH "${PROVISIONER_BRANCH}" "${PROVISIONER_REPO}" "${VM_DIR}" -q
+      git clone --recursive --branch "${PROVISIONER_BRANCH}" "${PROVISIONER_REPO}" "${VM_DIR}" -q
       if [ $? -eq 0 ]; then
         echo " * ${SITE} Site Template clone successful"
       else
@@ -156,6 +156,21 @@ function vvv_clone_provisioner_repo() {
     if [[ ! -d "${VM_DIR}" ]]; then
       vvv_error "The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV"
     fi
+  fi
+}
+
+function vvv_clone_git_repo() {
+  local REPO=$1
+  local FOLDER=$2
+
+  vvv_info "Git cloning ${REPO}, into ${FOLDER}"
+  git clone --recursive "${REPO}" "${FOLDER}" -q
+  if [ $? -eq 0 ]; then
+    vvv_success "${REPO} was cloned into ${FOLDER}"
+    return 0
+  else
+    vvv_error "Failed to clone ${REPO} into ${FOLDER}"
+    return 1
   fi
 }
 
