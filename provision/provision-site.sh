@@ -4,8 +4,8 @@
 
 SITE=$1
 SITE_ESCAPED="${SITE//./\\.}"
-REPO=$2
-BRANCH=$3
+PROVISIONER_REPO=$2
+PROVISIONER_BRANCH=$3
 VM_DIR=$4
 SKIP_PROVISIONING=$5
 NGINX_UPSTREAM=$6
@@ -129,32 +129,32 @@ function vvv_process_site_hosts() {
   fi
 }
 
-function vvv_provision_site_repo() {
-  if [[ false != "${REPO}" ]]; then
+function vvv_clone_provisioner_repo() {
+  if [[ false != "${PROVISIONER_REPO}" ]]; then
     if [[ -d "${VM_DIR}" ]] && [[ ! -z "$(ls -A "${VM_DIR}")" ]]; then
       if [[ -d "${VM_DIR}/.git" ]]; then
         echo " * Updating ${SITE} in ${VM_DIR}..."
         cd "${VM_DIR}"
-        git reset "origin/${BRANCH}" --hard -q
-        git pull origin "${BRANCH}" -q
-        git checkout "${BRANCH}" -q
+        git reset "origin/${PROVISIONER_BRANCH}" --hard -q
+        git pull origin "${PROVISIONER_BRANCH}" -q
+        git checkout "${PROVISIONER_BRANCH}" -q
       else
         echo "${RED}Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
       fi
     else
       # Clone or pull the site repository
-      echo -e " * Downloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
-      git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
+      echo -e " * Downloading ${SITE}, git cloning from ${PROVISIONER_REPO} into ${VM_DIR}"
+      git clone --recursive --PROVISIONER_BRANCH "${PROVISIONER_BRANCH}" "${PROVISIONER_REPO}" "${VM_DIR}" -q
       if [ $? -eq 0 ]; then
         echo " * ${SITE} Site Template clone successful"
       else
-        echo "${RED} ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
-        echo "${RED} ! VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"
+        echo "${RED} ! Git failed to clone the site provisioner template for ${SITE}. It tried to clone the ${PROVISIONER_BRANCH} of ${PROVISIONER_REPO} into ${VM_DIR}${CRESET}"
+        echo "${RED} ! VVV won't be able to provision ${SITE} without the site provisioner template. Check that you have permission to access the git repository, and that the filesystem is writable${CRESET}"
         exit 1
       fi
     fi
   else
-    echo " * The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
+    echo " * The site: '${SITE}' does not have a site provisioner template, assuming a custom provision/vvv-init.sh and provision/vvv-nginx.conf"
     if [[ ! -d "${VM_DIR}" ]]; then
       echo "${RED} ! Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV${CRESET}"
     fi
@@ -225,7 +225,7 @@ if [[ true == "${SKIP_PROVISIONING}" ]]; then
   return 0
 fi
 
-vvv_provision_site_repo
+vvv_clone_provisioner_repo
 
 if [[ ! -d "${VM_DIR}" ]]; then
   echo "${RED} ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
