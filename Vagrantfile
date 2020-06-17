@@ -168,13 +168,14 @@ vvv_config['sites'].each do |site, args|
   if args.is_a? String
     repo = args
     args = {}
-    args['repo'] = repo
+    args['provisioner_repo'] = repo
   end
 
   args = {} unless args.is_a? Hash
 
   defaults = {}
   defaults['repo'] = false
+  defaults['provisioner_repo'] = false
   defaults['vm_dir'] = "/srv/www/#{site}"
   defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
   defaults['branch'] = 'master'
@@ -184,6 +185,9 @@ vvv_config['sites'].each do |site, args|
   defaults['hosts'] = []
 
   vvv_config['sites'][site] = defaults.merge(args)
+  unless vvv_config['sites'][site]['provisioner_repo']
+    vvv_config['sites'][site]['provisioner_repo'] = vvv_config['sites'][site]['repo']
+  end
 
   unless vvv_config['sites'][site]['skip_provisioning']
     site_host_paths = Dir.glob(Array.new(4) { |i| vvv_config['sites'][site]['local_dir'] + '/*' * (i + 1) + '/vvv-hosts' })
