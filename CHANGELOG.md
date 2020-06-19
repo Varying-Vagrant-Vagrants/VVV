@@ -17,6 +17,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * Fix mysql root password reset ( #2182 )
+* Fix empty string yml value reading on site provisioner ( #2201 )
 
 ## 3.4.1 ( 2020 June 4th )
 
