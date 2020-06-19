@@ -378,7 +378,7 @@ Vagrant.configure('2') do |config|
     if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
       system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
       File.delete(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
-      puts "#{yellow}VVV has completed installing the vagrant-goodhosts plugins. Please run the requested command again.#{creset}"
+      puts "#{yellow}VVV needed to install the vagrant-goodhosts plugin which is now installed. Please run the requested command again.#{creset}"
       exit
     else
       config.vagrant.plugins = ['vagrant-goodhosts']
@@ -797,7 +797,7 @@ Vagrant.configure('2') do |config|
     config.hostsupdater.remove_on_suspend = true
   else
     puts "! Neither the HostManager, GoodHosts or HostsUpdater plugins are installed!!! Domains won't work without one of these plugins!"
-    puts "Run vagrant plugin install vagrant-hostmanager then try again."
+    puts "Run 'vagrant plugin install vagrant-goodhosts' then try again."
   end
 
   # Vagrant Triggers
