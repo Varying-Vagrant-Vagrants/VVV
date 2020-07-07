@@ -241,7 +241,7 @@ git_ppa_check() {
     echo " * Adding ppa:git-core/ppa repository"
     sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
     # Update apt-get info.
-    sudo apt-get update &>/dev/null
+    sudo apt-get update --fix-missing
     echo " * git-core/ppa added"
   else
     echo " * git-core/ppa already present, skipping"
@@ -423,16 +423,19 @@ package_install() {
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   echo " * Cleaning up dpkg lock file"
   rm /var/lib/dpkg/lock*
+  
+  echo " * Updating apt keys"
+  apt-key update -y
 
   # Update all of the package references before installing anything
   echo " * Running apt-get update..."
-  apt-get -y update
+  apt-get update -y --fix-missing
 
   # Install required packages
   echo " * Installing apt-get packages..."
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
     echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
-    apt-get clean
+    apt-get clean -y
     return 1
   fi
 
@@ -442,7 +445,7 @@ package_install() {
 
   # Clean up apt caches
   echo " * Cleaning apt caches..."
-  apt-get clean
+  apt-get clean -y
 
   return 0
 }
