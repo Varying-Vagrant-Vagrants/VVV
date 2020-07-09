@@ -429,6 +429,8 @@ package_install() {
 
   # Update all of the package references before installing anything
   echo " * Running apt-get update..."
+  rm -rf /var/lib/apt/lists/*
+  apt-get update -o Acquire::CompressionTypes::Order::=gz
   apt-get update -y --fix-missing
 
   # Install required packages
