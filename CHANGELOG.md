@@ -11,13 +11,14 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Cleaned up leftover `nvm` removal code from main provisioner ( #2185 )
-* Added support for `vagrant-goodhosts`, we recommend using this in the future instead of `vagrant-hostsupdater`
-* Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation.
+* Added support for `vagrant-goodhosts`, we recommend using this in the future instead of `vagrant-hostsupdater` ( # 2148)
+* Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation. ( #2200 )
 
 ### Bug Fixes
 
 * Fix mysql root password reset ( #2182 )
 * Fix empty string yml value reading on site provisioner ( #2201 )
+* In case the previous provisioning had some issues with dpkg on a new provision `dpkg --configure -a` is executed as default ( #2211 )
 
 ## 3.4.1 ( 2020 June 4th )
 
