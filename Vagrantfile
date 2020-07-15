@@ -123,6 +123,12 @@ if show_logo
   puts splashfirst
 end
 
+case (Process.uid)
+when 0
+  puts "#{red}VVV (and Vagrant) cannot be executed as root user or with sudo permissions!#{creset}\n\n"
+  exit
+end
+  
 # Load the config file before the second section of the splash screen
 
 # Perform file migrations from older versions
