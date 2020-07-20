@@ -20,6 +20,7 @@ permalink: /docs/en-US/changelog/
 
 * Fix mysql root password reset ( #2182 )
 * Fix empty string yml value reading on site provisioner ( #2201 )
+* Remove APT list files and switch compression type defaults for repositories to avoid hash mismatch ( #2208 )
 * In case the previous provisioning had some issues with dpkg on a new provision `dpkg --configure -a` is executed as default ( #2211 )
 
 ## 3.4.1 ( 2020 June 4th )
