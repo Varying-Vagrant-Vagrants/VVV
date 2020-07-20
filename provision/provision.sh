@@ -423,16 +423,21 @@ package_install() {
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   echo " * Cleaning up dpkg lock file"
   rm /var/lib/dpkg/lock*
-  
+
   echo " * Updating apt keys"
   apt-key update -y
 
   # Update all of the package references before installing anything
+  echo " * Copying /srv/config/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
+  cp -f "/srv/config/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
   echo " * Running apt-get update..."
+  rm -rf /var/lib/apt/lists/*
   apt-get update -y --fix-missing
 
   # Install required packages
   echo " * Installing apt-get packages..."
+  # To avoid issues on provisioning and failed apt installation
+  dpkg --configure -a
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
     echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean -y
@@ -701,8 +706,8 @@ check_mysql_root_password() {
   # Get if root has correct password and mysql_native_password as plugin
   sql=$( cat <<-SQL
       SELECT count(*) from mysql.user WHERE
-      User='root' AND 
-      authentication_string=PASSWORD('root') AND 
+      User='root' AND
+      authentication_string=PASSWORD('root') AND
       plugin='mysql_native_password';
 SQL
 )
