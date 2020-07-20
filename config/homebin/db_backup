@@ -6,10 +6,10 @@
 mkdir -p /srv/database/backups
 echo " * Performing Database Backups"
 mysql --user="root" --password="root" -e 'show databases' | \
-grep -v -F "information_schema" | \
-grep -v -F "performance_schema" | \
-grep -v -F "mysql" | \
-grep -v -F "test" | \
+grep -v -F "^information_schema$" | \
+grep -v -F "^performance_schema$" | \
+grep -v -F "^mysql$" | \
+grep -v -F "^test$" | \
 grep -v -F "Database" | \
 while read dbname;
 do
