@@ -123,6 +123,20 @@ if show_logo
   puts splashfirst
 end
 
+case (Process.uid)
+when 0
+	puts "#{red}     ! DANGER  !"
+	puts "#{red} ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.#{creset}"
+	puts "#{red}  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(#{creset}"
+	puts "#{red}!   █░░█░▄▄░░█░░█ !   #{creset}"
+	puts "#{red}     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful#{creset}"
+	puts "#{red}  !  ▀▄░█░░██░░█      cleanup commands to fix this.#{creset}"
+	puts " "
+	puts "#{red}If vagrant does not work for you without sudo, open a GitHub issue instead#{creset}"
+	puts "#{red}In the future, this warning will halt provisioning to prevent new users making this mistake.#{creset}"
+  # exit
+end
+  
 # Load the config file before the second section of the splash screen
 
 # Perform file migrations from older versions
