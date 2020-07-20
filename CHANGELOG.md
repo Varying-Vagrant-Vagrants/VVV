@@ -13,13 +13,13 @@ permalink: /docs/en-US/changelog/
 * Cleaned up leftover `nvm` removal code from main provisioner ( #2185 )
 * Added support for `vagrant-goodhosts`, we recommend using this in the future instead of `vagrant-hostsupdater`
 * Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation.
-* Fixed an issue preventing backups of databases whose names contained reserved words ( #2213 )
 * Prevent use of sudo vagrant up ( #2215 )
 
 ### Bug Fixes
 
 * Fix mysql root password reset ( #2182 )
 * Fix empty string yml value reading on site provisioner ( #2201 )
+* Fixed an issue preventing backups of databases whose names contained reserved words ( #2213 )
 
 ## 3.4.1 ( 2020 June 4th )
 
