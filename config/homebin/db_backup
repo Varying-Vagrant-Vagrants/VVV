@@ -6,14 +6,16 @@
 mkdir -p /srv/database/backups
 echo " * Performing Database Backups"
 mysql --user="root" --password="root" -e 'show databases' | \
-grep -v -F "^information_schema$" | \
-grep -v -F "^performance_schema$" | \
-grep -v -F "^mysql$" | \
-grep -v -F "^test$" | \
 grep -v -F "Database" | \
-while read dbname;
+while read db_name;
 do
-    echo "   - Backing up \"$dbname\" to database/backups/${dbname}.sql"
-    mysqldump -uroot -proot "$dbname" > "/srv/database/backups/${dbname}.sql";
+    # skip these databases
+    [ "${db_name}" == "mysql" ] && continue;
+    [ "${db_name}" == "information_schema" ] && continue;
+    [ "${db_name}" == "performance_schema" ] && continue;
+    [ "${db_name}" == "test" ] && continue;
+
+    echo "   - Backing up \"${db_name}\" to database/backups/${db_name}.sql"
+    mysqldump -uroot -proot "${db_name}" > "/srv/database/backups/${db_name}.sql";
 done
-echo " * Finished backing up databases"
+echo " * Finished backing up databases to the database/sql/backups folder"
