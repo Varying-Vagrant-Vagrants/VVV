@@ -123,7 +123,7 @@ if show_logo
   puts splashfirst
 end
 
-case (Process.uid)
+case (Process.uid & ENV['OS'] != 'Windows_NT')
 when 0
 	puts "#{red}     ! DANGER  !"
 	puts "#{red} ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.#{creset}"
