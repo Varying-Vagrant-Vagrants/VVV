@@ -56,8 +56,12 @@ git_ppa_check() {
   # apt-get does not have latest version of git,
   # so let's the use ppa repository instead.
   #
-  if grep -Rq "^deb.*ppa:git-core/ppa" /etc/apt/sources.list.d/*.list
-  then
+  local STATUS=1
+  if [ ! -z "$(ls -A /etc/apt/sources.list.d/)" ]; then
+    grep -Rq "^deb.*git-core/ppa" /etc/apt/sources.list.d/*.list
+    STATUS=$?
+  fi
+  if [ "$STATUS" -ne "0" ]; then
     # Install prerequisites.
     echo " * Setting up Git PPA pre-requisites"
     sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
