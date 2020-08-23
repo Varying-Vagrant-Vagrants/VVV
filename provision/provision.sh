@@ -79,6 +79,7 @@ git_ppa_check() {
 package_install() {
 
   export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+  export VVV_PACKAGE_LIST=()
 
   . "/srv/provision/core/mariadb/provision.sh"
   . "/srv/provision/core/postfix/provision.sh"
@@ -197,9 +198,6 @@ package_install() {
     # memcached is made available for object caching
     memcached
 
-    # mariadb (drop-in replacement on mysql) is the default database
-    mariadb-server
-
     # other packages that come in handy
     imagemagick
     subversion
@@ -213,7 +211,6 @@ package_install() {
     make
     vim
     colordiff
-    postfix
     python-pip
     lftp
 

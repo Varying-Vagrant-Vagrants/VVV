@@ -28,3 +28,4 @@ mkdir -p "/etc/mysql/conf.d"
 echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
 cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
 
+VVV_PACKAGE_LIST+=(mariadb-server)
