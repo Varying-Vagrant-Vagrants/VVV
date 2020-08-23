@@ -15,7 +15,6 @@ setup_vvv_env
 . "/srv/config/bash_aliases"
 
 export DEBIAN_FRONTEND=noninteractive
-export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
 # cleanup
 mkdir -p /vagrant
@@ -258,6 +257,8 @@ profile_setup() {
 }
 
 package_install() {
+
+  export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
   # MariaDB/MySQL
   #
