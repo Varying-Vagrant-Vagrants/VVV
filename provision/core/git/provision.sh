@@ -9,14 +9,9 @@ if [ ! -z "$(ls -A /etc/apt/sources.list.d/)" ]; then
   STATUS=$?
 fi
 if [ "$STATUS" -ne "0" ]; then
-  # Install prerequisites.
-  echo " * Setting up Git PPA pre-requisites"
-  sudo apt-get install -y python-software-properties software-properties-common &>/dev/null
   # Add ppa repo.
   echo " * Adding ppa:git-core/ppa repository"
   sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
-  # Update apt-get info.
-  sudo apt-get update --fix-missing
   echo " * git-core/ppa added"
 else
   echo " * git-core/ppa already present, skipping"
