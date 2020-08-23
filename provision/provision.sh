@@ -76,42 +76,8 @@ package_install() {
 
   export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
-  # MariaDB/MySQL
-  #
-  # Use debconf-set-selections to specify the default password for the root MariaDB
-  # account. This runs on every provision, even if MariaDB has been installed. If
-  # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
-
-  echo -e "\n * Setting up MySQL configuration file links..."
-
-  if grep -q 'mysql' /etc/group; then
-    echo " * mysql group exists"
-  else
-    echo " * creating mysql group"
-    groupadd -g 9001 mysql
-  fi
-
-  if id -u mysql >/dev/null 2>&1; then
-    echo " * mysql user present and has uid $(id -u mysql)"
-  else
-    echo " * adding the mysql user"
-    useradd -u 9001 -g mysql -G vboxsf -r mysql
-  fi
-
-  mkdir -p "/etc/mysql/conf.d"
-  echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
-  cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
-
-  # Postfix
-  #
-  # Use debconf-set-selections to specify the selections in the postfix setup. Set
-  # up as an 'Internet Site' with the host name 'vvv'. Note that if your current
-  # Internet connection does not allow communication over port 25, you will not be
-  # able to send mail, even with postfix installed.
-  echo postfix postfix/main_mailer_type select Internet Site | debconf-set-selections
-  echo postfix postfix/mailname string vvv | debconf-set-selections
+  . "/srv/provision/core/mariadb/provision.sh"
+  . "/srv/provision/core/postfix/provision.sh"
 
   # Provide our custom apt sources before running `apt-get update`
   echo " * Copying custom apt sources"
