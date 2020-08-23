@@ -43,17 +43,9 @@ export VVV_CONFIG=/vagrant/config.yml
 # initialize provisioner helpers a bit later
 . "/srv/provision/provisioners.sh"
 
-if [ -d /srv/provision/resources ]; then
-  echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
-  rm -rf /srv/provision/resources ## remove deprecated folder
-fi
-
-# symlink the certificates folder for older site templates compat
-if [[ ! -d /vagrant/certificates ]]; then
-  ln -s /srv/certificates /vagrant/certificates
-fi
-
 . '/srv/provision/core/deprecated.sh'
+remove_v2_resources
+support_v2_certificate_path
 depreacted_distro
 
 # PACKAGE INSTALLATION
