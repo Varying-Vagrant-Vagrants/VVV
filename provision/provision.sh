@@ -16,8 +16,6 @@ setup_vvv_env
 
 export DEBIAN_FRONTEND=noninteractive
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-export COMPOSER_ALLOW_SUPERUSER=1
-export COMPOSER_NO_INTERACTION=1
 
 # cleanup
 mkdir -p /vagrant
@@ -408,6 +406,9 @@ tools_install() {
   chown -R vagrant:www-data /usr/local/bin
 
   # COMPOSER
+
+  export COMPOSER_ALLOW_SUPERUSER=1
+  export COMPOSER_NO_INTERACTION=1
 
   echo " * Checking for Composer"
   exists_composer="$(which composer)"
