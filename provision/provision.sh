@@ -14,8 +14,6 @@ setup_vvv_env
 # this shell session
 . "/srv/config/bash_aliases"
 
-export DEBIAN_FRONTEND=noninteractive
-
 # cleanup
 mkdir -p /vagrant
 rm -rf /vagrant/failed_provisioners
@@ -769,6 +767,8 @@ wp_cli() {
 }
 
 php_codesniff() {
+  export DEBIAN_FRONTEND=noninteractive
+
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
   # Sniffs WordPress Coding Standards
   echo -e "\n * Install/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
