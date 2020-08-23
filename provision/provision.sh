@@ -48,96 +48,6 @@ remove_v2_resources
 support_v2_certificate_path
 depreacted_distro
 
-# PACKAGE INSTALLATION
-#
-# Build a bash array to pass all of the packages we want to install to a single
-# apt-get command. This avoids doing all the leg work each time a package is
-# set to install. It also allows us to easily comment out or add single
-# packages.
-apt_package_install_list=(
-  # Please avoid apostrophes in these comments - they break vim syntax
-  # highlighting.
-  #
-  software-properties-common
-
-  # PHP7
-  #
-  # Our base packages for php7.2. As long as php7.2-fpm and php7.2-cli are
-  # installed, there is no need to install the general php7.2 package, which
-  # can sometimes install apache as a requirement.
-  php7.2-fpm
-  php7.2-cli
-
-  # Common and dev packages for php
-  php7.2-common
-  php7.2-dev
-
-  # Extra PHP modules that we find useful
-  php-pear
-  php-imagick
-  php-memcache
-  php-memcached
-  php-ssh2
-  php-xdebug
-  php-yaml
-  php7.2-bcmath
-  php7.2-curl
-  php7.2-gd
-  php7.2-intl
-  php7.2-mbstring
-  php7.2-mysql
-  php7.2-imap
-  php7.2-json
-  php7.2-soap
-  php7.2-xml
-  php7.2-zip
-
-  # nginx is installed as the default web server
-  nginx
-
-  # memcached is made available for object caching
-  memcached
-
-  # mariadb (drop-in replacement on mysql) is the default database
-  mariadb-server
-
-  # other packages that come in handy
-  imagemagick
-  subversion
-  git
-  git-lfs
-  git-svn
-  zip
-  unzip
-  ngrep
-  curl
-  make
-  vim
-  colordiff
-  postfix
-  python-pip
-  lftp
-
-  # ntp service to keep clock current
-  ntp
-  ntpdate
-
-  # Required for i18n tools
-  gettext
-
-  # Required for Webgrind
-  graphviz
-
-  # dos2unix
-  # Allows conversion of DOS style line endings to something less troublesome
-  # in Linux.
-  dos2unix
-
-  # nodejs for use by grunt
-  g++
-  nodejs
-)
-
 ### FUNCTIONS
 
 git_ppa_check() {
@@ -352,6 +262,95 @@ package_install() {
 
   # Install required packages
   echo " * Installing apt-get packages..."
+
+  # Build a bash array to pass all of the packages we want to install to a single
+  # apt-get command. This avoids doing all the leg work each time a package is
+  # set to install. It also allows us to easily comment out or add single
+  # packages.
+  apt_package_install_list=(
+    # Please avoid apostrophes in these comments - they break vim syntax
+    # highlighting.
+    #
+    software-properties-common
+
+    # PHP7
+    #
+    # Our base packages for php7.2. As long as php7.2-fpm and php7.2-cli are
+    # installed, there is no need to install the general php7.2 package, which
+    # can sometimes install apache as a requirement.
+    php7.2-fpm
+    php7.2-cli
+
+    # Common and dev packages for php
+    php7.2-common
+    php7.2-dev
+
+    # Extra PHP modules that we find useful
+    php-pear
+    php-imagick
+    php-memcache
+    php-memcached
+    php-ssh2
+    php-xdebug
+    php-yaml
+    php7.2-bcmath
+    php7.2-curl
+    php7.2-gd
+    php7.2-intl
+    php7.2-mbstring
+    php7.2-mysql
+    php7.2-imap
+    php7.2-json
+    php7.2-soap
+    php7.2-xml
+    php7.2-zip
+
+    # nginx is installed as the default web server
+    nginx
+
+    # memcached is made available for object caching
+    memcached
+
+    # mariadb (drop-in replacement on mysql) is the default database
+    mariadb-server
+
+    # other packages that come in handy
+    imagemagick
+    subversion
+    git
+    git-lfs
+    git-svn
+    zip
+    unzip
+    ngrep
+    curl
+    make
+    vim
+    colordiff
+    postfix
+    python-pip
+    lftp
+
+    # ntp service to keep clock current
+    ntp
+    ntpdate
+
+    # Required for i18n tools
+    gettext
+
+    # Required for Webgrind
+    graphviz
+
+    # dos2unix
+    # Allows conversion of DOS style line endings to something less troublesome
+    # in Linux.
+    dos2unix
+
+    # nodejs for use by grunt
+    g++
+    nodejs
+  )
+
   # To avoid issues on provisioning and failed apt installation
   dpkg --configure -a
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
