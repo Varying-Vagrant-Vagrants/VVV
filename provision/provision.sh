@@ -89,7 +89,7 @@ package_install() {
 
   # To avoid issues on provisioning and failed apt installation
   dpkg --configure -a
-  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${VVV_PACKAGE_LIST[@]}; then
     echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean -y
     return 1
