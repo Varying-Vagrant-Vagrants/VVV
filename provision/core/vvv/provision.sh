@@ -40,3 +40,14 @@ VVV_PACKAGE_LIST+=(
   # in Linux.
   dos2unix
 )
+
+function shyaml_setup() {
+  # Shyaml
+  #
+  # Used for passing custom parameters to the bash provisioning scripts
+  echo " * Installing Shyaml for bash provisioning.."
+  sudo pip install shyaml
+}
+export -f shyaml_setup
+
+vvv_add_hook after_packages shyaml_setup 0

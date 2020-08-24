@@ -107,12 +107,6 @@ package_install() {
 
 tools_install() {
   echo " * Running tools_install"
-
-  # Shyaml
-  #
-  # Used for passing custom parameters to the bash provisioning scripts
-  echo " * Installing Shyaml for bash provisioning.."
-  sudo pip install shyaml
 }
 
 nginx_setup() {
