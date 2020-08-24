@@ -3,12 +3,7 @@
 # apt-get does not have latest version of git,
 # so let's the use ppa repository instead.
 #
-local STATUS=1
-if [ ! -z "$(ls -A /etc/apt/sources.list.d/)" ]; then
-  grep -Rq "^deb.*git-core/ppa" /etc/apt/sources.list.d/*.list
-  STATUS=$?
-fi
-if [ "$STATUS" -ne "0" ]; then
+if ! vvv_src_list_has "git-core/ppa"; then
   # Add ppa repo.
   echo " * Adding ppa:git-core/ppa repository"
   sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null

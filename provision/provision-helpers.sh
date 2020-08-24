@@ -160,6 +160,17 @@ function vvv_apt_keys_has() {
 }
 export -f vvv_apt_keys_has
 
+function vvv_src_list_has() {
+  local STATUS=1
+  if [ ! -z "$(ls -A /etc/apt/sources.list.d/)" ]; then
+    grep -Rq "^deb.*$1" /etc/apt/sources.list.d/*.list
+    STATUS=$?
+  fi
+
+  return $STATUS
+}
+export -f vvv_src_list_has
+
 function vvv_info() {
   echo -e "${CRESET}${1}${CRESET}"
   if [ "${VVV_LOG}" != "main" ]; then
