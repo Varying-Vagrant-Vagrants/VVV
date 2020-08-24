@@ -50,8 +50,7 @@ depreacted_distro
 
 ### FUNCTIONS
 
-package_install() {
-
+mini_provisioners() {
   export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
   export VVV_PACKAGE_LIST=(
     software-properties-common
@@ -64,6 +63,9 @@ package_install() {
   . "/srv/provision/core/nginx/provision.sh"
   . "/srv/provision/core/php/provision.sh"
   . "/srv/provision/core/nodejs/provision.sh"
+}
+
+package_install() {
 
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   echo " * Cleaning up dpkg lock file"
@@ -557,6 +559,9 @@ profile_setup
 if ! network_check; then
   exit 1
 fi
+
+mini_provisioners
+
 # Package and Tools Install
 echo " "
 echo " * Main packages check and install."
