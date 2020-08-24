@@ -105,10 +105,6 @@ package_install() {
   return 0
 }
 
-tools_install() {
-  echo " * Running tools_install"
-}
-
 nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /root/.rnd ]]; then
@@ -456,9 +452,8 @@ if ! package_install; then
   exit 1
 fi
 
+echo " * Running tools_install"
 vvv_hook after_packages
-
-tools_install
 
 mysql_setup
 nginx_setup
