@@ -1,9 +1,11 @@
-cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
+if ! vvv_src_list_has "nginx.org"; then
+  cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
 # Provides Nginx mainline
 deb https://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb-src https://nginx.org/packages/mainline/ubuntu/ bionic nginx
 
 VVVSRC
+fi
 
 # Before running `apt-get update`, we should add the public keys for
 # the packages that we are installing from non standard sources via
