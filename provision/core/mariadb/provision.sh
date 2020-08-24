@@ -34,4 +34,33 @@ if ! vvv_apt_keys_has 'MariaDB'; then
   apt-key add /srv/config/apt-keys/mariadb.key
 fi
 
+if ! vvv_src_list_has "nginx.org"; then
+  cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
+# MariaDB 10.4 Amsterdam
+deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
+deb-src http://ams2.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
+
+# MariaDB 10.4 Digital Ocean Singapore
+deb [arch=amd64,arm64,ppc64el] http://sgp1.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
+deb-src http://sgp1.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
+
+# MariaDB 10.4 Digital Ocean San Francisco
+deb [arch=amd64,arm64,ppc64el] http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
+deb-src http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
+
+# MariaDB 10.4 Yamagata University Japan
+deb [arch=amd64,arm64,ppc64el] http://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/repo/10.4/ubuntu bionic main
+deb-src http://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/repo/10.4/ubuntu bionic main
+
+# MariaDB 10.4 UKFast Manchester
+deb [arch=amd64,arm64,ppc64el] http://mirrors.ukfast.co.uk/sites/mariadb/repo/10.4/ubuntu bionic main
+deb-src http://mirrors.ukfast.co.uk/sites/mariadb/repo/10.4/ubuntu bionic main
+
+# MariaDB 10.4 PicoNets Mumbai
+deb [arch=amd64,arm64,ppc64el] http://mirrors.piconets.webwerks.in/mariadb-mirror/repo/10.4/ubuntu bionic main
+deb-src http://mirrors.piconets.webwerks.in/mariadb-mirror/repo/10.4/ubuntu bionic main
+
+VVVSRC
+fi
+
 VVV_PACKAGE_LIST+=(mariadb-server)
