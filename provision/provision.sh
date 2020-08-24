@@ -53,7 +53,9 @@ depreacted_distro
 package_install() {
 
   export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-  export VVV_PACKAGE_LIST=()
+  export VVV_PACKAGE_LIST=(
+    software-properties-common
+  )
 
   . "/srv/provision/core/git/provision.sh"
   . "/srv/provision/core/mariadb/provision.sh"
@@ -133,7 +135,6 @@ package_install() {
     # Please avoid apostrophes in these comments - they break vim syntax
     # highlighting.
     #
-    software-properties-common
 
     # PHP7
     #
