@@ -235,91 +235,6 @@ EOL
   systemctl start mailhog
 }
 
-check_mysql_root_password() {
-  echo " * Checking the root user password is root"
-  # Get if root has correct password and mysql_native_password as plugin
-  sql=$( cat <<-SQL
-      SELECT count(*) from mysql.user WHERE
-      User='root' AND
-      authentication_string=PASSWORD('root') AND
-      plugin='mysql_native_password';
-SQL
-)
-  root_matches=$(mysql -u root --password=root -s -N -e "${sql}")
-  if [[ $? -eq 0 && $root_matches == "1" ]]; then
-    # mysql connected and the SQL above matched
-    echo " * The root password is the expected value"
-    return 0
-  fi
-  # Do reset password in safemode
-  echo " * The root password is not root, fixing"
-  sql=$( cat <<-SQL
-      ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
-      FLUSH PRIVILEGES;
-SQL
-)
-  mysql -u root -proot -e "${sql}"
-  if [[ $? -eq 0 ]]; then
-    echo "   - root user password should now be root"
-  else
-    vvv_warn "   - could not reset root password"
-  fi
-}
-
-mysql_setup() {
-  # If MariaDB/MySQL is installed, go through the various imports and service tasks.
-  local exists_mysql
-
-  exists_mysql="$(service mysql status)"
-  if [[ "mysql: unrecognized service" == "${exists_mysql}" ]]; then
-    echo -e "\n ! MySQL is not installed. No databases imported."
-    return
-  fi
-  echo -e "\n * Setting up database configuration file links..."
-
-  # Copy mysql configuration from local
-  cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
-  echo " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
-
-  cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
-  chmod 0644 "/home/vagrant/.my.cnf"
-  echo " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
-
-  check_mysql_root_password
-
-  # MySQL gives us an error if we restart a non running service, which
-  # happens after a `vagrant halt`. Check to see if it's running before
-  # deciding whether to start or restart.
-  if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
-    echo " * Starting the mysql service"
-    service mysql start
-  else
-    echo " * Restarting mysql service"
-    service mysql restart
-  fi
-
-  # IMPORT SQL
-  #
-  # Create the databases (unique to system) that will be imported with
-  # the mysqldump files located in database/backups/
-  if [[ -f "/srv/database/init-custom.sql" ]]; then
-    echo " * Running custom init-custom.sql under the root user..."
-    mysql -u "root" -p"root" < "/srv/database/init-custom.sql"
-    echo " * init-custom.sql has run"
-  else
-    echo -e "\n * No custom MySQL scripting found in database/init-custom.sql, skipping..."
-  fi
-
-  # Setup MySQL by importing an init file that creates necessary
-  # users and databases that our vagrant setup relies on.
-  mysql -u "root" -p"root" < "/srv/database/init.sql"
-  echo " * Initial MySQL prep..."
-
-  # Process each mysqldump SQL file in database/backups to import
-  # an initial data set for MySQL.
-  "/srv/database/import-sql.sh"
-}
-
 services_restart() {
   # RESTART SERVICES
   #
@@ -455,7 +370,6 @@ fi
 echo " * Running tools_install"
 vvv_hook after_packages
 
-mysql_setup
 nginx_setup
 mailhog_setup
 
