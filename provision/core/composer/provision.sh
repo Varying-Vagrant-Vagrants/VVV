@@ -42,6 +42,8 @@ composer_setup() {
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --prefer-dist --no-update --no-progress --no-interaction phpunit/phpunit:^7.5
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
   fi
+
+  vvv_hook after_composer
 }
 export -f composer_setup
 
