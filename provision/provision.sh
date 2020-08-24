@@ -105,37 +105,6 @@ package_install() {
   return 0
 }
 
-phpfpm_setup() {
-  # Copy php-fpm configuration from local
-  echo " * Copying /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
-  cp -f "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
-
-  echo " * Copying /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
-  cp -f "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
-
-  echo " * Copying /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
-  cp -f "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
-
-  echo " * Copying /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
-  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
-
-  echo " * Copying /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
-  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
-
-  echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
-  cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.2/mods-available/mailhog.ini"
-
-  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
-    echo " * Cleaning up mailcatcher.ini from a previous install"
-    rm -f /etc/php/7.2/mods-available/mailcatcher.ini
-  fi
-
-  # Copy memcached configuration from local
-  echo " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
-}
-
 mailhog_setup() {
   if [[ -f "/etc/init/mailcatcher.conf" ]]; then
     echo " * Cleaning up old mailcatcher.conf"
@@ -313,7 +282,6 @@ vvv_hook after_packages
 
 mailhog_setup
 
-phpfpm_setup
 services_restart
 
 # WP-CLI and debugging tools
