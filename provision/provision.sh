@@ -87,12 +87,6 @@ package_install() {
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( echo "${keys}" | grep 'MariaDB') ]]; then
-    # Apply the MariaDB signing keyg
-    echo " * Applying the MariaDB signing key..."
-    apt-key add /srv/config/apt-keys/mariadb.key
-  fi
-
   if [[ ! $( echo "${keys}" | grep 'git-lfs') ]]; then
     # Apply the PackageCloud signing key which signs git lfs
     echo " * Applying the PackageCloud Git-LFS signing key..."

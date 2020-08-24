@@ -28,4 +28,10 @@ mkdir -p "/etc/mysql/conf.d"
 echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
 cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
 
+if ! vvv_apt_keys_has 'MariaDB'; then
+  # Apply the MariaDB signing keyg
+  echo " * Applying the MariaDB signing key..."
+  apt-key add /srv/config/apt-keys/mariadb.key
+fi
+
 VVV_PACKAGE_LIST+=(mariadb-server)
