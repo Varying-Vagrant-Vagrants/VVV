@@ -81,11 +81,6 @@ package_install() {
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
-  if [[ ! $( echo "${keys}" | grep 'MongoDB 4.0') ]]; then
-    echo " * Applying the MongoDB 4.0 signing key..."
-    apt-key add /srv/config/apt-keys/mongo-server-4.0.asc
-  fi
-
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   echo " * Cleaning up dpkg lock file"
   rm /var/lib/dpkg/lock*
