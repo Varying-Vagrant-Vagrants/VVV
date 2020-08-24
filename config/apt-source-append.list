@@ -1,6 +1,2 @@
 # Additional sources will be added here to help control the
 # versions of various packages that are installed
-
-# VVV mirror packages
-deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
-deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main

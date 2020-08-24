@@ -57,6 +57,7 @@ package_install() {
     software-properties-common
   )
 
+  . "/srv/provision/core/vvv/provision.sh"
   . "/srv/provision/core/git/provision.sh"
   . "/srv/provision/core/mariadb/provision.sh"
   . "/srv/provision/core/postfix/provision.sh"
@@ -68,13 +69,6 @@ package_install() {
   echo " * Copying custom apt sources"
   cp -f /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
 
-  echo " * Checking Apt Keys"
-  keys=$( apt-key list )
-  if [[ ! $( echo "${keys}" | grep 'Varying Vagrant Vagrants') ]]; then
-    # Apply the VVV signing key
-    echo " * Applying the Varying Vagrant Vagrants mirror signing key..."
-    apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
-  fi
 
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   echo " * Cleaning up dpkg lock file"
@@ -92,40 +86,6 @@ package_install() {
 
   # Install required packages
   echo " * Installing apt-get packages..."
-
-  # Build a bash array to pass all of the packages we want to install to a single
-  # apt-get command. This avoids doing all the leg work each time a package is
-  # set to install. It also allows us to easily comment out or add single
-  # packages.
-  apt_package_install_list=(
-    # Please avoid apostrophes in these comments - they break vim syntax
-    # highlighting.
-    #
-
-    # other packages that come in handy
-    subversion
-    zip
-    unzip
-    ngrep
-    curl
-    make
-    vim
-    colordiff
-    python-pip
-    lftp
-
-    # ntp service to keep clock current
-    ntp
-    ntpdate
-
-    # Required for i18n tools
-    gettext
-
-    # dos2unix
-    # Allows conversion of DOS style line endings to something less troublesome
-    # in Linux.
-    dos2unix
-  )
 
   # To avoid issues on provisioning and failed apt installation
   dpkg --configure -a
