@@ -62,6 +62,7 @@ package_install() {
   . "/srv/provision/core/postfix/provision.sh"
   . "/srv/provision/core/nginx/provision.sh"
   . "/srv/provision/core/php/provision.sh"
+  . "/srv/provision/core/nodejs/provision.sh"
 
   # Provide our custom apt sources before running `apt-get update`
   echo " * Copying custom apt sources"
@@ -69,12 +70,6 @@ package_install() {
 
   echo " * Checking Apt Keys"
   keys=$( apt-key list )
-  if [[ ! $( echo "${keys}" | grep 'NodeSource') ]]; then
-    # Retrieve the NodeJS signing key from nodesource.com
-    echo " * Applying NodeSource NodeJS signing key..."
-    apt-key add /srv/config/apt-keys/nodesource.gpg.key
-  fi
-
   if [[ ! $( echo "${keys}" | grep 'Varying Vagrant Vagrants') ]]; then
     # Apply the VVV signing key
     echo " * Applying the Varying Vagrant Vagrants mirror signing key..."
@@ -130,10 +125,6 @@ package_install() {
     # Allows conversion of DOS style line endings to something less troublesome
     # in Linux.
     dos2unix
-
-    # nodejs for use by grunt
-    g++
-    nodejs
   )
 
   # To avoid issues on provisioning and failed apt installation

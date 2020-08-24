@@ -4,7 +4,3 @@
 # VVV mirror packages
 deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
 deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
-
-# Provides Node.js
-deb https://deb.nodesource.com/node_10.x bionic main
-deb-src https://deb.nodesource.com/node_10.x bionic main
