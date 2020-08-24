@@ -154,7 +154,7 @@ export -f noroot
 
 function vvv_apt_keys_has() {
   local keys=$( apt-key list )
-  if [[ ! $( echo "${keys}" | grep $1) ]]; then
+  if [[ ! $( echo "${keys}" | grep "$1") ]]; then
     return 1
   fi
 }
