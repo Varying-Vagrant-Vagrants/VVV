@@ -152,6 +152,14 @@ function noroot() {
 }
 export -f noroot
 
+function vvv_apt_keys_has() {
+  local keys=$( apt-key list )
+  if [[ ! $( echo "${keys}" | grep $1) ]]; then
+    return 1
+  fi
+}
+export -f vvv_apt_keys_has
+
 function vvv_info() {
   echo -e "${CRESET}${1}${CRESET}"
   if [ "${VVV_LOG}" != "main" ]; then

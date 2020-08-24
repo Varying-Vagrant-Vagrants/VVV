@@ -60,6 +60,7 @@ package_install() {
   . "/srv/provision/core/git/provision.sh"
   . "/srv/provision/core/mariadb/provision.sh"
   . "/srv/provision/core/postfix/provision.sh"
+  . "/srv/provision/core/nginx/provision.sh"
 
   # Provide our custom apt sources before running `apt-get update`
   echo " * Copying custom apt sources"
@@ -73,14 +74,6 @@ package_install() {
     apt-key add /srv/config/apt-keys/nodesource.gpg.key
   fi
 
-  # Before running `apt-get update`, we should add the public keys for
-  # the packages that we are installing from non standard sources via
-  # our appended apt source.list
-  if [[ ! $( echo "${keys}" | grep 'nginx') ]]; then
-    # Retrieve the Nginx signing key from nginx.org
-    echo " * Applying Nginx signing key..."
-    apt-key add /srv/config/apt-keys/nginx_signing.key
-  fi
 
   if [[ ! $( echo "${keys}" | grep 'Ondřej') ]]; then
     # Apply the PHP signing key
@@ -167,9 +160,6 @@ package_install() {
     php7.2-soap
     php7.2-xml
     php7.2-zip
-
-    # nginx is installed as the default web server
-    nginx
 
     # memcached is made available for object caching
     memcached

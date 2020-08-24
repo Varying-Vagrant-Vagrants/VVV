@@ -1,10 +1,6 @@
 # Additional sources will be added here to help control the
 # versions of various packages that are installed
 
-# Provides Nginx mainline
-deb https://nginx.org/packages/mainline/ubuntu/ bionic nginx
-deb-src https://nginx.org/packages/mainline/ubuntu/ bionic nginx
-
 # Provides PHP7
 deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
 deb-src http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
