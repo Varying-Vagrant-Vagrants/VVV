@@ -65,11 +65,6 @@ package_install() {
   . "/srv/provision/core/php/provision.sh"
   . "/srv/provision/core/nodejs/provision.sh"
 
-  # Provide our custom apt sources before running `apt-get update`
-  echo " * Copying custom apt sources"
-  cp -f /srv/config/apt-source-append.list /etc/apt/sources.list.d/vvv-sources.list
-
-
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   echo " * Cleaning up dpkg lock file"
   rm /var/lib/dpkg/lock*
