@@ -108,13 +108,6 @@ package_install() {
 tools_install() {
   echo " * Running tools_install"
 
-  # Graphviz
-  #
-  # Set up a symlink between the Graphviz path defined in the default Webgrind
-  # config and actual path.
-  echo " * Adding graphviz symlink for Webgrind..."
-  ln -sf "/usr/bin/dot" "/usr/local/bin/dot"
-
   # Shyaml
   #
   # Used for passing custom parameters to the bash provisioning scripts

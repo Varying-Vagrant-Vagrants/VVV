@@ -67,3 +67,15 @@ VVV_PACKAGE_LIST+=(
   # Required for Webgrind
   graphviz
 )
+
+function graphviz_setup() {
+  # Graphviz
+  #
+  # Set up a symlink between the Graphviz path defined in the default Webgrind
+  # config and actual path.
+  echo " * Adding graphviz symlink for Webgrind..."
+  ln -sf "/usr/bin/dot" "/usr/local/bin/dot"
+}
+export -f graphviz_setup
+
+vvv_add_hook after_packages graphviz_setup 20
