@@ -126,9 +126,6 @@ package_install() {
     # Required for i18n tools
     gettext
 
-    # Required for Webgrind
-    graphviz
-
     # dos2unix
     # Allows conversion of DOS style line endings to something less troublesome
     # in Linux.

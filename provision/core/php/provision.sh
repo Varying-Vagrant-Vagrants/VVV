@@ -31,7 +31,6 @@ VVV_PACKAGE_LIST+=(
   # Extra PHP modules that we find useful
   php-pear
   php-ssh2
-  php-xdebug
   php-yaml
   php7.2-bcmath
   php7.2-curl
@@ -59,4 +58,12 @@ VVV_PACKAGE_LIST+=(
 VVV_PACKAGE_LIST+=(
   php-imagick
   imagemagick
+)
+
+# XDebug
+VVV_PACKAGE_LIST+=(
+  php-xdebug
+
+  # Required for Webgrind
+  graphviz
 )
