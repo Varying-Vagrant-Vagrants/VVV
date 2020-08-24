@@ -12,6 +12,21 @@ else
   echo " * git-core/ppa already present, skipping"
 fi
 
+if ! vvv_src_list_has "github/git-lfs"; then
+  cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
+# git lfs (large file storage plugin for git)
+deb https://packagecloud.io/github/git-lfs/ubuntu/ bionic main
+deb-src https://packagecloud.io/github/git-lfs/ubuntu/ bionic main
+
+VVVSRC
+fi
+
+if ! vvv_apt_keys_has 'git-lfs'; then
+  # Apply the PackageCloud signing key which signs git lfs
+  echo " * Applying the PackageCloud Git-LFS signing key..."
+  apt-key add /srv/config/apt-keys/git-lfs.key
+fi
+
 VVV_PACKAGE_LIST+=(
   git
   git-lfs
