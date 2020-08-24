@@ -66,6 +66,7 @@ mini_provisioners() {
   . "/srv/provision/core/nodejs/provision.sh"
   . "/srv/provision/core/grunt/provision.sh"
   . "/srv/provision/core/mailhog/provision.sh"
+  . "/srv/provision/core/wp-cli/provision.sh"
 }
 
 package_install() {
@@ -130,32 +131,6 @@ services_restart() {
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
   usermod -a -G www-data vagrant
-}
-
-wp_cli() {
-  # WP-CLI Install
-  local exists_wpcli
-
-  # Remove old wp-cli symlink, if it exists.
-  if [[ -L "/usr/local/bin/wp" ]]; then
-    echo " * Removing old wp-cli symlink"
-    rm -f /usr/local/bin/wp
-  fi
-
-  exists_wpcli="$(which wp)"
-  if [[ "/usr/local/bin/wp" != "${exists_wpcli}" ]]; then
-    echo " * Downloading wp-cli nightly, see http://wp-cli.org"
-    curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
-    chmod +x wp-cli-nightly.phar
-    sudo mv wp-cli-nightly.phar /usr/local/bin/wp
-
-    echo " * Grabbing WP CLI bash completions"
-    # Install bash completions
-    curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
-  else
-    echo " * Updating wp-cli..."
-    wp --allow-root cli update --nightly --yes
-  fi
 }
 
 php_codesniff() {
@@ -243,11 +218,6 @@ vvv_hook after_packages
 
 services_restart
 
-# WP-CLI and debugging tools
-echo " "
-echo " * Installing/updating wp-cli and debugging tools"
-
-wp_cli
 php_codesniff
 
 if ! network_check; then
