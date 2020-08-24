@@ -61,6 +61,7 @@ package_install() {
   . "/srv/provision/core/mariadb/provision.sh"
   . "/srv/provision/core/postfix/provision.sh"
   . "/srv/provision/core/nginx/provision.sh"
+  . "/srv/provision/core/php/provision.sh"
 
   # Provide our custom apt sources before running `apt-get update`
   echo " * Copying custom apt sources"
@@ -72,13 +73,6 @@ package_install() {
     # Retrieve the NodeJS signing key from nodesource.com
     echo " * Applying NodeSource NodeJS signing key..."
     apt-key add /srv/config/apt-keys/nodesource.gpg.key
-  fi
-
-
-  if [[ ! $( echo "${keys}" | grep 'Ondřej') ]]; then
-    # Apply the PHP signing key
-    echo " * Applying the Ondřej PHP signing key..."
-    apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
   if [[ ! $( echo "${keys}" | grep 'Varying Vagrant Vagrants') ]]; then
@@ -118,43 +112,7 @@ package_install() {
     # highlighting.
     #
 
-    # PHP7
-    #
-    # Our base packages for php7.2. As long as php7.2-fpm and php7.2-cli are
-    # installed, there is no need to install the general php7.2 package, which
-    # can sometimes install apache as a requirement.
-    php7.2-fpm
-    php7.2-cli
-
-    # Common and dev packages for php
-    php7.2-common
-    php7.2-dev
-
-    # Extra PHP modules that we find useful
-    php-pear
-    php-imagick
-    php-memcache
-    php-memcached
-    php-ssh2
-    php-xdebug
-    php-yaml
-    php7.2-bcmath
-    php7.2-curl
-    php7.2-gd
-    php7.2-intl
-    php7.2-mbstring
-    php7.2-mysql
-    php7.2-imap
-    php7.2-json
-    php7.2-soap
-    php7.2-xml
-    php7.2-zip
-
-    # memcached is made available for object caching
-    memcached
-
     # other packages that come in handy
-    imagemagick
     subversion
     zip
     unzip
