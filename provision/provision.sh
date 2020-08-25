@@ -117,19 +117,6 @@ services_restart() {
 }
 vvv_add_hook finalize services_restart 1000
 
-cleanup_vvv(){
-  # Cleanup the hosts file
-  echo " * Cleaning the virtual machine's /etc/hosts file..."
-  sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
-  echo "127.0.0.1 vvv # vvv-auto" >> "/etc/hosts"
-  echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
-  if is_utility_installed core tideways; then
-    echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
-    echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
-  fi
-  mv /tmp/hosts /etc/hosts
-}
-
 ### SCRIPT
 #set -xv
 
@@ -157,10 +144,6 @@ vvv_hook after_packages
 
 echo " * Finalizing"
 vvv_hook finalize
-
-# VVV custom site import
-echo " "
-cleanup_vvv
 
 #set +xv
 # And it's done

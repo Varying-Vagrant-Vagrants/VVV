@@ -86,3 +86,19 @@ function vvv_finalize_svn_check() {
 export -f vvv_finalize_svn_check
 
 vvv_add_hook finalize vvv_finalize_svn_check 20
+
+cleanup_vvv(){
+  echo " "
+  # Cleanup the hosts file
+  echo " * Cleaning the virtual machine's /etc/hosts file..."
+  sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
+  echo "127.0.0.1 vvv # vvv-auto" >> "/etc/hosts"
+  echo "127.0.0.1 vvv.test # vvv-auto" >> "/etc/hosts"
+  if is_utility_installed core tideways; then
+    echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
+    echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
+  fi
+  mv /tmp/hosts /etc/hosts
+}
+export -f cleanup_vvv
+vvv_add_hook finalize cleanup_vvv 15
