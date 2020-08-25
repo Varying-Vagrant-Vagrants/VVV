@@ -43,3 +43,11 @@ export -f mailhog_setup
 vvv_add_hook after_packages mailhog_setup
 
 vvv_add_hook services_restart "service mailhog restart"
+
+mailhog_php_finalize() {
+  # Enable PHP MailHog sendmail settings by default
+  echo " * Enabling MailHog for PHP"
+  phpenmod -s ALL mailhog
+}
+
+vvv_add_hook php_finalize mailhog_php_finalize

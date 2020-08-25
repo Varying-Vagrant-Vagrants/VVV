@@ -109,24 +109,13 @@ package_install() {
 }
 
 services_restart() {
-  # Disable PHP Xdebug module by default
-  echo " * Disabling XDebug PHP extension"
-  phpdismod xdebug
-
-  # Enable PHP MailHog sendmail settings by default
-  echo " * Enabling MailHog for PHP"
-  phpenmod -s ALL mailhog
-
-  # Add the vagrant user to the www-data group so that it has better access
-  # to PHP and Nginx related files.
-  usermod -a -G www-data vagrant
-
   # RESTART SERVICES
   #
   # Make sure the services we expect to be running are running.
   echo -e "\n * Restarting services..."
   vvv_hook services_restart
 }
+vvv_add_hook finalize services_restart 1000
 
 wpsvn_check() {
   echo " * Searching for SVN repositories that need upgrading"
@@ -190,7 +179,8 @@ fi
 echo " * Running tools_install"
 vvv_hook after_packages
 
-services_restart
+echo " * Finalizing"
+vvv_hook finalize
 
 if ! network_check; then
   exit 1

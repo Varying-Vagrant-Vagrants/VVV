@@ -114,6 +114,21 @@ export -f phpfpm_setup
 
 vvv_add_hook after_packages phpfpm_setup 50
 
+phpfpm_finalize() {
+  # Disable PHP Xdebug module by default
+  echo " * Disabling XDebug PHP extension"
+  phpdismod xdebug
+
+  # Add the vagrant user to the www-data group so that it has better access
+  # to PHP and Nginx related files.
+  usermod -a -G www-data vagrant
+
+  vvv_hook php_finalize
+}
+export -f phpfpm_finalize
+
+vvv_add_hook finalize phpfpm_finalize
+
 vvv_add_hook services_restart "service memcached restart"
 
 phpfpm_services_restart() {
