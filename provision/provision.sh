@@ -117,26 +117,6 @@ services_restart() {
 }
 vvv_add_hook finalize services_restart 1000
 
-wpsvn_check() {
-  echo " * Searching for SVN repositories that need upgrading"
-  # Get all SVN repos.
-  svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
-
-  # Do we have any?
-  if [[ -n $svn_repos ]]; then
-    for repo in $svn_repos; do
-      # Test to see if an svn upgrade is needed on this repo.
-      svn_test=$( svn status -u "$repo" 2>&1 );
-
-      if [[ "$svn_test" == *"svn upgrade"* ]]; then
-        # If it is needed do it!
-        echo " * Upgrading svn repository: ${repo}"
-        svn upgrade "${repo/%\.svn/}"
-      fi;
-    done
-  fi;
-}
-
 cleanup_vvv(){
   echo " * Cleaning up Nginx configs"
   # Kill previously symlinked Nginx configs
@@ -181,14 +161,6 @@ vvv_hook after_packages
 
 echo " * Finalizing"
 vvv_hook finalize
-
-if ! network_check; then
-  exit 1
-fi
-# Time for WordPress!
-echo " "
-
-wpsvn_check
 
 # VVV custom site import
 echo " "
