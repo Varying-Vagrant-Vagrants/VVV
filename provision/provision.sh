@@ -118,10 +118,6 @@ services_restart() {
 vvv_add_hook finalize services_restart 1000
 
 cleanup_vvv(){
-  echo " * Cleaning up Nginx configs"
-  # Kill previously symlinked Nginx configs
-  find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
-
   # Cleanup the hosts file
   echo " * Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts

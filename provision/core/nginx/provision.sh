@@ -81,3 +81,12 @@ export -f nginx_setup
 vvv_add_hook after_packages nginx_setup 40
 
 vvv_add_hook services_restart "service nginx restart"
+
+nginx_cleanup() {
+  echo " "
+  echo " * Cleaning up Nginx configs"
+  # Kill previously symlinked Nginx configs
+  find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
+}
+export -f nginx_cleanup
+vvv_add_hook finalize nginx_cleanup
