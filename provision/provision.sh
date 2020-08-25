@@ -109,15 +109,6 @@ package_install() {
 }
 
 services_restart() {
-  # RESTART SERVICES
-  #
-  # Make sure the services we expect to be running are running.
-  echo -e "\n * Restarting services..."
-  service nginx restart
-  service memcached restart
-  service mailhog restart
-  service ntp restart
-
   # Disable PHP Xdebug module by default
   echo " * Disabling XDebug PHP extension"
   phpdismod xdebug
@@ -126,12 +117,15 @@ services_restart() {
   echo " * Enabling MailHog for PHP"
   phpenmod -s ALL mailhog
 
-  # Restart all php-fpm versions
-  find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
-
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
   usermod -a -G www-data vagrant
+
+  # RESTART SERVICES
+  #
+  # Make sure the services we expect to be running are running.
+  echo -e "\n * Restarting services..."
+  vvv_hook services_restart
 }
 
 wpsvn_check() {

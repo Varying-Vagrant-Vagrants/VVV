@@ -41,3 +41,5 @@ EOL
 export -f mailhog_setup
 
 vvv_add_hook after_packages mailhog_setup
+
+vvv_add_hook services_restart "service mailhog restart"

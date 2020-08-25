@@ -113,3 +113,13 @@ phpfpm_setup() {
 export -f phpfpm_setup
 
 vvv_add_hook after_packages phpfpm_setup 50
+
+vvv_add_hook services_restart "service memcached restart"
+
+phpfpm_services_restart() {
+  # Restart all php-fpm versions
+  find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+}
+export -f phpfpm_services_restart
+
+vvv_add_hook services_restart phpfpm_services_restart
