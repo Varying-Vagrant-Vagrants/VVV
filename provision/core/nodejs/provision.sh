@@ -1,25 +1,28 @@
 #!/bin/bash
 
-if ! vvv_src_list_has "nodesource"; then
-  cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
+function nodejs_register_packages() {
+  if ! vvv_src_list_has "nodesource"; then
+    cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
 # Provides Node.js
 deb https://deb.nodesource.com/node_10.x bionic main
 deb-src https://deb.nodesource.com/node_10.x bionic main
 
 VVVSRC
-fi
+  fi
 
-if ! vvv_apt_keys_has 'NodeSource'; then
-  # Retrieve the NodeJS signing key from nodesource.com
-  echo " * Applying NodeSource NodeJS signing key..."
-  apt-key add /srv/config/apt-keys/nodesource.gpg.key
-fi
+  if ! vvv_apt_keys_has 'NodeSource'; then
+    # Retrieve the NodeJS signing key from nodesource.com
+    echo " * Applying NodeSource NodeJS signing key..."
+    apt-key add /srv/config/apt-keys/nodesource.gpg.key
+  fi
 
-VVV_PACKAGE_LIST+=(
-  # nodejs for use by grunt
-  g++
-  nodejs
-)
+  VVV_PACKAGE_LIST+=(
+    # nodejs for use by grunt
+    g++
+    nodejs
+  )
+}
+vvv_add_hook before_packages nodejs_register_packages
 
 node_setup() {
   if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then

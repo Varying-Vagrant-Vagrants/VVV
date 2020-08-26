@@ -1,41 +1,42 @@
 #!/bin/bash
 
 # MariaDB/MySQL
-#
-# Use debconf-set-selections to specify the default password for the root MariaDB
-# account. This runs on every provision, even if MariaDB has been installed. If
-# MariaDB is already installed, it will not affect anything.
-echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
-echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
+function mariadb_register_packages() {
+  #
+  # Use debconf-set-selections to specify the default password for the root MariaDB
+  # account. This runs on every provision, even if MariaDB has been installed. If
+  # MariaDB is already installed, it will not affect anything.
+  echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
 
-echo -e "\n * Setting up MySQL configuration file links..."
+  echo -e "\n * Setting up MySQL configuration file links..."
 
-if grep -q 'mysql' /etc/group; then
-echo " * mysql group exists"
-else
-echo " * creating mysql group"
-groupadd -g 9001 mysql
-fi
+  if grep -q 'mysql' /etc/group; then
+    echo " * mysql group exists"
+  else
+    echo " * creating mysql group"
+    groupadd -g 9001 mysql
+  fi
 
-if id -u mysql >/dev/null 2>&1; then
-echo " * mysql user present and has uid $(id -u mysql)"
-else
-echo " * adding the mysql user"
-useradd -u 9001 -g mysql -G vboxsf -r mysql
-fi
+  if id -u mysql >/dev/null 2>&1; then
+    echo " * mysql user present and has uid $(id -u mysql)"
+  else
+    echo " * adding the mysql user"
+    useradd -u 9001 -g mysql -G vboxsf -r mysql
+  fi
 
-mkdir -p "/etc/mysql/conf.d"
-echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
-cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
+  mkdir -p "/etc/mysql/conf.d"
+  echo " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
+  cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
 
-if ! vvv_apt_keys_has 'MariaDB'; then
-  # Apply the MariaDB signing keyg
-  echo " * Applying the MariaDB signing key..."
-  apt-key add /srv/config/apt-keys/mariadb.key
-fi
+  if ! vvv_apt_keys_has 'MariaDB'; then
+    # Apply the MariaDB signing keyg
+    echo " * Applying the MariaDB signing key..."
+    apt-key add /srv/config/apt-keys/mariadb.key
+  fi
 
-if ! vvv_src_list_has "MariaDB"; then
-  cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
+  if ! vvv_src_list_has "MariaDB"; then
+    cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
 # MariaDB 10.4 Amsterdam
 deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
 deb-src http://ams2.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
@@ -61,10 +62,11 @@ deb [arch=amd64,arm64,ppc64el] http://mirrors.piconets.webwerks.in/mariadb-mirro
 deb-src http://mirrors.piconets.webwerks.in/mariadb-mirror/repo/10.4/ubuntu bionic main
 
 VVVSRC
-fi
+  fi
 
-VVV_PACKAGE_LIST+=(mariadb-server)
-
+  VVV_PACKAGE_LIST+=(mariadb-server)
+}
+vvv_add_hook before_packages mariadb_register_packages
 
 check_mysql_root_password() {
   echo " * Checking the root user password is root"

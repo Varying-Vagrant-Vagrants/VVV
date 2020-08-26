@@ -85,6 +85,8 @@ fi
 
 mini_provisioners
 
+vvv_hook before_packages
+
 # Package and Tools Install
 echo " "
 echo " * Main packages check and install."
