@@ -235,7 +235,8 @@ vvv_add_hook() {
 
   local hook_prio=10
   if [[ ! -z "${3}" && "${3}" =~ [0-9]+ ]]; then
-    hook_prio=$(echo "${3}" | sed 's/^0*//')
+
+    hook_prio=$((${3} + 0))
     if [[ -z "$hook_prio" ]]; then
       hook_prio=0
     fi
