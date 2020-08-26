@@ -242,10 +242,10 @@ vvv_add_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
-  eval "if [ -z \${${hook_var_prios}} ]; then ${hook_var_prios}=(); fi"
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then ${hook_var_prios}=(); fi"
 
   local hook_var="${hook_var_prios}_${hook_prio}"
-  eval "if [ -z \${${hook_var}} ]; then ${hook_var_prios}+=(${hook_prio}); ${hook_var}=(); fi"
+  eval "if [ -z \"\${${hook_var}}\" ]; then ${hook_var_prios}+=(${hook_prio}); ${hook_var}=(); fi"
   eval "${hook_var}+=(\"${2}\")"
 }
 export -f vvv_add_hook
@@ -257,9 +257,9 @@ vvv_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
-  eval "if [ -z \${${hook_var_prios}} ]; then return 0; fi"  
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"  
   local sorted
-  eval "if [ ! -z \${${hook_var_prios}} ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
