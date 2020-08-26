@@ -44,9 +44,6 @@ export VVV_CONFIG=/vagrant/config.yml
 . "/srv/provision/provisioners.sh"
 
 . '/srv/provision/core/deprecated.sh'
-remove_v2_resources
-support_v2_certificate_path
-deprecated_distro
 
 ### FUNCTIONS
 
@@ -116,6 +113,8 @@ services_restart() {
   vvv_hook services_restart
 }
 vvv_add_hook finalize services_restart 1000
+
+vvv_hook init
 
 ### SCRIPT
 #set -xv

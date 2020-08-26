@@ -81,3 +81,7 @@ support_v2_certificate_path() {
     ln -s /srv/certificates /vagrant/certificates
   fi
 }
+
+vvv_add_hook init remove_v2_resources 5
+vvv_add_hook init support_v2_certificate_path 5
+vvv_add_hook init deprecated_distro 5
