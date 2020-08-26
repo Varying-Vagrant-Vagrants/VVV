@@ -1,4 +1,4 @@
-
+#!/bin/bash
 function install_grunt() {
   echo " * Installing Grunt CLI"
   npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional

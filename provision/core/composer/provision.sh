@@ -1,3 +1,4 @@
+#!/bin/bash
 composer_setup() {
   # Disable xdebug before any composer provisioning.
   sh /srv/config/homebin/xdebug_off

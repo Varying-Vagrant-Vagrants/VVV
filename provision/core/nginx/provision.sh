@@ -1,4 +1,4 @@
-
+#!/bin/bash
 function nginx_register_packages() {
   if ! vvv_src_list_has "nginx.org"; then
   cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list

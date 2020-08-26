@@ -1,4 +1,4 @@
-
+#!/bin/bash
 mailhog_setup() {
   if [[ -f "/etc/init/mailcatcher.conf" ]]; then
     echo " * Cleaning up old mailcatcher.conf"

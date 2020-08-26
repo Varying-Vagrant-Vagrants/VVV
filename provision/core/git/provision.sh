@@ -1,3 +1,4 @@
+#!/bin/bash
 # git
 #
 # apt-get does not have latest version of git,

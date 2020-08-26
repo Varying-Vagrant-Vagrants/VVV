@@ -1,3 +1,4 @@
+#!/bin/bash
 
 php_codesniff_setup() {
   export DEBIAN_FRONTEND=noninteractive
