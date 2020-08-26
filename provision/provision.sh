@@ -40,50 +40,32 @@ export VVV_CONFIG=/vagrant/config.yml
 # initialize provisioner helpers a bit later
 . "/srv/provision/provisioners.sh"
 
+export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+export VVV_PACKAGE_LIST=()
+
 . "/srv/provision/core/env.sh"
 . '/srv/provision/core/deprecated.sh'
-
-### FUNCTIONS
-
-mini_provisioners() {
-  export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-  export VVV_PACKAGE_LIST=(
-    software-properties-common
-  )
-
-  . "/srv/provision/core/vvv/provision.sh"
-  . "/srv/provision/core/git/provision.sh"
-  . "/srv/provision/core/mariadb/provision.sh"
-  . "/srv/provision/core/postfix/provision.sh"
-  . "/srv/provision/core/nginx/provision.sh"
-  . "/srv/provision/core/php/provision.sh"
-  . "/srv/provision/core/composer/provision.sh"
-  . "/srv/provision/core/nodejs/provision.sh"
-  . "/srv/provision/core/grunt/provision.sh"
-  . "/srv/provision/core/mailhog/provision.sh"
-  . "/srv/provision/core/wp-cli/provision.sh"
-  . "/srv/provision/core/phpcs/provision.sh"
-}
-
-services_restart() {
-  # RESTART SERVICES
-  #
-  # Make sure the services we expect to be running are running.
-  echo -e "\n * Restarting services..."
-  vvv_hook services_restart
-}
-vvv_add_hook finalize services_restart 1000
-
-vvv_hook init
+. "/srv/provision/core/vvv/provision.sh"
+. "/srv/provision/core/git/provision.sh"
+. "/srv/provision/core/mariadb/provision.sh"
+. "/srv/provision/core/postfix/provision.sh"
+. "/srv/provision/core/nginx/provision.sh"
+. "/srv/provision/core/php/provision.sh"
+. "/srv/provision/core/composer/provision.sh"
+. "/srv/provision/core/nodejs/provision.sh"
+. "/srv/provision/core/grunt/provision.sh"
+. "/srv/provision/core/mailhog/provision.sh"
+. "/srv/provision/core/wp-cli/provision.sh"
+. "/srv/provision/core/phpcs/provision.sh"
 
 ### SCRIPT
 #set -xv
 
+vvv_hook init
+
 if ! network_check; then
   exit 1
 fi
-
-mini_provisioners
 
 vvv_hook before_packages
 

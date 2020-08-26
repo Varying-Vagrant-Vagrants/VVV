@@ -17,6 +17,8 @@ VVVSRC
   fi
 
   VVV_PACKAGE_LIST+=( 
+    software-properties-common
+
     # other packages that come in handy
     subversion
     zip
@@ -114,3 +116,12 @@ function apt_hash_missmatch_fix() {
 }
 export -f apt_hash_missmatch_fix
 vvv_add_hook init apt_hash_missmatch_fix
+
+services_restart() {
+  # RESTART SERVICES
+  #
+  # Make sure the services we expect to be running are running.
+  echo -e "\n * Restarting services..."
+  vvv_hook services_restart
+}
+vvv_add_hook finalize services_restart 1000
