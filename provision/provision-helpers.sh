@@ -256,7 +256,7 @@ vvv_hook() {
   local hook_var_prios="VVV_HOOKS_${1}"
   eval "if [ -z \${${hook_var_prios}} ]; then return 0; fi"  
   local sorted
-  eval "if [ ! -z \${${hook_var_prios}} ]; then IFS=$'\n' sorted=(\$(sort <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+  eval "if [ ! -z \${${hook_var_prios}} ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
