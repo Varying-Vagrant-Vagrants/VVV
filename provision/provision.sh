@@ -7,9 +7,6 @@
 # or `vagrant reload` are used. It provides all of the default packages and
 # configurations included with Varying Vagrant Vagrants.
 
-. "/srv/provision/core/env.sh"
-setup_vvv_env
-
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
 . "/srv/config/bash_aliases"
@@ -43,6 +40,7 @@ export VVV_CONFIG=/vagrant/config.yml
 # initialize provisioner helpers a bit later
 . "/srv/provision/provisioners.sh"
 
+. "/srv/provision/core/env.sh"
 . '/srv/provision/core/deprecated.sh'
 
 ### FUNCTIONS
@@ -118,11 +116,6 @@ vvv_hook init
 
 ### SCRIPT
 #set -xv
-
-# Profile_setup
-echo " * Bash profile setup and directories."
-cleanup_terminal_splash
-profile_setup
 
 if ! network_check; then
   exit 1

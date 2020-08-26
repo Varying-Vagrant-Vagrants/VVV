@@ -104,3 +104,13 @@ profile_setup() {
   echo " * Reloading SSH Daemon"
   systemctl reload ssh
 }
+
+function vvv_init_profile() {
+  # Profile_setup
+  echo " * Bash profile setup and directories."
+  setup_vvv_env
+  cleanup_terminal_splash
+  profile_setup
+}
+
+vvv_add_hook init vvv_init_profile 0
