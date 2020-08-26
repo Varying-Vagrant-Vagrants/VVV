@@ -65,42 +65,6 @@ mini_provisioners() {
   . "/srv/provision/core/phpcs/provision.sh"
 }
 
-package_install() {
-
-  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
-  echo " * Cleaning up dpkg lock file"
-  rm /var/lib/dpkg/lock*
-
-  echo " * Updating apt keys"
-  apt-key update -y
-
-  # Update all of the package references before installing anything
-  echo " * Running apt-get update..."
-  rm -rf /var/lib/apt/lists/*
-  apt-get update -y --fix-missing
-
-  # Install required packages
-  echo " * Installing apt-get packages..."
-
-  # To avoid issues on provisioning and failed apt installation
-  dpkg --configure -a
-  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${VVV_PACKAGE_LIST[@]}; then
-    echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
-    apt-get clean -y
-    return 1
-  fi
-
-  # Remove unnecessary packages
-  echo " * Removing unnecessary apt packages..."
-  apt-get autoremove -y
-
-  # Clean up apt caches
-  echo " * Cleaning apt caches..."
-  apt-get clean -y
-
-  return 0
-}
-
 services_restart() {
   # RESTART SERVICES
   #
@@ -124,7 +88,7 @@ mini_provisioners
 # Package and Tools Install
 echo " "
 echo " * Main packages check and install."
-if ! package_install; then
+if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   vvv_error " ! Main packages check and install failed, halting provision"
   exit 1
 fi

@@ -268,3 +268,40 @@ vvv_hook() {
   done
 }
 export -f vvv_hook
+
+vvv_package_install() {
+  declare -a packages=($@)
+
+  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+  echo " * Cleaning up dpkg lock file"
+  rm /var/lib/dpkg/lock*
+
+  echo " * Updating apt keys"
+  apt-key update -y
+
+  # Update all of the package references before installing anything
+  echo " * Running apt-get update..."
+  rm -rf /var/lib/apt/lists/*
+  apt-get update -y --fix-missing
+
+  # Install required packages
+  echo " * Installing apt-get packages..."
+
+  # To avoid issues on provisioning and failed apt installation
+  dpkg --configure -a
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${packages[@]}; then
+    echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    apt-get clean -y
+    return 1
+  fi
+
+  # Remove unnecessary packages
+  echo " * Removing unnecessary apt packages..."
+  apt-get autoremove -y
+
+  # Clean up apt caches
+  echo " * Cleaning apt caches..."
+  apt-get clean -y
+
+  return 0
+}
