@@ -229,7 +229,7 @@ export -f get_config_keys
 #
 vvv_add_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    echo "Disallowed hookname"
+    vvv_warn "Invalid hookname '${1}', hooks must only contain the characters A-Z and a-z"
     return 1
   fi
 
