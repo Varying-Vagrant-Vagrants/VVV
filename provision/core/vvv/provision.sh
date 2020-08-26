@@ -102,3 +102,12 @@ cleanup_vvv(){
 }
 export -f cleanup_vvv
 vvv_add_hook finalize cleanup_vvv 15
+
+function apt_hash_missmatch_fix() {
+  if [ ! -f "/etc/apt/apt.conf.d/99hashmismatch" ]; then
+    echo " * Copying /srv/config/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
+    cp -f "/srv/config/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
+  fi
+}
+export -f apt_hash_missmatch_fix
+vvv_add_hook init apt_hash_missmatch_fix

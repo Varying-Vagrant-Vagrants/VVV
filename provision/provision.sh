@@ -75,8 +75,6 @@ package_install() {
   apt-key update -y
 
   # Update all of the package references before installing anything
-  echo " * Copying /srv/config/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
-  cp -f "/srv/config/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
   echo " * Running apt-get update..."
   rm -rf /var/lib/apt/lists/*
   apt-get update -y --fix-missing
