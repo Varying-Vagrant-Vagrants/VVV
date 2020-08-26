@@ -22,7 +22,7 @@ VVVSRC
 }
 vvv_add_hook before_packages nginx_register_packages
 
-nginx_setup() {
+function nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /root/.rnd ]]; then
     echo " * Generating Random Number for cert generation..."
@@ -86,7 +86,7 @@ vvv_add_hook after_packages nginx_setup 40
 
 vvv_add_hook services_restart "service nginx restart"
 
-nginx_cleanup() {
+function nginx_cleanup() {
   echo " "
   echo " * Cleaning up Nginx configs"
   # Kill previously symlinked Nginx configs

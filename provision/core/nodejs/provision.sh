@@ -24,7 +24,7 @@ VVVSRC
 }
 vvv_add_hook before_packages nodejs_register_packages
 
-node_setup() {
+function node_setup() {
   if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '10' ]]; then
     echo " * Downgrading to Node v10."
     apt remove nodejs -y

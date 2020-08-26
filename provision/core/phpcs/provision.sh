@@ -1,6 +1,6 @@
 #!/bin/bash
 
-php_codesniff_setup() {
+function php_codesniff_setup() {
   export DEBIAN_FRONTEND=noninteractive
 
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)

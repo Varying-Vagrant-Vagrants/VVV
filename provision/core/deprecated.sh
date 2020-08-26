@@ -4,7 +4,7 @@
 #
 # This file contains deprecated functions that may be removed later.
 
-deprecated_distro() {
+function deprecated_distro() {
   codename=$(lsb_release --codename | cut -f2)
   if [[ $codename == "trusty" ]]; then
     r="\e[0;32m"

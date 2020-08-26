@@ -2,7 +2,7 @@
 #
 # core/env.sh
 
-setup_vvv_env() {
+function setup_vvv_env() {
   # fix no tty warnings in provisioner logs
   sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
@@ -21,7 +21,7 @@ setup_vvv_env() {
     /etc/environment
 }
 
-cleanup_terminal_splash() {
+function cleanup_terminal_splash() {
   # Dastardly Ubuntu tries to be helpful and suggest users update packages
   # themselves, but this can break things
   if [[ -f /etc/update-motd.d/00-header ]]; then
@@ -58,7 +58,7 @@ cleanup_terminal_splash() {
   chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
-profile_setup() {
+function profile_setup() {
   echo " * Setting ownership of files in /home/vagrant to vagrant"
   chown -R vagrant:vagrant /home/vagrant/
   # Copy custom dotfiles and bin file for the vagrant user from local

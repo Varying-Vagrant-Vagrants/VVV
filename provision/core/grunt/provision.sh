@@ -38,7 +38,7 @@ function hack_avoid_gyp_errors() {
   rm /tmp/stop_gyp_hack
 }
 
-grunt_setup() {
+function grunt_setup() {
   chown -R vagrant:vagrant /usr/lib/node_modules/
   if command -v grunt >/dev/null 2>&1; then
     update_grunt

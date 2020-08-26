@@ -92,7 +92,7 @@ export -f vvv_finalize_svn_check
 
 vvv_add_hook finalize vvv_finalize_svn_check 20
 
-cleanup_vvv(){
+function cleanup_vvv(){
   echo " "
   # Cleanup the hosts file
   echo " * Cleaning the virtual machine's /etc/hosts file..."
@@ -117,7 +117,7 @@ function apt_hash_missmatch_fix() {
 export -f apt_hash_missmatch_fix
 vvv_add_hook init apt_hash_missmatch_fix
 
-services_restart() {
+function services_restart() {
   # RESTART SERVICES
   #
   # Make sure the services we expect to be running are running.

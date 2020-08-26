@@ -68,7 +68,7 @@ VVVSRC
 }
 vvv_add_hook before_packages mariadb_register_packages
 
-check_mysql_root_password() {
+function check_mysql_root_password() {
   echo " * Checking the root user password is root"
   # Get if root has correct password and mysql_native_password as plugin
   sql=$( cat <<-SQL
@@ -99,7 +99,7 @@ SQL
   fi
 }
 
-mysql_setup() {
+function mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
   local exists_mysql
 

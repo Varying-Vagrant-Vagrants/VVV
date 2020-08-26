@@ -1,5 +1,5 @@
 #!/bin/bash
-wp_cli_setup() {
+function wp_cli_setup() {
   echo " "
   echo " * Installing/updating WP-CLI"
   # WP-CLI Install

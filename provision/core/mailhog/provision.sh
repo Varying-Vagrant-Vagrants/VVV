@@ -1,5 +1,5 @@
 #!/bin/bash
-mailhog_setup() {
+function mailhog_setup() {
   if [[ -f "/etc/init/mailcatcher.conf" ]]; then
     echo " * Cleaning up old mailcatcher.conf"
     rm -f /etc/init/mailcatcher.conf
@@ -44,7 +44,7 @@ vvv_add_hook after_packages mailhog_setup
 
 vvv_add_hook services_restart "service mailhog restart"
 
-mailhog_php_finalize() {
+function mailhog_php_finalize() {
   # Enable PHP MailHog sendmail settings by default
   echo " * Enabling MailHog for PHP"
   phpenmod -s ALL mailhog

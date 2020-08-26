@@ -83,7 +83,7 @@ export -f graphviz_setup
 
 vvv_add_hook after_packages graphviz_setup 20
 
-phpfpm_setup() {
+function phpfpm_setup() {
   # Copy php-fpm configuration from local
   echo " * Copying /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
   cp -f "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
@@ -117,7 +117,7 @@ export -f phpfpm_setup
 
 vvv_add_hook after_packages phpfpm_setup 50
 
-phpfpm_finalize() {
+function phpfpm_finalize() {
   # Disable PHP Xdebug module by default
   echo " * Disabling XDebug PHP extension"
   phpdismod xdebug
@@ -134,7 +134,7 @@ vvv_add_hook finalize phpfpm_finalize
 
 vvv_add_hook services_restart "service memcached restart"
 
-phpfpm_services_restart() {
+function phpfpm_services_restart() {
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 }
