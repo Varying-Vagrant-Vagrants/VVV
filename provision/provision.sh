@@ -46,7 +46,7 @@ export VVV_CONFIG=/vagrant/config.yml
 . '/srv/provision/core/deprecated.sh'
 remove_v2_resources
 support_v2_certificate_path
-depreacted_distro
+deprecated_distro
 
 ### FUNCTIONS
 

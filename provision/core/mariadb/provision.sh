@@ -34,7 +34,7 @@ if ! vvv_apt_keys_has 'MariaDB'; then
   apt-key add /srv/config/apt-keys/mariadb.key
 fi
 
-if ! vvv_src_list_has "nginx.org"; then
+if ! vvv_src_list_has "MariaDB"; then
   cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
 # MariaDB 10.4 Amsterdam
 deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.4/ubuntu bionic main
