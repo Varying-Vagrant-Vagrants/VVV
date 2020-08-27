@@ -1,5 +1,6 @@
 #!/bin/bash
 
+VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.2"}
 function php_register_packages() {
   if ! vvv_src_list_has "ondrej/php"; then
     cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
@@ -12,33 +13,33 @@ function php_register_packages() {
   fi
 
   VVV_PACKAGE_LIST+=(
-    # PHP7
+    # PHP
     #
-    # Our base packages for php7.2. As long as php7.2-fpm and php7.2-cli are
-    # installed, there is no need to install the general php7.2 package, which
+    # Our base packages for php. As long as php*-fpm and php*-cli are
+    # installed, there is no need to install the general php* package, which
     # can sometimes install apache as a requirement.
-    php7.2-fpm
-    php7.2-cli
+    "php${VVV_BASE_PHPVERSION}-fpm"
+    "php${VVV_BASE_PHPVERSION}-cli"
 
     # Common and dev packages for php
-    php7.2-common
-    php7.2-dev
+    "php${VVV_BASE_PHPVERSION}-common"
+    "php${VVV_BASE_PHPVERSION}-dev"
 
     # Extra PHP modules that we find useful
     php-pear
     php-ssh2
     php-yaml
-    php7.2-bcmath
-    php7.2-curl
-    php7.2-gd
-    php7.2-intl
-    php7.2-mbstring
-    php7.2-mysql
-    php7.2-imap
-    php7.2-json
-    php7.2-soap
-    php7.2-xml
-    php7.2-zip
+    "php${VVV_BASE_PHPVERSION}-bcmath"
+    "php${VVV_BASE_PHPVERSION}-curl"
+    "php${VVV_BASE_PHPVERSION}-gd"
+    "php${VVV_BASE_PHPVERSION}-intl"
+    "php${VVV_BASE_PHPVERSION}-mbstring"
+    "php${VVV_BASE_PHPVERSION}-mysql"
+    "php${VVV_BASE_PHPVERSION}-imap"
+    "php${VVV_BASE_PHPVERSION}-json"
+    "php${VVV_BASE_PHPVERSION}-soap"
+    "php${VVV_BASE_PHPVERSION}-xml"
+    "php${VVV_BASE_PHPVERSION}-zip"
   )
 
   # MemCached
@@ -80,23 +81,23 @@ vvv_add_hook after_packages graphviz_setup 20
 
 function phpfpm_setup() {
   # Copy php-fpm configuration from local
-  echo " * Copying /srv/config/php-config/php7.2-fpm.conf   to /etc/php/7.2/fpm/php-fpm.conf"
-  cp -f "/srv/config/php-config/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
+  echo " * Copying /srv/config/php-config/php-fpm.conf   to /etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
+  cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
 
-  echo " * Copying /srv/config/php-config/php7.2-www.conf   to /etc/php/7.2/fpm/pool.d/www.conf"
-  cp -f "/srv/config/php-config/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
+  echo " * Copying /srv/config/php-config/php-www.conf   to /etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
+  cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
 
-  echo " * Copying /srv/config/php-config/php7.2-custom.ini to /etc/php/7.2/fpm/conf.d/php-custom.ini"
-  cp -f "/srv/config/php-config/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
+  echo " * Copying /srv/config/php-config/php-custom.ini to /etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
+  cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
 
-  echo " * Copying /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
-  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
+  echo " * Copying /srv/config/php-config/opcache.ini       to /etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
+  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
 
-  echo " * Copying /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
-  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
+  echo " * Copying /srv/config/php-config/xdebug.ini        to /etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
+  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
 
-  echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/7.2/mods-available/mailhog.ini"
-  cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.2/mods-available/mailhog.ini"
+  echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
+  cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
 
   if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
     echo " * Cleaning up mailcatcher.ini from a previous install"
