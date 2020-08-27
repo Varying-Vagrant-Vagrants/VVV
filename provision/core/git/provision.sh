@@ -16,12 +16,7 @@ function git_register_packages() {
   fi
 
   if ! vvv_src_list_has "github/git-lfs"; then
-    cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
-# git lfs (large file storage plugin for git)
-deb https://packagecloud.io/github/git-lfs/ubuntu/ bionic main
-deb-src https://packagecloud.io/github/git-lfs/ubuntu/ bionic main
-
-VVVSRC
+    cp -f "/srv/provision/core/git/sources.list" "/etc/apt/sources.list.d/vvv-git-sources.list"
   fi
 
   if ! vvv_apt_keys_has 'git-lfs'; then

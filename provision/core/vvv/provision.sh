@@ -2,12 +2,7 @@
 
 function vvv_register_packages() {
   if ! vvv_src_list_has "varying-vagrant-vagrants"; then
-    cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
-# VVV mirror packages
-deb http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
-deb-src http://ppa.launchpad.net/varying-vagrant-vagrants/php/ubuntu bionic main
-
-VVVSRC
+    cp -f "/srv/provision/core/vvv/sources.list" "/etc/apt/sources.list.d/vvv-sources.list"
   fi
 
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then

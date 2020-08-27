@@ -2,12 +2,7 @@
 
 function php_register_packages() {
   if ! vvv_src_list_has "ondrej/php"; then
-    cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
-# Provides PHP7
-deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
-deb-src http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
-
-VVVSRC
+    cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
   fi
 
   if ! vvv_apt_keys_has 'Ondřej'; then

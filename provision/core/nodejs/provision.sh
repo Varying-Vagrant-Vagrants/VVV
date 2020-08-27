@@ -2,12 +2,7 @@
 
 function nodejs_register_packages() {
   if ! vvv_src_list_has "nodesource"; then
-    cat <<VVVSRC >> /etc/apt/sources.list.d/vvv-sources.list
-# Provides Node.js
-deb https://deb.nodesource.com/node_10.x bionic main
-deb-src https://deb.nodesource.com/node_10.x bionic main
-
-VVVSRC
+    cp -f "/srv/provision/core/nodejs/sources.list" "/etc/apt/sources.list.d/vvv-nodejs-sources.list"
   fi
 
   if ! vvv_apt_keys_has 'NodeSource'; then

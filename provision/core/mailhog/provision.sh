@@ -19,16 +19,7 @@ function mailhog_setup() {
   if [[ ! -e /etc/systemd/system/mailhog.service ]]; then
     echo " * Mailhog service file missing, setting up"
     # Make it start on reboot
-    tee /etc/systemd/system/mailhog.service <<EOL
-[Unit]
-Description=MailHog
-After=network.service vagrant.mount
-[Service]
-Type=simple
-ExecStart=/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
-[Install]
-WantedBy=multi-user.target
-EOL
+    cp -f "/srv/provision/core/mailhog/mailhog.service" "/etc/systemd/system/mailhog.service"
   fi
 
   # Start on reboot
