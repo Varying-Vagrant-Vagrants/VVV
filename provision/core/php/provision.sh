@@ -137,3 +137,9 @@ function phpfpm_services_restart() {
 export -f phpfpm_services_restart
 
 vvv_add_hook services_restart phpfpm_services_restart
+
+function php_nginx_upstream() {
+  echo " * Copying /srv/config/php-config/upstream.conf to /etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
+  cp -f "/srv/config/php-config/upstream.conf" "/etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
+}
+vvv_add_hook nginx_upstreams php_nginx_upstream

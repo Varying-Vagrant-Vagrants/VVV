@@ -51,8 +51,8 @@ function nginx_setup() {
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir -p "/etc/nginx/upstreams/"
   fi
-  echo " * Copying /srv/config/nginx-config/php7.2-upstream.conf to /etc/nginx/upstreams/php72.conf"
-  cp -f "/srv/config/nginx-config/php7.2-upstream.conf" "/etc/nginx/upstreams/php72.conf"
+
+  vvv_hook nginx_upstreams
 
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir -p "/etc/nginx/custom-sites/"
