@@ -1,9 +1,7 @@
 #!/bin/bash
 
 function vvv_register_packages() {
-  if ! vvv_src_list_has "varying-vagrant-vagrants"; then
-    cp -f "/srv/provision/core/vvv/sources.list" "/etc/apt/sources.list.d/vvv-sources.list"
-  fi
+  cp -f "/srv/provision/core/vvv/sources.list" "/etc/apt/sources.list.d/vvv-sources.list"
 
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
