@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the develop branch
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Make Symlinks
+      - name: Create Vagrant Like Environment
+        run: |
+          ln -s "$GITHUB_WORKSPACE/database/sql" "/srv/database"
+          ln -s "$GITHUB_WORKSPACE/config" "/srv/config"
+          ln -s "$GITHUB_WORKSPACE/provision" "/srv/provision"
+          ln -s "$GITHUB_WORKSPACE/certificates" "/srv/certificates"
+          ln -s "$GITHUB_WORKSPACE/www" "/srv/www"
+          ln -s "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
+          ln -s "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
+          ln -s "$GITHUB_WORKSPACE/log/php" "/var/log/php"
+          ln -s "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: cat "/srv/config/bash_aliases"
