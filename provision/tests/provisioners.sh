@@ -114,7 +114,7 @@ function provision_site() {
   local site=$1
   local skip_provisioning=$(get_config_value "sites.${site}.skip_provisioning" "False")
   if [[ $skip_provisioning == "True" ]]; then
-    continue
+    return
   fi
   local repo=$(get_config_type "sites.${site}")
   if [[ "${repo}" == "str" ]]; then
