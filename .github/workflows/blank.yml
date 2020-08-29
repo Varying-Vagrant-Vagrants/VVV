@@ -70,3 +70,15 @@ jobs:
       # Runs the main provisioner as sudo
       - name: Run all provisioners
         run: sudo bash /srv/provision/tests/run-provisioners.sh
+
+      - name: Prepare Output
+        run: |
+          sudo cp -rf "$GITHUB_WORKSPACE/log" "/vvv-logs"
+          MYUID=$(id -u -n)
+          MYGID=$(id -g -n)
+          sudo chown -R $MYUID:$MYGID "/vvv-logs"
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: "/vvv-logs"
