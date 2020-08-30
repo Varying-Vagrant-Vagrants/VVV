@@ -25,12 +25,27 @@ jobs:
       # Make Symlinks
       - name: Create Vagrant Like Environment
         run: |
+          # uninstall pre installed packages (to test if utilities work)
+          sudo apt-get -q --autoremove --purge remove php*
+          sudo apt-get -q autoclean
+
           # create vagrant user
           sudo groupadd -g 2000 vagrant
           sudo useradd -u 2000 -g vagrant -m vagrant
 
+          # Install bindfs, which would allow us to "mount" folders with specific permissions
+          # similar to vagrant shares
+          sudo apt-get update
+          sudo apt-get install bindfs -y
+
+          # vbox_mount function to sumulate synced folders
+          function vbox_mount() {
+            sudo mkdir -p "$2"
+            sudo bindfs --chown-ignore --chgrp-ignore --chmod-ignore -u "$3" -g "$4" "$1" "$2"
+          }
+
           # create srv folder
-          sudo mkdir -p "/srv"
+          sudo -u "vagrant" mkdir -p "/srv"
 
           # copy files provided by vagrant
           sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
@@ -38,34 +53,19 @@ jobs:
 
           # simulate vagrant synced folders
           sudo mkdir -p "$GITHUB_WORKSPACE/certificates"
-          sudo chown -R vagrant:vagrant "$GITHUB_WORKSPACE"
-          sudo ln -s "$GITHUB_WORKSPACE/database/sql" "/srv/database"
-          sudo ln -s "$GITHUB_WORKSPACE/config" "/srv/config"
-          sudo ln -s "$GITHUB_WORKSPACE/provision" "/srv/provision"
-          sudo ln -s "$GITHUB_WORKSPACE/certificates" "/srv/certificates"
-          sudo ln -s "$GITHUB_WORKSPACE/www" "/srv/www"
           sudo mkdir -p "$GITHUB_WORKSPACE/log/memcached"
           sudo mkdir -p "$GITHUB_WORKSPACE/log/nginx"
           sudo mkdir -p "$GITHUB_WORKSPACE/log/php"
           sudo mkdir -p "$GITHUB_WORKSPACE/log/provisioners"
-          sudo chown -R root:syslog "$GITHUB_WORKSPACE/log"
-          sudo ln -s "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
-          sudo ln -s "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
-          sudo ln -s "$GITHUB_WORKSPACE/log/php" "/var/log/php"
-          sudo ln -s "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
-
-          # Ensure permissions are correct (may not be needed)
-          sudo chown -R vagrant:vagrant "/srv"
-          sudo chown -R root:syslog "/var/log/memcached"
-          sudo chown -R root:syslog "/var/log/nginx"
-          sudo chown -R root:syslog "/var/log/php"
-          sudo chown -R root:syslog "/var/log/provisioners"
-
-          # uninstall pre installed packages (to test if utilities work)
-          sudo apt-get remove php*
-          sudo apt-get purge php*
-          sudo apt-get autoremove
-          sudo apt-get autoclean
+          vbox_mount "$GITHUB_WORKSPACE/database/sql" "/srv/database" "vagrant" "vagrant"
+          vbox_mount "$GITHUB_WORKSPACE/config" "/srv/config" "vagrant" "vagrant"
+          vbox_mount "$GITHUB_WORKSPACE/provision" "/srv/provision" "vagrant" "vagrant"
+          vbox_mount "$GITHUB_WORKSPACE/certificates" "/srv/certificates" "vagrant" "vagrant"
+          vbox_mount "$GITHUB_WORKSPACE/www" "/srv/www" "vagrant" "www-data"
+          vbox_mount "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached" "root" "syslog"
+          vbox_mount "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx" "root" "syslog"
+          vbox_mount "$GITHUB_WORKSPACE/log/php" "/var/log/php" "root" "syslog"
+          vbox_mount "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners" "root" "syslog"
 
       # Runs the main provisioner as sudo
       - name: Run all provisioners
