@@ -222,14 +222,14 @@ function vvv_provision_site_nginx() {
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
   vvv_warn " * Skipping provisioning of ${SITE}${CRESET}"
-  return 0
+  exit 0
 fi
 
 vvv_provision_site_repo
 
 if [[ ! -d "${VM_DIR}" ]]; then
   echo "${RED} ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
-  return 1
+  exit 1
 fi
 
 vvv_process_site_hosts
@@ -241,7 +241,7 @@ service nginx reload
 
 if [ "${SUCCESS}" -ne "0" ]; then
   vvv_error " ! ${SITE} provisioning had some issues, check the log as the site may not function correctly."
-  return 1
+  exit 1
 fi
 
 provisioner_success
