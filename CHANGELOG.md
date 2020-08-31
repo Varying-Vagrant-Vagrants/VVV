@@ -22,6 +22,7 @@ permalink: /docs/en-US/changelog/
 * Fixed an issue preventing backups of databases whose names contained reserved words ( #2213 )
 * Remove APT list files and switch compression type defaults for repositories to avoid hash mismatch ( #2208 )
 * In case the previous provisioning had some issues with dpkg on a new provision `dpkg --configure -a` is executed as default ( #2211 )
+* Fixed provision-site.sh syntax errors on fail situations ( #2231 )
 
 ## 3.4.1 ( 2020 June 4th )
 
