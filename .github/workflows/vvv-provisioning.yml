@@ -72,9 +72,27 @@ jobs:
           vbox_mount "$GITHUB_WORKSPACE/log/php" "/var/log/php" "root" "syslog" "666"
           vbox_mount "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners" "root" "syslog" "666"
 
-      # Runs the main provisioner as sudo
-      - name: Run all provisioners
-        run: sudo bash /srv/provision/tests/run-provisioners.sh
+      # Runs the provisioners in the expected order
+      - name: Run provison-pre.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && pre_hook'
+
+      - name: Run provison.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_main'
+
+      - name: Run provison-dashboard.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_dashboard'
+
+      - name: Run provison-utility-source.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_utility_sources'
+
+      - name: Run provison-utility.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_utilities'
+
+      - name: Run provison-site.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_sites'
+
+      - name: Run provison-post.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && post_hook'
 
       # At this point, we would run some extra tests
       # TODO: Ideas
