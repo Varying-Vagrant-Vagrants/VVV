@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: VVV Provisioning
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the develop branch
@@ -8,12 +8,13 @@ on:
   push:
     branches: [ develop ]
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, stable ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
+    name: Run Provisioner
     # The type of runner that the job will run on
     runs-on: ubuntu-18.04
 
@@ -70,6 +71,12 @@ jobs:
       # Runs the main provisioner as sudo
       - name: Run all provisioners
         run: sudo bash /srv/provision/tests/run-provisioners.sh
+
+      # At this point, we would run some extra tests
+      # TODO: Ideas
+      # - Add screenshots of provisioned sites
+      # - CURL mailhog API to see if it's working or not
+      # - Check VM hostfile
 
       - name: Prepare Output
         run: |
