@@ -41,8 +41,12 @@ jobs:
 
           # vbox_mount function to sumulate synced folders
           function vbox_mount() {
+            local perms="-p ug=rwx,o=r";
+            if [ ! -z "${5}" ]; then 
+              perms="-p ${5}"
+            fi
             sudo mkdir -p "$2"
-            sudo bindfs --chown-ignore --chgrp-ignore --chmod-ignore -u "$3" -g "$4" "$1" "$2"
+            sudo bindfs --chown-ignore --chgrp-ignore --chmod-ignore -u "$3" -g "$4" "$1" "$2" $perms
           }
 
           # create srv folder
@@ -62,11 +66,11 @@ jobs:
           vbox_mount "$GITHUB_WORKSPACE/config" "/srv/config" "vagrant" "vagrant"
           vbox_mount "$GITHUB_WORKSPACE/provision" "/srv/provision" "vagrant" "vagrant"
           vbox_mount "$GITHUB_WORKSPACE/certificates" "/srv/certificates" "vagrant" "vagrant"
-          vbox_mount "$GITHUB_WORKSPACE/www" "/srv/www" "vagrant" "www-data"
-          vbox_mount "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached" "root" "syslog"
-          vbox_mount "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx" "root" "syslog"
-          vbox_mount "$GITHUB_WORKSPACE/log/php" "/var/log/php" "root" "syslog"
-          vbox_mount "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners" "root" "syslog"
+          vbox_mount "$GITHUB_WORKSPACE/www" "/srv/www" "vagrant" "www-data" "ug=rwx,o=r,o+D"
+          vbox_mount "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached" "root" "syslog" "666"
+          vbox_mount "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx" "root" "syslog" "666"
+          vbox_mount "$GITHUB_WORKSPACE/log/php" "/var/log/php" "root" "syslog" "666"
+          vbox_mount "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners" "root" "syslog" "666"
 
       # Runs the main provisioner as sudo
       - name: Run all provisioners
