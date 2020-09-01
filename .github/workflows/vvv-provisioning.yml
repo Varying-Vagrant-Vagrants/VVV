@@ -34,19 +34,12 @@ jobs:
           sudo groupadd -g 2000 vagrant
           sudo useradd -u 2000 -g vagrant -m vagrant
 
-          # Install bindfs, which would allow us to "mount" folders with specific permissions
-          # similar to vagrant shares
-          sudo apt-get update
-          sudo apt-get install bindfs -y
-
-          # vbox_mount function to sumulate synced folders
-          function vbox_mount() {
-            local perms="-p ug=rwx,o=r";
-            if [ ! -z "${5}" ]; then 
-              perms="-p ${5}"
+          # vvv_symlink function to sumulate synced folders
+          function vvv_symlink() {
+            if [ ! -d "${1}" ]; then 
+              sudo mkdir -p "${1}"
             fi
-            sudo mkdir -p "$2"
-            sudo bindfs --chown-ignore --chgrp-ignore --chmod-ignore -u "$3" -g "$4" "$1" "$2" $perms
+            sudo ln -sf "${1}" "${2}"
           }
 
           # create srv folder
@@ -56,21 +49,16 @@ jobs:
           sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
           sudo cp -f "$GITHUB_WORKSPACE/version" "/home/vagrant/version"
 
-          # simulate vagrant synced folders
-          sudo mkdir -p "$GITHUB_WORKSPACE/certificates"
-          sudo mkdir -p "$GITHUB_WORKSPACE/log/memcached"
-          sudo mkdir -p "$GITHUB_WORKSPACE/log/nginx"
-          sudo mkdir -p "$GITHUB_WORKSPACE/log/php"
-          sudo mkdir -p "$GITHUB_WORKSPACE/log/provisioners"
-          vbox_mount "$GITHUB_WORKSPACE/database/sql" "/srv/database" "vagrant" "vagrant"
-          vbox_mount "$GITHUB_WORKSPACE/config" "/srv/config" "vagrant" "vagrant"
-          vbox_mount "$GITHUB_WORKSPACE/provision" "/srv/provision" "vagrant" "vagrant"
-          vbox_mount "$GITHUB_WORKSPACE/certificates" "/srv/certificates" "vagrant" "vagrant"
-          vbox_mount "$GITHUB_WORKSPACE/www" "/srv/www" "vagrant" "www-data" "ug=rwx,o=r,o+D"
-          vbox_mount "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached" "root" "syslog" "666"
-          vbox_mount "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx" "root" "syslog" "666"
-          vbox_mount "$GITHUB_WORKSPACE/log/php" "/var/log/php" "root" "syslog" "666"
-          vbox_mount "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners" "root" "syslog" "666"
+          # make folders available
+          vvv_symlink "$GITHUB_WORKSPACE/database/sql" "/srv/database"
+          vvv_symlink "$GITHUB_WORKSPACE/config" "/srv/config"
+          vvv_symlink "$GITHUB_WORKSPACE/provision" "/srv/provision"
+          vvv_symlink "$GITHUB_WORKSPACE/certificates" "/srv/certificates"
+          vvv_symlink "$GITHUB_WORKSPACE/www" "/srv/www"
+          vvv_symlink "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
+          vvv_symlink "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
+          vvv_symlink "$GITHUB_WORKSPACE/log/php" "/var/log/php"
+          vvv_symlink "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
 
       # Runs the provisioners in the expected order
       - name: Run provison-pre.sh
