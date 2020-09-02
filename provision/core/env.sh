@@ -96,13 +96,14 @@ function profile_setup() {
     rm -f /home/vagrant/.bash_prompt
     noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
-
-  echo " * Copying /srv/config/ssh_known_hosts                   to /etc/ssh/ssh_known_hosts"
-  cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
-  echo " * Copying /srv/config/sshd_config                       to /etc/ssh/sshd_config"
-  cp -f /srv/config/sshd_config /etc/ssh/sshd_config
-  echo " * Reloading SSH Daemon"
-  systemctl reload ssh
+  if [ -d "/etc/ssh" ]; then
+    echo " * Copying /srv/config/ssh_known_hosts                   to /etc/ssh/ssh_known_hosts"
+    cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
+    echo " * Copying /srv/config/sshd_config                       to /etc/ssh/sshd_config"
+    cp -f /srv/config/sshd_config /etc/ssh/sshd_config
+    echo " * Reloading SSH Daemon"
+    systemctl reload ssh
+  fi
 }
 
 function vvv_init_profile() {
