@@ -5,6 +5,11 @@
 # This file contains deprecated functions that may be removed later.
 
 function deprecated_distro() {
+  local command_exist
+  command_exist="$(which lsb_release)"
+  if [ -z "${command_exist}" ]; then
+    return;
+  fi
   codename=$(lsb_release --codename | cut -f2)
   if [[ $codename == "trusty" ]]; then
     r="\e[0;32m"
