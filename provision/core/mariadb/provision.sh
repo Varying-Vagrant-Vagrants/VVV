@@ -22,7 +22,10 @@ function mariadb_register_packages() {
     echo " * mysql user present and has uid $(id -u mysql)"
   else
     echo " * adding the mysql user"
-    useradd -u 9001 -g mysql -G vboxsf -r mysql
+    useradd -u 9001 -g mysql -r mysql
+    if grep -q vboxsf /etc/group; then
+      usermod -G vboxsf mysql
+    fi
   fi
 
   mkdir -p "/etc/mysql/conf.d"
