@@ -42,15 +42,6 @@ function php_register_packages() {
     "php${VVV_BASE_PHPVERSION}-zip"
   )
 
-  # MemCached
-  VVV_PACKAGE_LIST+=(
-    php-memcache
-    php-memcached
-
-    # memcached is made available for object caching
-    memcached
-  )
-
   # ImageMagick
   VVV_PACKAGE_LIST+=(
     php-imagick
@@ -103,11 +94,6 @@ function phpfpm_setup() {
     echo " * Cleaning up mailcatcher.ini from a previous install"
     rm -f /etc/php/7.2/mods-available/mailcatcher.ini
   fi
-
-  # Copy memcached configuration from local
-  echo " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 }
 export -f phpfpm_setup
 
@@ -128,8 +114,6 @@ export -f phpfpm_finalize
 
 vvv_add_hook finalize phpfpm_finalize
 
-vvv_add_hook services_restart "service memcached restart"
-
 function phpfpm_services_restart() {
   # Restart all php-fpm versions
   find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
@@ -143,3 +127,23 @@ function php_nginx_upstream() {
   cp -f "/srv/config/php-config/upstream.conf" "/etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
 }
 vvv_add_hook nginx_upstreams php_nginx_upstream
+
+function memcached_register_packages() {
+  # MemCached
+  VVV_PACKAGE_LIST+=(
+    php-memcache
+    php-memcached
+
+    # memcached is made available for object caching
+    memcached
+  )
+}
+vvv_add_hook before_packages memcached_register_packages
+function memcached_setup() {
+  # Copy memcached configuration from local
+  echo " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
+  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
+  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
+}
+vvv_add_hook after_packages memcached_setup 60
+vvv_add_hook services_restart "service memcached restart"
