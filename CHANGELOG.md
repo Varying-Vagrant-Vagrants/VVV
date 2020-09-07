@@ -15,6 +15,10 @@ permalink: /docs/en-US/changelog/
 * Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation.
 * Prevent use of sudo vagrant up ( #2215 )
 
+### Deprecations
+
+* SVN repo upgrade searches have been moved to a utility. Previous versions of VVV would search 5 folders deep for svn repositories that needed upgrading. If  you still need this, add the `svn-folder-upgrade` core utility. This change can speed up provisioning by 5-10 seconds on large installations.
+
 ### Bug Fixes
 
 * Fix mysql root password reset ( #2182 )
@@ -22,6 +26,7 @@ permalink: /docs/en-US/changelog/
 * Fixed an issue preventing backups of databases whose names contained reserved words ( #2213 )
 * Remove APT list files and switch compression type defaults for repositories to avoid hash mismatch ( #2208 )
 * In case the previous provisioning had some issues with dpkg on a new provision `dpkg --configure -a` is executed as default ( #2211 )
+* Fixed provision-site.sh syntax errors on fail situations ( #2231 )
 
 ## 3.4.1 ( 2020 June 4th )
 
