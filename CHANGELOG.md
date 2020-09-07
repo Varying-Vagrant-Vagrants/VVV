@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * Added support for `vagrant-goodhosts`, we recommend using this in the future instead of `vagrant-hostsupdater`
 * Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation.
 * Prevent use of sudo vagrant up ( #2215 )
+* Major refactor of the main provisioner, and introduction of a hook system to be used while provisioning ( #2230, #2238 )
 
 ### Deprecations
 
