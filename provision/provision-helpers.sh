@@ -152,6 +152,25 @@ function noroot() {
 }
 export -f noroot
 
+function vvv_apt_keys_has() {
+  local keys=$( apt-key list )
+  if [[ ! $( echo "${keys}" | grep "$1") ]]; then
+    return 1
+  fi
+}
+export -f vvv_apt_keys_has
+
+function vvv_src_list_has() {
+  local STATUS=1
+  if [ ! -z "$(ls -A /etc/apt/sources.list.d/)" ]; then
+    grep -Rq "^deb.*$1" /etc/apt/sources.list.d/*.list
+    STATUS=$?
+  fi
+
+  return $STATUS
+}
+export -f vvv_src_list_has
+
 function vvv_info() {
   echo -e "${CRESET}${1}${CRESET}"
   if [ "${VVV_LOG}" != "main" ]; then
@@ -204,3 +223,86 @@ function get_config_keys() {
   echo "${value:-$2}"
 }
 export -f get_config_keys
+
+#
+# hook engine
+#
+vvv_add_hook() {
+  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
+    vvv_warn "Invalid hookname '${1}', hooks must only contain the characters A-Z and a-z"
+    return 1
+  fi
+
+  local hook_prio=10
+  if [[ ! -z "${3}" && "${3}" =~ [0-9]+ ]]; then
+
+    hook_prio=$((${3} + 0))
+    if [[ -z "$hook_prio" ]]; then
+      hook_prio=0
+    fi
+  fi
+
+  local hook_var_prios="VVV_HOOKS_${1}"
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then ${hook_var_prios}=(); fi"
+
+  local hook_var="${hook_var_prios}_${hook_prio}"
+  eval "if [ -z \"\${${hook_var}}\" ]; then ${hook_var_prios}+=(${hook_prio}); ${hook_var}=(); fi"
+  eval "${hook_var}+=(\"${2}\")"
+}
+export -f vvv_add_hook
+
+vvv_hook() {
+  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
+    echo "Disallowed hookname"
+    return 1
+  fi
+
+  local hook_var_prios="VVV_HOOKS_${1}"
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"  
+  local sorted
+  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+
+  for i in ${!sorted[@]}; do
+    local prio="${sorted[$i]}"
+    local hooks_on_prio="${hook_var_prios}_${prio}"
+    eval "for j in \${!${hooks_on_prio}[@]}; do \${${hooks_on_prio}[\$j]}; done"
+  done
+}
+export -f vvv_hook
+
+vvv_package_install() {
+  declare -a packages=($@)
+
+  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+  echo " * Cleaning up dpkg lock file"
+  rm /var/lib/dpkg/lock*
+
+  echo " * Updating apt keys"
+  apt-key update -y
+
+  # Update all of the package references before installing anything
+  echo " * Running apt-get update..."
+  rm -rf /var/lib/apt/lists/*
+  apt-get update -y --fix-missing
+
+  # Install required packages
+  echo " * Installing apt-get packages..."
+
+  # To avoid issues on provisioning and failed apt installation
+  dpkg --configure -a
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${packages[@]}; then
+    echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    apt-get clean -y
+    return 1
+  fi
+
+  # Remove unnecessary packages
+  echo " * Removing unnecessary apt packages..."
+  apt-get autoremove -y
+
+  # Clean up apt caches
+  echo " * Cleaning apt caches..."
+  apt-get clean -y
+
+  return 0
+}

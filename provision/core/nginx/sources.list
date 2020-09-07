@@ -1,0 +1,3 @@
+# Provides Nginx mainline
+deb https://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb-src https://nginx.org/packages/mainline/ubuntu/ bionic nginx
