@@ -15,6 +15,10 @@ permalink: /docs/en-US/changelog/
 * Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation.
 * Prevent use of sudo vagrant up ( #2215 )
 
+### Deprecations
+
+* SVN repo upgrade searches have been moved to a utility. Previous versions of VVV would search 5 folders deep for svn repositories that needed upgrading. If  you still need this, add the `svn-folder-upgrade` core utility. This change can speed up provisioning by 5-10 seconds on large installations.
+
 ### Bug Fixes
 
 * Fix mysql root password reset ( #2182 )
