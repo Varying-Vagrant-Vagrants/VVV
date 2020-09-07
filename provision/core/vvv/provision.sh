@@ -52,39 +52,6 @@ vvv_add_hook after_packages shyaml_setup 0
 
 vvv_add_hook services_restart "service ntp restart"
 
-function vvv_finalize_svn_check() {
-  # TODO: Maybe move this to a separate provisioner, 
-  # or maybe turn this into a command that can be run 
-  # from svn based site provisioners
-
-  if ! network_check; then
-    exit 1
-  fi
-  # Time for WordPress!
-  echo " "
-
-  echo " * Searching for SVN repositories that need upgrading"
-  # Get all SVN repos.
-  svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
-
-  # Do we have any?
-  if [[ -n $svn_repos ]]; then
-    for repo in $svn_repos; do
-      # Test to see if an svn upgrade is needed on this repo.
-      svn_test=$( svn status -u "$repo" 2>&1 );
-
-      if [[ "$svn_test" == *"svn upgrade"* ]]; then
-        # If it is needed do it!
-        echo " * Upgrading svn repository: ${repo}"
-        svn upgrade "${repo/%\.svn/}"
-      fi;
-    done
-  fi;
-}
-export -f vvv_finalize_svn_check
-
-vvv_add_hook finalize vvv_finalize_svn_check 20
-
 function cleanup_vvv(){
   echo " "
   # Cleanup the hosts file
