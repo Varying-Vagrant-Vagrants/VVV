@@ -3,6 +3,16 @@
 
 export VVV_LOG=""
 
+function vvv_run_provisioner() {
+  local STATUS
+  bash $@
+  STATUS=$?
+  if [ -z $STATUS ]; then
+    return $STATUS
+  fi
+  exit $STATUS
+}
+
 # provisioners
 
 function pre_hook() {
@@ -13,7 +23,7 @@ function pre_hook() {
   # file) should go in this script. If it does not exist, no extra provisioning will run.
   if [[ -f "/srv/provision/provision-pre.sh" ]]; then
     VVV_LOG="pre"
-    bash /srv/provision/provision-pre.sh
+    vvv_run_provisioner /srv/provision/provision-pre.sh
   fi
 }
 
@@ -26,7 +36,7 @@ function post_hook() {
   # without having to replace the entire default provisioning script.
   if [[ -f "/srv/provision/provision-post.sh" ]]; then
     VVV_LOG="post"
-    bash /srv/provision/provision-post.sh
+    vvv_run_provisioner /srv/provision/provision-post.sh
   fi
 }
 
@@ -35,7 +45,7 @@ function provision_dashboard() {
   local dashboard_branch=$(get_config_value "dashboard.branch" "master")
 
   VVV_LOG="dashboard"
-  bash /srv/provision/provision-dashboard.sh "${dashboard_repo}" "${dashboard_branch}"
+  vvv_run_provisioner /srv/provision/provision-dashboard.sh "${dashboard_repo}" "${dashboard_branch}"
 }
 
 function provision_utility_sources() {
@@ -79,7 +89,7 @@ function provision_utility_sources() {
   local i
   for i in ${!name[@]}; do
     VVV_LOG="utility-source-${name[$i]}"
-    bash /srv/provision/provision-utility-source.sh "${name[$i]}" "${repo[$i]}" "${branch[$i]}"
+    vvv_run_provisioner /srv/provision/provision-utility-source.sh "${name[$i]}" "${repo[$i]}" "${branch[$i]}"
   done
 }
 
@@ -99,7 +109,7 @@ function provision_utility() {
   local group=$1
   local utility=$2
   VVV_LOG="utility-${group}-${utility}"
-  bash /srv/provision/provision-utility.sh "${group}" "${utility}"
+  vvv_run_provisioner /srv/provision/provision-utility.sh "${group}" "${utility}"
 }
 
 function provision_sites() {
@@ -127,7 +137,7 @@ function provision_site() {
   local nginx_upstream=$(get_config_value "sites.${site}.nginx_upstream" "php")
 
   VVV_LOG="site-${site}"
-  bash /srv/provision/provision-site.sh "${site}" "${repo}" "${branch}" "${vm_dir}" "${skip_provisioning}" "${nginx_upstream}"
+  vvv_run_provisioner /srv/provision/provision-site.sh "${site}" "${repo}" "${branch}" "${vm_dir}" "${skip_provisioning}" "${nginx_upstream}"
 }
 
 function provision_main() {
@@ -139,10 +149,10 @@ function provision_main() {
   # of the provisioning provided by default.
   if [[ -f "/srv/provision/provision-custom.sh" ]]; then
     VVV_LOG="main-custom"
-    bash /srv/provision/provision-custom.sh
+    vvv_run_provisioner /srv/provision/provision-custom.sh
   else
     VVV_LOG="main"
-    bash /srv/provision/provision.sh
+    vvv_run_provisioner /srv/provision/provision.sh
   fi
 
   # refresh VVV_CONFIG, as the main provisioner actually creates the /vagrant/config.yml
