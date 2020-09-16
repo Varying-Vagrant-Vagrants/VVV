@@ -39,6 +39,7 @@ jobs:
             if [ ! -d "${1}" ]; then 
               sudo mkdir -p "${1}"
             fi
+            sudo chown -R vagrant:vagrant "${1}"
             sudo ln -sf "${1}" "${2}"
           }
 
