@@ -18,7 +18,8 @@ permalink: /docs/en-US/changelog/
 
 ### Deprecations
 
-* SVN repo upgrade searches have been moved to a utility. Previous versions of VVV would search 5 folders deep for svn repositories that needed upgrading. If  you still need this, add the `svn-folder-upgrade` core utility. This change can speed up provisioning by 5-10 seconds on large installations.
+* SVN repository upgrade searches have been moved to a utility. Previous versions of VVV would search 5 folders deep for svn repositories that needed upgrading. If  you still need this, add the `svn-folder-upgrade` core utility. This change can speed up provisioning by 5-10+ seconds on large installations.
+* In the future the dashboard options will be deprecated. Custom dashboards should instead use site provisioners, allowing them to run provisioners, make custom Nginx configs, and have multiple dashboards if desired.
 
 ### Bug Fixes
 
@@ -28,6 +29,7 @@ permalink: /docs/en-US/changelog/
 * Remove APT list files and switch compression type defaults for repositories to avoid hash mismatch ( #2208 )
 * In case the previous provisioning had some issues with dpkg on a new provision `dpkg --configure -a` is executed as default ( #2211 )
 * Fixed provision-site.sh syntax errors on fail situations ( #2231 )
+* Dashboard cloning is now more reliable ( #2243 )
 
 ## 3.4.1 ( 2020 June 4th )
 
