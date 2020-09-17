@@ -7,7 +7,7 @@ function vvv_run_provisioner() {
   local STATUS
   bash $@
   STATUS=$?
-  if [ -z $STATUS ]; then
+  if [ "${STATUS}" -eq 0 ]; then
     return $STATUS
   fi
   exit $STATUS
