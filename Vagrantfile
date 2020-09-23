@@ -787,7 +787,7 @@ Vagrant.configure('2') do |config|
 
   # Local Machine Hosts
   #
-  # If the Vagrant plugin goodhosts (https://github.com/Mte90/vagrant-goodhosts/) is
+  # If the Vagrant plugin goodhosts (https://github.com/goodhosts/vagrant/) is
   # installed, the following will automatically configure your local machine's hosts file to
   # be aware of the domains specified below. Watch the provisioning script as you may need to
   # enter a password for Vagrant to access your hosts file.
