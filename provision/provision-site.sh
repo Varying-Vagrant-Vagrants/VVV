@@ -268,7 +268,7 @@ function vvv_custom_folders() {
     do
       if [[ $folder != '...' ]]; then
         local gitvcs=$(vvv_get_site_config_value "folders.${folder}.git" "False")
-        if [ $gitvcs != "False"]; then
+        if [[ $gitvcs != "False" ]]; then
           vvv_custom_folder_git "${folder}"
         fi
       fi
