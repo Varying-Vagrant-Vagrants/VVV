@@ -218,13 +218,6 @@ function vvv_provision_site_nginx() {
   fi
 }
 
-
-
-#function vvv_get_site_config_keys {
-#  local value=$(shyaml keys "sites.${SITE_ESCAPED}.${1}" 2> /dev/null < ${VVV_CONFIG})
-#  echo "${value:-$@}"
-#}
-
 function vvv_get_site_config_value() {
   local value=$(shyaml get-value "sites.${SITE_ESCAPED}.${1}" "${2}" 2> /dev/null < ${VVV_CONFIG})
   echo "${value}"
