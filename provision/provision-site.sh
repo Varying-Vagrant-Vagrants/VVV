@@ -135,16 +135,16 @@ function vvv_provision_site_repo() {
       if [[ -d "${VM_DIR}/.git" ]]; then
         echo " * Updating ${SITE} in ${VM_DIR}..."
         cd "${VM_DIR}"
-        git reset "origin/${BRANCH}" --hard -q
-        git pull origin "${BRANCH}" -q
-        git checkout "${BRANCH}" -q
+        noroot git reset "origin/${BRANCH}" --hard -q
+        noroot git pull origin "${BRANCH}" -q
+        noroot git checkout "${BRANCH}" -q
       else
         echo "${RED}Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
       fi
     else
       # Clone or pull the site repository
       echo -e " * Downloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
-      git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
+      noroot git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
       if [ $? -eq 0 ]; then
         echo " * ${SITE} Site Template clone successful"
       else
