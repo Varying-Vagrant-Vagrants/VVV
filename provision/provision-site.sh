@@ -231,37 +231,45 @@ function vvv_clone_site_git_folder() {
   noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
 }
 
-function vvv_clone_custom_git_repos() {
-  if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.git" < "${VVV_CONFIG}"); then
+function vvv_custom_folder_git() {
+  local folder="${1}"
+  local repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
+  local overwrite=$(vvv_get_site_config_value "git.${folder}.git.overwrite" "False")
+  local forcepull=$(vvv_get_site_config_value "git.${folder}.git.forcepull" "False")
+
+  if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
+    vvv_clone_site_git_folder "${repo}" "${folder}"
+  else
+    if [[ $overwrite = "True" ]]; then
+      if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
+        vvv_info " - VVV was asked to clone into a folder that already exists, but does not contain a git repo"
+        vvv_info " - Overwrite is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
+        rm -rf "${VVV_PATH_TO_SITE}/${folder}"
+        vvv_clone_site_git_folder "${repo}" "${folder}"
+      fi
+    else
+      echo " - Cannot clone, a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
+    fi
+  fi
+
+  if [[ $forcepull = "True" ]]; then
+    vvv_info " - resetting git checkout and pulling down latest for ${folder}"
+    cd "${VVV_PATH_TO_SITE}/${folder}"
+    noroot git reset --hard -q
+    noroot git pull -q
+    noroot git checkout -q
+    cd -
+  fi
+}
+
+function vvv_custom_folders() {
+  if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders" < "${VVV_CONFIG}"); then
     for folder in $folders
     do
       if [[ $folder != '...' ]]; then
-        local repo=$(vvv_get_site_config_value "git.${folder}.repo" "?")
-        local overwrite=$(vvv_get_site_config_value "git.${folder}.overwrite" "False")
-        local forcepull=$(vvv_get_site_config_value "git.${folder}.forcepull" "False")
-
-        if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
-          vvv_clone_site_git_folder "${repo}" "${folder}"
-        else
-          if [[ $overwrite = "True" ]]; then
-            if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
-              vvv_info " - VVV was asked to clone into a folder that already exists, but does not contain a git repo"
-              vvv_info " - Overwrite is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
-              rm -rf "${VVV_PATH_TO_SITE}/${folder}"
-              vvv_clone_site_git_folder "${repo}" "${folder}"
-            fi
-          else
-            echo " - Cannot clone, a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
-          fi
-        fi
-
-        if [[ $forcepull = "True" ]]; then
-          vvv_info " - resetting git checkout and pulling down latest for ${folder}"
-          cd "${VVV_PATH_TO_SITE}/${folder}"
-          noroot git reset --hard -q
-          noroot git pull -q
-          noroot git checkout -q
-          cd -
+        local gitvcs=$(vvv_get_site_config_value "folders.${folder}.git" "False")
+        if [ $gitvcs != "False"]; then
+          vvv_custom_folder_git "${folder}"
         fi
       fi
     done
@@ -285,7 +293,7 @@ if [[ ! -d "${VM_DIR}" ]]; then
 fi
 
 vvv_process_site_hosts
-vvv_clone_custom_git_repos
+vvv_custom_folders
 vvv_provision_site_script
 vvv_provision_site_nginx
 
