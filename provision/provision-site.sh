@@ -234,16 +234,17 @@ function vvv_clone_site_git_folder() {
 function vvv_custom_folder_git() {
   local folder="${1}"
   local repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
-  local overwrite=$(vvv_get_site_config_value "folders.${folder}.git.overwrite" "False")
-  local forcepull=$(vvv_get_site_config_value "folders.${folder}.git.forcepull" "False")
+  local overwrite_on_clone=$(vvv_get_site_config_value "folders.${folder}.git.overwrite_on_clone" "False")
+  local hard_reset=$(vvv_get_site_config_value "folders.${folder}.git.hard_reset" "False")
+  local pull=$(vvv_get_site_config_value "folders.${folder}.git.pull" "False")
 
   if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
     vvv_clone_site_git_folder "${repo}" "${folder}"
   else
-    if [[ $overwrite = "True" ]]; then
+    if [[ $overwrite_on_clone = "True" ]]; then
       if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
         vvv_info " - VVV was asked to clone into a folder that already exists (${folder}), but does not contain a git repo"
-        vvv_info " - Overwrite is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
+        vvv_info " - overwrite_on_clone is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
         rm -rf "${VVV_PATH_TO_SITE}/${folder}"
         vvv_clone_site_git_folder "${repo}" "${folder}"
       fi
@@ -252,12 +253,17 @@ function vvv_custom_folder_git() {
     fi
   fi
 
-  if [[ $forcepull = "True" ]]; then
-    vvv_info " - resetting git checkout and pulling down latest for ${folder}"
+  if [[ $hard_reset = "True" ]]; then
+    vvv_info " - resetting git checkout and discarding changes in ${folder}"
     cd "${VVV_PATH_TO_SITE}/${folder}"
     noroot git reset --hard -q
-    noroot git pull -q
     noroot git checkout -q
+    cd -
+  fi
+  if [[ $pull = "True" ]]; then
+    vvv_info " - runnning git pull for ${folder}"
+    cd "${VVV_PATH_TO_SITE}/${folder}"
+    noroot git pull -q
     cd -
   fi
 }
