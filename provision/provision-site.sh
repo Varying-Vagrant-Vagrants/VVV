@@ -218,6 +218,61 @@ function vvv_provision_site_nginx() {
   fi
 }
 
+
+
+#function vvv_get_site_config_keys {
+#  local value=$(shyaml keys "sites.${SITE_ESCAPED}.${1}" 2> /dev/null < ${VVV_CONFIG})
+#  echo "${value:-$@}"
+#}
+
+function vvv_get_site_config_value() {
+  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.${1}" "${2}" 2> /dev/null < ${VVV_CONFIG})
+  echo "${value}"
+}
+
+function vvv_clone_site_git_folder() {
+  local repo="${1}"
+  local folder="${2}"
+  vvv_info " * git cloning '${repo}' into '${VVV_PATH_TO_SITE}/${folder}'"
+  noroot mkdir -p "${VVV_PATH_TO_SITE}/${folder}"
+  noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
+}
+
+function vvv_clone_custom_git_repos() {
+  if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.git" < "${VVV_CONFIG}"); then
+    for folder in $folders
+    do
+      if [[ $folder != '...' ]]; then
+        local repo=$(vvv_get_site_config_value "git.${folder}.repo" "?")
+        local overwrite=$(vvv_get_site_config_value "git.${folder}.overwrite" "false")
+        local forcepull=$(vvv_get_site_config_value "git.${folder}.forcepull" "false")
+        if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
+          vvv_clone_site_git_folder "${repo}" "${folder}"
+        else
+          if [ $overwrite = "True" ]; then
+            if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
+              vvv_info " - VVV was asked to clone into a folder that already exists, but does not contain a git repo"
+              vvv_info " - Overwrite is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
+              rm -rf "${VVV_PATH_TO_SITE}/${folder}"
+              vvv_clone_site_git_folder "${repo}" "${folder}"
+            fi
+          else
+            echo " - Cannot clone, a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
+        fi
+        if [ $forcepull = "True" ]; then
+          vvv_info " - resetting git checkout and pulling down latest for ${folder}"
+          cd "${VVV_PATH_TO_SITE}/${folder}"
+          noroot git reset --hard -q
+          noroot git pull -q
+          noroot git checkout -q
+          cd -
+      fi
+    done
+  else
+    echo " - No git repos to clone"
+  fi
+}
+
 # -------------------------------
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
@@ -233,6 +288,7 @@ if [[ ! -d "${VM_DIR}" ]]; then
 fi
 
 vvv_process_site_hosts
+vvv_clone_custom_git_repos
 vvv_provision_site_script
 vvv_provision_site_nginx
 
