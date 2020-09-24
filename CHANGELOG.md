@@ -15,6 +15,7 @@ permalink: /docs/en-US/changelog/
 * Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation.
 * Prevent use of sudo vagrant up ( #2215 )
 * Major refactor of the main provisioner, and introduction of a hook system to be used while provisioning ( #2230, #2238 )
+* Support for cloning git repositories into sites via `config.yml`
 
 ### Deprecations
 
