@@ -218,6 +218,72 @@ function vvv_provision_site_nginx() {
   fi
 }
 
+function vvv_get_site_config_value() {
+  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.${1}" "${2}" 2> /dev/null < ${VVV_CONFIG})
+  echo "${value}"
+}
+
+function vvv_clone_site_git_folder() {
+  local repo="${1}"
+  local folder="${2}"
+  vvv_info " * git cloning '${repo}' into '${VVV_PATH_TO_SITE}/${folder}'"
+  noroot mkdir -p "${VVV_PATH_TO_SITE}/${folder}"
+  noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
+}
+
+function vvv_custom_folder_git() {
+  local folder="${1}"
+  local repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
+  local overwrite_on_clone=$(vvv_get_site_config_value "folders.${folder}.git.overwrite_on_clone" "False")
+  local hard_reset=$(vvv_get_site_config_value "folders.${folder}.git.hard_reset" "False")
+  local pull=$(vvv_get_site_config_value "folders.${folder}.git.pull" "False")
+
+  if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
+    vvv_clone_site_git_folder "${repo}" "${folder}"
+  else
+    if [[ $overwrite_on_clone = "True" ]]; then
+      if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
+        vvv_info " - VVV was asked to clone into a folder that already exists (${folder}), but does not contain a git repo"
+        vvv_info " - overwrite_on_clone is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
+        rm -rf "${VVV_PATH_TO_SITE}/${folder}"
+        vvv_clone_site_git_folder "${repo}" "${folder}"
+      fi
+    else
+      echo " - Cannot clone into '${folder}', a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
+    fi
+  fi
+
+  if [[ $hard_reset = "True" ]]; then
+    vvv_info " - resetting git checkout and discarding changes in ${folder}"
+    cd "${VVV_PATH_TO_SITE}/${folder}"
+    noroot git reset --hard -q
+    noroot git checkout -q
+    cd -
+  fi
+  if [[ $pull = "True" ]]; then
+    vvv_info " - runnning git pull for ${folder}"
+    cd "${VVV_PATH_TO_SITE}/${folder}"
+    noroot git pull -q
+    cd -
+  fi
+}
+
+function vvv_custom_folders() {
+  if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders" < "${VVV_CONFIG}"); then
+    for folder in $folders
+    do
+      if [[ $folder != '...' ]]; then
+        local gitvcs=$(vvv_get_site_config_value "folders.${folder}.git" "False")
+        if [[ $gitvcs != "False" ]]; then
+          vvv_custom_folder_git "${folder}"
+        fi
+      fi
+    done
+  else
+    echo " - No git repos to clone"
+  fi
+}
+
 # -------------------------------
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
@@ -233,6 +299,7 @@ if [[ ! -d "${VM_DIR}" ]]; then
 fi
 
 vvv_process_site_hosts
+vvv_custom_folders
 vvv_provision_site_script
 vvv_provision_site_nginx
 
