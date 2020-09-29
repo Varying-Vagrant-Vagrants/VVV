@@ -7,4 +7,4 @@ echo "Making sure log/php/xdebug-remote.log is readable and present"
 sudo touch /var/log/php/xdebug-remote.log
 sudo chmod 664 /var/log/php/xdebug-remote.log
 
-echo "XDebug enabled! Note that XDebug doesn't always support the newest version of PHP imediately, check the XDebug site for more details"
+echo "XDebug is enabled! Note that XDebug doesn't always support the newest version of PHP on release, check the XDebug site for more details"
