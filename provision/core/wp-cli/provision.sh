@@ -25,6 +25,7 @@ function wp_cli_setup() {
     echo " * Updating wp-cli..."
     wp --allow-root cli update --nightly --yes
   fi
+  wp package install git@github.com:wp-cli/doctor-command.git
 }
 export -f wp_cli_setup
 
