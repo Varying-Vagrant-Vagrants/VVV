@@ -27,6 +27,7 @@ function php_register_packages() {
 
     # Extra PHP modules that we find useful
     php-pear
+    php-pcov
     php-ssh2
     php-yaml
     "php${VVV_BASE_PHPVERSION}-bcmath"
@@ -103,6 +104,7 @@ function phpfpm_finalize() {
   # Disable PHP Xdebug module by default
   echo " * Disabling XDebug PHP extension"
   phpdismod xdebug
+  phpdismod pcov
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
