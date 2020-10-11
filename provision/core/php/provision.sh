@@ -44,13 +44,13 @@ function php_register_packages() {
 
   # ImageMagick
   VVV_PACKAGE_LIST+=(
-    php-imagick
+    php${VVV_BASE_PHPVERSION}-imagick
     imagemagick
   )
 
   # XDebug
   VVV_PACKAGE_LIST+=(
-    php-xdebug
+    php${VVV_BASE_PHPVERSION}-xdebug
 
     # Required for Webgrind
     graphviz
@@ -131,8 +131,8 @@ vvv_add_hook nginx_upstreams php_nginx_upstream
 function memcached_register_packages() {
   # MemCached
   VVV_PACKAGE_LIST+=(
-    php-memcache
-    php-memcached
+    php${VVV_BASE_PHPVERSION}-memcache
+    php${VVV_BASE_PHPVERSION}-memcached
 
     # memcached is made available for object caching
     memcached
