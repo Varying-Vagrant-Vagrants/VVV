@@ -16,7 +16,7 @@ permalink: /docs/en-US/changelog/
 * Prevent use of sudo vagrant up ( #2215 )
 * Major refactor of the main provisioner, and introduction of a hook system to be used while provisioning ( #2230, #2238 )
 * Support for cloning git repositories into sites via `config.yml` ( #2247 )
-* Enhanced database backup terminal output
+* Enhanced database backup terminal output ( #2256 ) 
 
 ### Deprecations
 
