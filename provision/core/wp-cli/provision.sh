@@ -20,11 +20,12 @@ function wp_cli_setup() {
 
     echo " * Grabbing WP CLI bash completions"
     # Install bash completions
-    curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
+    noroot curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
   else
     echo " * Updating wp-cli..."
     wp --allow-root cli update --nightly --yes
   fi
+  wp --allow-root package install git@github.com:wp-cli/doctor-command.git
 }
 export -f wp_cli_setup
 
