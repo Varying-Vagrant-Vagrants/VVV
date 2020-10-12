@@ -52,24 +52,9 @@ function php_register_packages() {
   # XDebug
   VVV_PACKAGE_LIST+=(
     php${VVV_BASE_PHPVERSION}-xdebug
-
-    # Required for Webgrind
-    graphviz
   )
 }
 vvv_add_hook before_packages php_register_packages
-
-function graphviz_setup() {
-  # Graphviz
-  #
-  # Set up a symlink between the Graphviz path defined in the default Webgrind
-  # config and actual path.
-  echo " * Adding graphviz symlink for Webgrind..."
-  ln -sf "/usr/bin/dot" "/usr/local/bin/dot"
-}
-export -f graphviz_setup
-
-vvv_add_hook after_packages graphviz_setup 20
 
 function phpfpm_setup() {
   # Copy php-fpm configuration from local
