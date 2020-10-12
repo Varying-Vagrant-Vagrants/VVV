@@ -28,8 +28,8 @@ function php_register_packages() {
     # Extra PHP modules that we find useful
     php-pear
     php-pcov
-    php-ssh2
-    php-yaml
+    "php${VVV_BASE_PHPVERSION}-ssh2"
+    "php${VVV_BASE_PHPVERSION}-yaml"
     "php${VVV_BASE_PHPVERSION}-bcmath"
     "php${VVV_BASE_PHPVERSION}-curl"
     "php${VVV_BASE_PHPVERSION}-gd"
@@ -91,9 +91,9 @@ function phpfpm_setup() {
   echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
   cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
 
-  if [[ -f "/etc/php/7.2/mods-available/mailcatcher.ini" ]]; then
+  if [[ -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini" ]]; then
     echo " * Cleaning up mailcatcher.ini from a previous install"
-    rm -f /etc/php/7.2/mods-available/mailcatcher.ini
+    rm -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini"
   fi
 }
 export -f phpfpm_setup
