@@ -28,7 +28,7 @@ dpkg --list \
 #    | awk '{ print $2 }' \
 #    | grep -- '-dev$' \
 #    | xargs apt-get -y purge;
-apt-get -y purge autotools-dev
+#apt-get -y purge autotools-dev
 
 # delete docs packages
 dpkg --list \
