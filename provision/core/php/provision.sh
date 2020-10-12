@@ -27,6 +27,7 @@ function php_register_packages() {
 
     # Extra PHP modules that we find useful
     php-pear
+    php-pcov
     php-ssh2
     php-yaml
     "php${VVV_BASE_PHPVERSION}-bcmath"
@@ -44,13 +45,13 @@ function php_register_packages() {
 
   # ImageMagick
   VVV_PACKAGE_LIST+=(
-    php-imagick
+    php${VVV_BASE_PHPVERSION}-imagick
     imagemagick
   )
 
   # XDebug
   VVV_PACKAGE_LIST+=(
-    php-xdebug
+    php${VVV_BASE_PHPVERSION}-xdebug
 
     # Required for Webgrind
     graphviz
@@ -103,6 +104,7 @@ function phpfpm_finalize() {
   # Disable PHP Xdebug module by default
   echo " * Disabling XDebug PHP extension"
   phpdismod xdebug
+  phpdismod pcov
 
   # Add the vagrant user to the www-data group so that it has better access
   # to PHP and Nginx related files.
@@ -131,8 +133,8 @@ vvv_add_hook nginx_upstreams php_nginx_upstream
 function memcached_register_packages() {
   # MemCached
   VVV_PACKAGE_LIST+=(
-    php-memcache
-    php-memcached
+    php${VVV_BASE_PHPVERSION}-memcache
+    php${VVV_BASE_PHPVERSION}-memcached
 
     # memcached is made available for object caching
     memcached
