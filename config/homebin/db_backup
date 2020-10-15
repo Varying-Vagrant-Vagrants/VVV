@@ -19,7 +19,7 @@ do
     [ "${db_name}" == "performance_schema" ] && echo "   - skipped ${db_name}" && continue;
     [ "${db_name}" == "test" ] && echo "   - skipped ${db_name}" && continue;
     databases+=( "${db_name}" )
-done < dbnames
+done < $dbnames
 
 count=0
 for db in "${databases[@]}"
