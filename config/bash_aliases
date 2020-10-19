@@ -51,3 +51,5 @@ if [ -n "$BASH" ]; then
 	# add autocomplete for wp-cli
 	[ -s "/srv/config/wp-cli/wp-completion.bash" ] && . /srv/config/wp-cli/wp-completion.bash
 fi
+
+alias wp='wp --no-ssh'
