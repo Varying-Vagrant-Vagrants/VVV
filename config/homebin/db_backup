@@ -9,8 +9,10 @@ mkdir -p /srv/database/backups
 echo " * Performing Database Backups"
 databases=()
 
+echo " * Querying Database names"
 mysql --user="root" --password="root" -e 'show databases' | \
-grep -v -F "Database" > dbnames &
+grep -v -F "Database" > $TMPFIFODIR/dbnames &
+echo " * Processing names"
 while read db_name
 do
     # skip these databases
@@ -19,7 +21,7 @@ do
     [ "${db_name}" == "performance_schema" ] && echo "   - skipped ${db_name}" && continue;
     [ "${db_name}" == "test" ] && echo "   - skipped ${db_name}" && continue;
     databases+=( "${db_name}" )
-done < dbnames
+done < $TMPFIFODIR/dbnames
 
 count=0
 for db in "${databases[@]}"
