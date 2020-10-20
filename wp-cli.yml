@@ -1,4 +1,3 @@
-ssh: vagrant@vvv.test
 require:
   - config/wp-cli/local.php
   - config/wp-cli/quiet.php
