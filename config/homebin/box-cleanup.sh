@@ -24,10 +24,11 @@ dpkg --list \
     | xargs apt-get -y purge;
 
 # Delete development packages
-dpkg --list \
-    | awk '{ print $2 }' \
-    | grep -- '-dev$' \
-    | xargs apt-get -y purge;
+#dpkg --list \
+#    | awk '{ print $2 }' \
+#    | grep -- '-dev$' \
+#    | xargs apt-get -y purge;
+#apt-get -y purge autotools-dev
 
 # delete docs packages
 dpkg --list \
