@@ -30,12 +30,17 @@ function get_config_value() {
 
 function get_hosts() {
   local value=$(shyaml get-values-0 "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
-  echo "${value:-$@}"
+  echo "${value:-"${VVV_SITE_NAME}.test"}"
+}
+
+function get_hosts_list() {
+  local value=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
+  echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
 function get_primary_host() {
   local value=$(shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" "${1}" 2> /dev/null < ${VVV_CONFIG})
-  echo "${value}"
+  echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
 function vvv_provision_site_nginx_config() {
@@ -95,7 +100,7 @@ function vvv_process_site_hosts() {
   #
   # Domains should be entered on new lines.
   echo " * Adding domains to the virtual machine's /etc/hosts file..."
-  hosts=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
+  hosts=$(get_hosts_list)
   if [ ${#hosts[@]} -eq 0 ]; then
     echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
     if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then
@@ -120,7 +125,7 @@ function vvv_process_site_hosts() {
     fi
   else
     echo " * Adding hosts from the VVV config entry"
-    for line in $(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG}); do
+    for line in $(get_hosts_list); do
       if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
         echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
         echo "   - Added ${line} from ${VVV_CONFIG}"

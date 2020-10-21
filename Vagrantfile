@@ -206,8 +206,11 @@ vvv_config['sites'].each do |site, args|
       lines = File.readlines(path).map(&:chomp)
       lines.grep(/\A[^#]/)
     end.flatten
-
-    vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+    if vvv_config['sites'][site]['hosts'].is_a? Hash
+      vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+    else
+      vvv_config['hosts'] += ["#{site}.test"]
+    end
   end
   vvv_config['sites'][site].delete('hosts')
 end
