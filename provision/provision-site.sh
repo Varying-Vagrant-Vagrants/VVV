@@ -124,7 +124,7 @@ function vvv_process_site_hosts() {
     fi
   else
     echo " * Adding hosts from the VVV config entry"
-    for line in $(get_hosts_list); do
+    for line in $hosts; do
       if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
         echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
         echo "   - Added ${line} from ${VVV_CONFIG}"
