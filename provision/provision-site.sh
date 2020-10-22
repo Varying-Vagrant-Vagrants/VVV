@@ -24,8 +24,7 @@ VVV_CONFIG=/vagrant/config.yml
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo $(get_config_value 'key' 'defaultvalue')
 function get_config_value() {
-  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.custom.${1}" "${2}" < ${VVV_CONFIG})
-  echo "${value}"
+  vvv_get_site_config_value "custom.${1}" "${2}"
 }
 
 function get_hosts() {
