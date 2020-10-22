@@ -24,22 +24,22 @@ VVV_CONFIG=/vagrant/config.yml
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo $(get_config_value 'key' 'defaultvalue')
 function get_config_value() {
-  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.custom.${1}" "${2}" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.custom.${1}" "${2}" < ${VVV_CONFIG})
   echo "${value}"
 }
 
 function get_hosts() {
-  local value=$(shyaml get-values-0 "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
+  local value=$(shyaml -q get-values-0 "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
 function get_hosts_list() {
-  local value=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG})
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
 function get_primary_host() {
-  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" "${1}" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.hosts.0" "${1}" < ${VVV_CONFIG})
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
@@ -224,7 +224,7 @@ function vvv_provision_site_nginx() {
 }
 
 function vvv_get_site_config_value() {
-  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.${1}" "${2}" 2> /dev/null < ${VVV_CONFIG})
+  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
   echo "${value}"
 }
 
