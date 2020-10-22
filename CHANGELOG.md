@@ -18,6 +18,7 @@ permalink: /docs/en-US/changelog/
 * Support for cloning git repositories into sites via `config.yml` ( #2247 )
 * Install WP-CLI doctor package ( #2051 )
 * Enhanced database backup terminal output ( #2256 ) 
+* Sites with no `hosts` defined will now default to `{sitename}.test` ( #2267 ) 
 
 ### Deprecations
 
