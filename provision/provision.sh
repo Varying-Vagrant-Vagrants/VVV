@@ -12,6 +12,7 @@
 . "/srv/config/bash_aliases"
 
 # cleanup
+mkdir -p /vvv
 mkdir -p /vagrant
 rm -rf /vagrant/failed_provisioners
 mkdir -p /vagrant/failed_provisioners
