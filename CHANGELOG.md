@@ -19,6 +19,7 @@ permalink: /docs/en-US/changelog/
 * Install WP-CLI doctor package ( #2051 )
 * Enhanced database backup terminal output ( #2256 ) 
 * Sites with no `hosts` defined will now default to `{sitename}.test` ( #2267 ) 
+* Avoid `apt-get update` to run on the main provisioner on every provision ( #2272 )
 
 ### Deprecations
 
