@@ -16,6 +16,7 @@ fi
 echo " * Restarting Nginx and MySQL"
 sudo service nginx restart
 sudo service mysql restart
+echo " * Syncing clocks"
 sudo ntpdate ntp.ubuntu.com
 
 RED="\033[38;5;9m"
