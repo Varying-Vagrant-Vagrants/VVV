@@ -16,6 +16,7 @@ fi
 echo " * Restarting Nginx and MySQL"
 sudo service nginx restart
 sudo service mysql restart
+sudo ntpdate ntp.ubuntu.com
 
 RED="\033[38;5;9m"
 GREEN="\033[01;32m"
