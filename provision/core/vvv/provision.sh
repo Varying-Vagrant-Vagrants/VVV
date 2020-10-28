@@ -22,6 +22,7 @@ function vvv_register_packages() {
     vim
     colordiff
     python-pip
+    python-setuptools
     lftp
 
     # ntp service to keep clock current
@@ -44,6 +45,7 @@ function shyaml_setup() {
   #
   # Used for passing custom parameters to the bash provisioning scripts
   echo " * Installing Shyaml for bash provisioning.."
+  sudo pip install wheel
   sudo pip install shyaml
 }
 export -f shyaml_setup
