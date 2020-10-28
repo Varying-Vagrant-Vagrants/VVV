@@ -206,7 +206,7 @@ vvv_config['sites'].each do |site, args|
       lines = File.readlines(path).map(&:chomp)
       lines.grep(/\A[^#]/)
     end.flatten
-    if vvv_config['sites'][site]['hosts'].is_a? Hash
+    if vvv_config['sites'][site]['hosts'].is_a? Array
       vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
     else
       vvv_config['hosts'] += ["#{site}.test"]
