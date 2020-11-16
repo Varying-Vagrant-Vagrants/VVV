@@ -10,6 +10,7 @@ export GREEN="\033[38;5;2m"
 export RED="\033[38;5;9m"
 export CRESET="\033[0m"
 export BOLD="\033[1m"
+export VVV_APT_GET_EVERY=$((60*60*24)) # every day
 
 VVV_CONFIG=/vagrant/vvv-custom.yml
 if [[ -f /vagrant/config.yml ]]; then
@@ -152,6 +153,25 @@ function noroot() {
 }
 export -f noroot
 
+function vvv_maybe_run_apt_update() {
+  curr_date=$(date +%s)
+  last_apt_update=0
+  if [ -f /vvv/apt_update_last_run ]; then
+    last_apt_update=$(stat -c %Y "/vvv/apt_update_last_run")
+  fi
+  diff=$((curr_date-last_apt_update));
+
+  if [ "$diff" -lt "$VVV_APT_GET_EVERY" ]; then
+    return
+  fi
+  touch /vvv/apt_update_last_run
+
+  echo " * Running apt-get update..."
+  rm -rf /var/lib/apt/lists/*
+  apt-get update -y --fix-missing
+}
+export -f vvv_maybe_run_apt_update
+
 function vvv_apt_keys_has() {
   local keys=$( apt-key list )
   if [[ ! $( echo "${keys}" | grep "$1") ]]; then
@@ -280,10 +300,8 @@ vvv_package_install() {
   echo " * Updating apt keys"
   apt-key update -y
 
-  # Update all of the package references before installing anything
-  echo " * Running apt-get update..."
-  rm -rf /var/lib/apt/lists/*
-  apt-get update -y --fix-missing
+  # Maybe update all of the package references before installing anything
+  vvv_maybe_run_apt_update
 
   # Install required packages
   echo " * Installing apt-get packages..."
