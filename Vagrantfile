@@ -699,7 +699,9 @@ Vagrant.configure('2') do |config|
   # Provisioning
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
-  #
+ 
+  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: 'echo "\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n"'
+
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
@@ -787,6 +789,8 @@ Vagrant.configure('2') do |config|
   if File.exist?(File.join(vagrant_dir, 'provision', 'provision-post.sh'))
     config.vm.provision 'post', type: 'shell', keep_color: true, path: File.join('provision', 'provision-post.sh'), env: { "VVV_LOG" => "post" }
   end
+  
+  config.vm.provision "post-provision-script", type: 'shell', keep_color: true, path: File.join( 'config/homebin', 'vagrant_provision' ), env: { "VVV_LOG" => "post-provision-script" }
 
   # Local Machine Hosts
   #
@@ -830,16 +834,6 @@ Vagrant.configure('2') do |config|
   config.trigger.after :up do |trigger|
     trigger.name = 'VVV Post-Up'
     trigger.run_remote = { inline: '/srv/config/homebin/vagrant_up' }
-    trigger.on_error = :continue
-  end
-  config.trigger.before :provision do |trigger|
-    trigger.name = 'VVV Pre-Provision'
-    trigger.info = "\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n"
-    trigger.on_error = :continue
-  end
-  config.trigger.after :provision do |trigger|
-    trigger.name = 'VVV provisioning has reached the end'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_provision' }
     trigger.on_error = :continue
   end
   config.trigger.before :reload do |trigger|
