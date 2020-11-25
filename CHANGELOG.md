@@ -15,10 +15,11 @@ permalink: /docs/en-US/changelog/
 * Added `box-cleanup.sh` and `box-minimize.sh` scripts. Run these before creating a vagrant box to reduce disk size. These are only intended for box file creation.
 * Prevent use of sudo vagrant up ( #2215 )
 * Major refactor of the main provisioner, and introduction of a hook system to be used while provisioning ( #2230, #2238 )
-* Support for cloning git repositories into sites via `config.yml` ( #2247 )
+* Support for cloning git repositories into site folders via `config/config.yml` ( #2247 )
 * Install WP-CLI doctor package ( #2051 )
-* Enhanced database backup terminal output ( #2256 ) 
-* Sites with no `hosts` defined will now default to `{sitename}.test` ( #2267 ) 
+* Enhanced database backup terminal output ( #2256 )
+* Sites with no `hosts` defined will now default to `{sitename}.test` ( #2267 )
+* The default version of PHP was upgraded to v7.3 ( #2307 )
 
 ### Deprecations
 
