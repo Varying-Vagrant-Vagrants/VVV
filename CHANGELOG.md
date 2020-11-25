@@ -19,7 +19,7 @@ permalink: /docs/en-US/changelog/
 * Install WP-CLI doctor package ( #2051 )
 * Enhanced database backup terminal output ( #2256 )
 * Sites with no `hosts` defined will now default to `{sitename}.test` ( #2267 )
-* The default version of PHP was upgraded to v7.3
+* The default version of PHP was upgraded to v7.3 ( #2307 )
 
 ### Deprecations
 
