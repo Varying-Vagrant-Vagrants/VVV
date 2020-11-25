@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.2"}
+VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.3"}
 function php_register_packages() {
   if ! vvv_src_list_has "ondrej/php"; then
     cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
