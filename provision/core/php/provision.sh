@@ -58,22 +58,12 @@ vvv_add_hook before_packages php_register_packages
 
 function phpfpm_setup() {
   # Copy php-fpm configuration from local
-  echo " * Copying /srv/config/php-config/php-fpm.conf   to /etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
+  echo " * Copying PHP configs"
   cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
-
-  echo " * Copying /srv/config/php-config/php-www.conf   to /etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
   cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
-
-  echo " * Copying /srv/config/php-config/php-custom.ini to /etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
   cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
-
-  echo " * Copying /srv/config/php-config/opcache.ini       to /etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
   cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
-
-  echo " * Copying /srv/config/php-config/xdebug.ini        to /etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
   cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
-
-  echo " * Copying /srv/config/php-config/mailhog.ini       to /etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
   cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
 
   if [[ -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini" ]]; then
@@ -83,6 +73,7 @@ function phpfpm_setup() {
 }
 export -f phpfpm_setup
 
+vvv_add_hook before_packages phpfpm_setup 50
 vvv_add_hook after_packages phpfpm_setup 50
 
 function phpfpm_finalize() {
