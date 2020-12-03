@@ -27,7 +27,7 @@ function php_register_packages() {
 
     # Extra PHP modules that we find useful
     php-pear
-    php-pcov
+    "php${VVV_BASE_PHPVERSION}-pcov"
     "php${VVV_BASE_PHPVERSION}-ssh2"
     "php${VVV_BASE_PHPVERSION}-yaml"
     "php${VVV_BASE_PHPVERSION}-bcmath"
@@ -57,14 +57,16 @@ function php_register_packages() {
 vvv_add_hook before_packages php_register_packages
 
 function phpfpm_setup() {
-  # Copy php-fpm configuration from local
-  echo " * Copying PHP configs"
-  cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
-  cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
-  cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
-  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
-  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
-  cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
+  # Copy php-fpm configs from local
+  if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/" ]; then
+    echo " * Copying PHP configs"
+    cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
+    cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
+    cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
+    cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
+    cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
+    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
+  fi
 
   if [[ -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini" ]]; then
     echo " * Cleaning up mailcatcher.ini from a previous install"
