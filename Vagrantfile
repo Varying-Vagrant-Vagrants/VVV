@@ -727,6 +727,13 @@ Vagrant.configure('2') do |config|
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
 
+  unless Vagrant::Util::Platform.windows?
+    if Process.uid == 0
+      # the VM should know if vagrant was ran by a root user or using sudo
+      config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
+    end
+  end
+
   config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n\""
 
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
