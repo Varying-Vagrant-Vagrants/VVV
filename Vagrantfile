@@ -5,6 +5,7 @@
 Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
+require 'pathname'
 
 def virtualbox_path
   @vboxmanage_path = nil
@@ -375,6 +376,17 @@ Vagrant.configure('2') do |config|
 
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
+
+    unless Vagrant::Util::Platform.windows?
+      if Process.uid == 0
+        machine_id_file=Pathname.new(".vagrant/machines/default/virtualbox/id")
+        unless machine_id_file.exist?()
+          puts " ! VVV has detected that the VM has not been created yet, and is running as root/sudo."
+          puts " ! Do not use sudo with VVV, do not run VVV as a root user. Aborting."
+          abort( "Aborting Vagrant command to prevent a critical mistake, do not use sudo/root with VVV." )
+        end
+      end
+    end
     # Move the ubuntu-bionic-18.04-cloudimg-console.log file to log directory.
     v.customize ['modifyvm', :id, '--uartmode1', 'file', File.join(vagrant_dir, 'log/ubuntu-bionic-18.04-cloudimg-console.log')]
 
