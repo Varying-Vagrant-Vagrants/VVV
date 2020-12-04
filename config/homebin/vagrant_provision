@@ -4,7 +4,7 @@
 # include a file in your local VVV/config/homebin
 # directory: vagrant_provision_custom
 #
-# Note that sometimes provisioning happens on `vagrant up --provision`
+# Note that sometimes provisioning happens on `vagrant up ──provision`
 # so if you have a vagrant_up_custom file, be careful of double
 # execution
 #
@@ -49,7 +49,7 @@ if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then
 	echo -e "${CRESET}"
 else
 	date_time=$(cat /vagrant/provisioned_at)
-	echo -e "${RED} --------------------------------------------------${CRESET}"
+	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
 	echo -e " "
 	echo -e "${RED}    ⚠ oh noes :'( ⚠"
 	echo -e "${RED}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ${CRESET}"
@@ -66,5 +66,5 @@ else
 
 	# List failed provisioners, and pipe them through xargs to print them in a formatted way.
 	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" echo -e "   - log/provisioners/${date_time}/LOGFILE.log"
-	echo -e "${RED} --------------------------------------------------${CRESET}"
+	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
 fi
