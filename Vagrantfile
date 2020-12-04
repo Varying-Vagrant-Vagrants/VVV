@@ -381,6 +381,7 @@ Vagrant.configure('2') do |config|
       if Process.uid == 0
         machine_id_file=Pathname.new(".vagrant/machines/default/virtualbox/id")
         unless machine_id_file.exist?()
+          puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
           puts " ! VVV has detected that the VM has not been created yet, and is running as root/sudo."
           puts " ! Do not use sudo with VVV, do not run VVV as a root user. Aborting."
           abort( "Aborting Vagrant command to prevent a critical mistake, do not use sudo/root with VVV." )
