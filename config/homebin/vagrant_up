@@ -8,50 +8,44 @@
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
 
-if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
-	echo " * Custom vagrant up script found, executing vagrant_up_custom"
-	/srv/config/homebin/vagrant_up_custom
-fi
-
-echo " * Restarting Nginx and MySQL"
-sudo service nginx restart
-sudo service mysql restart
-echo " * Syncing clocks"
-sudo ntpdate -u ntp.ubuntu.com
-
 RED="\033[38;5;9m"
+R=$RED
 GREEN="\033[01;32m"
+G=$GREEN
 BLUE="\033[38;5;4m"
+B=$BLUE
 CYAN="\033[38;5;6m"
 CRESET="\033[0m"
 TEARS="${CYAN}░${RED}"
 EYE="${CYAN}█${RED}"
 URL="\033[4;38;5;3m"
 
+if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
+	echo -e "${GREEN} * Custom vagrant up script found, executing vagrant_up_custom${CRESET}"
+	/srv/config/homebin/vagrant_up_custom
+fi
+
+echo -e "${GREEN} * Restarting Nginx and MySQL${CRESET}"
+sudo service nginx restart
+sudo service mysql restart
+echo -e "${GREEN} * Syncing clocks${CRESET}"
+sudo ntpdate -u ntp.ubuntu.com
+
 mkdir -p /vagrant/failed_provisioners
 if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then
-	echo -e "${GREEN}"
-	echo -e "${GREEN}         yay  "
-	echo -e "${GREEN} ✧ ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ✧              __ __ __ __"
-	echo -e "${GREEN}  ✧█▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
-	echo -e "${GREEN}✧   █░░█░░░░░█░░█ ✧   using        \_/\_/\_/"
-	echo -e "${GREEN} ▄▄  █░░░▀█▀░░░█  ▄▄✧"
-	echo -e "${GREEN}█░░█ ▀▄░░░░░░░▄▀ █░░█ Vagrant Up has finished! Visit ${URL}http://vvv.test${CRESET}"
 	echo -e "${CRESET}"
+	echo -e "${GREEN}  ✧ ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ✧  Thanks for  ${R}__ ${G}__ ${B}__ __${CRESET}"
+	echo -e "${GREEN}   ✧█▒▒░░░░░░░░░▒▒█    using       ${R}\ V${G}\ V${B}\ V /${CRESET}"
+	echo -e "${GREEN} ✧   █░░█░░░░░█░░█ ✧                ${R}\_/${G}\_/${B}\_/${CRESET}"
+	echo -e "${GREEN}  ▄▄  █░░░▀█▀░░░█  ▄▄✧ ${CRESET}"
+	echo -e "${GREEN} █░░█ ▀▄░░░░░░░▄▀ █░░█ Vagrant Up has finished! Visit ${URL}http://vvv.test${CRESET}"
+	echo -e "${GREEN}──────────────────────────────────────────────────────────────────────${CRESET}"
 else
-	date_time=$(cat /vagrant/provisioned_at)
-	echo -e "${RED}"
-	echo -e "${RED}     oh noes :'( "
-	echo -e "${RED}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                 __ __ __ __"
-	echo -e "${RED}   █▒▒░░░░░░░░░▒▒█    Provisioning \ V\ V\ V /"
-	echo -e "${RED}    █░░${EYE}░░░░░${EYE}░░█     incomplete!   \_/\_/\_/"
-	echo -e "${RED}     █░${TEARS}░▀█▀░${TEARS}░█     "
-	echo -e "${RED}   ▄▄▀▄${TEARS}░░░░░${TEARS}▄▀▄▄    Check the logs and reprovision."
-	echo -e "${RED}                      If that fails, go to the VVV Slack or open an issue"
-	echo -e "${RED}                      on GitHub. Logs are in the logs/provisioners folder."
-	echo -e "${RED}"
-	echo -e "${RED}   The failed provisioners left these logs:"
-  # List failed provisioners, and pipe them through xargs to print them in a formatted way.
-	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" echo -e "   - log/provisioners/${date_time}/LOGFILE.log"
-	echo -e "${CRESET}"
+	echo -e "${RED}──────────────────────────────────────────────────────────────────────${CRESET}"
+	echo -e "${RED} ! WARNING${CRESET}"
+	echo -e "${RED} ! ${CRESET}"
+	echo -e "${RED} ! Problems occurred in the last provision, VVV may${CRESET}"
+	echo -e "${RED} ! not work as expected. Check the logs, and don't be ${CRESET}"
+	echo -e "${RED} ! afraid to ask for help on slack/github${CRESET}"
+	echo -e "${RED}──────────────────────────────────────────────────────────────────────${CRESET}"
 fi

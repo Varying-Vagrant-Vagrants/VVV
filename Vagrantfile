@@ -81,6 +81,35 @@ def get_virtualbox_version
   s.stdout.strip!
 end
 
+def sudo_warnings
+  red = "\033[38;5;9m" # 124m"
+  creset = "\033[0m"
+  puts "#{red}┌-──────────────────────────────────────────────────────────────────────────────┐#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  ⚠ DANGER DO NOT USE SUDO ⚠                                                   │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│ ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.          │#{creset}"
+  puts "#{red}│  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(                            │#{creset}"
+  puts "#{red}│    █░░█░▄▄░░█░░█ !                                                            │#{creset}"
+  puts "#{red}│     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful        │#{creset}"
+  puts "#{red}│  !  ▀▄░█░░██░░█      cleanup commands to fix this.                            │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  If vagrant does not work for you without sudo, open a GitHub issue instead   │#{creset}"
+  puts "#{red}│  In the future, this warning will halt provisioning to prevent new users      │#{creset}"
+  puts "#{red}│  making this mistake.                                                         │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  ⚠ DANGER SUDO DETECTED!                                                      │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  In the future the VVV team will be making it harder to use VVV with sudo.    │#{creset}"
+  puts "#{red}│  We will require a config option so that users can do data recovery, and      │#{creset}"
+  puts "#{red}│  disable sites and the dashboard.                                             │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  DO NOT USE SUDO, use ctrl+c/cmd+c and cancel this command ASAP!!!            │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}└───────────────────────────────────────────────────────────────────────────────┘#{creset}"
+  # exit
+end
+
 vagrant_dir = __dir__
 show_logo = false
 branch_c = "\033[38;5;6m" # 111m"
@@ -99,12 +128,18 @@ File.open("#{vagrant_dir}/version", 'r') do |f|
   version = f.read
   version = version.gsub("\n", '')
 end
+
+unless Vagrant::Util::Platform.windows?
+  if Process.uid == 0
+    sudo_warnings
+  end
+end
+
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 show_logo = true if %w[up resume status provision reload].include? ARGV[0]
 show_logo = false if ENV['VVV_SKIP_LOGO']
 
 # Show the initial splash screen
-
 if show_logo
   git_or_zip = 'zip-no-vcs'
   branch = ''
@@ -125,19 +160,11 @@ end
 
 unless Vagrant::Util::Platform.windows?
   if Process.uid == 0
-    puts "#{red}     ! DANGER  !"
-    puts "#{red} ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.#{creset}"
-    puts "#{red}  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(#{creset}"
-    puts "#{red}!   █░░█░▄▄░░█░░█ !   #{creset}"
-    puts "#{red}     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful#{creset}"
-    puts "#{red}  !  ▀▄░█░░██░░█      cleanup commands to fix this.#{creset}"
     puts " "
-    puts "#{red}If vagrant does not work for you without sudo, open a GitHub issue instead#{creset}"
-    puts "#{red}In the future, this warning will halt provisioning to prevent new users making this mistake.#{creset}"
-    # exit
+    puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
+    puts " "
   end
 end
-  
 # Load the config file before the second section of the splash screen
 
 # Perform file migrations from older versions
@@ -699,7 +726,16 @@ Vagrant.configure('2') do |config|
   # Provisioning
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
-  #
+
+  unless Vagrant::Util::Platform.windows?
+    if Process.uid == 0
+      # the VM should know if vagrant was ran by a root user or using sudo
+      config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
+    end
+  end
+
+  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n\""
+
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
@@ -788,6 +824,8 @@ Vagrant.configure('2') do |config|
     config.vm.provision 'post', type: 'shell', keep_color: true, path: File.join('provision', 'provision-post.sh'), env: { "VVV_LOG" => "post" }
   end
 
+  config.vm.provision "post-provision-script", type: 'shell', keep_color: true, path: File.join( 'config/homebin', 'vagrant_provision' ), env: { "VVV_LOG" => "post-provision-script" }
+
   # Local Machine Hosts
   #
   # If the Vagrant plugin goodhosts (https://github.com/goodhosts/vagrant/) is
@@ -827,19 +865,20 @@ Vagrant.configure('2') do |config|
   # into the VM and execute things. By default, each of these scripts calls db_backup
   # to create backups of all current databases. This can be overridden with custom
   # scripting. See the individual files in config/homebin/ for details.
+  unless Vagrant::Util::Platform.windows?
+    if Process.uid == 0
+      config.trigger.after :all do |trigger|
+        trigger.name = 'Do not use sudo'
+        trigger.ruby do |env,machine|
+          sudo_warnings
+        end
+      end
+    end
+  end
+
   config.trigger.after :up do |trigger|
     trigger.name = 'VVV Post-Up'
     trigger.run_remote = { inline: '/srv/config/homebin/vagrant_up' }
-    trigger.on_error = :continue
-  end
-  config.trigger.before :provision do |trigger|
-    trigger.name = 'VVV Pre-Provision'
-    trigger.info = "\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n"
-    trigger.on_error = :continue
-  end
-  config.trigger.after :provision do |trigger|
-    trigger.name = 'VVV provisioning has reached the end'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_provision' }
     trigger.on_error = :continue
   end
   config.trigger.before :reload do |trigger|

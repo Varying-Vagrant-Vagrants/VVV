@@ -19,6 +19,9 @@ permalink: /docs/en-US/changelog/
 * Install WP-CLI doctor package ( #2051 )
 * Enhanced database backup terminal output ( #2256 )
 * Sites with no `hosts` defined will now default to `{sitename}.test` ( #2267 )
+* Enhanced pre/post vagrant up and provision messages ( #2306 )
+* More warnings for people who use `sudo vagrant` commands ( do not use sudo ) ( #2306 )
+* If the VM was created by a root user, `/vagrant/provisioned_as_root` is now created ( #2306 )
 * The default version of PHP was upgraded to v7.3 ( #2307 )
 * Only install the specific version of PHP Pcov we need, rather than all versions ( #2310 )
 
@@ -26,6 +29,7 @@ permalink: /docs/en-US/changelog/
 
 * SVN repository upgrade searches have been moved to a utility. Previous versions of VVV would search 5 folders deep for svn repositories that needed upgrading. If  you still need this, add the `svn-folder-upgrade` core utility. This change can speed up provisioning by 5-10+ seconds on large installations.
 * In the future the dashboard options will be deprecated. Custom dashboards should instead use site provisioners, allowing them to run provisioners, make custom Nginx configs, and have multiple dashboards if desired.
+* Some people use `sudo` when running vagrant commands with VVV, ***they should stop, do not use `sudo`***, and immediatley back up their data. Future VVV versions will assume that when running with `sudo` that the user is trying to recover databases in preparation for a `vagrant destroy`. This includes skipping the provisioning of sites, limiting the available features, and very annoying and prominent warnings. Users who intend to continue using `sudo` for everyday development should expect a painful experience if they do not try to recover. Feel free to ask for help in github or the VVV slack.
 
 ### Bug Fixes
 
