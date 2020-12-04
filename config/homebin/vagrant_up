@@ -8,17 +8,6 @@
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
 
-if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
-	echo " * Custom vagrant up script found, executing vagrant_up_custom"
-	/srv/config/homebin/vagrant_up_custom
-fi
-
-echo " * Restarting Nginx and MySQL"
-sudo service nginx restart
-sudo service mysql restart
-echo " * Syncing clocks"
-sudo ntpdate -u ntp.ubuntu.com
-
 RED="\033[38;5;9m"
 R=$RED
 GREEN="\033[01;32m"
@@ -31,21 +20,32 @@ TEARS="${CYAN}░${RED}"
 EYE="${CYAN}█${RED}"
 URL="\033[4;38;5;3m"
 
+if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
+	echo -e "${GREEN} * Custom vagrant up script found, executing vagrant_up_custom${CRESET}"
+	/srv/config/homebin/vagrant_up_custom
+fi
+
+echo -e "${GREEN} * Restarting Nginx and MySQL${CRESET}"
+sudo service nginx restart
+sudo service mysql restart
+echo -e "${GREEN} * Syncing clocks${CRESET}"
+sudo ntpdate -u ntp.ubuntu.com
+
 mkdir -p /vagrant/failed_provisioners
 if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then
-	echo -e " "
+	echo -e "${CRESET}"
 	echo -e "${GREEN}  ✧ ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ✧  Thanks for  ${R}__ ${G}__ ${B}__ __${CRESET}"
 	echo -e "${GREEN}   ✧█▒▒░░░░░░░░░▒▒█    using       ${R}\ V${G}\ V${B}\ V /${CRESET}"
 	echo -e "${GREEN} ✧   █░░█░░░░░█░░█ ✧                ${R}\_/${G}\_/${B}\_/${CRESET}"
 	echo -e "${GREEN}  ▄▄  █░░░▀█▀░░░█  ▄▄✧ ${CRESET}"
 	echo -e "${GREEN} █░░█ ▀▄░░░░░░░▄▀ █░░█ Vagrant Up has finished! Visit ${URL}http://vvv.test${CRESET}"
-	echo -e "${GREEN}──────────────────────────────────────────-──────────────────────────────────────────${CRESET}"
+	echo -e "${GREEN}──────────────────────────────────────────────────────────────────────${CRESET}"
 else
-	echo -e "${RED}────────────────────────────────────────────────────────────────────────────────────────────────────${CRESET}"
+	echo -e "${RED}──────────────────────────────────────────────────────────────────────${CRESET}"
 	echo -e "${RED} ! WARNING${CRESET}"
 	echo -e "${RED} ! ${CRESET}"
 	echo -e "${RED} ! Problems occurred in the last provision, VVV may${CRESET}"
 	echo -e "${RED} ! not work as expected. Check the logs, and don't be ${CRESET}"
 	echo -e "${RED} ! afraid to ask for help on slack/github${CRESET}"
-	echo -e "${RED}────────────────────────────────────────────────────────────────────────────────────────────────────${CRESET}"
+	echo -e "${RED}──────────────────────────────────────────────────────────────────────${CRESET}"
 fi
