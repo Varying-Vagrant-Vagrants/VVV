@@ -20,6 +20,7 @@ permalink: /docs/en-US/changelog/
 * Enhanced database backup terminal output ( #2256 )
 * Sites with no `hosts` defined will now default to `{sitename}.test` ( #2267 )
 * The default version of PHP was upgraded to v7.3 ( #2307 )
+* Only install the specific version of PHP Pcov we need, rather than all versions ( #2310 )
 
 ### Deprecations
 
