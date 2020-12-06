@@ -26,8 +26,8 @@ function php_register_packages() {
     "php${VVV_BASE_PHPVERSION}-dev"
 
     # Extra PHP modules that we find useful
-    php-pear
-    "php${VVV_BASE_PHPVERSION}-pcov"
+    "php-pear"
+    "php-pcov"
     "php${VVV_BASE_PHPVERSION}-ssh2"
     "php${VVV_BASE_PHPVERSION}-yaml"
     "php${VVV_BASE_PHPVERSION}-bcmath"
@@ -45,13 +45,13 @@ function php_register_packages() {
 
   # ImageMagick
   VVV_PACKAGE_LIST+=(
-    php${VVV_BASE_PHPVERSION}-imagick
+    "php${VVV_BASE_PHPVERSION}-imagick"
     imagemagick
   )
 
   # XDebug
   VVV_PACKAGE_LIST+=(
-    php${VVV_BASE_PHPVERSION}-xdebug
+    php-xdebug
   )
 }
 vvv_add_hook before_packages php_register_packages
