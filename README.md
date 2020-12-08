@@ -22,11 +22,7 @@ The online documentation contains more detailed [installation instructions](http
 
 ## Minimum System requirements
 
-* [Vagrant](https://www.vagrantup.com) 2.2.7 or below.
-* [Virtualbox](https://www.virtualbox.org) 6.1.x or below.
-* 8GB+ of RAM
-* Virtualisation ( VT-X ) enabled in the BIOS ( Windows/Linux )
-* Hyper-V turned off ( Windows )
+[For system requirements, please read the system requirements documentation here](https://varyingvagrantvagrants.org/docs/en-US/installation/software-requirements/)
 
 ## Software included
 
