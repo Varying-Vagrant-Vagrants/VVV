@@ -1,0 +1,104 @@
+# This is a basic workflow to help you get started with Actions
+
+name: VVV Provisioning
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the develop branch
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop, stable ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    name: Run Provisioner
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Make Symlinks
+      - name: Create Vagrant Like Environment
+        run: |
+          # uninstall pre installed packages (to test if utilities work)
+          sudo apt-get -q --autoremove --purge remove php*
+          sudo apt-get -q autoclean
+
+          # create vagrant user
+          sudo groupadd -g 2000 vagrant
+          sudo useradd -u 2000 -g vagrant -m vagrant
+
+          # vvv_symlink function to sumulate synced folders
+          function vvv_symlink() {
+            if [ ! -d "${1}" ]; then 
+              sudo mkdir -p "${1}"
+            fi
+            sudo chown -R vagrant:vagrant "${1}"
+            sudo ln -sf "${1}" "${2}"
+          }
+
+          # create srv folder
+          sudo -u "vagrant" mkdir -p "/srv"
+
+          # copy files provided by vagrant
+          sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
+          sudo cp -f "$GITHUB_WORKSPACE/version" "/home/vagrant/version"
+
+          # make folders available
+          vvv_symlink "$GITHUB_WORKSPACE/database/sql" "/srv/database"
+          vvv_symlink "$GITHUB_WORKSPACE/config" "/srv/config"
+          vvv_symlink "$GITHUB_WORKSPACE/provision" "/srv/provision"
+          vvv_symlink "$GITHUB_WORKSPACE/certificates" "/srv/certificates"
+          vvv_symlink "$GITHUB_WORKSPACE/www" "/srv/www"
+          vvv_symlink "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
+          vvv_symlink "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
+          vvv_symlink "$GITHUB_WORKSPACE/log/php" "/var/log/php"
+          vvv_symlink "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
+
+      # Runs the provisioners in the expected order
+      - name: Run provison-pre.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && pre_hook'
+
+      - name: Run provison.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_main'
+
+      - name: Run provison-dashboard.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_dashboard'
+
+      - name: Run provison-utility-source.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_utility_sources'
+
+      - name: Run provison-utility.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_utilities'
+
+      - name: Run provison-site.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_sites'
+
+      - name: Run provison-post.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && post_hook'
+
+      # At this point, we would run some extra tests
+      # TODO: Ideas
+      # - Add screenshots of provisioned sites
+      # - CURL mailhog API to see if it's working or not
+      # - Check VM hostfile
+
+      - name: Prepare Output
+        if: ${{ always() }}
+        run: |
+          sudo cp -rf "$GITHUB_WORKSPACE/log" "/vvv-logs"
+          MYUID=$(id -u -n)
+          MYGID=$(id -g -n)
+          sudo chown -R $MYUID:$MYGID "/vvv-logs"
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: logs
+          path: "/vvv-logs"

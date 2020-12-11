@@ -1,0 +1,3 @@
+# Provides Node.js
+deb https://deb.nodesource.com/node_10.x bionic main
+deb-src https://deb.nodesource.com/node_10.x bionic main

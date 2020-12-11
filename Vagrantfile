@@ -81,6 +81,35 @@ def get_virtualbox_version
   s.stdout.strip!
 end
 
+def sudo_warnings
+  red = "\033[38;5;9m" # 124m"
+  creset = "\033[0m"
+  puts "#{red}┌-──────────────────────────────────────────────────────────────────────────────┐#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  ⚠ DANGER DO NOT USE SUDO ⚠                                                   │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│ ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.          │#{creset}"
+  puts "#{red}│  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(                            │#{creset}"
+  puts "#{red}│    █░░█░▄▄░░█░░█ !                                                            │#{creset}"
+  puts "#{red}│     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful        │#{creset}"
+  puts "#{red}│  !  ▀▄░█░░██░░█      cleanup commands to fix this.                            │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  If vagrant does not work for you without sudo, open a GitHub issue instead   │#{creset}"
+  puts "#{red}│  In the future, this warning will halt provisioning to prevent new users      │#{creset}"
+  puts "#{red}│  making this mistake.                                                         │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  ⚠ DANGER SUDO DETECTED!                                                      │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  In the future the VVV team will be making it harder to use VVV with sudo.    │#{creset}"
+  puts "#{red}│  We will require a config option so that users can do data recovery, and      │#{creset}"
+  puts "#{red}│  disable sites and the dashboard.                                             │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}│  DO NOT USE SUDO, use ctrl+c/cmd+c and cancel this command ASAP!!!            │#{creset}"
+  puts "#{red}│                                                                               │#{creset}"
+  puts "#{red}└───────────────────────────────────────────────────────────────────────────────┘#{creset}"
+  # exit
+end
+
 vagrant_dir = __dir__
 show_logo = false
 branch_c = "\033[38;5;6m" # 111m"
@@ -99,12 +128,18 @@ File.open("#{vagrant_dir}/version", 'r') do |f|
   version = f.read
   version = version.gsub("\n", '')
 end
+
+unless Vagrant::Util::Platform.windows?
+  if Process.uid == 0
+    sudo_warnings
+  end
+end
+
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 show_logo = true if %w[up resume status provision reload].include? ARGV[0]
 show_logo = false if ENV['VVV_SKIP_LOGO']
 
 # Show the initial splash screen
-
 if show_logo
   git_or_zip = 'zip-no-vcs'
   branch = ''
@@ -123,6 +158,13 @@ if show_logo
   puts splashfirst
 end
 
+unless Vagrant::Util::Platform.windows?
+  if Process.uid == 0
+    puts " "
+    puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
+    puts " "
+  end
+end
 # Load the config file before the second section of the splash screen
 
 # Perform file migrations from older versions
@@ -191,8 +233,11 @@ vvv_config['sites'].each do |site, args|
       lines = File.readlines(path).map(&:chomp)
       lines.grep(/\A[^#]/)
     end.flatten
-
-    vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+    if vvv_config['sites'][site]['hosts'].is_a? Array
+      vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
+    else
+      vvv_config['hosts'] += ["#{site}.test"]
+    end
   end
   vvv_config['sites'][site].delete('hosts')
 end
@@ -266,6 +311,7 @@ if show_logo
 
   platform << 'vagrant-hostmanager' if Vagrant.has_plugin?('vagrant-hostmanager')
   platform << 'vagrant-hostsupdater' if Vagrant.has_plugin?('vagrant-hostsupdater')
+  platform << 'vagrant-goodhosts' if Vagrant.has_plugin?('vagrant-goodhosts')
   platform << 'vagrant-vbguest' if Vagrant.has_plugin?('vagrant-vbguest')
   platform << 'vagrant-disksize' if Vagrant.has_plugin?('vagrant-disksize')
 
@@ -373,14 +419,14 @@ Vagrant.configure('2') do |config|
   end
 
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
-  unless Vagrant.has_plugin?('vagrant-hostsupdater')
-    if File.file?(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
-      system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
-      File.delete(File.join(vagrant_dir, 'vagrant-hostsupdater.gem'))
-      puts "#{yellow}VVV has completed installing the vagrant-hostsupdater plugins. Please run the requested command again.#{creset}"
+  unless Vagrant.has_plugin?('vagrant-hostsupdater') && Vagrant.has_plugin?('vagrant-goodhosts') && Vagrant.has_plugin?('vagrant-hostsmanager')
+    if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
+      system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
+      File.delete(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
+      puts "#{yellow}VVV needed to install the vagrant-goodhosts plugin which is now installed. Please run the requested command again.#{creset}"
       exit
     else
-      config.vagrant.plugins = ['vagrant-hostsupdater']
+      config.vagrant.plugins = ['vagrant-goodhosts']
     end
   end
 
@@ -680,7 +726,16 @@ Vagrant.configure('2') do |config|
   # Provisioning
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
-  #
+
+  unless Vagrant::Util::Platform.windows?
+    if Process.uid == 0
+      # the VM should know if vagrant was ran by a root user or using sudo
+      config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
+    end
+  end
+
+  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n\""
+
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
   # file) should go in this script. If it does not exist, no extra provisioning will run.
@@ -708,7 +763,7 @@ Vagrant.configure('2') do |config|
                       args: [
                         vvv_config['dashboard']['repo'],
                         vvv_config['dashboard']['branch']
-                      ], 
+                      ],
                       env: { "VVV_LOG" => "dashboard" }
 
   vvv_config['utility-sources'].each do |name, args|
@@ -720,7 +775,7 @@ Vagrant.configure('2') do |config|
                           name,
                           args['repo'].to_s,
                           args['branch']
-                        ], 
+                        ],
                         env: { "VVV_LOG" => "utility-source-#{name}" }
   end
 
@@ -769,9 +824,11 @@ Vagrant.configure('2') do |config|
     config.vm.provision 'post', type: 'shell', keep_color: true, path: File.join('provision', 'provision-post.sh'), env: { "VVV_LOG" => "post" }
   end
 
+  config.vm.provision "post-provision-script", type: 'shell', keep_color: true, path: File.join( 'config/homebin', 'vagrant_provision' ), env: { "VVV_LOG" => "post-provision-script" }
+
   # Local Machine Hosts
   #
-  # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+  # If the Vagrant plugin goodhosts (https://github.com/goodhosts/vagrant/) is
   # installed, the following will automatically configure your local machine's hosts file to
   # be aware of the domains specified below. Watch the provisioning script as you may need to
   # enter a password for Vagrant to access your hosts file.
@@ -780,20 +837,23 @@ Vagrant.configure('2') do |config|
   # located in the www/ directory and in config/config.yml.
   #
 
-  if defined?(VagrantPlugins::HostManager)
+  if Vagrant.has_plugin?('vagrant-goodhosts')
+    config.goodhosts.aliases = vvv_config['hosts']
+    config.goodhosts.remove_on_suspend = true
+  elsif Vagrant.has_plugin?('vagrant-hostsmanager')
     config.hostmanager.aliases = vvv_config['hosts']
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
     config.hostmanager.manage_guest = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
-  elsif defined?(VagrantPlugins::HostsUpdater)
+  elsif Vagrant.has_plugin?('vagrant-hostsupdater')
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
   else
-    puts "! Neither the HostManager or HostsUpdater plugins are installed!!! Domains won't work without one of these plugins!"
-    puts "Run vagrant plugin install vagrant-hostmanager then try again."
+    puts "! Neither the HostManager, GoodHosts or HostsUpdater plugins are installed!!! Domains won't work without one of these plugins!"
+    puts "Run 'vagrant plugin install vagrant-goodhosts' then try again."
   end
 
   # Vagrant Triggers
@@ -805,19 +865,20 @@ Vagrant.configure('2') do |config|
   # into the VM and execute things. By default, each of these scripts calls db_backup
   # to create backups of all current databases. This can be overridden with custom
   # scripting. See the individual files in config/homebin/ for details.
+  unless Vagrant::Util::Platform.windows?
+    if Process.uid == 0
+      config.trigger.after :all do |trigger|
+        trigger.name = 'Do not use sudo'
+        trigger.ruby do |env,machine|
+          sudo_warnings
+        end
+      end
+    end
+  end
+
   config.trigger.after :up do |trigger|
     trigger.name = 'VVV Post-Up'
     trigger.run_remote = { inline: '/srv/config/homebin/vagrant_up' }
-    trigger.on_error = :continue
-  end
-  config.trigger.before :provision do |trigger|
-    trigger.name = 'VVV Pre-Provision'
-    trigger.info = "\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n"
-    trigger.on_error = :continue
-  end
-  config.trigger.after :provision do |trigger|
-    trigger.name = 'VVV provisioning has reached the end'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_provision' }
     trigger.on_error = :continue
   end
   config.trigger.before :reload do |trigger|

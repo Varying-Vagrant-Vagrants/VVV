@@ -4,7 +4,7 @@
 # include a file in your local VVV/config/homebin
 # directory: vagrant_provision_custom
 #
-# Note that sometimes provisioning happens on `vagrant up --provision`
+# Note that sometimes provisioning happens on `vagrant up ──provision`
 # so if you have a vagrant_up_custom file, be careful of double
 # execution
 #
@@ -12,23 +12,59 @@
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
 
-echo "Post Vagrant provision script"
+echo " ▷ Post provision script"
 
 if [[ -f /srv/config/homebin/vagrant_provision_custom ]]; then
-	echo "Custom vagrant provision script found, executing vagrant_provision_custom"
+	echo " * Custom vagrant provision script found, executing vagrant_provision_custom"
 	/srv/config/homebin/vagrant_provision_custom
 fi
 
-echo "Restarting Nginx and MySQL"
+echo " * Restarting Nginx and MySQL"
 sudo service nginx restart
 sudo service mysql restart
+echo " * Syncing clocks"
+sudo ntpdate -u ntp.ubuntu.com
 
-green="\033[01;32m"
-echo ""
-echo -e "${green}         yay  "
-echo -e "${green}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄                __ __ __ __"
-echo -e "${green}   █▒▒░░░░░░░░░▒▒█    Thanks for  \ V\ V\ V /"
-echo -e "${green}    █░░█░░░░░█░░█     using        \_/\_/\_/"
-echo -e "${green} ▄▄  █░░░▀█▀░░░█  ▄▄ "
-echo -e "${green}█░░█ ▀▄░░░░░░░▄▀ █░░█ Provisioning has finished! Visit http://vvv.test"
-echo -e "\033[0m"
+RED="\033[38;5;9m"
+GREEN="\033[01;32m"
+BLUE="\033[38;5;4m"
+CYAN="\033[38;5;6m"
+CRESET="\033[0m"
+TEARS="${CYAN}░${RED}"
+T=$TEARS
+EYE="${CYAN}█${RED}"
+E=$EYE
+
+URL="\033[4;38;5;3m"
+
+mkdir -p /vagrant/failed_provisioners
+if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then
+	echo -e " "
+	echo -e "${GREEN}   ✧ ✔ Success!       ✧    ✔              ✧    ✔ ${CRESET}"
+	echo -e "${GREEN} ✔ ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ✧           ✧       ✧         ${CRESET}"
+	echo -e "${GREEN}  ✧█▒▒░░░░░░░░░▒▒█  ✔    ✧           ✔       ✧   ${CRESET}"
+	echo -e "${GREEN}✧   █░░█░░░░░█░░█ ✧        ✔      ✧      ✧       ${CRESET}"
+	echo -e "${GREEN} ▄▄  █░░░▀█▀░░░█  ▄▄✧ ✔ Provisioning has finished!${CRESET}"
+	echo -e "${GREEN}█░░█ ▀▄░░░░░░░▄▀ █░░█   Visit ${URL}http://vvv.test${CRESET}"
+	echo -e "${CRESET}"
+else
+	date_time=$(cat /vagrant/provisioned_at)
+	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
+	echo -e " "
+	echo -e "${RED}    ⚠ oh noes :'( ⚠"
+	echo -e "${RED}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ${CRESET}"
+	echo -e "${RED}   █▒▒░░░░░░░░░▒▒█    ⚠ Provisioning${CRESET}"
+	echo -e "${RED}    █░░${E}░░░░░${E}░░█     ⚠ incomplete!${CRESET}"
+	echo -e "${RED}     █░${T}░▀█▀░${T}░█   ${CRESET}"
+	echo -e "${RED}   ▄▄▀▄${T}░░░░░${T}▄▀▄▄ ${CRESET}"
+	echo -e " "
+	echo -e "${RED} ⚠ Check the logs and reprovision.${CRESET}"
+	echo -e "${RED} ⚠ If that fails, go to the VVV Slack or open an issue${CRESET}"
+	echo -e "${RED} ⚠ on GitHub. Logs are in the logs/provisioners folder.${CRESET}"
+	echo -e " "
+	echo -e "${RED} ⚠ The failed provisioners left these logs:"
+
+	# List failed provisioners, and pipe them through xargs to print them in a formatted way.
+	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" echo -e "   - log/provisioners/${date_time}/LOGFILE.log"
+	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
+fi

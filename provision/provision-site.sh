@@ -24,18 +24,22 @@ VVV_CONFIG=/vagrant/config.yml
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo $(get_config_value 'key' 'defaultvalue')
 function get_config_value() {
-  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.custom.${1}" 2> /dev/null < ${VVV_CONFIG})
-  echo "${value:-$2}"
+  vvv_get_site_config_value "custom.${1}" "${2}"
 }
 
 function get_hosts() {
-  local value=$(shyaml get-values-0 "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
-  echo "${value:-$@}"
+  local value=$(shyaml -q get-values-0 "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
+  echo "${value:-"${VVV_SITE_NAME}.test"}"
+}
+
+function get_hosts_list() {
+  local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG})
+  echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
 function get_primary_host() {
-  local value=$(shyaml get-value "sites.${SITE_ESCAPED}.hosts.0" 2> /dev/null < ${VVV_CONFIG})
-  echo "${value:-$1}"
+  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.hosts.0" "${1}" < ${VVV_CONFIG})
+  echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
 function vvv_provision_site_nginx_config() {
@@ -66,7 +70,7 @@ function vvv_provision_site_nginx_config() {
     sed -i "s#{vvv_tls_key}#ssl_certificate_key /srv/certificates/${VVV_SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   else
     sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the core tls-ca is not installed#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}## TLS key not included as the core tls-ca is not installed#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_key}#\# TLS key not included as the core tls-ca is not installed#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   fi
 
   # Resolve relative paths since not supported in Nginx root.
@@ -95,7 +99,7 @@ function vvv_process_site_hosts() {
   #
   # Domains should be entered on new lines.
   echo " * Adding domains to the virtual machine's /etc/hosts file..."
-  hosts=$(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG})
+  hosts=$(get_hosts_list)
   if [ ${#hosts[@]} -eq 0 ]; then
     echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
     if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then
@@ -120,7 +124,7 @@ function vvv_process_site_hosts() {
     fi
   else
     echo " * Adding hosts from the VVV config entry"
-    for line in $(shyaml get-values "sites.${SITE_ESCAPED}.hosts" 2> /dev/null < ${VVV_CONFIG}); do
+    for line in $hosts; do
       if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
         echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
         echo "   - Added ${line} from ${VVV_CONFIG}"
@@ -135,16 +139,16 @@ function vvv_provision_site_repo() {
       if [[ -d "${VM_DIR}/.git" ]]; then
         echo " * Updating ${SITE} in ${VM_DIR}..."
         cd "${VM_DIR}"
-        git reset "origin/${BRANCH}" --hard -q
-        git pull origin "${BRANCH}" -q
-        git checkout "${BRANCH}" -q
+        noroot git reset "origin/${BRANCH}" --hard -q
+        noroot git pull origin "${BRANCH}" -q
+        noroot git checkout "${BRANCH}" -q
       else
         echo "${RED}Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
       fi
     else
       # Clone or pull the site repository
       echo -e " * Downloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
-      git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
+      noroot git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
       if [ $? -eq 0 ]; then
         echo " * ${SITE} Site Template clone successful"
       else
@@ -218,21 +222,88 @@ function vvv_provision_site_nginx() {
   fi
 }
 
+function vvv_get_site_config_value() {
+  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
+  echo "${value}"
+}
+
+function vvv_clone_site_git_folder() {
+  local repo="${1}"
+  local folder="${2}"
+  vvv_info " * git cloning '${repo}' into '${VVV_PATH_TO_SITE}/${folder}'"
+  noroot mkdir -p "${VVV_PATH_TO_SITE}/${folder}"
+  noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
+}
+
+function vvv_custom_folder_git() {
+  local folder="${1}"
+  local repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
+  local overwrite_on_clone=$(vvv_get_site_config_value "folders.${folder}.git.overwrite_on_clone" "False")
+  local hard_reset=$(vvv_get_site_config_value "folders.${folder}.git.hard_reset" "False")
+  local pull=$(vvv_get_site_config_value "folders.${folder}.git.pull" "False")
+
+  if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
+    vvv_clone_site_git_folder "${repo}" "${folder}"
+  else
+    if [[ $overwrite_on_clone = "True" ]]; then
+      if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
+        vvv_info " - VVV was asked to clone into a folder that already exists (${folder}), but does not contain a git repo"
+        vvv_info " - overwrite_on_clone is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
+        rm -rf "${VVV_PATH_TO_SITE}/${folder}"
+        vvv_clone_site_git_folder "${repo}" "${folder}"
+      fi
+    else
+      echo " - Cannot clone into '${folder}', a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
+    fi
+  fi
+
+  if [[ $hard_reset = "True" ]]; then
+    vvv_info " - resetting git checkout and discarding changes in ${folder}"
+    cd "${VVV_PATH_TO_SITE}/${folder}"
+    noroot git reset --hard -q
+    noroot git checkout -q
+    cd -
+  fi
+  if [[ $pull = "True" ]]; then
+    vvv_info " - runnning git pull for ${folder}"
+    cd "${VVV_PATH_TO_SITE}/${folder}"
+    noroot git pull -q
+    cd -
+  fi
+}
+
+function vvv_custom_folders() {
+  if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders" < "${VVV_CONFIG}"); then
+    for folder in $folders
+    do
+      if [[ $folder != '...' ]]; then
+        local gitvcs=$(vvv_get_site_config_value "folders.${folder}.git" "False")
+        if [[ $gitvcs != "False" ]]; then
+          vvv_custom_folder_git "${folder}"
+        fi
+      fi
+    done
+  else
+    echo " - No git repos to clone"
+  fi
+}
+
 # -------------------------------
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
   vvv_warn " * Skipping provisioning of ${SITE}${CRESET}"
-  return 0
+  exit 0
 fi
 
 vvv_provision_site_repo
 
 if [[ ! -d "${VM_DIR}" ]]; then
   echo "${RED} ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
-  return 1
+  exit 1
 fi
 
 vvv_process_site_hosts
+vvv_custom_folders
 vvv_provision_site_script
 vvv_provision_site_nginx
 
@@ -241,7 +312,7 @@ service nginx reload
 
 if [ "${SUCCESS}" -ne "0" ]; then
   vvv_error " ! ${SITE} provisioning had some issues, check the log as the site may not function correctly."
-  return 1
+  exit 1
 fi
 
 provisioner_success
