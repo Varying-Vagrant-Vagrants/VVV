@@ -19,7 +19,7 @@ grep -v -F "Database" > $TMPFIFODIR/dbnames &
 while read db_name
 do
     # skip these databases
-    [ "${db_name}" == "mysql" ] && vvv_info "   - skipped ${db_name}" && continue;
+    [ "${db_name}" == "mysql" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "information_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "performance_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "test" ] && vvv_info "   - skipped ${db_name}" && continue;
