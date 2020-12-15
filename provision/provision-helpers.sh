@@ -5,12 +5,12 @@
 # This file is for common network helper functions that get called in
 # other provisioners
 
-export YELLOW="\033[38;5;3m"
+export YELLOW="\033[0;38;5;3m"
 export YELLOW_UNDERLINE="\033[4;38;5;3m"
-export GREEN="\033[38;5;2m"
-export RED="\033[38;5;9m"
-export BLUE="\033[38;5;4m" # 33m"
-export PURPLE="\033[38;5;5m" # 129m"
+export GREEN="\033[0;38;5;2m"
+export RED="\033[0;38;5;9m"
+export BLUE="\033[0;38;5;4m" # 33m"
+export PURPLE="\033[0;38;5;5m" # 129m"
 export CRESET="\033[0m"
 export BOLD="\033[1m"
 
@@ -44,7 +44,7 @@ export -f network_detection
 
 function check_network_connection_to_host() {
   url=${1:-"https://ppa.launchpad.net"}
-  echo " * Testing network connection to ${url}"
+  vvv_info " * Testing network connection to <url>${url}</url>"
 
   # Network Detection
   #
@@ -52,10 +52,10 @@ function check_network_connection_to_host() {
   # then we'll skip a few things further in provisioning rather
   # than create a bunch of errors.
   if [[ "$(wget --tries=3 --timeout=10 "${url}" -O /dev/null 2>&1 | grep 'connected')" ]]; then
-    vvv_success " * Successful Network connection to ${url} detected"
+    vvv_success " * Successful Network connection to <url>${url}<success> detected"
     return 0
   fi
-  vvv_error " ! Network connection issues found. Unable to reach ${url}"
+  vvv_error " ! Network connection issues found. Unable to reach <url>${url}</url>"
   return 1
 }
 export -f check_network_connection_to_host
@@ -79,13 +79,12 @@ function network_check() {
   done
 
   if (( ${#failed_hosts[@]} )); then
-    echo -e "${RED} "
-    echo "#################################################################"
-    echo " "
-    echo "! Network Problem:"
-    echo " "
-    echo "VVV tried to ping several domains it needs but some failed:"
-    echo " "
+    vvv_error "#################################################################"
+    vvv_error " "
+    vvv_error "! Network Problem:"
+    vvv_error " "
+    vvv_error "VVV tried to ping several domains it needs but some failed:"
+    vvv_error " "
     for i in "${hosts_to_test[@]}"; do
       local url="${i}"
       if containsElement "${i}" "${failed_hosts}"; then
@@ -94,35 +93,35 @@ function network_check() {
         echo -e "${CRESET} [${GREEN}✓${CRESET}] ${url}${RED}"
       fi
     done
-    echo -e "${RED} "
-    echo "Make sure you have a working internet connection, that you "
-    echo "restarted after installing VirtualBox and Vagrant, and that "
-    echo "they aren't blocked by a firewall or security software."
-    echo "If you can load the address in your browser, then VVV should"
-    echo "be able to connect."
-    echo " "
-    echo "Also note that some users have reported issues when combined"
-    echo "with VPNs, disable your VPN and reprovision to see if this is"
-    echo "the cause."
-    echo " "
-    echo "Additionally, if you're at a contributor day event, be kind,"
-    echo "provisioning involves downloading things, a full provision may "
-    echo "ruin the wifi for everybody else :("
-    echo " "
-    echo "Network ifconfig output:"
-    echo " "
+    vvv_error " "
+    vvv_error "Make sure you have a working internet connection, that you "
+    vvv_error "restarted after installing VirtualBox and Vagrant, and that "
+    vvv_error "they aren't blocked by a firewall or security software."
+    vvv_error "If you can load the address in your browser, then VVV should"
+    vvv_error "be able to connect."
+    vvv_error " "
+    vvv_error "Also note that some users have reported issues when combined"
+    vvv_error "with VPNs, disable your VPN and reprovision to see if this is"
+    vvv_error "the cause."
+    vvv_error " "
+    vvv_error "Additionally, if you're at a contributor day event, be kind,"
+    vvv_error "provisioning involves downloading things, a full provision may "
+    vvv_error "ruin the wifi for everybody else :("
+    vvv_error " "
+    vvv_error "Network ifconfig output:"
+    vvv_error " "
     ifconfig
-    echo -e "${RED} "
-    echo "Aborting provision. "
-    echo "Try provisioning again once network connectivity is restored."
-    echo "If that doesn't work, and you're sure you have a strong "
-    echo "internet connection, open an issue on GitHub, and include the "
-    echo "output above so that the problem can be debugged"
-    echo " "
-    echo "vagrant reload --provision"
-    echo " "
-    echo "https://github.com/Varying-Vagrant-Vagrants/VVV/issues"
-    echo " "
+    vvv_error " "
+    vvv_error "Aborting provision. "
+    vvv_error "Try provisioning again once network connectivity is restored."
+    vvv_error "If that doesn't work, and you're sure you have a strong "
+    vvv_error "internet connection, open an issue on GitHub, and include the "
+    vvv_error "output above so that the problem can be debugged"
+    vvv_error " "
+    vvv_error "vagrant reload --provision"
+    vvv_error " "
+    vvv_error "<url>https://github.com/Varying-Vagrant-Vagrants/VVV/issues</url>"
+    vvv_error " "
     vvv_error "#################################################################"
     return 1
   fi
@@ -206,7 +205,7 @@ function vvv_output() {
 	echo -e "${MSG}"
   if [[ ! -z "${VVV_LOG}" ]]; then
     if [ "${VVV_LOG}" != "main" ]; then
-  	  >&6 echo -e "${MSG}"
+      test -e /proc/$$/fd/6 && >&6 echo -e "${MSG}"
     fi
   fi
 }
