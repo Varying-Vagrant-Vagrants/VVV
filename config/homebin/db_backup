@@ -13,10 +13,9 @@ mkdir -p /srv/database/backups
 vvv_info " * Performing Database Backups"
 databases=()
 
-vvv_info " * Querying Database names"
+vvv_info " * Fetching Database names"
 mysql --user="root" --password="root" -e 'show databases' | \
 grep -v -F "Database" > $TMPFIFODIR/dbnames &
-vvv_info " * Processing names"
 while read db_name
 do
     # skip these databases
@@ -24,6 +23,16 @@ do
     [ "${db_name}" == "information_schema" ] && vvv_info "   - skipped ${db_name}" && continue;
     [ "${db_name}" == "performance_schema" ] && vvv_info "   - skipped ${db_name}" && continue;
     [ "${db_name}" == "test" ] && vvv_info "   - skipped ${db_name}" && continue;
+    [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped ${db_name}" && continue;
+
+    # don't back up databases with no tables
+    mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
+    db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
+    if [ "$?" == "0" ]; then
+        if [ "" == "${db_exist}" ]; then
+            vvv_info "   - skipped <b>${db_name}</b><info>, no tables in database to back up" && continue;
+        fi
+    fi
     databases+=( "${db_name}" )
 done < $TMPFIFODIR/dbnames
 
@@ -34,4 +43,4 @@ do
     mysqldump -uroot -proot "${db}" > "/srv/database/backups/${db}.sql";
     let "count=count+1"
 done
-vvv_success " * Finished backing up databases to the database/sql/backups folder"
+vvv_success " * Finished backing up databases to the <b>database/sql/backups</b><success> folder"
