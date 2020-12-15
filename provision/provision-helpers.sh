@@ -5,6 +5,13 @@
 # This file is for common network helper functions that get called in
 # other provisioners
 
+export DEFAULT_TEXT="\033[39m"
+export BOLD="\033[1m"
+export UNBOLD="\033[21m"
+export DIM="\033[2m"
+export UNDIM="\033[21m"
+export UNDERLINE="\033[4m"
+export NOUNDERLINNE="\033[24m"
 export YELLOW="\033[0;38;5;3m"
 export YELLOW_UNDERLINE="\033[4;38;5;3m"
 export GREEN="\033[0;38;5;2m"
@@ -12,7 +19,7 @@ export RED="\033[0;38;5;9m"
 export BLUE="\033[0;38;5;4m" # 33m"
 export PURPLE="\033[0;38;5;5m" # 129m"
 export CRESET="\033[0m"
-export BOLD="\033[1m"
+
 
 
 VVV_CONFIG=/vagrant/vvv-custom.yml
@@ -178,21 +185,21 @@ export -f vvv_src_list_has
 function vvv_format_output() {
   declare -A tags=(
     ["</>"]="${CRESET}"
-    ["<info>"]="${BOLD}"
-    ["</info>"]="${CRESET}"
+    ["<info>"]="${CRESET}${DEFAULT_TEXT}${DIM}"
+    ["</info>"]="${UNDIM}"
     ["<success>"]="${GREEN}"
     ["</success>"]="${CRESET}"
     ["<warn>"]="${YELLOW}"
     ["</warn>"]="${CRESET}"
     ["<error>"]="${RED}"
     ["</error>"]="${CRESET}"
-    ["<url>"]="${YELLOW_UNDERLINE}"
+    ["<url>"]="${CRESET}${YELLOW_UNDERLINE}"
     ["</url>"]="${CRESET}"
-    ["<b>"]="${BOLD}${PURPLE}"
-    ["</b>"]="${CRESET}"
+    ["<b>"]="${CRESET}${BOLD}${PURPLE}"
+    ["</b>"]="${UNBOLD}"
   )
 
-  MSG="${1}"
+  MSG="${1}</>"
   for tag in "${!tags[@]}"; do
     MSG=$(echo "${MSG//"${tag}"/"${tags[$tag]}"}" )
   done
