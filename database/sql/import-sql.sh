@@ -58,22 +58,24 @@ then
 		[ "${db_name}" == "performance_schema" ] && continue;
 		[ "${db_name}" == "test" ] && continue;
 
-		echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
+		vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
 		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
 		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+
+		[ "${db_name}" == "wordpress_unit_tests" ] && continue;
 
 		mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
 		db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
 		if [ "$?" != "0" ]
 		then
-			vvv_error " * Error - Create the '${db_name}' database via init-custom.sql before attempting import"
+			vvv_error " * Error - Create the <b>${db_name}</b><error> database via init-custom.sql before attempting import"
 		else
 			if [ "" == "${db_exist}" ]; then
-				vvv_info " * Importing '${db_name}' from '${db_name}.sql'"
+				vvv_info " * Importing <b>${db_name}</b><info> from <b>${db_name}.sql</b>"
 				mysql -u root -proot "${db_name}" < "${db_name}.sql"
-				vvv_success " * Import of '${db_name}' successful"
+				vvv_success " * Import of <b>'${db_name}'</b><success> successful</success>"
 			else
-				vvv_info " * Skipped import of \`${db_name}\` - tables already exist"
+				vvv_info " * Skipped import of <b>\`${db_name}\`</b><info> - tables already exist"
 			fi
 		fi
 	done
