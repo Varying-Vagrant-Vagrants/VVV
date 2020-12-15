@@ -201,17 +201,6 @@ function vvv_format_output() {
 }
 export -f vvv_format_output
 
-function vvv_info() {
-  MSG=$(vvv_format_output "<info>${1}</info>")
-  echo -e "${MSG}"
-  if [[ ! -z "${VVV_LOG}" ]]; then
-    if [ "${VVV_LOG}" != "main" ]; then
-  	  >&6 echo -e "${MSG}"
-    fi
-  fi
-}
-export -f vvv_info
-
 function vvv_output() {
   MSG=$(vvv_format_output "${1}")
 	echo -e "${MSG}"
@@ -222,6 +211,11 @@ function vvv_output() {
   fi
 }
 export -f vvv_output
+
+function vvv_info() {
+  vvv_output "<info>${1}</info>"
+}
+export -f vvv_info
 
 function vvv_error() {
   MSG=$(vvv_format_output "<error>${1}</error>")
