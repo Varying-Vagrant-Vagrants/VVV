@@ -75,7 +75,7 @@ function deprecated_distro() {
 
 remove_v2_resources() {
   if [ -d /srv/provision/resources ]; then
-    echo " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
+    vvv_warn " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
     rm -rf /srv/provision/resources ## remove deprecated folder
   fi
 }

@@ -123,7 +123,7 @@ function vvv_process_site_hosts() {
       fi
     fi
   else
-    echo " * Adding hosts from the VVV config entry"
+    vvv_info " * Adding hosts from the VVV config entry"
     for line in $hosts; do
       if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
         echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
@@ -143,24 +143,24 @@ function vvv_provision_site_repo() {
         noroot git pull origin "${BRANCH}" -q
         noroot git checkout "${BRANCH}" -q
       else
-        echo "${RED}Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
+        vvv_error " ! Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
       fi
     else
       # Clone or pull the site repository
-      echo -e " * Downloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
+      vvv_info " * Downloading ${SITE}, git cloning from ${REPO} into ${VM_DIR}"
       noroot git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q
       if [ $? -eq 0 ]; then
-        echo " * ${SITE} Site Template clone successful"
+        vvv_success " * ${SITE} Site Template clone successful"
       else
-        echo "${RED} ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
-        echo "${RED} ! VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"
+        vvv_error " ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
+        vvv_error " ! VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"
         exit 1
       fi
     fi
   else
-    echo " * The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
+    vvv_info " * The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
     if [[ ! -d "${VM_DIR}" ]]; then
-      echo "${RED} ! Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV${CRESET}"
+      vvv_error " ! Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV"
     fi
   fi
 }
@@ -188,10 +188,10 @@ function vvv_provision_site_script() {
     vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}"
     SUCCESS=$?
   else
-    echo " * Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
+    vvv_warn " * Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
     SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.conf');
     if [[ -z $SITE_INIT_SCRIPTS ]] ; then
-      echo " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
+      vvv_warn " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
     else
       for SITE_INIT_SCRIPT in $SITE_INIT_SCRIPTS; do
         DIR="$(dirname "$SITE_INIT_SCRIPT")"
@@ -210,10 +210,10 @@ function vvv_provision_site_nginx() {
   elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
     vvv_provision_site_nginx_config "${SITE}" "${VM_DIR}/vvv-nginx.conf"
   else
-    echo " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
+    vvv_warn " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
     NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
     if [[ -z $NGINX_CONFIGS ]] ; then
-      vvv_error " ! Warning: No nginx config was found, VVV will not know how to serve this site"
+      vvv_error " ! Error: No nginx config was found, VVV will not know how to serve this site"
     else
       for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
         vvv_provision_site_nginx_config "${SITE}" "${SITE_CONFIG_FILE}"
@@ -284,7 +284,7 @@ function vvv_custom_folders() {
       fi
     done
   else
-    echo " - No git repos to clone"
+    vvv_info " - No git repos to clone"
   fi
 }
 
@@ -298,7 +298,7 @@ fi
 vvv_provision_site_repo
 
 if [[ ! -d "${VM_DIR}" ]]; then
-  echo "${RED} ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
+  vvv_error " ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
   exit 1
 fi
 
@@ -307,7 +307,7 @@ vvv_custom_folders
 vvv_provision_site_script
 vvv_provision_site_nginx
 
-echo " * Reloading Nginx"
+vvv_info " * Reloading Nginx"
 service nginx reload
 
 if [ "${SUCCESS}" -ne "0" ]; then
