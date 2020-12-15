@@ -21,7 +21,7 @@ if [[ false != "dashboard" && false != "${REPO}" ]]; then
     noroot git pull origin "${BRANCH}" -q
     noroot git checkout "${BRANCH}" -q
   fi
-  vvv_warn " * Note that custom dashboads will be going away in a future update, use a site provisioner and a custom host instead such as dashboard.test."
+  vvv_warn " * Note that custom dashboards will be going away in a future update, use a site provisioner and a custom host instead such as dashboard.test."
 else
   vvv_info " * Skipping dashboard provisioning, dashboard repository was set to false in config.yml"
 fi
