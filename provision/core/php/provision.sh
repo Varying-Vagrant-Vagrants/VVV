@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eo pipefail
 
 VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.3"}
 function php_register_packages() {
@@ -8,7 +9,7 @@ function php_register_packages() {
 
   if ! vvv_apt_keys_has 'Ondřej'; then
     # Apply the PHP signing key
-    echo " * Applying the Ondřej PHP signing key..."
+    vvv_info " * Applying the Ondřej PHP signing key..."
     apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
@@ -59,7 +60,7 @@ vvv_add_hook before_packages php_register_packages
 function phpfpm_setup() {
   # Copy php-fpm configs from local
   if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/" ]; then
-    echo " * Copying PHP configs"
+    vvv_info " * Copying PHP configs"
     cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
     cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
     cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
@@ -69,7 +70,7 @@ function phpfpm_setup() {
   fi
 
   if [[ -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini" ]]; then
-    echo " * Cleaning up mailcatcher.ini from a previous install"
+    vvv_warn " * Cleaning up mailcatcher.ini from a previous install"
     rm -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini"
   fi
 }
@@ -80,7 +81,7 @@ vvv_add_hook after_packages phpfpm_setup 50
 
 function phpfpm_finalize() {
   # Disable PHP Xdebug module by default
-  echo " * Disabling XDebug PHP extension"
+  vvv_info " * Disabling XDebug PHP extension"
   phpdismod xdebug
   phpdismod pcov
 
@@ -103,7 +104,7 @@ export -f phpfpm_services_restart
 vvv_add_hook services_restart phpfpm_services_restart
 
 function php_nginx_upstream() {
-  echo " * Copying /srv/config/php-config/upstream.conf to /etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
+  vvv_info " * Copying /srv/config/php-config/upstream.conf to /etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
   cp -f "/srv/config/php-config/upstream.conf" "/etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
 }
 vvv_add_hook nginx_upstreams php_nginx_upstream
@@ -121,7 +122,7 @@ function memcached_register_packages() {
 vvv_add_hook before_packages memcached_register_packages
 function memcached_setup() {
   # Copy memcached configuration from local
-  echo " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
+  vvv_info " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
   cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
   cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 }

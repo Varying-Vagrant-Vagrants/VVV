@@ -1,20 +1,21 @@
 #!/bin/bash
+
 function install_grunt() {
-  echo " * Installing Grunt CLI"
+  vvv_info " * Installing Grunt CLI"
   npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional
   npm_config_loglevel=error hack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
   npm_config_loglevel=error npm install -g grunt-cssjanus --no-optional
   npm_config_loglevel=error npm install -g grunt-rtlcss --no-optional
-  echo " * Installed Grunt CLI"
+  vvv_success " * Installed Grunt CLI"
 }
 
 function update_grunt() {
-  echo " * Updating Grunt CLI"
+  vvv_info " * Updating Grunt CLI"
   npm_config_loglevel=error npm update -g grunt grunt-cli --no-optional
   npm_config_loglevel=error hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
   npm_config_loglevel=error npm update -g grunt-cssjanus --no-optional
   npm_config_loglevel=error npm update -g grunt-rtlcss --no-optional
-  echo " * Updated Grunt CLI"
+  vvv_success " * Updated Grunt CLI"
 }
 # Grunt
 #

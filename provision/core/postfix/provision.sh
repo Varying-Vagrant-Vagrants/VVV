@@ -1,4 +1,6 @@
 #!/bin/bash
+set -eo pipefail
+
 function postfix_register_packages() {
   # Postfix
   #
