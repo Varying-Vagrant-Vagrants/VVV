@@ -5,9 +5,9 @@
 # the databases exist per the import-sql.sh process.
 set -eo pipefail
 
-source /srv/provision/provision-helpers.sh
-
 trap 'rm -rf $TMPFIFODIR' EXIT; TMPFIFODIR=$(mktemp -d); mkfifo $TMPFIFODIR/dbnames
+
+source /srv/provision/provision-helpers.sh
 
 mkdir -p /srv/database/backups
 vvv_info " * Performing Database Backups"
@@ -20,17 +20,17 @@ while read db_name
 do
     # skip these databases
     [ "${db_name}" == "mysql" ] && vvv_info "   - skipped ${db_name}" && continue;
-    [ "${db_name}" == "information_schema" ] && vvv_info "   - skipped ${db_name}" && continue;
-    [ "${db_name}" == "performance_schema" ] && vvv_info "   - skipped ${db_name}" && continue;
+    [ "${db_name}" == "information_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
+    [ "${db_name}" == "performance_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "test" ] && vvv_info "   - skipped ${db_name}" && continue;
-    [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped ${db_name}" && continue;
+    [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
 
     # don't back up databases with no tables
     mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
     db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
     if [ "$?" == "0" ]; then
         if [ "" == "${db_exist}" ]; then
-            vvv_info "   - skipped <b>${db_name}</b><info>, no tables in database to back up" && continue;
+            vvv_info "   - skipped <b>${db_name}</b><info>, no tables in database to back up</info>" && continue;
         fi
     fi
     databases+=( "${db_name}" )
@@ -39,8 +39,10 @@ done < $TMPFIFODIR/dbnames
 count=0
 for db in "${databases[@]}"
 do
-    printf "   - %2s/%s Backing up %-23s to 'database/backups/%s.sql'\n" "${count}" "${#databases[@]}" "'${db}'" "${db}"
+    OUTPUT=$(printf "<info>   - %2s/%s Backing up </info><b>%-23s</b><info> to </info><b>'database/backups/%s.sql'</b>" "${count}" "${#databases[@]}" "'${db}'" "${db}")
+    vvv_output "${OUTPUT}"
     mysqldump -uroot -proot "${db}" > "/srv/database/backups/${db}.sql";
     let "count=count+1"
 done
-vvv_success " * Finished backing up databases to the <b>database/sql/backups</b><success> folder"
+
+vvv_success " * Finished backing up databases to the <b>database/sql/backups</b><success> folder</success>"
