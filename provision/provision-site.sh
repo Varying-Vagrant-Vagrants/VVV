@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-. "/srv/provision/provisioners.sh"
+set -eo pipefail
 
 SITE=$1
 SITE_ESCAPED="${SITE//./\\.}"
@@ -12,14 +11,12 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 
-
-
 SUCCESS=1
 
-# By storing the date now, we can calculate the duration of provisioning at the
-# end of this script.
 
 VVV_CONFIG=/vagrant/config.yml
+
+. "/srv/provision/provisioners.sh"
 
 # Takes 2 values, a key to fetch a value for, and an optional default value
 # e.g. echo $(get_config_value 'key' 'defaultvalue')
@@ -123,7 +120,7 @@ function vvv_process_site_hosts() {
       fi
     fi
   else
-    vvv_info " * Adding hosts from the VVV config entry"
+    echo " * Adding hosts for the site to the VM hosts file"
     for line in $hosts; do
       if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
         echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
@@ -161,6 +158,7 @@ function vvv_provision_site_repo() {
     vvv_info " * The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
     if [[ ! -d "${VM_DIR}" ]]; then
       vvv_error " ! Error: The '${SITE}' has no folder, VVV does not create the folder for you, or set up the Nginx configs. Use a site template or create the folder and provisioner files, then reprovision VVV"
+      exit 1
     fi
   fi
 }
@@ -214,6 +212,7 @@ function vvv_provision_site_nginx() {
     NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
     if [[ -z $NGINX_CONFIGS ]] ; then
       vvv_error " ! Error: No nginx config was found, VVV will not know how to serve this site"
+      exit 1
     else
       for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
         vvv_provision_site_nginx_config "${SITE}" "${SITE_CONFIG_FILE}"
@@ -230,7 +229,7 @@ function vvv_get_site_config_value() {
 function vvv_clone_site_git_folder() {
   local repo="${1}"
   local folder="${2}"
-  vvv_info " * git cloning '${repo}' into '${VVV_PATH_TO_SITE}/${folder}'"
+  vvv_info " * git cloning <b>'${repo}'</b><info> into </info><b>'${VVV_PATH_TO_SITE}/${folder}'</b>"
   noroot mkdir -p "${VVV_PATH_TO_SITE}/${folder}"
   noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
 }
@@ -253,7 +252,7 @@ function vvv_custom_folder_git() {
         vvv_clone_site_git_folder "${repo}" "${folder}"
       fi
     else
-      echo " - Cannot clone into '${folder}', a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
+      vvv_warn " - Cannot clone into <b>'${folder}'</b><warn>, a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
     fi
   fi
 
@@ -265,7 +264,7 @@ function vvv_custom_folder_git() {
     cd -
   fi
   if [[ $pull = "True" ]]; then
-    vvv_info " - runnning git pull for ${folder}"
+    vvv_info " - runnning git pull in ${folder}"
     cd "${VVV_PATH_TO_SITE}/${folder}"
     noroot git pull -q
     cd -
@@ -283,22 +282,20 @@ function vvv_custom_folders() {
         fi
       fi
     done
-  else
-    vvv_info " - No git repos to clone"
   fi
 }
 
 # -------------------------------
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
-  vvv_warn " * Skipping provisioning of ${SITE}${CRESET}"
+  vvv_warn " * Skipping provisioning of <b>${SITE}</b>"
   exit 0
 fi
 
 vvv_provision_site_repo
 
 if [[ ! -d "${VM_DIR}" ]]; then
-  vvv_error " ! Error: The ${VM_DIR} folder does not exist, there is nothing to provision for the '${SITE}' site! ${CRESET}"
+  vvv_error " ! Error: The <b>${VM_DIR}</b><error> folder does not exist, there is nothing to provision for the <b>'${SITE}'</b><error> site!</error>"
   exit 1
 fi
 
@@ -307,11 +304,11 @@ vvv_custom_folders
 vvv_provision_site_script
 vvv_provision_site_nginx
 
-vvv_info " * Reloading Nginx"
+vvv_info " * Reloading Nginx config files"
 service nginx reload
 
 if [ "${SUCCESS}" -ne "0" ]; then
-  vvv_error " ! ${SITE} provisioning had some issues, check the log as the site may not function correctly."
+  vvv_error " ! ${SITE} provisioning had some issues, check the log files as the site may not function correctly."
   exit 1
 fi
 
