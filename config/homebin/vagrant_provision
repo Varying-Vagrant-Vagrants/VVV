@@ -55,6 +55,7 @@ else
 	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
 	echo -e " "
 	echo -e "${RED}    ⚠ oh noes :'( ⚠"
+	echo -e "${RED}"
 	echo -e "${RED}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ${CRESET}"
 	echo -e "${RED}   █▒▒░░░░░░░░░▒▒█    ⚠ Provisioning${CRESET}"
 	echo -e "${RED}    █░░${E}░░░░░${E}░░█     ⚠ incomplete!${CRESET}"
@@ -68,6 +69,6 @@ else
 	echo -e "${RED} ⚠ The failed provisioners left these logs:"
 
 	# List failed provisioners, and pipe them through xargs to print them in a formatted way.
-	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" vvv_error "   - <b>log/provisioners/${date_time}/LOGFILE.log</b>"
+	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" echo -e "   - <b>log/provisioners/${date_time}/LOGFILE.log</b>"
 	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
 fi
