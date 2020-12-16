@@ -44,13 +44,13 @@ function containsElement () {
 export -f containsElement
 
 function network_detection() {
-  url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"https://ppa.launchpad.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
 
 function check_network_connection_to_host() {
-  url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"https://ppa.launchpad.net"}
   vvv_info " * Testing network connection to <url>${url}</url>"
 
   # Network Detection
@@ -59,7 +59,7 @@ function check_network_connection_to_host() {
   # then we'll skip a few things further in provisioning rather
   # than create a bunch of errors.
   if [[ "$(wget --tries=3 --timeout=10 "${url}" -O /dev/null 2>&1 | grep 'connected')" ]]; then
-    vvv_success " * Successful Network connection to <url>${url}<success> detected"
+    vvv_success " * Successful Network connection to <url>${url}</url><success> detected"
     return 0
   fi
   vvv_error " ! Network connection issues found. Unable to reach <url>${url}</url>"
@@ -199,7 +199,7 @@ function vvv_format_output() {
     ["</b>"]="${UNBOLD}"
   )
 
-  MSG="${1}</>"
+  local MSG="${1}</>"
   for tag in "${!tags[@]}"; do
     MSG=$(echo "${MSG//"${tag}"/"${tags[$tag]}"}" )
   done
@@ -208,7 +208,7 @@ function vvv_format_output() {
 export -f vvv_format_output
 
 function vvv_output() {
-  MSG=$(vvv_format_output "${1}")
+  local MSG=$(vvv_format_output "${1}")
 	echo -e "${MSG}"
   if [[ ! -z "${VVV_LOG}" ]]; then
     if [ "${VVV_LOG}" != "main" ]; then
@@ -224,7 +224,7 @@ function vvv_info() {
 export -f vvv_info
 
 function vvv_error() {
-  MSG=$(vvv_format_output "<error>${1}</error>")
+  local MSG=$(vvv_format_output "<error>${1}</error>")
 	echo -e "${MSG}"
 }
 export -f vvv_error

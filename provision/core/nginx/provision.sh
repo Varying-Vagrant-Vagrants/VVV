@@ -23,17 +23,17 @@ function nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
   if [[ ! -e /root/.rnd ]]; then
     vvv_info " * Generating Random Number for cert generation..."
-    vvvgenrnd="$(openssl rand -out /root/.rnd -hex 256 2>&1)"
+    local vvvgenrnd="$(openssl rand -out /root/.rnd -hex 256 2>&1)"
     vvv_info "$vvvgenrnd"
   fi
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
     vvv_info " * Generating Nginx server private key..."
-    vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
+    local vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
     vvv_info "$vvvgenrsa"
   fi
   if [[ ! -e /etc/nginx/server-2.1.0.crt ]]; then
     vvv_info " * Sign the certificate using the above private key..."
-    vvvsigncert="$(openssl req -new -x509 \
+    local vvvsigncert="$(openssl req -new -x509 \
             -key /etc/nginx/server-2.1.0.key \
             -out /etc/nginx/server-2.1.0.crt \
             -days 3650 \
