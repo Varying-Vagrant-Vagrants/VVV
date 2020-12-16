@@ -10,6 +10,7 @@ SKIP_PROVISIONING=$5
 NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
+VVV_HOSTS=""
 
 SUCCESS=1
 
@@ -40,17 +41,17 @@ function get_primary_host() {
 }
 
 function vvv_provision_site_nginx_config() {
-  SITE_NGINX_FILE=$2
-  DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
-  DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
-  DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
-  DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
+  local SITE_NGINX_FILE=$2
+  local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
+  local DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
   VVV_HOSTS=$(get_hosts)
+
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
   # while still having an Nginx config which works.
-  #env
-  DIR="$(dirname "$SITE_NGINX_FILE")"
+  local DIR="$(dirname "$SITE_NGINX_FILE")"
   sed "s#{vvv_path_to_folder}#${DIR}#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{vvv_path_to_site}#${VM_DIR}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{vvv_site_name}#${SITE}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
@@ -77,7 +78,7 @@ function vvv_provision_site_nginx_config() {
 }
 
 function vvv_provision_hosts_file() {
-  HOSTFILE=$1
+  local HOSTFILE=$1
   while read HOSTFILE; do
     while IFS='' read -r line || [ -n "$line" ]; do
       if [[ "#" != ${line:0:1} ]]; then
@@ -96,7 +97,7 @@ function vvv_process_site_hosts() {
   #
   # Domains should be entered on new lines.
   echo " * Adding domains to the virtual machine's /etc/hosts file..."
-  hosts=$(get_hosts_list)
+  local hosts=$(get_hosts_list)
   if [ ${#hosts[@]} -eq 0 ]; then
     echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
     if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then
@@ -110,7 +111,7 @@ function vvv_process_site_hosts() {
       vvv_provision_hosts_file "${SITE}" "${VM_DIR}/vvv-hosts"
     else
       echo " * Searching subfolders 4 levels down for a vvv-hosts file ( this can be skipped by using ./vvv-hosts, .vvv/vvv-hosts, or provision/vvv-hosts"
-      HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
+      local HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
       if [[ -z $HOST_FILES ]] ; then
         vvv_error " ! Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible"
       else
@@ -187,7 +188,7 @@ function vvv_provision_site_script() {
     SUCCESS=$?
   else
     vvv_warn " * Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
-    SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.conf');
+    local SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.conf');
     if [[ -z $SITE_INIT_SCRIPTS ]] ; then
       vvv_warn " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
     else
@@ -209,7 +210,7 @@ function vvv_provision_site_nginx() {
     vvv_provision_site_nginx_config "${SITE}" "${VM_DIR}/vvv-nginx.conf"
   else
     vvv_warn " * Warning: An nginx config was not found at .vvv/vvv-nginx.conf provision/vvv-nginx.conf or vvv-nginx.conf, searching 3 folders down, please be patient..."
-    NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
+    local NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
     if [[ -z $NGINX_CONFIGS ]] ; then
       vvv_error " ! Error: No nginx config was found, VVV will not know how to serve this site"
       exit 1
