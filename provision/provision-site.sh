@@ -14,33 +14,63 @@ VVV_HOSTS=""
 
 SUCCESS=1
 
-
 VVV_CONFIG=/vagrant/config.yml
 
 . "/srv/provision/provisioners.sh"
 
-# Takes 2 values, a key to fetch a value for, and an optional default value
-# e.g. echo $(get_config_value 'key' 'defaultvalue')
+# @description Takes 2 values, a key to fetch a value for, and an optional default value
+#
+# @example
+#    echo $(get_config_value 'key' 'defaultvalue')
+#
+# @arg $1 string the name of the custom parameter
+# @arg $2 string the default value
+#
+# @see vvv_get_site_config_value
 function get_config_value() {
   vvv_get_site_config_value "custom.${1}" "${2}"
 }
 
+# @description Retrieves a list of hosts for this site from the config file. Internally this relies on `shyaml get-values-0`
+#
+# @noargs
+# @see get_hosts_list
+# @stdout a space sepearated string of domains, defaulting to `sitename.test` if none are specified
 function get_hosts() {
   local value=$(shyaml -q get-values-0 "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
+# @description Retrieves a list of hosts for this site from the config file. Internally this relies on `shyaml get-values`
+#
+# @noargs
+# @see get_hosts
+# @stdout a space sepearated string of domains, defaulting to `sitename.test` if none are specified
 function get_hosts_list() {
   local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG})
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
+# @description Retrieves the first host listed for a site.
+#
+# @noargs
+# @see get_hosts
+# @see get_hosts_list
+# @stdout the first host listed in the config file for this site, defaulting to `sitename.test` if none are specified
 function get_primary_host() {
   local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.hosts.0" "${1}" < ${VVV_CONFIG})
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
+# @description processes and installs an Nginx config for a site.
+# The function performs variable substitutions, and installs the resulting config.
+# This includes inserting SSL key references, host names, and paths.
+#
+# @arg $1 string the name of the site
+# @arg $2 string the Nginx config file to process and install
+# @internal
 function vvv_provision_site_nginx_config() {
+  local SITE_NAME=$1
   local SITE_NGINX_FILE=$2
   local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
   local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
@@ -54,7 +84,7 @@ function vvv_provision_site_nginx_config() {
   local DIR="$(dirname "$SITE_NGINX_FILE")"
   sed "s#{vvv_path_to_folder}#${DIR}#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{vvv_path_to_site}#${VM_DIR}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_site_name}#${SITE}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{vvv_site_name}#${SITE_NAME}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   sed -i "s#{vvv_hosts}#${VVV_HOSTS}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
   if [ 'php' != "${NGINX_UPSTREAM}" ] && [ ! -f "/etc/nginx/upstreams/${NGINX_UPSTREAM}.conf" ]; then
@@ -64,8 +94,8 @@ function vvv_provision_site_nginx_config() {
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
   if /srv/config/homebin/is_utility_installed core tls-ca; then
-    sed -i "s#{vvv_tls_cert}#ssl_certificate /srv/certificates/${VVV_SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}#ssl_certificate_key /srv/certificates/${VVV_SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_cert}#ssl_certificate /srv/certificates/${SITE_NAME}/dev.crt;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_key}#ssl_certificate_key /srv/certificates/${SITE_NAME}/dev.key;#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   else
     sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the core tls-ca is not installed#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
     sed -i "s#{vvv_tls_key}#\# TLS key not included as the core tls-ca is not installed#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
@@ -77,6 +107,10 @@ function vvv_provision_site_nginx_config() {
   done
 }
 
+# @description add hosts from a file to VVVs hosts file (the guest, not the host machine)
+#
+# @arg $1 string a vvv-hosts file to process
+# @internal
 function vvv_provision_hosts_file() {
   local HOSTFILE=$1
   while read HOSTFILE; do
@@ -91,11 +125,12 @@ function vvv_provision_hosts_file() {
   done
 }
 
+# @description Parse any `vvv-hosts` files located in the site repository for domains to
+# be added to the virtual machine's host file so that it is self aware.
+#
+# @internal
+# @noargs
 function vvv_process_site_hosts() {
-  # Parse any vvv-hosts file located in the site repository for domains to
-  # be added to the virtual machine's host file so that it is self aware.
-  #
-  # Domains should be entered on new lines.
   echo " * Adding domains to the virtual machine's /etc/hosts file..."
   local hosts=$(get_hosts_list)
   if [ ${#hosts[@]} -eq 0 ]; then
@@ -131,6 +166,10 @@ function vvv_process_site_hosts() {
   fi
 }
 
+# @description Clones a site provisioner repository or git repo as specified in the repo: field of a site
+#
+# @internal
+# @noargs
 function vvv_provision_site_repo() {
   if [[ false != "${REPO}" ]]; then
     if [[ -d "${VM_DIR}" ]] && [[ ! -z "$(ls -A "${VM_DIR}")" ]]; then
@@ -164,6 +203,11 @@ function vvv_provision_site_repo() {
   fi
 }
 
+# @description Runs a site provisioner script to install and configure a site automatically.
+#
+# @arg $1 string the provisioner to run
+# @arg $2 string the folder containing the provisioner to runn
+# @internal
 function vvv_run_site_template_script() {
   echo " * Found ${1} at ${2}/${1}"
   ( cd "${2}" && source "${1}" )
@@ -174,6 +218,10 @@ function vvv_run_site_template_script() {
   fi
 }
 
+# @description Searches for and executes a site provisioner setup script
+#
+# @internal
+# @noargs
 function vvv_provision_site_script() {
   # Look for site setup scripts
   echo " * Searching for a site template provisioner, vvv-init.sh"
@@ -193,13 +241,17 @@ function vvv_provision_site_script() {
       vvv_warn " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
     else
       for SITE_INIT_SCRIPT in $SITE_INIT_SCRIPTS; do
-        DIR="$(dirname "$SITE_INIT_SCRIPT")"
+        local DIR="$(dirname "$SITE_INIT_SCRIPT")"
         vvv_run_site_template_script "vvv-init.sh" "${DIR}"
       done
     fi
   fi
 }
 
+# @description Searches for and installs a site Nginx configuration.
+#
+# @internal
+# @noargs
 function vvv_provision_site_nginx() {
   # Look for Nginx vhost files, symlink them into the custom sites dir
   if [[ -f "${VM_DIR}/.vvv/vvv-nginx.conf" ]]; then
@@ -222,11 +274,21 @@ function vvv_provision_site_nginx() {
   fi
 }
 
+# @description Retrieves a config value for the given site as specified in `config.yml`
+#
+# @arg $1 string 
+# @arg $2 string 
 function vvv_get_site_config_value() {
   local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
   echo "${value}"
 }
 
+# @description Clones a git repository into a sites sub-folder
+#
+# @arg $1 string the git repository URL to clone
+# @arg $2 string the folder to clone into
+# @internal
+# @see vvv_custom_folder_git
 function vvv_clone_site_git_folder() {
   local repo="${1}"
   local folder="${2}"
@@ -235,6 +297,11 @@ function vvv_clone_site_git_folder() {
   noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
 }
 
+# @description Processes a folder sections git option for a site as specified in `config.yml`
+#
+# @arg $1 string the folder name to process specified in `config.yml`
+# @internal
+# @see vvv_clone_site_git_folder
 function vvv_custom_folder_git() {
   local folder="${1}"
   local repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
@@ -272,6 +339,10 @@ function vvv_custom_folder_git() {
   fi
 }
 
+# @description Processes the folders option from the sites `config.yml`
+#
+# @internal
+# @noargs
 function vvv_custom_folders() {
   if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders" < "${VVV_CONFIG}"); then
     for folder in $folders
