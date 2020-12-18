@@ -11,7 +11,8 @@
 			"port": 9003,
 			"pathMappings": {
 				"/srv/www/": "${workspaceRoot}/www/"
-			}
+			},
+			"preLaunchTask": "VVV XDebug on"
 		}
 	]
 }
