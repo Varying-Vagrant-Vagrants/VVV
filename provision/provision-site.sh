@@ -1,4 +1,16 @@
 #!/usr/bin/env bash
+# @file Core Site Provisioner
+# @brief The main site provisioner script.
+# @description A script executed as a provisioner that provisions a site. This includes cloning its provisioner template, installing and processing Nginx config files, running setup scripts, etc
+# This script takes several arguments:
+#
+# - The name of the site in the config file
+# - The git repository URI for the site provisioner template
+# - The git branch to use
+# - The location inside the guest to set up the site
+# - Wether to skip provisioning for this site
+# - The Nginx upstream to use
+
 set -eo pipefail
 
 SITE=$1
@@ -35,7 +47,7 @@ function get_config_value() {
 #
 # @noargs
 # @see get_hosts_list
-# @stdout a space sepearated string of domains, defaulting to `sitename.test` if none are specified
+# @stdout a space separated string of domains, defaulting to `sitename.test` if none are specified
 function get_hosts() {
   local value=$(shyaml -q get-values-0 "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
   echo "${value:-"${VVV_SITE_NAME}.test"}"
@@ -45,7 +57,7 @@ function get_hosts() {
 #
 # @noargs
 # @see get_hosts
-# @stdout a space sepearated string of domains, defaulting to `sitename.test` if none are specified
+# @stdout a space separated string of domains, defaulting to `sitename.test` if none are specified
 function get_hosts_list() {
   local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG})
   echo "${value:-"${VVV_SITE_NAME}.test"}"
