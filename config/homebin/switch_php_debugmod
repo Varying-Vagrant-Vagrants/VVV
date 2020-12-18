@@ -1,6 +1,8 @@
 #!/bin/bash
-
 set -eo pipefail
+
+
+source /srv/provision/provision-helpers.sh
 
 # Grab the currently active PHP mods, and lowercase it for comparison
 enabled_mods=$(php -m)
@@ -26,28 +28,28 @@ disable_phpmods() {
 	local mods_joined=$(printf ", %s" "${mods[@]}")
 	mods_joined=${mods_joined:1}
 	mods_joined="${mods_joined#"${mods_joined%%[![:space:]]*}"}"
-	echo " * Disabling if present: '${mods_joined}'"
+	vvv_info " * Disabling if present: <b>'${mods_joined}'</b>"
 
 	for i in "${mods[@]}"
 	do
 		if [[ ${enabled_mods,,} == *"${i}"* ]]; then
-			echo " * Disabling active module: '${i}'"
+			vvv_info " * Disabling active module: <b>'${i}'</b>"
 			sudo phpdismod "${i}"
 		fi
 	done
 }
 
 enable_phpmod() {
-	echo " * Enabling '${1}'"
+	vvv_info " * Enabling <b>'${1}'</b>"
 	sudo phpenmod "${1}"
 }
 
 restart_phpfpm() {
-	echo " * Restarting PHP FPM's so the change takes effect"
+	vvv_info " * Restarting PHP FPM's so the change takes effect"
 	find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 }
 
-echo " * Disabling active debug PHP mods"
+vvv_info " * Disabling active debug PHP mods"
 disable_phpmods phpmods[@]
 
 if [[ "${mod}" == "none" ]]; then
@@ -62,6 +64,13 @@ if [[ "${mod}" == "tideways" ]]; then
 	enable_phpmod "tideways_xhprof"
 	restart_phpfpm
 	exit 0
+fi
+
+if [[ "${mod}" == "xdebug" ]]; then
+	# Ensure the log file for xdebug is group writeable.
+	vvv_info " * Making sure log/php/xdebug-remote.log is readable and present"
+	sudo touch /var/log/php/xdebug-remote.log
+	sudo chmod 664 /var/log/php/xdebug-remote.log
 fi
 
 enable_phpmod "${mod}"

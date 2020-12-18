@@ -6,10 +6,14 @@
 # other provisioners
 
 export YELLOW="\033[38;5;3m"
+export YELLOW_UNDERLINE="\033[4;38;5;3m"
 export GREEN="\033[38;5;2m"
 export RED="\033[38;5;9m"
+export BLUE="\033[38;5;4m" # 33m"
+export PURPLE="\033[38;5;5m" # 129m"
 export CRESET="\033[0m"
 export BOLD="\033[1m"
+
 
 VVV_CONFIG=/vagrant/vvv-custom.yml
 if [[ -f /vagrant/config.yml ]]; then
@@ -171,32 +175,61 @@ function vvv_src_list_has() {
 }
 export -f vvv_src_list_has
 
-function vvv_info() {
-  echo -e "${CRESET}${1}${CRESET}"
-  if [ "${VVV_LOG}" != "main" ]; then
-    >&6 echo -e "${CRESET}${1}${CRESET}"
+
+function vvv_format_output() {
+  declare -A tags=(
+    ["</>"]="${CRESET}"
+    ["<info>"]="${BOLD}"
+    ["</info>"]="${CRESET}"
+    ["<success>"]="${GREEN}"
+    ["</success>"]="${CRESET}"
+    ["<warn>"]="${YELLOW}"
+    ["</warn>"]="${CRESET}"
+    ["<error>"]="${RED}"
+    ["</error>"]="${CRESET}"
+    ["<url>"]="${YELLOW_UNDERLINE}"
+    ["</url>"]="${CRESET}"
+    ["<b>"]="${BOLD}${PURPLE}"
+    ["</b>"]="${CRESET}"
+  )
+
+  MSG="${1}"
+  for tag in "${!tags[@]}"; do
+    MSG=$(echo "${MSG//"${tag}"/"${tags[$tag]}"}" )
+  done
+  echo -e "${MSG}"
+}
+export -f vvv_format_output
+
+function vvv_output() {
+  MSG=$(vvv_format_output "${1}")
+	echo -e "${MSG}"
+  if [[ ! -z "${VVV_LOG}" ]]; then
+    if [ "${VVV_LOG}" != "main" ]; then
+  	  >&6 echo -e "${MSG}"
+    fi
   fi
+}
+export -f vvv_output
+
+function vvv_info() {
+  vvv_output "<info>${1}</info>"
 }
 export -f vvv_info
 
 function vvv_error() {
-	echo -e "${RED}${1}${CRESET}"
+  MSG=$(vvv_format_output "<error>${1}</error>")
+	echo -e "${MSG}"
 }
 export -f vvv_error
 
 function vvv_warn() {
-	echo -e "${YELLOW}${1}${CRESET}"
-  if [ "${VVV_LOG}" != "main" ]; then
-  	>&6 echo -e "${YELLOW}${1}${CRESET}"
-  fi
+  vvv_output "<warn>${1}</warn>"
 }
 export -f vvv_warn
 
 function vvv_success() {
-	echo -e "${GREEN}${1}${CRESET}"
-  if [ "${VVV_LOG}" != "main" ]; then
-  	>&6 echo -e "${GREEN}${1}${CRESET}"
-  fi
+  vvv_output "<success>${1}</success>"
 }
 export -f vvv_success
 
@@ -274,34 +307,34 @@ vvv_package_install() {
   declare -a packages=($@)
 
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
-  echo " * Cleaning up dpkg lock file"
+  vvv_info " * Cleaning up dpkg lock file"
   rm /var/lib/dpkg/lock*
 
-  echo " * Updating apt keys"
+  vvv_info " * Updating apt keys"
   apt-key update -y
 
   # Update all of the package references before installing anything
-  echo " * Running apt-get update..."
+  vvv_info " * Running apt-get update..."
   rm -rf /var/lib/apt/lists/*
   apt-get update -y --fix-missing
 
   # Install required packages
-  echo " * Installing apt-get packages..."
+  vvv_info " * Installing apt-get packages..."
 
   # To avoid issues on provisioning and failed apt installation
   dpkg --configure -a
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
-    echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    vvv_info " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean -y
     return 1
   fi
 
   # Remove unnecessary packages
-  echo " * Removing unnecessary apt packages..."
+  vvv_info " * Removing unnecessary apt packages..."
   apt-get autoremove -y
 
   # Clean up apt caches
-  echo " * Cleaning apt caches..."
+  vvv_info " * Cleaning apt caches..."
   apt-get clean -y
 
   return 0

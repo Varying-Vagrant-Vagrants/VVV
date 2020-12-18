@@ -6,7 +6,19 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.5.x ( 2020 TBA )
+## 3.6.x ( 2021 )
+
+### Enhancements
+
+* Beautify the PHP debug switcher script
+* Support for basic formatting tags in `vvv_warn` `vvv_error` `vvv_info` and `vvv_success`
+* A new `vvv_output` and `vvv_format_output` bash functions
+
+### Bug Fixes
+
+* Fixed the user of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
+
+## 3.5.1 ( 2020 December 11th )
 
 ### Enhancements
 
