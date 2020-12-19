@@ -28,32 +28,33 @@ disable_phpmods() {
 	local mods_joined=$(printf ", %s" "${mods[@]}")
 	mods_joined=${mods_joined:1}
 	mods_joined="${mods_joined#"${mods_joined%%[![:space:]]*}"}"
-	vvv_info " * Disabling if present: <b>'${mods_joined}'</b>"
+	#vvv_info " * Disabling if present: <b>'${mods_joined}'</b>"
 
 	for i in "${mods[@]}"
 	do
 		if [[ ${enabled_mods,,} == *"${i}"* ]]; then
-			vvv_info " * Disabling active module: <b>'${i}'</b>"
+			vvv_info " * Disabling active PHP debug mod: <b>'${i}'</b>"
 			sudo phpdismod "${i}"
 		fi
 	done
 }
 
 enable_phpmod() {
-	vvv_info " * Enabling <b>'${1}'</b>"
+	vvv_info " * Enabling PHP debug mod: <b>'${1}'</b>"
 	sudo phpenmod "${1}"
 }
 
 restart_phpfpm() {
-	vvv_info " * Restarting PHP FPM's so the change takes effect"
+	vvv_info " * Restarting PHP FPM services so that the change takes effect"
 	find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 }
 
-vvv_info " * Disabling active debug PHP mods"
+#vvv_info " * Disabling active debug PHP mods"
 disable_phpmods phpmods[@]
 
 if [[ "${mod}" == "none" ]]; then
 	restart_phpfpm
+  vvv_success " * All PHP Debug mods are now turned off."
 	exit 0
 fi
 
@@ -63,6 +64,7 @@ if [[ "${mod}" == "tideways" ]]; then
 	enable_phpmod "xhgui"
 	enable_phpmod "tideways_xhprof"
 	restart_phpfpm
+  vvv_success " * PHP Debug mod switch to <b>${mod}</b><success> complete.</success>"
 	exit 0
 fi
 
@@ -75,3 +77,4 @@ fi
 
 enable_phpmod "${mod}"
 restart_phpfpm
+vvv_success " * PHP Debug mod switch to <b>${mod}</b><success> complete.</success>"
