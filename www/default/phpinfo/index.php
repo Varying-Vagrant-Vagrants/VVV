@@ -7,7 +7,7 @@
 	<a href="#phpinfo">PHP Info</a>
 	<?php
 	if ( function_exists( 'xdebug_info' ) ) {
-		?>, <a href="#xdebuginfo">XDebug Info</a><?php
+		?>, <a href="#xdebuginfo">Xdebug Info</a><?php
 	}
 	?>
 </nav>
@@ -18,7 +18,8 @@ phpinfo();
 echo '</div>';
 
 if ( function_exists( 'xdebug_info' ) ) {
-	echo '<hr/><div id="xdebuginfo">';
+	echo '<hr/>';
+	echo '<div id="xdebuginfo">';
 	xdebug_info();
 	echo '</div>';
 }
