@@ -49,9 +49,9 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "VVV XDebug on",
+			"label": "VVV Xdebug on",
 			"type": "shell",
-			"command": "vagrant up && vagrant ssh -c 'xdebug_on'",
+			"command": "vagrant ssh -c 'xdebug_on'",
 			"group": "vvv",
 			"presentation": {
 				"reveal": "always",
@@ -60,7 +60,7 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "VVV XDebug off",
+			"label": "VVV Xdebug off",
 			"type": "shell",
 			"command": "vagrant ssh -c 'xdebug_off'",
 			"group": "vvv",

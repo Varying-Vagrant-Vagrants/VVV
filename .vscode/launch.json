@@ -5,14 +5,14 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "VVV Listen for XDebug",
+			"name": "VVV Listen for Xdebug",
 			"type": "php",
 			"request": "launch",
 			"port": 9003,
 			"pathMappings": {
 				"/srv/www/": "${workspaceRoot}/www/"
 			},
-			"preLaunchTask": "VVV XDebug on"
+			"preLaunchTask": "VVV Xdebug on"
 		}
 	]
 }
