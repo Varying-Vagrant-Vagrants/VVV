@@ -70,17 +70,16 @@ fi
 vvv_hook before_packages
 
 # Package and Tools Install
-echo " "
-echo " * Main packages check and install."
+vvv_info " * Main packages check and install."
 if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   vvv_error " ! Main packages check and install failed, halting provision"
   exit 1
 fi
 
-echo " * Running tools_install"
+vvv_info " * Running tools_install"
 vvv_hook after_packages
 
-echo " * Finalizing"
+vvv_info " * Finalizing"
 vvv_hook finalize
 
 #set +xv

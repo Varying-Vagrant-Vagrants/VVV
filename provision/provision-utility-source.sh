@@ -1,24 +1,27 @@
 #!/usr/bin/env bash
-
-. "/srv/provision/provisioners.sh"
+set -eo pipefail
 
 NAME=$1
 REPO=$2
 BRANCH="${3:-master}"
 DIR="/srv/provision/utilities/${NAME}"
 
+. "/srv/provision/provisioners.sh"
+
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the utility repository
   if [[ ! -d "${DIR}/.git" ]]; then
-    echo "* Cloning the \"${NAME}\" utility, see \"${REPO}\""
+    vvv_info "* Cloning the \"${NAME}\" utility, see \"${REPO}\""
     git clone "${REPO}" --branch "${BRANCH}" "${DIR}" -q
     cd "${DIR}"
     git checkout "${BRANCH}" -q
+    vvv_success " * Git clone and checkout complete"
   else
-    echo -e "* Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch..."
+    vvv_info "* Updating the \"${NAME}\" utility on the \"${BRANCH}\" branch..."
     cd "${DIR}"
     git pull origin "${BRANCH}" -q
     git checkout "${BRANCH}" -q
+    vvv_success " * Git pull and checkout complete"
   fi
 else
   if [[ false == "${NAME}" && false == "${REPO}" ]]; then
@@ -32,6 +35,7 @@ else
 
   if [[ false == "${REPO}" ]]; then
     vvv_error "Error: While processing the ${NAME} utility, VVV could not find a git repository to clone"
+    exit 1
   fi
 fi
 

@@ -13,10 +13,16 @@ permalink: /docs/en-US/changelog/
 * Beautify the PHP debug switcher script
 * Support for basic formatting tags in `vvv_warn` `vvv_error` `vvv_info` and `vvv_success`
 * A new `vvv_output` and `vvv_format_output` bash functions
+* Minor refactors and colours added to the main provisioner
+* Improved output of backup and import scripts
 
 ### Bug Fixes
 
 * Fixed the user of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
+* Don't try to install shyaml if it's already installed
+* Global composer packages were only updated when composer itself was updated
+* Skip the WordPress unit tests database when running backups
+* Don't back up databases that have no tables
 
 ## 3.5.1 ( 2020 December 11th )
 
