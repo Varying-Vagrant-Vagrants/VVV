@@ -1,9 +1,7 @@
 #!/bin/bash
-#
-# core/deprecated.sh
-#
-# This file contains deprecated functions that may be removed later.
+# @descriptionn This file contains deprecated functions that may be removed later.
 
+# @description Check if we're on Ubuntu 14 and abort provisioning
 function deprecated_distro() {
   local command_exist
   command_exist="$(which lsb_release)"
@@ -73,6 +71,7 @@ function deprecated_distro() {
   fi
 }
 
+# @description Clean up the old resources folder, as VVV 3 moved utilities to a utilities folder
 remove_v2_resources() {
   if [ -d /srv/provision/resources ]; then
     vvv_warn " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
@@ -80,6 +79,8 @@ remove_v2_resources() {
   fi
 }
 
+# @description Symlink `/vagrant/certificates` for backwards compatibility.
+# New scripts should use `/srv/certificates` instead.
 support_v2_certificate_path() {
   # symlink the certificates folder for older site templates compat
   if [[ ! -d /vagrant/certificates ]]; then
