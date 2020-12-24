@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Installs composer and tools installed via composer packages
 set -eo pipefail
 
+# @noargs
 function composer_setup() {
   # Disable xdebug before any composer provisioning.
   vvv_info " * Turning off XDebug to avoid Composer performance issues"

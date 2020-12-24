@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description VVV main packages and misc fixes
 set -eo pipefail
 
 function vvv_register_packages() {

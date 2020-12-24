@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Installs the default version of PHP
 set -eo pipefail
 
 VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.3"}

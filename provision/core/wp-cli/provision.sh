@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description WP CLI
 set -eo pipefail
 
 function wp_cli_setup() {

@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Instal and configure Node v10
 set -eo pipefail
 
 function nodejs_register_packages() {

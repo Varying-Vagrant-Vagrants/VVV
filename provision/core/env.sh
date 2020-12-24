@@ -1,7 +1,8 @@
-#!/bin/bash
-# core/env.sh
+#!/usr/bin/env bash
 set -eo pipefail
 
+# @description Adds the homebin folder to PATH
+# @noargs
 function setup_vvv_env() {
   # fix no tty warnings in provisioner logs
   sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
@@ -21,6 +22,8 @@ function setup_vvv_env() {
     /etc/environment
 }
 
+# @description Remove MOTD output from Ubuntu and add our own
+# @noargs
 function cleanup_terminal_splash() {
   # Dastardly Ubuntu tries to be helpful and suggest users update packages
   # themselves, but this can break things
@@ -58,6 +61,8 @@ function cleanup_terminal_splash() {
   chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
+# @description Sets up the VVV users bash profile, and configuration files
+# @noargs
 function profile_setup() {
   vvv_info " * Setting ownership of files in /home/vagrant to vagrant"
   chown -R vagrant:vagrant /home/vagrant/
@@ -106,6 +111,8 @@ function profile_setup() {
   fi
 }
 
+# @description Sets up the main VVV user profile
+# @noargs
 function vvv_init_profile() {
   # Profile_setup
   vvv_info " * Bash profile setup and directories."

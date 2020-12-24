@@ -1,12 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description apt-get does not have latest version of git, so let's the use ppa repository instead.
 set -eo pipefail
 
-# git
-#
-# apt-get does not have latest version of git,
-# so let's the use ppa repository instead.
-#
-
+# @noargs
 function git_register_packages() {
   if ! vvv_src_list_has "git-core/ppa"; then
     # Add ppa repo.

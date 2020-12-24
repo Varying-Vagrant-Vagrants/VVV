@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Postfix installer
 set -eo pipefail
 
 function postfix_register_packages() {

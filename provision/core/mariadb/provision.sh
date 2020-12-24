@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Set up and configure MariaDB
 set -eo pipefail
 
 # MariaDB/MySQL

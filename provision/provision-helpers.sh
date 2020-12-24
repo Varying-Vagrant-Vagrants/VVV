@@ -1,9 +1,6 @@
 #!/bin/bash
-#
-# provision-network-functions.sh
-#
-# This file is for common network helper functions that get called in
-# other provisioners
+# @description This file is for common helper functions that
+# get called in other provisioners
 
 export DEFAULT_TEXT="\033[39m"
 export BOLD="\033[1m"
@@ -21,7 +18,6 @@ export PURPLE="\033[0;38;5;5m" # 129m"
 export CRESET="\033[0m"
 
 
-
 VVV_CONFIG=/vagrant/vvv-custom.yml
 if [[ -f /vagrant/config.yml ]]; then
 	VVV_CONFIG=/vagrant/config.yml
@@ -30,6 +26,13 @@ fi
 export VVV_CONFIG
 export VVV_CURRENT_LOG_FILE=""
 
+# @description Does a bash array contain a value?
+#
+# @arg $1 string The value to search for
+# @arg $2 string The list/array to search in
+#
+# @exitcode 0 If the list contains the element
+# @exitcode 1 If the list does not containn the element
 function containsElement () {
   declare -a array=(${2})
   local i
@@ -43,12 +46,23 @@ function containsElement () {
 }
 export -f containsElement
 
+# @description Test that we have network connectivity with a URL.
+# Deprecated, use check_network_connection_to_host instead
+#
+# @arg $1 string The address to test
+# @see check_network_connection_to_host
 function network_detection() {
   local url=${1:-"https://ppa.launchpad.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
 
+# @description Test that we have network connectivity with a URL.
+#
+# @arg $1 string The address to test, defaults to `https://ppa.launchpad.net`
+#
+# @exitcode 0 If the address is reachable
+# @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
   local url=${1:-"https://ppa.launchpad.net"}
   vvv_info " * Testing network connection to <url>${url}</url>"
@@ -67,6 +81,9 @@ function check_network_connection_to_host() {
 }
 export -f check_network_connection_to_host
 
+# @description Tests network connectivity with several hosts needed for provisioning
+# @noargs
+# @see check_network_connection_to_host
 function network_check() {
   # Make an HTTP request to ppa.launchpad.net to determine if
   # outside access is available to us. Also check the mariadb
@@ -137,6 +154,9 @@ function network_check() {
 }
 export -f network_check
 
+# @description Redirects stdout to a log file in the provisioner log folder
+#
+# @arg $1 string name of the provisioner
 function log_to_file() {
 	local date_time=$(cat /vagrant/provisioned_at)
 	local logfolder="/var/log/provisioners/${date_time}"
@@ -157,11 +177,15 @@ function log_to_file() {
 }
 export -f log_to_file
 
+# @description Run a command that cannot be ran as root
 function noroot() {
   sudo -EH -u "vagrant" "$@";
 }
 export -f noroot
 
+# @description Tests if an apt-key has been added
+#
+# @arg $1 string a key string to test
 function vvv_apt_keys_has() {
   local keys=$( apt-key list )
   if [[ ! $( echo "${keys}" | grep "$1") ]]; then
@@ -170,6 +194,9 @@ function vvv_apt_keys_has() {
 }
 export -f vvv_apt_keys_has
 
+# @description Tests if an apt-source has been added
+#
+# @arg $1 string a source to test for
 function vvv_src_list_has() {
   local STATUS=1
   if [ ! -z "$(ls -A /etc/apt/sources.list.d/)" ]; then
@@ -181,7 +208,12 @@ function vvv_src_list_has() {
 }
 export -f vvv_src_list_has
 
-
+# @description Takes an input string and attempts to apply terminal formatting for various colours
+#
+# @example
+#   MSG=$(vvv_format_output "<success>green!</success>, <error>red :(</error>, <url>example.com</url></>normal text")
+#
+# @arg $1 string Text to format
 function vvv_format_output() {
   declare -A tags=(
     ["</>"]="${CRESET}"
@@ -207,6 +239,9 @@ function vvv_format_output() {
 }
 export -f vvv_format_output
 
+# @description Output to the terminal, and log to a provisioner log at the same time, with applied formatting
+#
+# @arg $1 string The message to print
 function vvv_output() {
   local MSG=$(vvv_format_output "${1}")
 	echo -e "${MSG}"
@@ -218,45 +253,76 @@ function vvv_output() {
 }
 export -f vvv_output
 
+# @description Prints an information message
+#
+# @arg $1 string The message to print
 function vvv_info() {
   vvv_output "<info>${1}</info>"
 }
 export -f vvv_info
 
+# @description Prints out an error message
+#
+# @arg $1 string The message to print
 function vvv_error() {
   local MSG=$(vvv_format_output "<error>${1}</error>")
 	echo -e "${MSG}"
 }
 export -f vvv_error
 
+# @description Prints our a warning message
+#
+# @arg $1 string The message to print
 function vvv_warn() {
   vvv_output "<warn>${1}</warn>"
 }
 export -f vvv_warn
 
+# @description Prints out a success message
+#
+# @arg $1 string The message to print
 function vvv_success() {
   vvv_output "<success>${1}</success>"
 }
 export -f vvv_success
 
+# @description Retrieves a config value from the main config YAML file
+# Uses `shyaml get-value` internally
+#
+# @arg $1 string the path/key to read from, e.g. sites.wordpress-one.repo
+# @arg $2 string a default value to fall back upon
 function get_config_value() {
   local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 export -f get_config_value
 
+# @description Retrieves config values from the main config YAML file
+# Uses `shyaml get-values` internally
+#
+# @arg $1 string the path/key to read from, e.g. sites.wordpress-one.hosts
+# @arg $2 string a default value to fall back upon
 function get_config_values() {
   local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
 }
 export -f get_config_values
 
+# @description Retrieves the type of a config value from the main config YAML file
+# Uses `shyaml get-type` internally
+#
+# @arg $1 string the path/key to read from, e.g. sites.wordpress-one.repo
 function get_config_type() {
   local value=$(shyaml get-type "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value}"
 }
 export -f get_config_type
 
+# @description Retrieves config keys from the main config YAML file
+# Uses `shyaml keys` internally
+#
+# @arg $1 string the path/key to read from, e.g. sites.wordpress-one.repo
+# @arg $2 string a default value to fall back upon
 function get_config_keys() {
   local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-$2}"
@@ -266,6 +332,15 @@ export -f get_config_keys
 #
 # hook engine
 #
+
+# @description Add a bash function to execute on a hook
+#
+# @example
+#   vvv_add_hook init vvv_init_profile 0
+#
+# @arg $1 string the name of the hook
+# @arg $2 string the name of the bash function to call
+# @arg $3 number the priority of the function when the hook executes, determines order, lower values execute earlier
 vvv_add_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
     vvv_warn "Invalid hookname '${1}', hooks must only contain the characters A-Z and a-z"
@@ -290,6 +365,12 @@ vvv_add_hook() {
 }
 export -f vvv_add_hook
 
+# @description Executes a hook. Functions added to this hook will be executed
+#
+# @example
+#   vvv_hook before_packages
+#
+# @arg $1 string the hook to execute
 vvv_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
     echo "Disallowed hookname"
@@ -297,7 +378,7 @@ vvv_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
-  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"  
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
   local sorted
   eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
@@ -309,6 +390,9 @@ vvv_hook() {
 }
 export -f vvv_hook
 
+# @description Installs a selection of packages via `apt`
+# @example
+#   vvv_package_install wget curl etc
 vvv_package_install() {
   declare -a packages=($@)
 
