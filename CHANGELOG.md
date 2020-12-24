@@ -15,7 +15,7 @@ permalink: /docs/en-US/changelog/
 * A new `vvv_output` and `vvv_format_output` bash functions
 * Minor refactors and colours added to the main provisioner
 * Improved output of backup and import scripts
-
+* SHDocs added to core provisioners
 ### Bug Fixes
 
 * Fixed the user of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
@@ -23,6 +23,7 @@ permalink: /docs/en-US/changelog/
 * Global composer packages were only updated when composer itself was updated
 * Skip the WordPress unit tests database when running backups
 * Don't back up databases that have no tables
+* Xdebug deprecated configuration option warnings fixed
 
 ## 3.5.1 ( 2020 December 11th )
 
