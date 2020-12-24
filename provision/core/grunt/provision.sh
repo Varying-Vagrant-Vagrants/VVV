@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Install Grunt CLI and Node/Grunt Sass
 
 function install_grunt() {
   vvv_info " * Installing Grunt CLI"

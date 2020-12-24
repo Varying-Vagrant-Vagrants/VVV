@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Installs MailHog for email interception
 set -eo pipefail
 
 function mailhog_setup() {

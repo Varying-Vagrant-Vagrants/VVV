@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Install and configure Nginx
 set -eo pipefail
 
 function nginx_register_packages() {

@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description PHP Codesniffer
 set -eo pipefail
 
 function php_codesniff_setup() {
