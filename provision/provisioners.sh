@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description Provides helper functions for when provisioners start and finish
 
 # don't allow inclusion of this file more than once
 if ( type provisioner_begin &>/dev/null ); then
@@ -13,6 +14,8 @@ source /srv/provision/provision-helpers.sh
 
 VVV_PROVISIONER_RUNNING=""
 
+# @description Signal that a provisioner has begun, and setup timings, failed provisioner flags, etc
+# @arg $1 string Name of the provisioner
 function provisioner_begin() {
   VVV_PROVISIONER_RUNNING="${1:-${FUNCNAME[1]}}"
   touch "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
@@ -22,6 +25,8 @@ function provisioner_begin() {
   trap "provisioner_end" EXIT
 }
 
+# @description Signal that a provisioner has finished
+# @arg $1 string Name of the provisioner
 function provisioner_end() {
   local PROVISION_SUCCESS="${1:-"1"}"
   local end_seconds="$(date +%s)"
@@ -39,6 +44,7 @@ if [[ ! -z $VVV_LOG ]]; then
   provisioner_begin "${VVV_LOG}"
 fi
 
+# @description Signal that a provisioner has finished with success
 function provisioner_success() {
   if [[ ! -z $VVV_LOG ]]; then
     provisioner_end 0
