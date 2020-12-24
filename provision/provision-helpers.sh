@@ -340,7 +340,7 @@ export -f get_config_keys
 #
 # @arg $1 string the name of the hook
 # @arg $2 string the name of the bash function to call
-# @arg $2 number the priority of the function when the hook executes, determines order, lower values execute earlier
+# @arg $3 number the priority of the function when the hook executes, determines order, lower values execute earlier
 vvv_add_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
     vvv_warn "Invalid hookname '${1}', hooks must only contain the characters A-Z and a-z"
