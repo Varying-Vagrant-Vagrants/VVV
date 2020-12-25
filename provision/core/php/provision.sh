@@ -65,15 +65,23 @@ function phpfpm_setup() {
     cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
     cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
     cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
-    cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
-    cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
-    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
   fi
 
-  if [[ -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini" ]]; then
-    vvv_warn " * Cleaning up mailcatcher.ini from a previous install"
-    rm -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini"
-  fi
+  for V in /etc/php/*; do
+    if [ -d "${V}" ]; then
+      if [[ -f "/etc/php/${V}/mods-available/mailcatcher.ini" ]]; then
+        vvv_warn " * Cleaning up PHP ${V} mailcatcher.ini from a previous install"
+        rm -f "/etc/php/${V}/mods-available/mailcatcher.ini"
+      fi
+      if [ -d "${V}/mods-available/" ]; then
+        cp -f "/srv/config/php-config/mailhog.ini" "${V}/mods-available/mailhog.ini"
+        cp -f "/srv/config/php-config/xdebug.ini" "${V}/mods-available/xdebug.ini"
+      fi
+      if [ -d "${V}/fpm/conf.d/" ]; then
+        cp -f "/srv/config/php-config/opcache.ini" "${V}/fpm/conf.d/opcache.ini"
+      fi
+    fi
+  done
 }
 export -f phpfpm_setup
 
