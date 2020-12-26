@@ -44,30 +44,37 @@ if [ "$sql_count" != 0 ]
 then
 	for file in $( ls ./*.sql )
 	do
-	# get rid of the extension
-	pre_dot=${file%%.sql}
-	# get rid of the ./
-  db_name=${pre_dot##./}
+		# get rid of the extension
+		pre_dot=${file%%.sql}
 
-	echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
-	mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
-	mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+		# get rid of the ./
+		db_name=${pre_dot##./}
 
-	mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
-	db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
-	if [ "$?" != "0" ]
-	then
-		echo " * Error - Create \`${db_name}\` database via init-custom.sql before attempting import"
-	else
-		if [ "" == "${db_exist}" ]
+		# skip these databases
+		[ "${db_name}" == "mysql" ] && continue;
+		[ "${db_name}" == "information_schema" ] && continue;
+		[ "${db_name}" == "performance_schema" ] && continue;
+		[ "${db_name}" == "test" ] && continue;
+
+		echo " * Creating the \`${db_name}\` database if it doesn't already exist, and granting the wp user access"
+		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
+		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+
+		mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
+		db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
+		if [ "$?" != "0" ]
 		then
-			echo "mysql -u root -proot \"${db_name}\" < \"${db_name}.sql\""
-			mysql -u root -proot "${db_name}" < "${db_name}.sql"
-			echo " * Import of \`${db_name}\` successful"
+			echo " * Error - Create the '${db_name}' database via init-custom.sql before attempting import"
 		else
-			echo " * Skipped import of \`${db_name}\` - tables exist"
+			if [ "" == "${db_exist}" ]
+			then
+				echo " * mysql -u root -proot '${db_name}' < '${db_name}.sql'"
+				mysql -u root -proot "${db_name}" < "${db_name}.sql"
+				echo " * Import of '${db_name}' successful"
+			else
+				echo " * Skipped import of \`${db_name}\` - tables already exist"
+			fi
 		fi
-	fi
 	done
 	echo " * Databases imported"
 else

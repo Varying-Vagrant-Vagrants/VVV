@@ -98,6 +98,7 @@ utilities:
     #- webgrind # PHP Debugging
     #- mongodb # needed for Tideways/XHGui
     #- tideways # PHP profiling tool, also installs xhgui check https://varyingvagrantvagrants.org/docs/en-US/references/tideways-xhgui/
+    #- nvm # Node Version Manager
     #- php56
     #- php70
     #- php71

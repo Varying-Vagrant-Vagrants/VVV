@@ -4,7 +4,7 @@
 updateDocsComment: >
   Thanks for opening this pull request! Make sure `CHANGELOG.md` gets updated with this change, additionally any docs that need updated can be found at https://github.com/Varying-Vagrant-Vagrants/varyingvagrantvagrants.org
   
-targetFiles:
+updateDocsTargetFiles:
   - CHANGELOG.md
 
 # Comment to be posted to on first time issues
@@ -28,7 +28,7 @@ firstPRMergeComment: >
 # *OPTIONAL* Comment to reply with
 # Can be either a string :
 requestInfoReplyComment: >
-  Thanks for contributing, it would be a help if you can provide us with more info!
+  Thanks for contributing, it would be a help if you can provide us with more info! 
 
 # Or an array:
 # requestInfoReplyComment:
@@ -62,6 +62,6 @@ requestInfoOn:
 
 # *OPTIONAL* Add a list of people whose Issues/PRs will not be commented on
 # keys must be GitHub usernames
-requestInfoUserstoExclude:
-  - hiimbex
-  - bexo
+#requestInfoUserstoExclude:
+#  - hiimbex
+#  - bexo
