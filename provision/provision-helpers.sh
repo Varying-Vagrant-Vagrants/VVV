@@ -132,10 +132,12 @@ function network_check() {
     vvv_error "provisioning involves downloading things, a full provision may "
     vvv_error "ruin the wifi for everybody else :("
     vvv_error " "
+    if ! command -v ifconfig &> /dev/null; then
     vvv_error "Network ifconfig output:"
     vvv_error " "
     ifconfig
     vvv_error " "
+    fi
     vvv_error "Aborting provision. "
     vvv_error "Try provisioning again once network connectivity is restored."
     vvv_error "If that doesn't work, and you're sure you have a strong "

@@ -5,7 +5,7 @@ set -eo pipefail
 # @noargs
 function setup_vvv_env() {
   # fix no tty warnings in provisioner logs
-  sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
+  sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
   # add homebin to secure_path setting for sudo, clean first and then append at the end
   sed -i -E \
