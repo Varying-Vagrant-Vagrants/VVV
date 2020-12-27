@@ -156,9 +156,17 @@ function provision_main() {
   fi
 
   # refresh VVV_CONFIG, as the main provisioner actually creates the /srv/vvv/config.yml
-  VVV_CONFIG=/srv/vvv/vvv-custom.yml
-  if [[ -f /srv/vvv/config.yml ]]; then
-    VVV_CONFIG=/srv/vvv/config.yml
-  fi
+  configs=(
+    /srv/vvv/config.yml
+    /vagrant/config.yml
+    /vagrant/vvv-config.yml
+  )
+  VVV_CONFIG=/srv/vvv/config.yml
+  for item in ${configs[*]}; do
+    if [[ -f $item ]]; then
+      VVV_CONFIG=$item
+      break
+    fi
+  done
   export VVV_CONFIG
 }

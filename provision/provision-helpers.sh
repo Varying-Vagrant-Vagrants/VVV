@@ -30,8 +30,6 @@ for item in ${configs[*]}; do
   fi
 done
 
-
-
 export VVV_CONFIG
 export VVV_CURRENT_LOG_FILE=""
 

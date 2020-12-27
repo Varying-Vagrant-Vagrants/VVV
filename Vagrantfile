@@ -554,7 +554,7 @@ Vagrant.configure('2') do |config|
 
   # Disable the default synced folder to avoid overlapping mounts
   config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.vm.provision 'file', source: "#{vagrant_dir}/version", destination: '/home/vagrant/version'
+  config.vm.provision 'file', source: "#{vagrant_dir}/version", destination: '/srv/vvv/version'
 
   # /srv/database/
   #
@@ -730,7 +730,7 @@ Vagrant.configure('2') do |config|
   unless Vagrant::Util::Platform.windows?
     if Process.uid == 0
       # the VM should know if vagrant was ran by a root user or using sudo
-      config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
+      config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /srv/vvv && touch /srv/vvv/provisioned_as_root"
     end
   end
 
