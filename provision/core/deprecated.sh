@@ -5,10 +5,10 @@
 # @noargs
 function deprecated_distro() {
   local command_exist
-  command_exist="$(which lsb_release)"
-  if [ -z "${command_exist}" ]; then
-    return;
+  if ! command -v lsb_release &> /dev/null; then
+    return 0
   fi
+  vvv_info " * checking Ubuntu version"
   codename=$(lsb_release --codename | cut -f2)
   if [[ $codename == "trusty" ]]; then
     r="\e[0;32m"
