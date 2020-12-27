@@ -384,6 +384,7 @@ vvv_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
+  local start=`date +%s`
   vvv_info " * Running <b<${1}</b><info> hook"
   eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
   local sorted
@@ -394,6 +395,8 @@ vvv_hook() {
     local hooks_on_prio="${hook_var_prios}_${prio}"
     eval "for j in \${!${hooks_on_prio}[@]}; do \${${hooks_on_prio}[\$j]}; done"
   done
+  local end=`date +%s`
+  vvv_info " * Finished <b<${1}</b><info> hook in </info><b>`expr $end - $start`s</b>"
 }
 export -f vvv_hook
 
