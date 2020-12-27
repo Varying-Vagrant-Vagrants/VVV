@@ -71,7 +71,10 @@ function cleanup_vvv(){
   mv /tmp/hosts /etc/hosts
 }
 export -f cleanup_vvv
+
+if [ "${VVV_DOCKER}" != 1 ]; then
 vvv_add_hook finalize cleanup_vvv 15
+fi
 
 function apt_hash_missmatch_fix() {
   if [ ! -f "/etc/apt/apt.conf.d/99hashmismatch" ]; then
