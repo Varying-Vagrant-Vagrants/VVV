@@ -85,6 +85,10 @@ export -f check_network_connection_to_host
 # @noargs
 # @see check_network_connection_to_host
 function network_check() {
+  if [ "${VVV_DOCKER}" == 1 ]; then
+    return 0
+  fi
+
   # Make an HTTP request to ppa.launchpad.net to determine if
   # outside access is available to us. Also check the mariadb
   declare -a hosts_to_test=(
