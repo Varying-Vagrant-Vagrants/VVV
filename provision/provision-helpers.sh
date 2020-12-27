@@ -88,7 +88,7 @@ function network_check() {
   # Make an HTTP request to ppa.launchpad.net to determine if
   # outside access is available to us. Also check the mariadb
   declare -a hosts_to_test=(
-    "https://ppa.launchpad.net"
+    "http://ppa.launchpad.net"
     "https://wordpress.org"
     "https://github.com"
     "https://raw.githubusercontent.com"
