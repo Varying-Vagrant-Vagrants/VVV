@@ -81,12 +81,9 @@ SQL
 
 function mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
-  local exists_mysql
-
-  exists_mysql="$(service mysql status)"
-  if [[ "mysql: unrecognized service" == "${exists_mysql}" ]]; then
+  if ! command -v mysql &> /dev/null; then
     vvv_error " ! MySQL is not installed. No databases imported."
-    return
+    return 1
   fi
   vvv_info " * Setting up database configuration file links..."
 
@@ -98,19 +95,20 @@ function mysql_setup() {
   chmod 0644 "/home/vagrant/.my.cnf"
   vvv_info " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
 
+  if [ "${VVV_DOCKER}" != 1 ]; then
   check_mysql_root_password
+  fi
 
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if [[ "mysql stop/waiting" == "${exists_mysql}" ]]; then
+  if [ $(service mysql status|grep 'mysql start/running' | wc -l) -ne 1 ]; then
     vvv_info " * Starting the mysql service"
     service mysql start
   else
     vvv_info " * Restarting mysql service"
     service mysql restart
   fi
-
   # IMPORT SQL
   #
   # Create the databases (unique to system) that will be imported with
