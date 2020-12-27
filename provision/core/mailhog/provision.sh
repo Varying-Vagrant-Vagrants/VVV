@@ -28,7 +28,7 @@ function mailhog_setup() {
   fi
 
   # Start on reboot
-  if command -v systemctl &> /dev/null; then
+  if [ "${VVV_DOCKER}" != 1 ]; then
     vvv_info " * Enabling MailHog Service"
     systemctl enable mailhog
 
