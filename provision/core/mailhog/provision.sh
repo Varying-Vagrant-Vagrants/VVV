@@ -28,11 +28,13 @@ function mailhog_setup() {
   fi
 
   # Start on reboot
-  vvv_info " * Enabling MailHog Service"
-  systemctl enable mailhog
+  if command -v systemctl &> /dev/null; then
+    vvv_info " * Enabling MailHog Service"
+    systemctl enable mailhog
 
-  vvv_info " * Starting MailHog Service"
-  systemctl start mailhog
+    vvv_info " * Starting MailHog Service"
+    systemctl start mailhog
+  fi
 }
 export -f mailhog_setup
 
