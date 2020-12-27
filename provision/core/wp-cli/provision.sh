@@ -17,12 +17,13 @@ function wp_cli_setup() {
     vvv_info " * Downloading wp-cli nightly, see <url>http://wp-cli.org</url>"
     curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
     chmod +x wp-cli-nightly.phar
-    sudo mv wp-cli-nightly.phar /usr/local/bin/wp
+    mv wp-cli-nightly.phar /usr/local/bin/wp
 
     vvv_success " * WP CLI Nightly Installed"
 
     vvv_info " * Grabbing WP CLI bash completions"
     # Install bash completions
+    mkdir -p /srv/config/wp-cli/
     noroot curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
   else
     vvv_info " * Updating wp-cli..."
