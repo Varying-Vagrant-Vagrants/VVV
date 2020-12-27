@@ -9,30 +9,31 @@
 . "/srv/config/bash_aliases"
 
 # cleanup
-mkdir -p /vagrant
-rm -rf /vagrant/failed_provisioners
-mkdir -p /vagrant/failed_provisioners
+mkdir -p /srv/vvv
+if [[ ! -d /vagrant ]]; then
+  ln -s /srv/vvv /vagrant
+fi
+rm -rf /srv/vvv/failed_provisioners
+mkdir -p /srv/vvv/failed_provisioners
 
-rm -f /vagrant/provisioned_at
-rm -f /vagrant/version
-rm -f /vagrant/vvv-custom.yml
-rm -f /vagrant/config.yml
+rm -f /srv/vvv/provisioned_at
+rm -f /srv/vvv/version
+rm -f /srv/vvv/vvv-custom.yml
+rm -f /srv/vvv/config.yml
 
-touch /vagrant/provisioned_at
-echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
+touch /srv/vvv/provisioned_at
+echo $(date "+%Y.%m.%d_%H-%M-%S") > /srv/vvv/provisioned_at
 
 # copy over version and config files
-cp -f /home/vagrant/version /vagrant
-cp -f /srv/config/config.yml /vagrant
+cp -f /home/vagrant/version /srv/vvv
+cp -f /srv/config/config.yml /srv/vvv
 
-sudo chmod 0644 /vagrant/config.yml
-sudo chmod 0644 /vagrant/version
-sudo chmod 0644 /vagrant/provisioned_at
+sudo chmod 0644 /srv/vvv/config.yml
+sudo chmod 0644 /srv/vvv/version
+sudo chmod 0644 /srv/vvv/provisioned_at
 
-# change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
-
-export VVV_CONFIG=/vagrant/config.yml
+# change ownership for /srv/vvv folder
+sudo chown -R vagrant:vagrant /srv/vvv
 
 # initialize provisioner helpers a bit later
 . "/srv/provision/provisioners.sh"
@@ -55,9 +56,6 @@ export VVV_PACKAGE_LIST=()
 . "/srv/provision/core/wp-cli/provision.sh"
 . "/srv/provision/core/phpcs/provision.sh"
 
-### SCRIPT
-#set -xv
-
 vvv_hook init
 
 if ! network_check; then
@@ -79,7 +77,5 @@ vvv_hook after_packages
 vvv_info " * Finalizing"
 vvv_hook finalize
 
-#set +xv
 # And it's done
-
 provisioner_success

@@ -155,10 +155,10 @@ function provision_main() {
     vvv_run_provisioner /srv/provision/provision.sh
   fi
 
-  # refresh VVV_CONFIG, as the main provisioner actually creates the /vagrant/config.yml
-  VVV_CONFIG=/vagrant/vvv-custom.yml
-  if [[ -f /vagrant/config.yml ]]; then
-    VVV_CONFIG=/vagrant/config.yml
+  # refresh VVV_CONFIG, as the main provisioner actually creates the /srv/vvv/config.yml
+  VVV_CONFIG=/srv/vvv/vvv-custom.yml
+  if [[ -f /srv/vvv/config.yml ]]; then
+    VVV_CONFIG=/srv/vvv/config.yml
   fi
   export VVV_CONFIG
 }

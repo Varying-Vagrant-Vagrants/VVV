@@ -26,8 +26,6 @@ VVV_HOSTS=""
 
 SUCCESS=1
 
-VVV_CONFIG=/vagrant/config.yml
-
 . "/srv/provision/provisioners.sh"
 
 # @description Takes 2 values, a key to fetch a value for, and an optional default value
