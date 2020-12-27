@@ -384,6 +384,7 @@ vvv_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
+  vvv_info " * Running <b<${1}</b><info> hook"
   eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
   local sorted
   eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
