@@ -96,7 +96,7 @@ function mysql_setup() {
   vvv_info " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
 
   if [ "${VVV_DOCKER}" != 1 ]; then
-  check_mysql_root_password
+    check_mysql_root_password
   fi
 
   # MySQL gives us an error if we restart a non running service, which
@@ -132,4 +132,6 @@ function mysql_setup() {
 }
 export -f mysql_setup
 
-vvv_add_hook after_packages mysql_setup 30
+if [ "${VVV_DOCKER}" != 1 ]; then
+  vvv_add_hook after_packages mysql_setup 30
+fi
