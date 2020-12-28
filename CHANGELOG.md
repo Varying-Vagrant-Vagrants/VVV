@@ -16,6 +16,8 @@ permalink: /docs/en-US/changelog/
 * Minor refactors and colours added to the main provisioner
 * Improved output of backup and import scripts
 * SHDocs added to core provisioners
+* Improved PHP configuration file installation
+
 ### Bug Fixes
 
 * Fixed the user of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
