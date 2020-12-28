@@ -24,6 +24,7 @@ permalink: /docs/en-US/changelog/
 * Skip the WordPress unit tests database when running backups
 * Don't back up databases that have no tables
 * Xdebug deprecated configuration option warnings fixed
+* Use HTTPS instead of SSH for WP CLI Doctor subcommand installation
 
 ## 3.5.1 ( 2020 December 11th )
 
