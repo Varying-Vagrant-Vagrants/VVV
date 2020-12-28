@@ -30,7 +30,7 @@ function wp_cli_setup() {
     vvv_success " * WP CLI Nightly updated"
   fi
   vvv_info " * Installing WP CLI doctor sub-command"
-  wp --allow-root package install git@github.com:wp-cli/doctor-command.git
+  wp --allow-root package install https://github.com/wp-cli/doctor-command.git
 }
 export -f wp_cli_setup
 
