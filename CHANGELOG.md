@@ -16,7 +16,9 @@ permalink: /docs/en-US/changelog/
 * Minor refactors and colours added to the main provisioner
 * Improved output of backup and import scripts
 * SHDocs added to core provisioners
-* A new `/srv/vvv` folder for files created inside the VM related to provisioning
+* A new `/srv/vvv` folder for files created inside the VM related to provisioning ( #2328 )
+* Improved PHP configuration file installation
+
 ### Bug Fixes
 
 * Fixed the user of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
@@ -25,6 +27,7 @@ permalink: /docs/en-US/changelog/
 * Skip the WordPress unit tests database when running backups
 * Don't back up databases that have no tables
 * Xdebug deprecated configuration option warnings fixed
+* Use HTTPS instead of SSH for WP CLI Doctor subcommand installation
 
 ## 3.5.1 ( 2020 December 11th )
 
