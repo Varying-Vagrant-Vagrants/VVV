@@ -314,29 +314,28 @@ function vvv_clone_site_git_folder() {
 # @arg $1 string the folder name to process specified in `config.yml`
 function vvv_custom_folder_composer() {
   local folder="${1}"
-  local create_project=$(vvv_get_site_config_value "folders.${folder}.composer.create-project" "?")
-  local install=$(vvv_get_site_config_value "folders.${folder}.composer.install" "False")
-  local update=$(vvv_get_site_config_value "folders.${folder}.composer.update" "False")
-
-  if [[ "${create_project}" != "?" ]]; then
-    if [[ ! -f "${VVV_PATH_TO_SITE}/${folder}/composer.json" ]]; then
-      echo " * Running composer create-project ${create_project} in ${folder}"
-      noroot composer create-project "${create_project}" "${VVV_PATH_TO_SITE}/${folder}"
-    fi
-  fi
-
-  if [[ "${install}" == "True" ]]; then
-    cd "${folder}"
-    echo " * Running composer install in ${folder}"
-    noroot composer install
-    cd -
-  fi
-
-  if [[ "${update}" == "True" ]]; then
-    cd "${folder}"
-    echo " * Running composer update in ${folder}"
-    noroot composer update
-    cd -
+  if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.composer" < "${VVV_CONFIG}"); then
+      for key in $keys; do
+        cd "${folder}"
+        local value=$(vvv_get_site_config_value "folders.${folder}.composer.${key}" "")
+        if [[ "install" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            echo " * Running composer install in ${folder}"
+            noroot composer install
+          fi
+        elif [[ "update" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            echo " * Running composer update in ${folder}"
+            noroot composer update
+          fi
+        elif [[ "create-project" == "${key}" ]]; then
+          echo " * Running composer create-project ${value} in ${folder}"
+          noroot composer create-project ${value}
+        elif
+          vvv_warn " * Unknown key in Composer section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
+        fi
+        cd -
+      done
   fi
 }
 
@@ -346,29 +345,28 @@ function vvv_custom_folder_composer() {
 # @arg $1 string the folder name to process specified in `config.yml`
 function vvv_custom_folder_npm() {
   local folder="${1}"
-  local npm_install=$(vvv_get_site_config_value "folders.${folder}.npm.install" "False")
-  local npm_update=$(vvv_get_site_config_value "folders.${folder}.npm.update" "False")
-  local npm_run=$(vvv_get_site_config_value "folders.${folder}.npm.update" "")
-
-  if [[ "${npm_install}" == "True" ]]; then
-    cd "${folder}"
-    echo " * Running npm install in ${folder}"
-    noroot npm install
-    cd -
-  fi
-
-  if [[ "${npm_update}" == "True" ]]; then
-    cd "${folder}"
-    echo " * Running npm update in ${folder}"
-    noroot npm update
-    cd -
-  fi
-
-  if [[ "${npm_run}" != "" ]]; then
-    cd "${folder}"
-    echo " * Running npm run ${npm_run} in ${folder}"
-    noroot npm run "${npm_run}"
-    cd -
+  if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.npm" < "${VVV_CONFIG}"); then
+      for key in $keys; do
+        cd "${folder}"
+        local value=$(vvv_get_site_config_value "folders.${folder}.npm.${key}" "")
+        if [[ "install" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            echo " * Running npm install in ${folder}"
+            noroot npm install
+          fi
+        elif [[ "update" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            echo " * Running npm update in ${folder}"
+            noroot npm update
+          fi
+        elif [[ "run" == "${key}" ]]; then
+          echo " * Running npm run ${value} in ${folder}"
+          noroot npm run ${value}
+        elif
+          vvv_warn " * Unknown key in NPM section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
+        fi
+        cd -
+      done
   fi
 }
 
