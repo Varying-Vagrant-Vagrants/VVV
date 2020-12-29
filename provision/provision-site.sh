@@ -340,6 +340,38 @@ function vvv_custom_folder_composer() {
   fi
 }
 
+
+# @description Processes a folder sections npm option for a site as specified in `config.yml`
+#
+# @arg $1 string the folder name to process specified in `config.yml`
+function vvv_custom_folder_npm() {
+  local folder="${1}"
+  local npm_install=$(vvv_get_site_config_value "folders.${folder}.npm.install" "False")
+  local npm_update=$(vvv_get_site_config_value "folders.${folder}.npm.update" "False")
+  local npm_run=$(vvv_get_site_config_value "folders.${folder}.npm.update" "")
+
+  if [[ "${npm_install}" == "True" ]]; then
+    cd "${folder}"
+    echo " * Running npm install in ${folder}"
+    noroot npm install
+    cd -
+  fi
+
+  if [[ "${npm_update}" == "True" ]]; then
+    cd "${folder}"
+    echo " * Running npm update in ${folder}"
+    noroot npm update
+    cd -
+  fi
+
+  if [[ "${npm_run}" != "" ]]; then
+    cd "${folder}"
+    echo " * Running npm run ${npm_run} in ${folder}"
+    noroot npm run "${npm_run}"
+    cd -
+  fi
+}
+
 # @description Processes a folder sections git option for a site as specified in `config.yml`
 #
 # @arg $1 string the folder name to process specified in `config.yml`
@@ -388,16 +420,20 @@ function vvv_custom_folder_git() {
 # @noargs
 function vvv_custom_folders() {
   if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders" < "${VVV_CONFIG}"); then
-    for folder in $folders
-    do
+    for folder in $folders; do
       if [[ $folder != '...' ]]; then
-        local has_composer=$(vvv_get_site_config_value "folders.${folder}.composer" "False")
-        local gitvcs=$(vvv_get_site_config_value "folders.${folder}.git" "False")
-        if [[ $gitvcs != "False" ]]; then
-          vvv_custom_folder_git "${folder}"
-        fi
-        if [[ $has_composer != "False" ]]; then
-          vvv_custom_folder_composer "${folder}"
+        if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}" < "${VVV_CONFIG}"); then
+          for key in $keys; do
+            if [[ "${key}" == "git" ]]; then
+              vvv_custom_folder_git "${folder}"
+            elif [[ "${key}" == "composer" ]]; then
+              vvv_custom_folder_composer "${folder}"
+            elif [[ "${key}" == "npm" ]]; then
+              vvv_custom_folder_npm "${folder}"
+            else
+              vvv_warn " * Unknown folders sub-parameter <b>${key}<b><warn> ignoring"
+            fi
+          done
         fi
       fi
     done
