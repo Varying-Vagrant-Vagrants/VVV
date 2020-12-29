@@ -331,7 +331,7 @@ function vvv_custom_folder_composer() {
         elif [[ "create-project" == "${key}" ]]; then
           echo " * Running composer create-project ${value} in ${folder}"
           noroot composer create-project ${value}
-        elif
+        else
           vvv_warn " * Unknown key in Composer section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
         cd -
@@ -362,7 +362,7 @@ function vvv_custom_folder_npm() {
         elif [[ "run" == "${key}" ]]; then
           echo " * Running npm run ${value} in ${folder}"
           noroot npm run ${value}
-        elif
+        else
           vvv_warn " * Unknown key in NPM section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
         cd -
