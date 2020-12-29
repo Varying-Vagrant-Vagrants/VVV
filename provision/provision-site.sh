@@ -309,6 +309,37 @@ function vvv_clone_site_git_folder() {
   noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
 }
 
+# @description Processes a folder sections composer option for a site as specified in `config.yml`
+#
+# @arg $1 string the folder name to process specified in `config.yml`
+function vvv_custom_folder_composer() {
+  local folder="${1}"
+  local create_project=$(vvv_get_site_config_value "folders.${folder}.composer.create-project" "?")
+  local install=$(vvv_get_site_config_value "folders.${folder}.composer.install" "False")
+  local update=$(vvv_get_site_config_value "folders.${folder}.composer.update" "False")
+
+  if [[ "${create_project}" != "?" ]]; then
+    if [[ ! -f "${VVV_PATH_TO_SITE}/${folder}/composer.json" ]]; then
+      echo " * Running composer create-project ${create_project} in ${folder}"
+      noroot composer create-project "${create_project}" "${VVV_PATH_TO_SITE}/${folder}"
+    fi
+  fi
+
+  if [[ "${install}" == "True" ]]; then
+    cd "${folder}"
+    echo " * Running composer install in ${folder}"
+    noroot composer install
+    cd -
+  fi
+
+  if [[ "${update}" == "True" ]]; then
+    cd "${folder}"
+    echo " * Running composer update in ${folder}"
+    noroot composer update
+    cd -
+  fi
+}
+
 # @description Processes a folder sections git option for a site as specified in `config.yml`
 #
 # @arg $1 string the folder name to process specified in `config.yml`
@@ -324,7 +355,7 @@ function vvv_custom_folder_git() {
   if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
     vvv_clone_site_git_folder "${repo}" "${folder}"
   else
-    if [[ $overwrite_on_clone = "True" ]]; then
+    if [[ $overwrite_on_clone == "True" ]]; then
       if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
         vvv_info " - VVV was asked to clone into a folder that already exists (${folder}), but does not contain a git repo"
         vvv_info " - overwrite_on_clone is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
@@ -336,14 +367,14 @@ function vvv_custom_folder_git() {
     fi
   fi
 
-  if [[ $hard_reset = "True" ]]; then
+  if [[ $hard_reset == "True" ]]; then
     vvv_info " - resetting git checkout and discarding changes in ${folder}"
     cd "${VVV_PATH_TO_SITE}/${folder}"
     noroot git reset --hard -q
     noroot git checkout -q
     cd -
   fi
-  if [[ $pull = "True" ]]; then
+  if [[ $pull == "True" ]]; then
     vvv_info " - runnning git pull in ${folder}"
     cd "${VVV_PATH_TO_SITE}/${folder}"
     noroot git pull -q
@@ -360,9 +391,13 @@ function vvv_custom_folders() {
     for folder in $folders
     do
       if [[ $folder != '...' ]]; then
+        local has_composer=$(vvv_get_site_config_value "folders.${folder}.composer" "False")
         local gitvcs=$(vvv_get_site_config_value "folders.${folder}.git" "False")
         if [[ $gitvcs != "False" ]]; then
           vvv_custom_folder_git "${folder}"
+        fi
+        if [[ $has_composer != "False" ]]; then
+          vvv_custom_folder_composer "${folder}"
         fi
       fi
     done
