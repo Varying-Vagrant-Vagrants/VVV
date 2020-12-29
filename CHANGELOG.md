@@ -8,6 +8,14 @@ permalink: /docs/en-US/changelog/
 
 ## 3.6.x ( 2021 )
 
+### Important Note
+
+Lots of provisioners now run in strict mode. Your custom site and utility provisioners may fail if they do not handle bad return codes from commands correctly. For example if you ran `composer create-project` on a folder that was not empty, it will fail. In v3.5 this failure was ignored and the script continued despite the critical error, in v3.6 VVV will halt provisioning so that the error can be seen.
+
+Make sure that commands are only ran at their appropriate times, e.g. only install things if they aren't installed, and if you're checking the return value of a command, do it in an if check, not as a temporary variable. If you're feeling adventurous you can unset the strict flags ( danger! ).
+
+Finally, check that your custom modifications haven't been added in the official site templates.
+
 ### Enhancements
 
 * Beautify the PHP debug switcher script
@@ -17,10 +25,11 @@ permalink: /docs/en-US/changelog/
 * Improved output of backup and import scripts
 * SHDocs added to core provisioners
 * Improved PHP configuration file installation
+* Sites can now define composer create-project/install/update commands to run in their folders section in addition to the git options added in v3.5.1
 
 ### Bug Fixes
 
-* Fixed the user of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
+* Fixed the use of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
 * Don't try to install shyaml if it's already installed
 * Global composer packages were only updated when composer itself was updated
 * Skip the WordPress unit tests database when running backups
