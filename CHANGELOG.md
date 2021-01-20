@@ -17,6 +17,7 @@ permalink: /docs/en-US/changelog/
 * Improved output of backup and import scripts
 * SHDocs added to core provisioners
 * Improved PHP configuration file installation
+* Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
 
 ### Bug Fixes
 
