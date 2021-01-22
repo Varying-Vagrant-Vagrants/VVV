@@ -73,7 +73,7 @@ function cleanup_vvv(){
 export -f cleanup_vvv
 
 if [ "${VVV_DOCKER}" != 1 ]; then
-vvv_add_hook finalize cleanup_vvv 15
+  vvv_add_hook finalize cleanup_vvv 15
 fi
 
 function apt_hash_missmatch_fix() {
