@@ -60,20 +60,34 @@ vvv_add_hook before_packages php_register_packages
 
 function phpfpm_setup() {
   # Copy php-fpm configs from local
-  if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/" ]; then
+  if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/fpm" ]; then
     vvv_info " * Copying PHP configs"
     cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
-    cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
-    cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
-    cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/opcache.ini"
-    cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/xdebug.ini"
-    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailhog.ini"
+    if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d" ]; then
+      cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
+    fi
+    if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d" ]; then
+      cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
+    fi
   fi
+  
+  vvv_info " * Checking supplementary PHP configs"
 
-  if [[ -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini" ]]; then
-    vvv_warn " * Cleaning up mailcatcher.ini from a previous install"
-    rm -f "/etc/php/${VVV_BASE_PHPVERSION}/mods-available/mailcatcher.ini"
-  fi
+  for V in /etc/php/*; do
+    if [ -d "${V}" ]; then
+      if [[ -f "/etc/php/${V}/mods-available/mailcatcher.ini" ]]; then
+        vvv_warn " * Cleaning up PHP ${V} mailcatcher.ini from a previous install"
+        rm -f "/etc/php/${V}/mods-available/mailcatcher.ini"
+      fi
+      if [ -d "${V}/mods-available/" ]; then
+        cp -f "/srv/config/php-config/mailhog.ini" "${V}/mods-available/mailhog.ini"
+        cp -f "/srv/config/php-config/xdebug.ini" "${V}/mods-available/xdebug.ini"
+      fi
+      if [ -d "${V}/fpm/conf.d/" ]; then
+        cp -f "/srv/config/php-config/opcache.ini" "${V}/fpm/conf.d/opcache.ini"
+      fi
+    fi
+  done
 }
 export -f phpfpm_setup
 
