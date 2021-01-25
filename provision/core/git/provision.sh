@@ -7,7 +7,7 @@ function git_register_packages() {
   if ! vvv_src_list_has "git-core/ppa"; then
     # Add ppa repo.
     vvv_info " * Adding ppa:git-core/ppa repository"
-    sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
+    add-apt-repository -y ppa:git-core/ppa
     vvv_success " * git-core/ppa added"
   else
     vvv_info " * git-core/ppa already present, skipping"

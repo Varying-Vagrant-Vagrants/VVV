@@ -112,7 +112,9 @@ vvv_add_hook finalize phpfpm_finalize
 
 function phpfpm_services_restart() {
   # Restart all php-fpm versions
-  find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+  fi
 }
 export -f phpfpm_services_restart
 
@@ -142,4 +144,6 @@ function memcached_setup() {
   cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
 }
 vvv_add_hook after_packages memcached_setup 60
-vvv_add_hook services_restart "service memcached restart"
+if [ "${VVV_DOCKER}" != 1 ]; then
+  vvv_add_hook services_restart "service memcached restart"
+fi

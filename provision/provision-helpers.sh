@@ -85,10 +85,14 @@ export -f check_network_connection_to_host
 # @noargs
 # @see check_network_connection_to_host
 function network_check() {
+  if [ "${VVV_DOCKER}" == 1 ]; then
+    return 0
+  fi
+
   # Make an HTTP request to ppa.launchpad.net to determine if
   # outside access is available to us. Also check the mariadb
   declare -a hosts_to_test=(
-    "https://ppa.launchpad.net"
+    "http://ppa.launchpad.net"
     "https://wordpress.org"
     "https://github.com"
     "https://raw.githubusercontent.com"
@@ -132,10 +136,12 @@ function network_check() {
     vvv_error "provisioning involves downloading things, a full provision may "
     vvv_error "ruin the wifi for everybody else :("
     vvv_error " "
-    vvv_error "Network ifconfig output:"
-    vvv_error " "
-    ifconfig
-    vvv_error " "
+    if ! command -v ifconfig &> /dev/null; then
+      vvv_error "Network ifconfig output:"
+      vvv_error " "
+      ifconfig
+      vvv_error " "
+    fi
     vvv_error "Aborting provision. "
     vvv_error "Try provisioning again once network connectivity is restored."
     vvv_error "If that doesn't work, and you're sure you have a strong "
@@ -215,25 +221,26 @@ export -f vvv_src_list_has
 #
 # @arg $1 string Text to format
 function vvv_format_output() {
-  declare -A tags=(
-    ["</>"]="${CRESET}"
-    ["<info>"]="${CRESET}${DEFAULT_TEXT}${DIM}"
-    ["</info>"]="${UNDIM}"
-    ["<success>"]="${GREEN}"
-    ["</success>"]="${CRESET}"
-    ["<warn>"]="${YELLOW}"
-    ["</warn>"]="${CRESET}"
-    ["<error>"]="${RED}"
-    ["</error>"]="${CRESET}"
-    ["<url>"]="${CRESET}${YELLOW_UNDERLINE}"
-    ["</url>"]="${CRESET}"
-    ["<b>"]="${CRESET}${BOLD}${PURPLE}"
-    ["</b>"]="${UNBOLD}"
+  declare -A TAGS=(
+    ['<b>']="${CRESET}${BOLD}${PURPLE}"
+    ['</b>']="${UNBOLD}"
+    ['<info>']="${CRESET}${DEFAULT_TEXT}${DIM}"
+    ['</info>']="${UNDIM}"
+    ['<success>']="${GREEN}"
+    ['</success>']="${CRESET}"
+    ['<warn>']="${YELLOW}"
+    ['</warn>']="${CRESET}"
+    ['<error>']="${RED}"
+    ['</error>']="${CRESET}"
+    ['<url>']="${CRESET}${YELLOW_UNDERLINE}"
+    ['</url>']="${CRESET}"
+    ['</>']="${CRESET}"
   )
 
   local MSG="${1}</>"
-  for tag in "${!tags[@]}"; do
-    MSG=$(echo "${MSG//"${tag}"/"${tags[$tag]}"}" )
+  for TAG in "${!TAGS[@]}"; do
+    local VAL="${TAGS[$TAG]}"
+    MSG=$(echo "${MSG//"${TAG}"/"${VAL}"}" )
   done
   echo -e "${MSG}"
 }
@@ -378,6 +385,8 @@ vvv_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
+  local start=`date +%s`
+  vvv_info " ▷ Running <b>${1}</b><info> hook"
   eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
   local sorted
   eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
@@ -387,6 +396,8 @@ vvv_hook() {
     local hooks_on_prio="${hook_var_prios}_${prio}"
     eval "for j in \${!${hooks_on_prio}[@]}; do \${${hooks_on_prio}[\$j]}; done"
   done
+  local end=`date +%s`
+  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
 }
 export -f vvv_hook
 

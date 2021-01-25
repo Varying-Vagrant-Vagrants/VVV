@@ -25,12 +25,12 @@ echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 cp -f /home/vagrant/version /vagrant
 cp -f /srv/config/config.yml /vagrant
 
-sudo chmod 0644 /vagrant/config.yml
-sudo chmod 0644 /vagrant/version
-sudo chmod 0644 /vagrant/provisioned_at
+chmod 0644 /vagrant/config.yml
+chmod 0644 /vagrant/version
+chmod 0644 /vagrant/provisioned_at
 
 # change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
+chown -R vagrant:vagrant /vagrant
 
 export VVV_CONFIG=/vagrant/config.yml
 
