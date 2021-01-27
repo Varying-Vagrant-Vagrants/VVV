@@ -26,6 +26,7 @@ if [[ -f /srv/config/config.yml ]]; then
 fi
 
 run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
+exclude_list=$(get_config_values "general.db_backup.exclude")
 
 if [[ $run_restore == "False" ]]
 then
@@ -41,13 +42,14 @@ cd /srv/database/backups/
 
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
-sql_count=$(ls -1 ./*.sql 2>/dev/null | wc -l)
+sql_count=$(ls -1 ./*.sql* 2>/dev/null | wc -l)
 if [ "$sql_count" != 0 ]
 then
-	for file in $( ls ./*.sql )
+	for file in $( ls ./*.sql* )
 	do
 		# get rid of the extension
 		pre_dot=${file%%.sql}
+		pre_dot=${file%%.gz}
 
 		# get rid of the ./
 		db_name=${pre_dot##./}
@@ -64,6 +66,17 @@ then
 
 		[ "${db_name}" == "wordpress_unit_tests" ] && continue;
 
+		skip="false"
+		for exclude in ${exclude_list[@]}; do
+			if [ "${exclude}" == "${db_name}" ]; then
+				skip="true"
+			fi
+		done
+
+		if [ ${skip} == "true" ]; then
+			vvv_info "   - skipped <b>${db_name}</b>" && continue;
+		fi
+
 		mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
 		db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
 		if [ "$?" != "0" ]
@@ -72,7 +85,11 @@ then
 		else
 			if [ "" == "${db_exist}" ]; then
 				vvv_info " * Importing <b>${db_name}</b><info> from <b>${db_name}.sql</b>"
-				mysql -u root -proot "${db_name}" < "${db_name}.sql"
+				if [ "${file: -3}" == ".gz" ]
+					gunzip < "${db_name}.sql.gz" | mysql -u root -proot "${db_name}"
+				else
+					mysql -u root -proot "${db_name}" < "${db_name}.sql"
+				fi
 				vvv_success " * Import of <b>'${db_name}'</b><success> successful</success>"
 			else
 				vvv_info " * Skipped import of <b>\`${db_name}\`</b><info> - tables already exist"
