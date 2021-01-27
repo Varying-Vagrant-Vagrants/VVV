@@ -60,7 +60,6 @@ do
     vvv_output "${OUTPUT}"
     if [[ "${gzip}" == "True" ]]; then
       mysqldump -uroot -proot "${db}" | gzip > "/srv/database/backups/${db}.sql.gz"
-      rm "/srv/database/backups/${db}.sql"
     else
       mysqldump -uroot -proot "${db}" > "/srv/database/backups/${db}.sql";
     fi

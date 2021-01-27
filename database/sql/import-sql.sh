@@ -48,11 +48,11 @@ then
 	for file in $( ls ./*.sql* )
 	do
 		# get rid of the extension
-		pre_dot=${file%%.sql}
-		pre_dot=${file%%.gz}
+		pre_dot=$(basename ${file} .sql})
+		pre_dot=$(basename ${pre_dot} .sql.gz})
 
 		# get rid of the ./
-		db_name=${pre_dot##./}
+		db_name=${pre_dot}
 
 		# skip these databases
 		[ "${db_name}" == "mysql" ] && continue;
@@ -84,9 +84,9 @@ then
 			vvv_error " * Error - Create the <b>${db_name}</b><error> database via init-custom.sql before attempting import"
 		else
 			if [ "" == "${db_exist}" ]; then
-				vvv_info " * Importing <b>${db_name}</b><info> from <b>${db_name}.sql</b>"
+				vvv_info " * Importing <b>${db_name}</b><info> from <b>${file}</b>"
 				if [ "${file: -3}" == ".gz" ]; then
-					gunzip < "${db_name}.sql.gz" | mysql -u root -proot "${db_name}"
+					gunzip < "${db_name}" | mysql -u root -proot "${db_name}"
 				else
 					mysql -u root -proot "${db_name}" < "${db_name}.sql"
 				fi
