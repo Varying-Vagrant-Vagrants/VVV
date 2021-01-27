@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>40x Error</title>
+<style>
+    body {
+        width: 80%;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+        background-color: #2b303b;
+        color: #c0c5ce;
+    }
+    pre, code {
+        background: #2b303b;
+        border-radius: 4px;
+        border: 1px solid #4f5b66;
+    }
+    code {
+        color: #a3be8c;
+        padding: .1em .2em;
+    }
+    .box {
+        border-radius: 4px;
+        padding: 1.5em;
+        background: #343d46;
+        box-sizing: border-box;
+        margin-bottom: 1em;
+        margin-top: 1em;
+    }
+    h1 {
+        color:white;
+    }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>An error occurred in VVV.</h1>
+    <p>This could be because of:
+    <ul>
+      <li>The <code>vagrant provision</code> didn't finished yet.</li>
+      <li>The last provision failed, you can find the logs in <code>VVV/log/provisioners</code>.</li>
+      <li>You didn't update rightly VVV, use <code>git pull</code> and try a new <code>vagrant provision</code>.</li>
+    </ul></p>
+    <p><em>Faithfully yours, VVV team.</em></p>
+  </div>
+</body>
+</html>
+
