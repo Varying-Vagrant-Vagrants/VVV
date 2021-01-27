@@ -85,7 +85,7 @@ then
 		else
 			if [ "" == "${db_exist}" ]; then
 				vvv_info " * Importing <b>${db_name}</b><info> from <b>${db_name}.sql</b>"
-				if [ "${file: -3}" == ".gz" ]
+				if [ "${file: -3}" == ".gz" ]; then
 					gunzip < "${db_name}.sql.gz" | mysql -u root -proot "${db_name}"
 				else
 					mysql -u root -proot "${db_name}" < "${db_name}.sql"
