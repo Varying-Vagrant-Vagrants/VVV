@@ -48,11 +48,10 @@ then
 	for file in $( ls ./*.sql* )
 	do
 		# get rid of the extension
-		pre_dot=$(basename ${file} .sql})
-		pre_dot=$(basename ${pre_dot} .sql.gz})
-
-		# get rid of the ./
-		db_name=${pre_dot}
+		db_name=$(basename "${file}" .sql)
+		if [ "${file: -3}" == ".gz" ]; then
+			db_name=$(basename "${file}" .sql.gz)
+		fi
 
 		# skip these databases
 		[ "${db_name}" == "mysql" ] && continue;
@@ -86,9 +85,9 @@ then
 			if [ "" == "${db_exist}" ]; then
 				vvv_info " * Importing <b>${db_name}</b><info> from <b>${file}</b>"
 				if [ "${file: -3}" == ".gz" ]; then
-					gunzip < "${db_name}" | mysql -u root -proot "${db_name}"
+					gunzip < "${file}" | mysql -u root -proot "${db_name}"
 				else
-					mysql -u root -proot "${db_name}" < "${db_name}.sql"
+					mysql -u root -proot "${db_name}" < "${file}"
 				fi
 				vvv_success " * Import of <b>'${db_name}'</b><success> successful</success>"
 			else
