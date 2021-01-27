@@ -36,13 +36,13 @@
   <div class="box">
     <h1>You encountered a 50X error!</h1>
     <p>Nginx tried to serve the page, but encountered an error code beginning with 50</p>
-    <p>This could be because of:
+    <p>This could be because:</p>
     <ul>
-      <li>The <code>vagrant provision</code> didn't finished yet.</li>
-      <li>The last provision failed, you can find the logs in <code>VVV/log/provisioners</code>.</li>
-      <li>You didn't update rightly VVV, use <code>git pull</code> and try a new <code>vagrant provision</code>.</li>
-    </ul></p>
-    <p><em>Faithfully yours, VVV team.</em></p>
+      <li>Provisioning has not finished yet.</li>
+      <li>The last provision failed, you can find the logs in <code>log/provisioners</code>.</li>
+      <li>You made modifications to a sites Nginx config that contain mistakes.</li>
+    </ul>
+    <p>Double check the address, fix any Nginx configs you might have modified, and if you still have problems get in touch on GitHub or Slack</p>
   </div>
 </body>
 </html>
