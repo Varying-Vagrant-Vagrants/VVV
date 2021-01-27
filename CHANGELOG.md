@@ -18,6 +18,7 @@ permalink: /docs/en-US/changelog/
 * SHDocs added to core provisioners
 * Improved PHP configuration file installation
 * Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
+* Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
 
 ### Bug Fixes
 

@@ -53,7 +53,7 @@ function nginx_setup() {
 
   # Copy nginx default pages from local
   vvv_info " * Copying /srv/config/nginx-config/default-pages           to /usr/share/nginx/html"
-  cp -f "/srv/config/nginx-config/default-pages/*.html" "/usr/share/nginx/html"
+  cp -f /srv/config/nginx-config/default-pages/*.html "/usr/share/nginx/html"
 
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir -p "/etc/nginx/upstreams/"
