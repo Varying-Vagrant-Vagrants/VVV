@@ -31,12 +31,6 @@ function node_setup() {
     apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken nodejs
     vvv_success " ✓ Reinstalled Node, if you need another version use the nvm utility"
   fi
-
-  # npm
-  #
-  # Make sure we have the latest npm version and the update checker module
-  vvv_info " * Installing/updating npm and npm-check-updates"
-  npm_config_loglevel=error npm install -g npm npm-check-updates
 }
 export -f node_setup
 
