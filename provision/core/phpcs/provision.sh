@@ -17,7 +17,7 @@ function php_codesniff_setup() {
   fi
   noroot mkdir -p /srv/www/phpcs
   cd /srv/www/phpcs
-  COMPOSER_BIN_DIR="bin" noroot composer require -W "dealerdirect/phpcodesniffer-composer-installer" "wp-coding-standards/wpcs" "automattic/vipwpcs" "phpcompatibility/php-compatibility" "phpcompatibility/phpcompatibility-paragonie" "phpcompatibility/phpcompatibility-wp" --no-ansi --no-progress
+  COMPOSER_BIN_DIR="bin" noroot composer require --update-with-all-dependencies "dealerdirect/phpcodesniffer-composer-installer" "wp-coding-standards/wpcs" "automattic/vipwpcs" "phpcompatibility/php-compatibility" "phpcompatibility/phpcompatibility-paragonie" "phpcompatibility/phpcompatibility-wp" --no-ansi --no-progress
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
   # that it can be used on the host in an editor with matching rules
