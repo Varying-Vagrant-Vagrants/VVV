@@ -18,6 +18,7 @@ permalink: /docs/en-US/changelog/
 * SHDocs added to core provisioners
 * A new `/srv/vvv` folder for files created inside the VM related to provisioning ( #2328 )
 * Improved PHP configuration file installation
+* Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
 
 ### Bug Fixes
 
