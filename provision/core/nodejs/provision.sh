@@ -27,7 +27,7 @@ function reinstall_node() {
   vvv_info " * Apt autoremove."
   apt-get autoremove -y
   vvv_info " * Installing Node 14 LTS."
-  apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken nodejs
+  apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew --fix-missing --fix-broken nodejs
   vvv_success " ✓ Reinstalled Node, if you need another version use the nvm utility"
 }
 
