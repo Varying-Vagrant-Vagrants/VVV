@@ -247,8 +247,8 @@ function vvv_provision_site_script() {
     vvv_run_site_template_script "vvv-init.sh" "${VM_DIR}"
     SUCCESS=$?
   else
-    vvv_warn " * Warning: A site provisioner was not found at .vvv/vvv-init.conf provision/vvv-init.conf or vvv-init.conf, searching 3 folders down, please be patient..."
-    local SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.conf');
+    vvv_warn " * Warning: A site provisioner was not found at .vvv/vvv-init.sh provision/vvv-init.sh or vvv-init.sh, searching 3 folders down, please be patient..."
+    local SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.sh');
     if [[ -z $SITE_INIT_SCRIPTS ]] ; then
       vvv_warn " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
     else
