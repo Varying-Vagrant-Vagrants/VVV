@@ -36,6 +36,7 @@ function provisioner_end() {
     rm -f "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   else
     vvv_error " ! The <b>'${VVV_PROVISIONER_RUNNING}'</b><error> provisioner ran into problems, check the full log for more details! It completed in <b>${elapsed}</b><error> seconds."
+    cat ${VVV_CURRENT_LOG_FILE}
   fi
   trap - EXIT
 }
