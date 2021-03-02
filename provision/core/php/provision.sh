@@ -53,6 +53,7 @@ function php_register_packages() {
 
   # XDebug
   VVV_PACKAGE_LIST+=(
+    "php${VVV_BASE_PHPVERSION}-xdebug"
     php-xdebug
   )
 }
