@@ -28,6 +28,7 @@ permalink: /docs/en-US/changelog/
 * Don't back up databases that have no tables
 * Xdebug deprecated configuration option warnings fixed
 * Use HTTPS instead of SSH for WP CLI Doctor subcommand installation
+* Install missing library for Xdebug support
 
 ## 3.5.1 ( 2020 December 11th )
 
