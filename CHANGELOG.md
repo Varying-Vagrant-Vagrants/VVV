@@ -19,6 +19,7 @@ permalink: /docs/en-US/changelog/
 * SHDocs added to core provisioners
 * Improved PHP configuration file installation
 * Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
+* `switch_php_debugmod` now checks if a module is installed and enabled, with improved output to make it clearer which versions of PHP support the module
 
 ### Bug Fixes
 
