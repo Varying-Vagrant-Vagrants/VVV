@@ -26,37 +26,41 @@ disable_phpmods() {
 
 	for i in "${mods[@]}"
 	do
-		for v in $(sudo update-alternatives --list php)
+		for phpv in $(phpquery -V)
 		do
-			phpv=${v: -3}
-			if is_module_active_fpm "${phpv}" "${i}"; then
-				vvv_info " * Disabling active PHP <b>v${phpv}</b><info> debug mod: </info><b>'${i}'</b>"
-				sudo phpdismod -v "${phpv}" -m "${i}"
+			if is_module_enabled_fpm "${phpv}" "${i}"; then
+				vvv_info " ✘ Disabling active PHP <b>v${phpv}</b><info> debug mod: </info><b>'${i}'</b>"
+				sudo phpdismod -v "${phpv}" "${i}"
 			fi
 		done
 	done
 }
 
 enable_phpmod() {
-	vvv_info " * Enabling PHP debug mod: <b>'${1}'</b>"
-	sudo phpenmod "${1}"
+	for phpv in $(phpquery -V)
+	do
+		if is_module_installed_fpm "${phpv}" "${1}"; then
+			vvv_info " * Enabling <b>'${1}'</b><info> for PHP <b>v${phpv}</b>"
+			sudo phpenmod -q -v "${phpv}" -s fpm "${1}"
+			sudo phpenmod -q -v "${phpv}" -s cli "${1}"
+		else
+			vvv_info " * Skipped enabling ${1} in PHP <b>v${phpv}</b><info>, module isn't installed for this version"
+		fi
+	done
 }
 
-is_module_active_fpm() {
-	phpv=${1: -3}
-	phpquery -q -v "${phpv}" -s fpm -m "${2}" || errorcode=$?
-	if [[ "${errorcode}" -eq "0" ]]; then
+is_module_enabled_fpm() {
+	if [ -f "/var/lib/php/modules/${1}/fpm/enabled_by_admin/${2}" ]; then
 		return 0
 	fi
 	return 1
 }
 
 is_module_installed_fpm() {
-	phpquery -q -v "${1}" -s fpm -m "${2}" || errorcode=$?
-	if [ $errorcode -eq 1 ]; then
-		return 1
+	if [ -f "/etc/php/${1}/mods-available/${2}.ini" ]; then
+		return 0
 	fi
-	return 0
+	return 1
 }
 
 restart_phpfpm() {
@@ -64,22 +68,24 @@ restart_phpfpm() {
 	find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
 }
 
-#vvv_info " * Disabling active debug PHP mods"
 disable_phpmods phpmods[@]
 
 if [[ "${mod}" == "none" ]]; then
 	restart_phpfpm
-	vvv_success " * All PHP Debug mods are now turned off."
+	vvv_success " ✔ All PHP Debug mods are now turned off."
 	exit 0
 fi
 
+if [[ "${mod}" == "pcov" ]]; then
+	vvv_info " * pcov supports PHP 7.1 and above, it is not available for 5.6 and 7.0"
+fi
 
 # Tideways needs 2 mods enabling
 if [[ "${mod}" == "tideways" ]]; then
 	enable_phpmod "xhgui"
 	enable_phpmod "tideways_xhprof"
 	restart_phpfpm
-	vvv_success " * PHP Debug mod switch to <b>${mod}</b><success> complete.</success>"
+	vvv_success " ✔ PHP Debug mod switch to <b>${mod}</b><success> complete.</success>"
 	exit 0
 fi
 
@@ -92,4 +98,4 @@ fi
 
 enable_phpmod "${mod}"
 restart_phpfpm
-vvv_success " * PHP Debug mod switch to <b>${mod}</b><success> complete.</success>"
+vvv_success " ✔ PHP Debug mod switch to <b>${mod}</b><success> on all available PHP versions complete.</success>"
