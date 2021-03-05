@@ -10,6 +10,7 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
+* Improve the way that PHPCS gets provisioned to avoid conflicts with composer v2 (#2357)
 * Beautify the PHP debug switcher script
 * Support for basic formatting tags in `vvv_warn` `vvv_error` `vvv_info` and `vvv_success`
 * A new `vvv_output` and `vvv_format_output` bash functions
