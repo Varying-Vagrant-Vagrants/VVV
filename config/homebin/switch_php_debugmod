@@ -44,6 +44,22 @@ enable_phpmod() {
 	sudo phpenmod "${1}"
 }
 
+is_module_active_fpm() {
+	phpquery -q -v "${1}" -s fpm -m "${2}" || errorcode=$?
+	if [ $errorcode -eq 0 ]; then
+		return 0
+	fi
+	return 1
+}
+
+is_module_installed_fpm() {
+	phpquery -q -v "${1}" -s fpm -m "${2}" || errorcode=$?
+	if [ $errorcode -eq 1 ]; then
+		return 1
+	fi
+	return 0
+}
+
 restart_phpfpm() {
 	vvv_info " * Restarting PHP FPM services so that the change takes effect"
 	find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
@@ -54,7 +70,7 @@ disable_phpmods phpmods[@]
 
 if [[ "${mod}" == "none" ]]; then
 	restart_phpfpm
-  vvv_success " * All PHP Debug mods are now turned off."
+	vvv_success " * All PHP Debug mods are now turned off."
 	exit 0
 fi
 
@@ -64,7 +80,7 @@ if [[ "${mod}" == "tideways" ]]; then
 	enable_phpmod "xhgui"
 	enable_phpmod "tideways_xhprof"
 	restart_phpfpm
-  vvv_success " * PHP Debug mod switch to <b>${mod}</b><success> complete.</success>"
+	vvv_success " * PHP Debug mod switch to <b>${mod}</b><success> complete.</success>"
 	exit 0
 fi
 
