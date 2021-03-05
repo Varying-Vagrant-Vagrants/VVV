@@ -24,18 +24,16 @@ disable_phpmods() {
 	# declare that our first param is an array
 	declare -a mods=("${!1}")
 
-	# Take the mods array and turn it into a commar separated list
-	local mods_joined=$(printf ", %s" "${mods[@]}")
-	mods_joined=${mods_joined:1}
-	mods_joined="${mods_joined#"${mods_joined%%[![:space:]]*}"}"
-	#vvv_info " * Disabling if present: <b>'${mods_joined}'</b>"
-
 	for i in "${mods[@]}"
 	do
-		if [[ ${enabled_mods,,} == *"${i}"* ]]; then
-			vvv_info " * Disabling active PHP debug mod: <b>'${i}'</b>"
-			sudo phpdismod "${i}"
-		fi
+		for v in $(sudo update-alternatives --list php)
+		do
+			phpv=${v: -3}
+			if is_module_active_fpm "${phpv}" "${i}"; then
+				vvv_info " * Disabling active PHP <b>v${phpv}</b><info> debug mod: </info><b>'${i}'</b>"
+				sudo phpdismod -v "${phpv}" -m "${i}"
+			fi
+		done
 	done
 }
 
@@ -45,8 +43,9 @@ enable_phpmod() {
 }
 
 is_module_active_fpm() {
-	phpquery -q -v "${1}" -s fpm -m "${2}" || errorcode=$?
-	if [ $errorcode -eq 0 ]; then
+	phpv=${1: -3}
+	phpquery -q -v "${phpv}" -s fpm -m "${2}" || errorcode=$?
+	if [[ "${errorcode}" -eq "0" ]]; then
 		return 0
 	fi
 	return 1
