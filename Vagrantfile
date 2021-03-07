@@ -143,16 +143,19 @@ show_logo = false if ENV['VVV_SKIP_LOGO']
 if show_logo
   git_or_zip = 'zip-no-vcs'
   branch = ''
+  commit = ''
   if File.directory?("#{vagrant_dir}/.git")
     git_or_zip = 'git::'
     branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
     branch = branch.chomp("\n"); # remove trailing newline so it doesn't break the ascii art
+    commit = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --short HEAD`
+    commit = '(' + commit.chomp("\n") + ')'; # remove trailing newline so it doesn't break the ascii art
   end
 
   splashfirst = <<~HEREDOC
     \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
     #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-    #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}#{creset}
+    #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
 
   HEREDOC
   puts splashfirst
@@ -303,7 +306,11 @@ if show_logo
       platform << 'HyperV-Enabled '
     end
     platform << 'HyperV-Admin ' if Vagrant::Util::Platform.windows_hyperv_admin?
-    platform << 'HasWinAdminPriv ' if Vagrant::Util::Platform.windows_admin?
+    if Vagrant::Util::Platform.windows_admin?
+      platform << 'HasWinAdminPriv '
+    else
+      platform << 'missingWinAdminPriv ' unless Vagrant::Util::Platform.windows_admin?
+    end
   else
     platform << 'shell:' + ENV['SHELL'] if ENV['SHELL']
     platform << 'systemd ' if Vagrant::Util::Platform.systemd?
@@ -317,7 +324,7 @@ if show_logo
 
   platform << 'CaseSensitiveFS' if Vagrant::Util::Platform.fs_case_sensitive?
   unless Vagrant::Util::Platform.terminal_supports_colors?
-    platform << 'NoColour'
+    platform << 'monochrome-terminal'
   end
 
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
