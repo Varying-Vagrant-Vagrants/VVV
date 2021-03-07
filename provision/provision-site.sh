@@ -320,17 +320,17 @@ function vvv_custom_folder_composer() {
         local value=$(vvv_get_site_config_value "folders.${folder}.composer.${key}" "")
         if [[ "install" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
-            echo " * Running composer install in ${folder}"
+            vvv_info " * Running composer install in ${folder}"
             noroot composer install
           fi
         elif [[ "update" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
-            echo " * Running composer update in ${folder}"
+            vvv_info " * Running composer update in ${folder}"
             noroot composer update
           fi
         elif [[ "create-project" == "${key}" ]]; then
-          echo " * Running composer create-project ${value} in ${folder}"
-          noroot composer create-project ${value}
+          vvv_info " * Running composer create-project ${value} in ${folder}"
+          noroot composer create-project "${value}"
         else
           vvv_warn " * Unknown key in Composer section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
@@ -351,17 +351,17 @@ function vvv_custom_folder_npm() {
         local value=$(vvv_get_site_config_value "folders.${folder}.npm.${key}" "")
         if [[ "install" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
-            echo " * Running npm install in ${folder}"
+            vvv_info " * Running npm install in ${folder}"
             noroot npm install
           fi
         elif [[ "update" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
-            echo " * Running npm update in ${folder}"
+            vvv_info " * Running npm update in ${folder}"
             noroot npm update
           fi
         elif [[ "run" == "${key}" ]]; then
-          echo " * Running npm run ${value} in ${folder}"
-          noroot npm run ${value}
+          vvv_info " * Running npm run ${value} in ${folder}"
+          noroot npm run "${value}"
         else
           vvv_warn " * Unknown key in NPM section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
