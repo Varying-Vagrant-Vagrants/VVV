@@ -2,7 +2,7 @@
 # @description Installs the default version of PHP
 set -eo pipefail
 
-VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.3"}
+VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.4"}
 function php_register_packages() {
   if ! vvv_src_list_has "ondrej/php"; then
     cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
@@ -71,7 +71,7 @@ function phpfpm_setup() {
       cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
     fi
   fi
-  
+
   vvv_info " * Checking supplementary PHP configs"
 
   for V in /etc/php/*; do
