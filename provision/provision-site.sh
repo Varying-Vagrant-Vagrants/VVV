@@ -309,6 +309,67 @@ function vvv_clone_site_git_folder() {
   noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
 }
 
+# @description Processes a folder sections composer option for a site as specified in `config.yml`
+#
+# @arg $1 string the folder name to process specified in `config.yml`
+function vvv_custom_folder_composer() {
+  local folder="${1}"
+  if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.composer" < "${VVV_CONFIG}"); then
+      for key in $keys; do
+        cd "${folder}"
+        local value=$(vvv_get_site_config_value "folders.${folder}.composer.${key}" "")
+        if [[ "install" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            vvv_info " * Running composer install in ${folder}"
+            noroot composer install
+          fi
+        elif [[ "update" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            vvv_info " * Running composer update in ${folder}"
+            noroot composer update
+          fi
+        elif [[ "create-project" == "${key}" ]]; then
+          vvv_info " * Running composer create-project ${value} in ${folder}"
+          noroot composer create-project "${value}"
+        else
+          vvv_warn " * Unknown key in Composer section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
+        fi
+        cd -
+      done
+  fi
+}
+
+
+# @description Processes a folder sections npm option for a site as specified in `config.yml`
+#
+# @arg $1 string the folder name to process specified in `config.yml`
+function vvv_custom_folder_npm() {
+  local folder="${1}"
+  if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.npm" < "${VVV_CONFIG}"); then
+      for key in $keys; do
+        cd "${folder}"
+        local value=$(vvv_get_site_config_value "folders.${folder}.npm.${key}" "")
+        if [[ "install" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            vvv_info " * Running npm install in ${folder}"
+            noroot npm install
+          fi
+        elif [[ "update" == "${key}" ]]; then
+          if [[ "True" == "${value}" ]]; then
+            vvv_info " * Running npm update in ${folder}"
+            noroot npm update
+          fi
+        elif [[ "run" == "${key}" ]]; then
+          vvv_info " * Running npm run ${value} in ${folder}"
+          noroot npm run "${value}"
+        else
+          vvv_warn " * Unknown key in NPM section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
+        fi
+        cd -
+      done
+  fi
+}
+
 # @description Processes a folder sections git option for a site as specified in `config.yml`
 #
 # @arg $1 string the folder name to process specified in `config.yml`
@@ -324,7 +385,7 @@ function vvv_custom_folder_git() {
   if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
     vvv_clone_site_git_folder "${repo}" "${folder}"
   else
-    if [[ $overwrite_on_clone = "True" ]]; then
+    if [[ $overwrite_on_clone == "True" ]]; then
       if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
         vvv_info " - VVV was asked to clone into a folder that already exists (${folder}), but does not contain a git repo"
         vvv_info " - overwrite_on_clone is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
@@ -336,14 +397,14 @@ function vvv_custom_folder_git() {
     fi
   fi
 
-  if [[ $hard_reset = "True" ]]; then
+  if [[ $hard_reset == "True" ]]; then
     vvv_info " - resetting git checkout and discarding changes in ${folder}"
     cd "${VVV_PATH_TO_SITE}/${folder}"
     noroot git reset --hard -q
     noroot git checkout -q
     cd -
   fi
-  if [[ $pull = "True" ]]; then
+  if [[ $pull == "True" ]]; then
     vvv_info " - runnning git pull in ${folder}"
     cd "${VVV_PATH_TO_SITE}/${folder}"
     noroot git pull -q
@@ -357,12 +418,20 @@ function vvv_custom_folder_git() {
 # @noargs
 function vvv_custom_folders() {
   if folders=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders" < "${VVV_CONFIG}"); then
-    for folder in $folders
-    do
+    for folder in $folders; do
       if [[ $folder != '...' ]]; then
-        local gitvcs=$(vvv_get_site_config_value "folders.${folder}.git" "False")
-        if [[ $gitvcs != "False" ]]; then
-          vvv_custom_folder_git "${folder}"
+        if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}" < "${VVV_CONFIG}"); then
+          for key in $keys; do
+            if [[ "${key}" == "git" ]]; then
+              vvv_custom_folder_git "${folder}"
+            elif [[ "${key}" == "composer" ]]; then
+              vvv_custom_folder_composer "${folder}"
+            elif [[ "${key}" == "npm" ]]; then
+              vvv_custom_folder_npm "${folder}"
+            else
+              vvv_warn " * Unknown folders sub-parameter <b>${key}<b><warn> ignoring"
+            fi
+          done
         fi
       fi
     done
