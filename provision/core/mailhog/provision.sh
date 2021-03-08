@@ -28,17 +28,21 @@ function mailhog_setup() {
   fi
 
   # Start on reboot
-  vvv_info " * Enabling MailHog Service"
-  systemctl enable mailhog
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    vvv_info " * Enabling MailHog Service"
+    systemctl enable mailhog
 
-  vvv_info " * Starting MailHog Service"
-  systemctl start mailhog
+    vvv_info " * Starting MailHog Service"
+    systemctl start mailhog
+  fi
 }
 export -f mailhog_setup
 
 vvv_add_hook after_packages mailhog_setup
 
-vvv_add_hook services_restart "service mailhog restart"
+if [ "${VVV_DOCKER}" != 1 ]; then
+  vvv_add_hook services_restart "service mailhog restart"
+fi
 
 function mailhog_php_finalize() {
   # Enable PHP MailHog sendmail settings by default

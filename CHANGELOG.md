@@ -18,6 +18,7 @@ Finally, check that your custom modifications haven't been added in the official
 
 ### Enhancements
 
+* Improve the way that PHPCS gets provisioned to avoid conflicts with composer v2 (#2357)
 * Beautify the PHP debug switcher script
 * Support for basic formatting tags in `vvv_warn` `vvv_error` `vvv_info` and `vvv_success`
 * A new `vvv_output` and `vvv_format_output` bash functions
@@ -26,6 +27,8 @@ Finally, check that your custom modifications haven't been added in the official
 * SHDocs added to core provisioners
 * Improved PHP configuration file installation
 * Sites can now define composer create-project/install/update commands to run in their folders section in addition to the git options added in v3.5.1
+* Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
+* Print provision log if there are errors
 
 ### Bug Fixes
 
@@ -36,6 +39,7 @@ Finally, check that your custom modifications haven't been added in the official
 * Don't back up databases that have no tables
 * Xdebug deprecated configuration option warnings fixed
 * Use HTTPS instead of SSH for WP CLI Doctor subcommand installation
+* Install missing library for Xdebug support
 
 ## 3.5.1 ( 2020 December 11th )
 
