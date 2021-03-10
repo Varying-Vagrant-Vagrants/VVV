@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: VVV Troubleshooting
+    url: https://varyingvagrantvagrants.org/docs/en-US/troubleshooting/
+    about: Run through these to solve common issues
+  - name: VVV Support on Slack
+    url: https://varyingvagrantvagrants.org/docs/en-US/slack/
+    about: Join our support channel for help
