@@ -23,8 +23,8 @@ function vvv_register_packages() {
     make
     vim
     colordiff
-    python-pip
-    python-setuptools
+    python3-pip
+    python3-setuptools
     lftp
 
     # ntp service to keep clock current
@@ -48,8 +48,8 @@ function shyaml_setup() {
   # Used for passing custom parameters to the bash provisioning scripts
   if [ ! -f /usr/local/bin/shyaml ]; then
     vvv_info " * Installing Shyaml for bash provisioning.."
-    sudo pip install wheel
-    sudo pip install shyaml
+    sudo pip3 install wheel
+    sudo pip3 install shyaml
   fi
 }
 export -f shyaml_setup

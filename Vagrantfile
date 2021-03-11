@@ -382,8 +382,8 @@ Vagrant.configure('2') do |config|
 
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
-    # Move the ubuntu-bionic-18.04-cloudimg-console.log file to log directory.
-    v.customize ['modifyvm', :id, '--uartmode1', 'file', File.join(vagrant_dir, 'log/ubuntu-bionic-18.04-cloudimg-console.log')]
+    # Move the ubuntu-focal-20.04-cloudimg-console.log file to log directory.
+    v.customize ['modifyvm', :id, '--uartmode1', 'file', File.join(vagrant_dir, 'log/ubuntu-focal-20.04-cloudimg-console.log')]
 
     v.customize ['modifyvm', :id, '--memory', vvv_config['vm_config']['memory']]
     v.customize ['modifyvm', :id, '--cpus', vvv_config['vm_config']['cores']]
@@ -455,9 +455,10 @@ Vagrant.configure('2') do |config|
   # Default Ubuntu Box
   #
   # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized
-  # box containing the Ubuntu 18.04 Bionic 64 bit release. Once this box is downloaded
+  # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = 'ubuntu/bionic64'
+  config.vm.box = 'ubuntu/focal64'
+  config.vm.box_version = "20210304.0.0"
   # config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
 
   # If we're at a contributor day, switch the base box to the prebuilt one
@@ -469,18 +470,18 @@ Vagrant.configure('2') do |config|
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
-    override.vm.box = 'bento/ubuntu-18.04'
+    override.vm.box = 'bento/ubuntu-20.04'
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
   config.vm.provider :vmware_desktop do |v, override|
-    override.vm.box = 'bento/ubuntu-18.04'
+    override.vm.box = 'bento/ubuntu-20.04'
     v.gui = false
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
-    override.vm.box = 'bento/ubuntu-18.04'
+    override.vm.box = 'bento/ubuntu-20.04'
   end
 
   if defined? vvv_config['vm_config']['box']
