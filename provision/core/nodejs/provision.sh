@@ -32,10 +32,13 @@ function reinstall_node() {
 }
 
 function node_setup() {
-  if [[ $(nodejs -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '14' ]]; then
-    vvv_info " * Migrating to Node v14."
-    reinstall_node
+  if [[ -f "/usr/bin/node" ]]; then
+    if [[ $(node -v | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p') != '14' ]]; then
+      vvv_info " * Migrating to Node v14."
+      reinstall_node
+    fi
   fi
+
   if [[ ! -f "/usr/bin/npm" ]]; then
     vvv_warn " ! npm is missing in /usr/bin, reinstalling Node"
     reinstall_node
