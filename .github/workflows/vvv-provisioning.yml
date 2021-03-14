@@ -16,7 +16,7 @@ jobs:
   build:
     name: Run Provisioner
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -36,7 +36,7 @@ jobs:
 
           # vvv_symlink function to sumulate synced folders
           function vvv_symlink() {
-            if [ ! -d "${1}" ]; then 
+            if [ ! -d "${1}" ]; then
               sudo mkdir -p "${1}"
             fi
             sudo chown -R vagrant:vagrant "${1}"
