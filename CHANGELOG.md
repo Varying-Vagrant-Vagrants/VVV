@@ -32,6 +32,7 @@ Finally, check that your custom modifications haven't been added in the official
 * `switch_php_debugmod` now checks if a module is installed and enabled, with improved output to make it clearer which versions of PHP support the module
 * Print provision log if there are errors
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
+* Adds support for Parallels running under the Apple M1/Silicon chip
 
 ### Bug Fixes
 
