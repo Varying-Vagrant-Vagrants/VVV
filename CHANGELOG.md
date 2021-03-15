@@ -31,6 +31,7 @@ Finally, check that your custom modifications haven't been added in the official
 * Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
 * `switch_php_debugmod` now checks if a module is installed and enabled, with improved output to make it clearer which versions of PHP support the module
 * Print provision log if there are errors
+* Adds an Xdebug Info button to the dashboard when Xdebug is enabled
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
 * Adds support for Parallels running under the Apple M1/Silicon chip
 

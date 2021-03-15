@@ -26,7 +26,7 @@ function composer_setup() {
     chmod +x "composer.phar"
     mv "composer.phar" "/usr/local/bin/composer"
     vvv_info " * Forcing composer to v1.x"
-    composer selfupdate --1
+    noroot composer selfupdate --1
     vvv_success " * Composer installer steps completed"
   fi
 
