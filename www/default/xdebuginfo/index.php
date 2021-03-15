@@ -36,7 +36,7 @@ hr {
 
 <div id="xdebuginfo">
 	<?php
-	if ( ! function_exists( 'xdebug_info' ) ) {
+	if ( function_exists( 'xdebug_info' ) ) {
 		xdebug_info();
 	} else {
 		echo '<div class="warning"><strong>Warning:</strong> Xdebug not enabled.</div>';
