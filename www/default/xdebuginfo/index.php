@@ -13,6 +13,8 @@
 </nav>
 <hr/>
 <?php
-echo '<div id="phpinfo">';
-phpinfo();
-echo '</div>';
+if ( function_exists( 'xdebug_info' ) ) {
+	echo '<div id="xdebuginfo">';
+	xdebug_info();
+	echo '</div>';
+}
