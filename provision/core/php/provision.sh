@@ -6,6 +6,8 @@ VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.4"}
 function php_register_packages() {
   if ! vvv_src_list_has "ondrej/php"; then
     cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
+    ARCH=$(lsb_release -c --short)
+    sed -i "s|{ARCH}|${ARCH}|g" "/etc/apt/sources.list.d/vvv-php-sources.list"
   fi
 
   if ! vvv_apt_keys_has 'Ondřej'; then

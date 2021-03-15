@@ -5,6 +5,8 @@ set -eo pipefail
 function nginx_register_packages() {
   if ! vvv_src_list_has "nginx.org"; then
     cp -f "/srv/provision/core/nginx/sources.list" "/etc/apt/sources.list.d/vvv-nginx-sources.list"
+    ARCH=$(lsb_release -c --short)
+    sed -i "s|{ARCH}|${ARCH}|g" "/etc/apt/sources.list.d/vvv-nginx-sources.list"
   fi
 
   # Before running `apt-get update`, we should add the public keys for

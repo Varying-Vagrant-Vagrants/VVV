@@ -42,6 +42,8 @@ function mariadb_register_packages() {
 
   if ! vvv_src_list_has "MariaDB"; then
     cp -f "/srv/provision/core/mariadb/sources.list" "/etc/apt/sources.list.d/vvv-mariadb-sources.list"
+    ARCH=$(lsb_release -c --short)
+    sed -i "s|{ARCH}|${ARCH}|g" "/etc/apt/sources.list.d/vvv-mariadb-sources.list"
   fi
 
   VVV_PACKAGE_LIST+=(mariadb-server)

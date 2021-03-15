@@ -4,6 +4,8 @@ set -eo pipefail
 
 function nodejs_register_packages() {
   cp -f "/srv/provision/core/nodejs/sources.list" "/etc/apt/sources.list.d/vvv-nodejs-sources.list"
+  ARCH=$(lsb_release -c --short)
+  sed -i "s|{ARCH}|${ARCH}|g" "/etc/apt/sources.list.d/vvv-nodejs-sources.list"
 
   if ! vvv_apt_keys_has 'NodeSource'; then
     # Retrieve the NodeJS signing key from nodesource.com
