@@ -7,7 +7,7 @@
 	<a href="//vvv.test/phpinfo/">PHP Info</a>
 	<?php
 	if ( function_exists( 'xdebug_info' ) ) {
-		?>, <a href="//vvv.test/xdebuginfo/">Xdebug Info</a><?php
+		?>&middot; <a href="//vvv.test/xdebuginfo/">Xdebug Info</a><?php
 	}
 	?>
 </nav>
