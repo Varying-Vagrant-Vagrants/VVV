@@ -10,7 +10,7 @@ function php_codesniff_setup() {
     vvv_info " * Upgrading from old PHPCS setup"
     rm -rf /srv/www/phpcs
   fi
-  
+
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
   # Sniffs WordPress Coding Standards
   vvv_info " * Provisioning PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
@@ -18,14 +18,14 @@ function php_codesniff_setup() {
   noroot mkdir -p /srv/www/phpcs
   cd /srv/www/phpcs
   COMPOSER_BIN_DIR="bin" noroot composer require --update-with-all-dependencies "dealerdirect/phpcodesniffer-composer-installer" "wp-coding-standards/wpcs" "automattic/vipwpcs" "phpcompatibility/php-compatibility" "phpcompatibility/phpcompatibility-paragonie" "phpcompatibility/phpcompatibility-wp" --no-ansi --no-progress
-  
+
   vvv_info " * Symlinking phpcs and phcbf into /usr/local/bin"
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
   # that it can be used on the host in an editor with matching rules
-  ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
-  ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
-  
+  noroot ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
+  noroot ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
+
   vvv_info " * Setting WordPress-Core as the default PHPCodesniffer standard"
 
   # Install the standards in PHPCS
