@@ -1,10 +1,11 @@
-#!/bin/bash
-#
-# core/env.sh
+#!/usr/bin/env bash
+set -eo pipefail
 
+# @description Adds the homebin folder to PATH
+# @noargs
 function setup_vvv_env() {
   # fix no tty warnings in provisioner logs
-  sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
+  sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
 
   # add homebin to secure_path setting for sudo, clean first and then append at the end
   sed -i -E \
@@ -21,6 +22,8 @@ function setup_vvv_env() {
     /etc/environment
 }
 
+# @description Remove MOTD output from Ubuntu and add our own
+# @noargs
 function cleanup_terminal_splash() {
   # Dastardly Ubuntu tries to be helpful and suggest users update packages
   # themselves, but this can break things
@@ -58,23 +61,25 @@ function cleanup_terminal_splash() {
   chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
+# @description Sets up the VVV users bash profile, and configuration files
+# @noargs
 function profile_setup() {
-  echo " * Setting ownership of files in /home/vagrant to vagrant"
+  vvv_info " * Setting ownership of files in /home/vagrant to vagrant"
   chown -R vagrant:vagrant /home/vagrant/
   # Copy custom dotfiles and bin file for the vagrant user from local
-  echo " * Copying /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
+  vvv_info " * Copying /srv/config/bash_profile                      to /home/vagrant/.bash_profile"
   rm -f "/home/vagrant/.bash_profile"
   noroot cp -f "/srv/config/bash_profile" "/home/vagrant/.bash_profile"
 
-  echo " * Copying /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
+  vvv_info " * Copying /srv/config/bash_aliases                      to /home/vagrant/.bash_aliases"
   rm -f "/home/vagrant/.bash_aliases"
   noroot cp -f "/srv/config/bash_aliases" "/home/vagrant/.bash_aliases"
 
-  echo " * Copying /srv/config/bash_aliases                      to ${HOME}/.bash_aliases"
+  vvv_info " * Copying /srv/config/bash_aliases                      to ${HOME}/.bash_aliases"
   rm -f "${HOME}/.bash_aliases"
   cp -f "/srv/config/bash_aliases" "${HOME}/.bash_aliases"
 
-  echo " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
+  vvv_info " * Copying /srv/config/vimrc                             to /home/vagrant/.vimrc"
   rm -f "/home/vagrant/.vimrc"
   noroot cp -f "/srv/config/vimrc" "/home/vagrant/.vimrc"
 
@@ -82,33 +87,37 @@ function profile_setup() {
     noroot mkdir -p "/home/vagrant/.subversion"
   fi
 
-  echo " * Copying /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
+  vvv_info " * Copying /srv/config/subversion-servers                to /home/vagrant/.subversion/servers"
   rm -f /home/vagrant/.subversion/servers
   noroot cp "/srv/config/subversion-servers" "/home/vagrant/.subversion/servers"
 
-  echo " * Copying /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
+  vvv_info " * Copying /srv/config/subversion-config                 to /home/vagrant/.subversion/config"
   rm -f /home/vagrant/.subversion/config
   noroot cp "/srv/config/subversion-config" "/home/vagrant/.subversion/config"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
-    echo " * Copying /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
+    vvv_info " * Copying /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
     rm -f /home/vagrant/.bash_prompt
     noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
   if [ -d "/etc/ssh" ]; then
-    echo " * Copying /srv/config/ssh_known_hosts                   to /etc/ssh/ssh_known_hosts"
+    vvv_info " * Copying /srv/config/ssh_known_hosts                   to /etc/ssh/ssh_known_hosts"
     cp -f /srv/config/ssh_known_hosts /etc/ssh/ssh_known_hosts
-    echo " * Copying /srv/config/sshd_config                       to /etc/ssh/sshd_config"
+    vvv_info " * Copying /srv/config/sshd_config                       to /etc/ssh/sshd_config"
     cp -f /srv/config/sshd_config /etc/ssh/sshd_config
-    echo " * Reloading SSH Daemon"
-    systemctl reload ssh
+    vvv_info " * Reloading SSH Daemon"
+    if [ "${VVV_DOCKER}" != 1 ]; then
+      systemctl reload ssh
+    fi
   fi
 }
 
+# @description Sets up the main VVV user profile
+# @noargs
 function vvv_init_profile() {
   # Profile_setup
-  echo " * Bash profile setup and directories."
+  vvv_info " * Bash profile setup and directories."
   setup_vvv_env
   cleanup_terminal_splash
   profile_setup

@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
+set -eo pipefail
+PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 
 . "/srv/provision/provisioners.sh"
-
-PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
 
 if [[ -f $PROVISIONER ]]; then
     ( bash "${PROVISIONER}" >> "${VVV_CURRENT_LOG_FILE}" )
     SUCCESS=$?
 	if [ "${SUCCESS}" -eq 0 ]; then
-		provisioner_success; exit;
+		provisioner_success
+		exit 0
 	else
 		exit 1
 	fi

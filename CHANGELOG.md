@@ -6,7 +6,45 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.5.x ( 2020 TBA )
+## 3.6.1 ( 2021 March 16th )
+
+### Important Note
+
+Lots of provisioners now run in strict mode. Your custom site and utility provisioners may fail if they do not handle bad return codes from commands correctly. For example if you ran `composer create-project` on a folder that was not empty, it will fail. In v3.5 this failure was ignored and the script continued despite the critical error, in v3.6 VVV will halt provisioning so that the error can be seen.
+
+Make sure that commands are only ran at their appropriate times, e.g. only install things if they aren't installed, and if you're checking the return value of a command, do it in an if check, not as a temporary variable. If you're feeling adventurous you can unset the strict flags ( danger! ).
+
+Finally, check that your custom modifications haven't been added in the official site templates.
+
+### Enhancements
+
+* Improve the way that PHPCS gets provisioned to avoid conflicts with composer v2 (#2357)
+* PHP v7.4 is now the default PHP ( other versions are available on CLI if installed via `php73`, `php72`, etc )
+* Beautify the PHP debug switcher script
+* Support for basic formatting tags in `vvv_warn` `vvv_error` `vvv_info` and `vvv_success`
+* A new `vvv_output` and `vvv_format_output` bash functions
+* Minor refactors and colours added to the main provisioner
+* Improved output of backup and import scripts
+* SHDocs added to core provisioners
+* Improved PHP configuration file installation
+* Sites can now define composer create-project/install/update commands to run in their folders section in addition to the git options added in v3.5.1
+* Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
+* `switch_php_debugmod` now checks if a module is installed and enabled, with improved output to make it clearer which versions of PHP support the module
+* Print provision log if there are errors
+* Adds an Xdebug Info button to the dashboard when Xdebug is enabled
+
+### Bug Fixes
+
+* Fixed the use of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
+* Don't try to install shyaml if it's already installed
+* Global composer packages were only updated when composer itself was updated
+* Skip the WordPress unit tests database when running backups
+* Don't back up databases that have no tables
+* Xdebug deprecated configuration option warnings fixed
+* Use HTTPS instead of SSH for WP CLI Doctor subcommand installation
+* Install missing library for Xdebug support
+
+## 3.5.1 ( 2020 December 11th )
 
 ### Enhancements
 
