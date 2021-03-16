@@ -1,11 +1,8 @@
-#!/bin/bash
-#
-# provision.sh
-#
-# This file is specified in Vagrantfile and is loaded by Vagrant as the primary
-# provisioning script whenever the commands `vagrant up`, `vagrant provision`,
-# or `vagrant reload` are used. It provides all of the default packages and
-# configurations included with Varying Vagrant Vagrants.
+#!/usr/bin/env bash
+# @description This file is specified in Vagrantfile and is loaded by Vagrant
+#  as the primary provisioning script whenever the commands `vagrant up`,
+# `vagrant provision`, or `vagrant reload` are used. It provides all of the
+# default packages and configurations included with VVV.
 
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
@@ -28,12 +25,12 @@ echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 cp -f /home/vagrant/version /vagrant
 cp -f /srv/config/config.yml /vagrant
 
-sudo chmod 0644 /vagrant/config.yml
-sudo chmod 0644 /vagrant/version
-sudo chmod 0644 /vagrant/provisioned_at
+chmod 0644 /vagrant/config.yml
+chmod 0644 /vagrant/version
+chmod 0644 /vagrant/provisioned_at
 
 # change ownership for /vagrant folder
-sudo chown -R vagrant:vagrant /vagrant
+chown -R vagrant:vagrant /vagrant
 
 export VVV_CONFIG=/vagrant/config.yml
 
@@ -70,17 +67,16 @@ fi
 vvv_hook before_packages
 
 # Package and Tools Install
-echo " "
-echo " * Main packages check and install."
+vvv_info " * Main packages check and install."
 if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   vvv_error " ! Main packages check and install failed, halting provision"
   exit 1
 fi
 
-echo " * Running tools_install"
+vvv_info " * Running tools_install"
 vvv_hook after_packages
 
-echo " * Finalizing"
+vvv_info " * Finalizing"
 vvv_hook finalize
 
 #set +xv

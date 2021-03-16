@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+source /srv/provision/provision-helpers.sh
+
+echo -e "${CRESET}"
+echo -e "${YELLOW}  ? ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ? ${CRESET}"
+echo -e "${YELLOW}   ✧█▒▒░░░░░░░░░▒▒█   ${CRESET}"
+echo -e "${YELLOW} ?   █░░█░░░░░█░░█ ?  ${CRESET}"
+echo -e "${YELLOW}      █▄░▀█▀░░░░█ ?   ${CRESET}"
+echo -e "${YELLOW}     █░░█░░░░░░▄▀     ${CRESET}"
+echo -e "${YELLOW}──────────────────────${CRESET}"
+echo ""
+echo -e "${PURPLE} ! You're still SSH'd into the VVV virtual machine!${CRESET}"
+echo -e "${PURPLE}   Run exit and try again${CRESET}"

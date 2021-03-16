@@ -1,0 +1,74 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "VVV up/on",
+			"type": "shell",
+			"command": "vagrant up",
+			"group": "vvv",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "VVV halt/off",
+			"type": "shell",
+			"command": "vagrant halt",
+			"group": "vvv",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "VVV Reprovision",
+			"type": "shell",
+			"command": "vagrant up --provision",
+			"group": "vvv",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "VVV back up databases",
+			"type": "shell",
+			"command": "vagrant ssh -c 'db_backup'",
+			"group": "vvv",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "VVV Xdebug on",
+			"type": "shell",
+			"command": "vagrant ssh -c 'xdebug_on'",
+			"group": "vvv",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "VVV Xdebug off",
+			"type": "shell",
+			"command": "vagrant ssh -c 'xdebug_off'",
+			"group": "vvv",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		}
+	]
+}
