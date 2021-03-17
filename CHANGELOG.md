@@ -6,6 +6,11 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.6.2 ( 2021 March 17th )
+### Bug Fixes
+
+* Replaced PHPCS symlinking to avoid issues with Windows
+
 ## 3.6.1 ( 2021 March 16th )
 
 ### Important Note
