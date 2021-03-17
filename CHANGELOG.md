@@ -6,6 +6,13 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.7.x ( 2021 )
+### Enhancements
+
+* 
+### Bug Fixes
+
+* 
 ## 3.6.2 ( 2021 March 17th )
 ### Bug Fixes
 
