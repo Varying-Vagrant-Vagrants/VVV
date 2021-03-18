@@ -23,15 +23,15 @@ function php_codesniff_setup() {
 
   # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
   # that it can be used on the host in an editor with matching rules
-  noroot ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
-  noroot ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
+  #noroot ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
+  #noroot ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
 
   vvv_info " * Setting WordPress-Core as the default PHPCodesniffer standard"
 
   # Install the standards in PHPCS
-  noroot phpcs --config-set default_standard WordPress-Core
+  noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
   vvv_info " * The following PHPCS standards are set up:"
-  noroot phpcs -i
+  noroot /srv/www/phpcs/bin/phpcs -i
   vvv_success " * PHPCS provisioning has ended"
 }
 export -f php_codesniff_setup
