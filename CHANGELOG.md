@@ -12,7 +12,8 @@ permalink: /docs/en-US/changelog/
 * 
 ### Bug Fixes
 
-* 
+* Fix PHP running as the wrong user
+
 ## 3.6.2 ( 2021 March 17th )
 ### Bug Fixes
 
