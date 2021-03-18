@@ -76,6 +76,11 @@ def virtualbox_path
   @vboxmanage_path
 end
 
+def get_parallels_version
+  s = Vagrant::Util::Subprocess.execute('prlctl', '--version')
+  s.stdout[16..].strip!
+end
+
 def get_virtualbox_version
   vboxmanage = virtualbox_path
   s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
@@ -351,15 +356,26 @@ if show_logo
     platform << 'shared_db_folder_default'
   end
 
-  virtualbox_version = 'N/A'
+  provider_version = false
+  provider_version_string = ''
+
+  if vvv_config['vm_config']['provider'] == 'parallels'
+    provider_name = 'Parallels'
+    provider_version = get_parallels_version
+  end
 
   if vvv_config['vm_config']['provider'] == 'virtualbox'
-    virtualbox_version = get_virtualbox_version
+    provider_name = 'VirtualBox'
+    provider_version = get_virtualbox_version
+  end
+
+  if defined? provider_version
+    provider_version_string = ", #{blue}#{provider_name}: #{blue}v#{provider_version}"
   end
 
   splashsecond = <<~HEREDOC
     #{yellow}Platform: #{yellow}#{platform.join(' ')}, #{purple}VVV Path: "#{vagrant_dir}"
-    #{green}Vagrant: #{green}v#{Vagrant::VERSION}, #{blue}VirtualBox: #{blue}v#{virtualbox_version}
+    #{green}Vagrant: #{green}v#{Vagrant::VERSION}#{provider_version_string}
 
     #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
     #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
