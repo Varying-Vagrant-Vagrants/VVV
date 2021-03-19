@@ -222,7 +222,7 @@ function vvv_provision_site_repo() {
     else
       # Clone or pull the site repository
       vvv_info " * Downloading ${SITE} provisioner, git cloning from ${REPO} into ${VM_DIR}"
-      if [ noroot git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}" -q ]; then
+      if noroot git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}"; then
         vvv_success " * ${SITE} provisioner clone successful"
       else
         vvv_error " ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
