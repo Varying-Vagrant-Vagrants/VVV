@@ -186,16 +186,35 @@ function vvv_process_site_hosts() {
 # @noargs
 function vvv_provision_site_repo() {
   if [[ false != "${REPO}" ]]; then
+    vvv_info " * Pulling down the ${BRANCH} branch of ${REPO}"
     if [[ -d "${VM_DIR}" ]] && [[ ! -z "$(ls -A "${VM_DIR}")" ]]; then
       if [[ -d "${VM_DIR}/.git" ]]; then
         echo " * Updating ${SITE} provisioner repo in ${VM_DIR} (${REPO}, ${BRANCH})"
+        echo " * Any local changes not present on the server will be discarded in favor of the remote branch"
         cd "${VM_DIR}"
-        echo " * performing a hard reset"
-        noroot git reset "origin/${BRANCH}" --hard -q
-        echo " * pulling origin ${BRANCH}"
-        noroot git pull origin "${BRANCH}" -q
-        echo " * checking out ${BRANCH}"
-        noroot git checkout "${BRANCH}" -q
+        echo " * Checking that remote origin is ${REPO}"
+        CURRENTORIGIN=$(git remote get-url origin)
+        if [[ "${CURRENTORIGIN}" != "${REPO}" ]]; then
+          vvv_error " ! The site config said to use <b>${REPO}</b>"
+          vvv_error " ! But the origin remote is actually <b>${CURRENTORIGIN}</b>"
+          vvv_error " ! Remove the unknown origin remote and re-add it."
+          vvv_error ""
+          vvv_error " ! You can do this by running these commands inside the VM:"
+          vvv_error " "
+          vvv_error " cd ${VM_DIR}"
+          vvv_error " git remote remove origin"
+          vvv_error " git remote add origin ${REPO}"
+          vvv_error " exit"
+          vvv_error " "
+          vvv_error " ! You can get inside the VM using <b>vagrant ssh</b>"
+          vvv_error " "
+          SUCCESS=1
+          return 1
+        fi
+        echo " * Fetching origin ${BRANCH}"
+        noroot git fetch origin "${BRANCH}"
+        echo " * performing a hard reset on origin/${BRANCH}"
+        noroot git reset "origin/${BRANCH}" --hard
         echo " * Updating provisioner repo complete"
       else
         vvv_error " ! Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
