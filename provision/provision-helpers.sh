@@ -273,8 +273,8 @@ export -f vvv_info
 #
 # @arg $1 string The message to print
 function vvv_error() {
-  local MSG=$(vvv_format_output "<error>${1}</error>")
-	echo -e "${MSG}"
+  local MSG=$(vvv_format_output )
+  vvv_output "<error>${1}</error>"
 }
 export -f vvv_error
 

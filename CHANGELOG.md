@@ -9,10 +9,14 @@ permalink: /docs/en-US/changelog/
 ## 3.7.x ( 2021 )
 ### Enhancements
 
-* 
+* Improved site provisioning messages
+
 ### Bug Fixes
 
-* 
+* Fixed `vvv_error` not always printing messages
+* When a sites repo has the wrong URL for the origin remote, the user is now told. This avoids certain mistakes being made.
+* Remote changes are now fetched before resetting, not afterwards.
+
 ## 3.6.2 ( 2021 March 17th )
 ### Bug Fixes
 
