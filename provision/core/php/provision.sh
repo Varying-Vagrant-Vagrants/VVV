@@ -4,10 +4,13 @@ set -eo pipefail
 
 VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.4"}
 function php_register_packages() {
-  if ! vvv_src_list_has "ondrej/php"; then
-    cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
-    ARCH=$(lsb_release -c --short)
-    sed -i "s|{ARCH}|${ARCH}|g" "/etc/apt/sources.list.d/vvv-php-sources.list"
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/php/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-php-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
 
   if ! vvv_apt_keys_has 'Ondřej'; then

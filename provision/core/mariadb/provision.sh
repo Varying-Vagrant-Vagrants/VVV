@@ -40,10 +40,13 @@ function mariadb_register_packages() {
     apt-key add /srv/config/apt-keys/mariadb.key
   fi
 
-  if ! vvv_src_list_has "MariaDB"; then
-    cp -f "/srv/provision/core/mariadb/sources.list" "/etc/apt/sources.list.d/vvv-mariadb-sources.list"
-    ARCH=$(lsb_release -c --short)
-    sed -i "s|{ARCH}|${ARCH}|g" "/etc/apt/sources.list.d/vvv-mariadb-sources.list"
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/mariadb/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-mariadb-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
 
   VVV_PACKAGE_LIST+=(mariadb-server)
@@ -111,6 +114,7 @@ function mysql_setup() {
     vvv_info " * Restarting mysql service"
     service mysql restart
   fi
+
   # IMPORT SQL
   #
   # Create the databases (unique to system) that will be imported with
@@ -126,7 +130,7 @@ function mysql_setup() {
   # Setup MySQL by importing an init file that creates necessary
   # users and databases that our vagrant setup relies on.
   mysql -u "root" -p"root" < "/srv/database/init.sql"
-  vvv_info " * Initial MySQL prep..."
+  vvv_info " * Initial SQL prep..."
 
   # Process each mysqldump SQL file in database/backups to import
   # an initial data set for MySQL.
