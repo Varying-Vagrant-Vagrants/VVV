@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 
 * Improved site provisioning messages
 * MariaDB upgraded too v10.5
+* Improved Apt source file handling in core provisioners
 
 ### Bug Fixes
 
