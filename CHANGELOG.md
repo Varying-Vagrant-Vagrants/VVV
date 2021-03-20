@@ -10,6 +10,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Improved site provisioning messages
+* Upgrade to Composer 2
 
 ### Bug Fixes
 
