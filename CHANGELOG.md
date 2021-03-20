@@ -11,7 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Improved site provisioning messages
-* MariaDB upgraded too v10.5
+* MariaDB upgraded to v10.5
 * Improved Apt source file handling in core provisioners
 * Upgrade to Composer 2
 
