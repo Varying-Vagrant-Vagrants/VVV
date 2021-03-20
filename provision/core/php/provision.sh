@@ -104,10 +104,6 @@ function phpfpm_finalize() {
   # to PHP and Nginx related files.
   usermod -a -G www-data vagrant
 
-  # Sanity check. The M1 box doesn't allow group access to the webroot. While
-  # this isn't necessary for any other box, it also doesn't hurt anything.
-  chmod -R g+w /srv/www/
-
   vvv_hook php_finalize
 }
 export -f phpfpm_finalize
