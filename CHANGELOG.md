@@ -10,6 +10,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Improved site provisioning messages
+* MariaDB upgraded too v10.5
 
 ### Bug Fixes
 
