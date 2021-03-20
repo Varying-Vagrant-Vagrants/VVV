@@ -7,6 +7,7 @@ permalink: /docs/en-US/changelog/
 # Changelog
 
 ## 3.7.x ( 2021 )
+
 ### Enhancements
 
 * Improved site provisioning messages
@@ -21,6 +22,7 @@ permalink: /docs/en-US/changelog/
 * Remote changes are now fetched before resetting, not afterwards.
 
 ## 3.6.2 ( 2021 March 17th )
+
 ### Bug Fixes
 
 * Replaced PHPCS symlinking to avoid issues with Windows
