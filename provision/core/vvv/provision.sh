@@ -18,6 +18,12 @@ function vvv_register_packages() {
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
+  # remove the old Python 2 packages to avoid issues with python3-pip
+  VVV_PACKAGE_REMOVAL_LIST+=(
+    python-pip
+    python-setuptools
+  )
+
   VVV_PACKAGE_LIST+=(
     software-properties-common
 
