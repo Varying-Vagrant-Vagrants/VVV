@@ -399,6 +399,7 @@ Vagrant.configure('2') do |config|
 
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
+    v.customize ['modifyvm', :id, '--uartmode1', 'disconnected']
     v.customize ['modifyvm', :id, '--memory', vvv_config['vm_config']['memory']]
     v.customize ['modifyvm', :id, '--cpus', vvv_config['vm_config']['cores']]
     v.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
