@@ -1,0 +1,21 @@
+{
+  "name": "varying-vagrant-vagrants/vvv",
+  "type": "metapackage",
+  "description": "An open source Vagrant configuration for developing with WordPress",
+  "keywords": [
+    "vagrant"
+  ],
+  "homepage": "https://varyingvagrantvagrants.org/",
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/Varying-Vagrant-Vagrants/VVV/issues/"
+  },
+  "require": {
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "wp-coding-standards/wpcs": "*",
+    "automattic/vipwpcs": "*",
+    "phpcompatibility/php-compatibility": "*",
+    "phpcompatibility/phpcompatibility-paragonie": "*",
+    "phpcompatibility/phpcompatibility-wp": "*"
+  }
+}
