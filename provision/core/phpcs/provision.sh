@@ -20,13 +20,6 @@ function php_codesniff_setup() {
   cd /srv/www/phpcs
   COMPOSER_BIN_DIR="bin" noroot composer install --no-ansi --no-progress
 
-  vvv_info " * Symlinking phpcs and phcbf into /usr/local/bin"
-
-  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
-  # that it can be used on the host in an editor with matching rules
-  #noroot ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
-  #noroot ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
-
   vvv_info " * Setting WordPress-Core as the default PHPCodesniffer standard"
 
   # Install the standards in PHPCS
