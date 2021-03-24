@@ -18,7 +18,7 @@ function php_codesniff_setup() {
   noroot mkdir -p /srv/www/phpcs
   noroot cp -f "/srv/config/phpcs/composer.json" "/srv/www/phpcs/composer.json"
   cd /srv/www/phpcs
-  COMPOSER_BIN_DIR="bin" noroot composer install --no-ansi --no-progress
+  COMPOSER_BIN_DIR="bin" noroot composer update --no-ansi --no-progress
 
   vvv_info " * Setting WordPress-Core as the default PHPCodesniffer standard"
 
