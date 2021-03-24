@@ -15,5 +15,6 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
     "automattic/vipwpcs": "^2.2",
     "phpcompatibility/php-compatibility": "^2.1.1"
-  }
+  },
+  "minimum-stability": "dev"
 }
