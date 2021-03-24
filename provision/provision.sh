@@ -39,6 +39,7 @@ export VVV_CONFIG=/vagrant/config.yml
 
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 export VVV_PACKAGE_LIST=()
+export VVV_PACKAGE_REMOVAL_LIST=()
 
 . "/srv/provision/core/env.sh"
 . '/srv/provision/core/deprecated.sh'
@@ -68,6 +69,10 @@ vvv_hook before_packages
 
 # Package and Tools Install
 vvv_info " * Main packages check and install."
+if ! vvv_package_remove ${VVV_PACKAGE_REMOVAL_LIST[@]}; then
+  vvv_error " ! Main packages removal failed, halting provision"
+  exit 1
+fi
 if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   vvv_error " ! Main packages check and install failed, halting provision"
   exit 1
