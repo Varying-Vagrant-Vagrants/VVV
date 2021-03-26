@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * MariaDB upgraded to v10.5
 * Improved Apt source file handling in core provisioners
 * Upgrade to Composer 2
+* Upgraded to Python 3 setuptools and pip3
 
 ### Bug Fixes
 
