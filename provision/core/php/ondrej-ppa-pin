@@ -1,0 +1,3 @@
+Package: *
+Pin: o=LP-PPA-ondrej-php,a=bionic,n=bionic,c=main,b=amd64
+Pin-Priority: 1001
