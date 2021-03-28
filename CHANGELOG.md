@@ -14,13 +14,15 @@ permalink: /docs/en-US/changelog/
 * MariaDB upgraded to v10.5
 * Improved Apt source file handling in core provisioners
 * Upgrade to Composer 2
+* Upgraded to Python 3 setuptools and pip3
+* PHPCS installation improvements
 
 ### Bug Fixes
 
 * Fixed `vvv_error` not always printing messages
 * When a sites repo has the wrong URL for the origin remote, the user is now told. This avoids certain mistakes being made.
 * Remote changes are now fetched before resetting, not afterwards.
-* Use a proper `composer.json` file for PHPCS
+* Increased the priority of Nodesource and Ondrej packages to avoid issues
 
 ## 3.6.2 ( 2021 March 17th )
 

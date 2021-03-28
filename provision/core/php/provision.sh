@@ -13,6 +13,8 @@ function php_register_packages() {
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
 
+  cp -f "/srv/provision/core/php/ondrej-ppa-pin" "/etc/apt/preferences.d/ondrej-ppa-pin"
+
   if ! vvv_apt_keys_has 'Ondřej'; then
     # Apply the PHP signing key
     vvv_info " * Applying the Ondřej PHP signing key..."
