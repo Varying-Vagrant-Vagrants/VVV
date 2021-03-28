@@ -97,4 +97,5 @@ function nginx_cleanup() {
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 }
 export -f nginx_cleanup
+
 vvv_add_hook finalize nginx_cleanup
