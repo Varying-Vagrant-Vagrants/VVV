@@ -5,87 +5,6 @@
 Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
-require 'etc'
-
-def virtualbox_path
-  @vboxmanage_path = nil
-  if Vagrant::Util::Platform.windows? || Vagrant::Util::Platform.cygwin?
-    @vboxmanage_path = Vagrant::Util::Which.which('VBoxManage')
-
-    # On Windows, we use the VBOX_INSTALL_PATH environmental
-    # variable to find VBoxManage.
-    if !@vboxmanage_path && (ENV.key?('VBOX_INSTALL_PATH') ||
-      ENV.key?('VBOX_MSI_INSTALL_PATH'))
-
-      # Get the path.
-      path = ENV['VBOX_INSTALL_PATH'] || ENV['VBOX_MSI_INSTALL_PATH']
-
-      # There can actually be multiple paths in here, so we need to
-      # split by the separator ";" and see which is a good one.
-      path.split(';').each do |single|
-        # Make sure it ends with a \
-        single += '\\' unless single.end_with?('\\')
-
-        # If the executable exists, then set it as the main path
-        # and break out
-        vboxmanage = "#{single}VBoxManage.exe"
-        if File.file?(vboxmanage)
-          @vboxmanage_path = Vagrant::Util::Platform.cygwin_windows_path(vboxmanage)
-          break
-        end
-      end
-    end
-
-    # If we still don't have one, try to find it using common locations
-    drive = ENV['SYSTEMDRIVE'] || 'C:'
-    [
-      "#{drive}/Program Files/Oracle/VirtualBox",
-      "#{drive}/Program Files (x86)/Oracle/VirtualBox",
-      "#{ENV['PROGRAMFILES']}/Oracle/VirtualBox"
-    ].each do |maybe|
-      path = File.join(maybe, 'VBoxManage.exe')
-      if File.file?(path)
-        @vboxmanage_path = path
-        break
-      end
-    end
-  elsif Vagrant::Util::Platform.wsl?
-    unless Vagrant::Util::Platform.wsl_windows_access?
-      raise Vagrant::Errors::WSLVirtualBoxWindowsAccessError
-      end
-
-    @vboxmanage_path = Vagrant::Util::Which.which('VBoxManage') || Vagrant::Util::Which.which('VBoxManage.exe')
-    unless @vboxmanage_path
-      # If we still don't have one, try to find it using common locations
-      drive = '/mnt/c'
-      [
-        "#{drive}/Program Files/Oracle/VirtualBox",
-        "#{drive}/Program Files (x86)/Oracle/VirtualBox"
-      ].each do |maybe|
-        path = File.join(maybe, 'VBoxManage.exe')
-        if File.file?(path)
-          @vboxmanage_path = path
-          break
-        end
-      end
-    end
-  end
-
-  # Fall back to hoping for the PATH to work out
-  @vboxmanage_path ||= 'VBoxManage'
-  @vboxmanage_path
-end
-
-def get_parallels_version
-  s = Vagrant::Util::Subprocess.execute('prlctl', '--version')
-  s.stdout[16..].strip!
-end
-
-def get_virtualbox_version
-  vboxmanage = virtualbox_path
-  s = Vagrant::Util::Subprocess.execute(vboxmanage, '--version')
-  s.stdout.strip!
-end
 
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
@@ -356,26 +275,27 @@ if show_logo
     platform << 'shared_db_folder_default'
   end
 
-  provider_version = false
-  provider_version_string = ''
+  provider_version = '??'
+  provider_meta = nil
 
-  if vvv_config['vm_config']['provider'] == 'parallels'
-    provider_name = 'Parallels'
-    provider_version = get_parallels_version
-  end
-
-  if vvv_config['vm_config']['provider'] == 'virtualbox'
-    provider_name = 'VirtualBox'
-    provider_version = get_virtualbox_version
-  end
-
-  if defined? provider_version
-    provider_version_string = ", #{blue}#{provider_name}: #{blue}v#{provider_version}"
+  case vvv_config['vm_config']['provider']
+  when 'virtualbox'
+    provider_meta = VagrantPlugins::ProviderVirtualBox::Driver::Meta.new()
+    provider_version = provider_meta.version
+  when 'parallels'
+    provider_meta = VagrantPlugins::Parallels::Driver::Meta.new()
+    provider_version = provider_meta.version
+  when 'vmware'
+    provider_version = '??'
+  when 'hyperv'
+    provider_version = 'n/a'
+  else
+    provider_version = '??'
   end
 
   splashsecond = <<~HEREDOC
     #{yellow}Platform: #{yellow}#{platform.join(' ')}, #{purple}VVV Path: "#{vagrant_dir}"
-    #{green}Vagrant: #{green}v#{Vagrant::VERSION}#{provider_version_string}
+    #{green}Vagrant: #{green}v#{Vagrant::VERSION}, #{blue}#{vvv_config['vm_config']['provider']}: #{blue}v#{provider_version}
 
     #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
     #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
