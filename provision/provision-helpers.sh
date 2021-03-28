@@ -454,6 +454,15 @@ export -f vvv_package_install
 vvv_package_remove() {
   declare -a packages=($@)
 
+  # Ensure packages are actually installed before removing them
+  if [ ${#packages[@]} -ne 0 ]; then
+    for package in "${packages[@]}"; do
+      if ! dpkg -s "${package}"; then
+        packages=("${packages[@]/$package}")
+      fi
+    done
+  fi
+
   if [ ${#packages[@]} -eq 0 ]; then
     vvv_info " * No packages to remove"
     return 0
