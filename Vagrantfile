@@ -276,10 +276,6 @@ if show_logo
   end
 
   provider_version = '??'
-<<<<<<< HEAD
-=======
-
->>>>>>> c6bbf9326f51bf238c3444b526f6ea1ba6f192e1
   provider_meta = nil
 
   case vvv_config['vm_config']['provider']
