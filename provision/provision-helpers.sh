@@ -415,7 +415,10 @@ vvv_package_install() {
 
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   vvv_info " * Cleaning up dpkg lock file"
-  rm /var/lib/dpkg/lock*
+  lockfiles=(/var/lib/dpkg/lock*)
+  if [ "${#lockfiles[@]}" ]; then
+    rm /var/lib/dpkg/lock*
+  fi
 
   vvv_info " * Updating apt keys"
   apt-key update -y
@@ -470,7 +473,10 @@ vvv_package_remove() {
 
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   vvv_info " * Cleaning up dpkg lock file"
-  rm /var/lib/dpkg/lock*
+  lockfiles=(/var/lib/dpkg/lock*)
+  if [ "${#lockfiles[@]}" ]; then
+    rm /var/lib/dpkg/lock*
+  fi
 
   # Install required packages
   vvv_info " * Removing apt-get packages..."
