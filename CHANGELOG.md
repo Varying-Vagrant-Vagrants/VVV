@@ -15,6 +15,7 @@ permalink: /docs/en-US/changelog/
 * Improved Apt source file handling in core provisioners
 * Upgrade to Composer 2
 * Upgraded to Python 3 setuptools and pip3
+* Added ARM64 support for Mailhog
 * Improved the splash screen provider version fetching
 
 ### Bug Fixes
