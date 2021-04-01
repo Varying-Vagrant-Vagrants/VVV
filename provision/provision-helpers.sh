@@ -408,9 +408,17 @@ export -f vvv_hook
 vvv_package_install() {
   declare -a packages=($@)
 
+  if [ ${#packages[@]} -eq 0 ]; then
+    vvv_info " * No packages to install"
+    return 0
+  fi
+
   # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
   vvv_info " * Cleaning up dpkg lock file"
-  rm /var/lib/dpkg/lock*
+  lockfiles=(/var/lib/dpkg/lock*)
+  if [ "${#lockfiles[@]}" ]; then
+    rm /var/lib/dpkg/lock*
+  fi
 
   vvv_info " * Updating apt keys"
   apt-key update -y
@@ -426,7 +434,7 @@ vvv_package_install() {
   # To avoid issues on provisioning and failed apt installation
   dpkg --configure -a
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
-    vvv_info " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    vvv_error " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean -y
     return 1
   fi
@@ -441,3 +449,45 @@ vvv_package_install() {
 
   return 0
 }
+export -f vvv_package_install
+
+# @description removes a selection of packages via `apt`
+# @example
+#   vvv_package_remove wget curl etc
+vvv_package_remove() {
+  declare -a packages=($@)
+
+  if [ ${#packages[@]} -eq 0 ]; then
+    vvv_info " * No packages to remove"
+    return 0
+  fi
+
+  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+  vvv_info " * Cleaning up dpkg lock file"
+  lockfiles=(/var/lib/dpkg/lock*)
+  if [ "${#lockfiles[@]}" ]; then
+    rm /var/lib/dpkg/lock*
+  fi
+
+  # Install required packages
+  vvv_info " * Removing apt-get packages..."
+
+  # To avoid issues on provisioning and failed apt installation
+  dpkg --configure -a
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew remove --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
+    vvv_error " * Removing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    apt-get clean -y
+    return 1
+  fi
+
+  # Remove unnecessary packages
+  vvv_info " * Removing unnecessary apt packages..."
+  apt-get autoremove -y
+
+  # Clean up apt caches
+  vvv_info " * Cleaning apt caches..."
+  apt-get clean -y
+
+  return 0
+}
+export -f vvv_package_remove

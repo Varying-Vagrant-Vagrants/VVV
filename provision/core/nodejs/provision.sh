@@ -12,6 +12,8 @@ function nodejs_register_packages() {
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
 
+  cp -f "/srv/provision/core/nodejs/nodesource-ppa-pin" "/etc/apt/preferences.d/nodesource-ppa-pin"
+
   if ! vvv_apt_keys_has 'NodeSource'; then
     # Retrieve the NodeJS signing key from nodesource.com
     vvv_info " * Applying NodeSource NodeJS signing key..."

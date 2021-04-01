@@ -3,13 +3,26 @@
 set -eo pipefail
 
 function vvv_register_packages() {
-  cp -f "/srv/provision/core/vvv/sources.list" "/etc/apt/sources.list.d/vvv-sources.list"
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/vvv/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
+  fi
 
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
     vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
     apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
+
+  # remove the old Python 2 packages to avoid issues with python3-pip
+  VVV_PACKAGE_REMOVAL_LIST+=(
+    python-pip
+    python-setuptools
+  )
 
   VVV_PACKAGE_LIST+=(
     software-properties-common
