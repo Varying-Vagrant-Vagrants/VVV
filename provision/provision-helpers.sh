@@ -460,7 +460,7 @@ vvv_package_remove() {
   # Ensure packages are actually installed before removing them
   if [ ${#packages[@]} -ne 0 ]; then
     for package in "${packages[@]}"; do
-      if ! dpkg -s "${package}"; then
+      if ! dpkg -S "${package}"; then
         packages=("${packages[@]/$package}")
       fi
     done
