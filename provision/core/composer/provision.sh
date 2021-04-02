@@ -44,7 +44,8 @@ function composer_setup() {
   # Update both Composer and any global packages. Updates to Composer are direct from
   # the master branch on its GitHub repository.
   vvv_info " * Checking for composer updates"
-  if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
+  composer_ver=$(noroot composer --version --no-ansi | awk -F' ' '{print $3}')
+  if [[ "$(printf '%s\n' "2.0.0" "$composer_ver" | sort -V | head -n1)" = "2.0.0" ]]; then
     vvv_info " * Updating Composer..."
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --2 --stable --no-progress --no-interaction
