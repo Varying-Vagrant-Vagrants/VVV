@@ -69,10 +69,12 @@ vvv_hook before_packages
 
 # Package and Tools Install
 vvv_info " * Main packages check and install."
-if ! vvv_package_remove ${VVV_PACKAGE_REMOVAL_LIST[@]}; then
+vvv_info " * Checking for apt packages to remove."
+if ! vvv_apt_package_remove ${VVV_PACKAGE_REMOVAL_LIST[@]}; then
   vvv_error " ! Main packages removal failed, halting provision"
   exit 1
 fi
+vvv_info " * Checking for apt packages to install."
 if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   vvv_error " ! Main packages check and install failed, halting provision"
   exit 1
