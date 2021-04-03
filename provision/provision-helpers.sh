@@ -445,13 +445,13 @@ vvv_package_install() {
   if [ ${#initialPackages[@]} -ne 0 ]; then
     for package in "${initialPackages[@]}"; do
       if ! vvv_is_apt_pkg_installed "${package}"; then
-        packages+="${package}"
+        packages+=("${package}")
       fi
     done
   fi
 
   if [ ${#packages[@]} -eq 0 ]; then
-    vvv_info " * No packages to install"
+    vvv_info " * No apt packages to install"
     return 0
   fi
 
@@ -512,13 +512,13 @@ vvv_apt_package_remove() {
   if [ ${#initialPackages[@]} -ne 0 ]; then
     for package in "${initialPackages[@]}"; do
       if vvv_is_apt_pkg_installed "${package}"; then
-        packages+="${package}"
+        packages+=("${package}")
       fi
     done
   fi
 
   if [ ${#packages[@]} -eq 0 ]; then
-    vvv_info " * No packages to remove"
+    vvv_info " * No apt packages to remove"
     return 0
   fi
 
