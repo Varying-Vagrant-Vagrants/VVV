@@ -13,10 +13,13 @@ permalink: /docs/en-US/changelog/
 * Improved site provisioning messages
 * MariaDB upgraded to v10.5
 * Improved Apt source file handling in core provisioners
-* Upgrade to Composer 2
+* Upgraded to Composer 2
 * Upgraded to Python 3 setuptools and pip3
 * Added ARM64 support for Mailhog
 * Improved the splash screen provider version fetching
+* Added improved apt package upgrade routines
+* Provisioners now ask to install only packages that aren't installed
+* General package handling performance improvements
 
 ### Bug Fixes
 
