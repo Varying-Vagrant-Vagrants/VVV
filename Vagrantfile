@@ -318,6 +318,9 @@ Vagrant.configure('2') do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
+  config.vm.network "forwarded_port", guest: 80, host: 8080,
+    auto_correct: true
+
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
     # Move the ubuntu-bionic-18.04-cloudimg-console.log file to log directory.
