@@ -74,6 +74,8 @@ if ! vvv_apt_package_remove ${VVV_PACKAGE_REMOVAL_LIST[@]}; then
   vvv_error " ! Main packages removal failed, halting provision"
   exit 1
 fi
+vvv_info " * Upgrading apt packages."
+vvv_apt_packages_upgrade
 vvv_info " * Checking for apt packages to install."
 if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   vvv_error " ! Main packages check and install failed, halting provision"

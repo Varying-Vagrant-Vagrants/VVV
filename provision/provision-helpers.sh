@@ -412,6 +412,28 @@ vvv_apt_update() {
   apt-get update -y --fix-missing
 }
 
+vvv_apt_packages_upgrade() {
+  vvv_info " * Upgrading apt packages"
+  vvv_apt_update
+  dpkg --configure -a
+  if ! apt-get  -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew upgrade --fix-missing --no-install-recommends --fix-broken; then
+    vvv_error " * Upgrading apt packages returned a failure code, cleaning up apt caches then exiting"
+    apt-get clean -y
+    return 1
+  fi
+}
+export -f vvv_apt_packages_upgrade
+
+vvv_apt_cleanup() {
+  # Remove unnecessary packages
+  vvv_info " * Removing unnecessary apt packages..."
+  apt-get autoremove -y
+
+  # Clean up apt caches
+  vvv_info " * Cleaning apt caches..."
+  apt-get clean -y
+}
+
 # @description Installs a selection of packages via `apt`
 # @example
 #   vvv_package_install wget curl etc
@@ -447,13 +469,7 @@ vvv_package_install() {
     return 1
   fi
 
-  # Remove unnecessary packages
-  vvv_info " * Removing unnecessary apt packages..."
-  apt-get autoremove -y
-
-  # Clean up apt caches
-  vvv_info " * Cleaning apt caches..."
-  apt-get clean -y
+  vvv_apt_cleanup
 
   return 0
 }
@@ -521,13 +537,7 @@ vvv_apt_package_remove() {
     return 1
   fi
 
-  # Remove unnecessary packages
-  vvv_info " * Removing unnecessary apt packages..."
-  apt-get autoremove -y
-
-  # Clean up apt caches
-  vvv_info " * Cleaning apt caches..."
-  apt-get clean -y
+  vvv_apt_cleanup
 
   return 0
 }
