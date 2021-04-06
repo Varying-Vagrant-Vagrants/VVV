@@ -16,6 +16,8 @@ permalink: /docs/en-US/changelog/
 * Upgrade to Composer 2
 * Upgraded to Python 3 setuptools and pip3
 * PHPCS installation improvements
+* Added ARM64 support for Mailhog
+* Improved the splash screen provider version fetching
 
 ### Bug Fixes
 
