@@ -10,15 +10,31 @@ function mailhog_setup() {
 
   if [[ ! -e /usr/local/bin/mailhog ]]; then
     vvv_info " * Installing MailHog"
-    curl --silent -L -o /usr/local/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
-    chmod +x /usr/local/bin/mailhog
-    vvv_success " * Mailhog binary installed"
+    mailhog_bin="https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64"
+    if [[ "aarch64" == $(uname -m) ]]; then
+      mailhog_bin="https://github.com/evertiro/MailHog/releases/download/v1.0.0-M1/MailHog_linux_arm64"
+    fi
+    if curl --silent -L -o /usr/local/bin/mailhog ${mailhog_bin}; then
+      chmod +x /usr/local/bin/mailhog
+      vvv_success " * Mailhog binary installed"
+    else
+      vvv_error " ! MailHog failed to download"
+      return 1
+    fi
   fi
   if [[ ! -e /usr/local/bin/mhsendmail ]]; then
     vvv_info " * Installing MHSendmail"
-    curl --silent -L -o /usr/local/bin/mhsendmail https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64
-    chmod +x /usr/local/bin/mhsendmail
-    vvv_success " * MHSendmail installed"
+    mhsendmail_bin="https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64"
+    if [[ "aarch64" == $(uname -m) ]]; then
+      mhsendmail_bin="https://github.com/evertiro/mhsendmail/releases/download/v0.2.0-M1/mhsendmail_linux_arm64"
+    fi
+    if curl --silent -L -o /usr/local/bin/mhsendmail ${mhsendmail_bin}; then
+      chmod +x /usr/local/bin/mhsendmail
+      vvv_success " * MHSendmail downloaded"
+    else
+      vvv_error " ! MHSendmail failed to download"
+      return 1
+    fi
   fi
 
   if [[ ! -e /etc/systemd/system/mailhog.service ]]; then
