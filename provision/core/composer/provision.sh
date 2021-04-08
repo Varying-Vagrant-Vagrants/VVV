@@ -21,7 +21,7 @@ function composer_setup() {
   export COMPOSER_RUNTIME_ENV="vagrant"
 
   vvv_info " * Checking Composer is installed"
-  if ! command -v composer &> /dev/null; then
+  if [[ ! -f "/usr/local/bin/composer" ]]; then
     vvv_info " * Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
