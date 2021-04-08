@@ -517,6 +517,15 @@ vvv_apt_package_remove() {
   declare -a initialPackages=($@)
   declare -a packages
 
+  # Ensure packages are actually installed before removing them
+  if [ ${#initialPackages[@]} -ne 0 ]; then
+    for package in "${initialPackages[@]}"; do
+      if vvv_is_apt_pkg_installed "${package}"; then
+        packages+=("${package}")
+      fi
+    done
+  fi
+
   if [ ${#packages[@]} -eq 0 ]; then
     vvv_info " * No apt packages to remove"
     return 0
