@@ -450,15 +450,6 @@ vvv_package_install() {
     done
   fi
 
-  # Ensure packages are actually installed before removing them
-  if [ ${#packages[@]} -ne 0 ]; then
-    for package in "${packages[@]}"; do
-      if dpkg -S "${package}"; then
-        packages=("${packages[@]/$package}")
-      fi
-    done
-  fi
-
   if [ ${#packages[@]} -eq 0 ]; then
     vvv_info " * No apt packages to install"
     return 0
