@@ -21,13 +21,7 @@ function composer_setup() {
   export COMPOSER_RUNTIME_ENV="vagrant"
 
   vvv_info " * Checking Composer is installed"
-  composer_bin=$(command -v composer)
-  if [[ $composer_bin ]]; then
-    composer_ver=$(composer --version)
-    vvv_error " * Composer found at ${composer_bin}"
-    vvv_error " * Installed version: ${composer_ver}"
-    apt list --installed "*composer*"
-  fi
+
   if [[ ! -f "/usr/local/bin/composer" ]]; then
     vvv_info " * Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
