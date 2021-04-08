@@ -21,8 +21,10 @@ function composer_setup() {
   export COMPOSER_RUNTIME_ENV="vagrant"
 
   vvv_info " * Checking Composer is installed"
+  vvv_composer=False
   if ! command -v composer &> /dev/null; then
     vvv_info " * Installing Composer..."
+    vvv_composer=True
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
     mv "composer.phar" "/usr/local/bin/composer"
@@ -44,7 +46,7 @@ function composer_setup() {
   # Update both Composer and any global packages. Updates to Composer are direct from
   # the master branch on its GitHub repository.
   vvv_info " * Checking for composer updates"
-  if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
+  if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" && "$vvv_composer" ]]; then
     vvv_info " * Updating Composer..."
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --2 --stable --no-progress --no-interaction
