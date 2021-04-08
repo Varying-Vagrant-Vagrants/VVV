@@ -30,6 +30,11 @@ jobs:
           sudo apt-get -q --autoremove --purge remove php*
           sudo apt-get -q autoclean
 
+          # remove pre-installed composer
+          if [ -f /usr/bin/composer ]; then
+            sudo rm -f /usr/bin/composer
+          fi
+
           # create vagrant user
           sudo groupadd -g 2000 vagrant
           sudo useradd -u 2000 -g vagrant -m vagrant
