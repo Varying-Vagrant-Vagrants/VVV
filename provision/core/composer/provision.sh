@@ -26,6 +26,7 @@ function composer_setup() {
     composer_ver=$(composer --version)
     vvv_error " * Composer found at ${composer_bin}"
     vvv_error " * Installed version: ${composer_ver}"
+    apt list --installed "*composer*"
   fi
   if [[ ! -f "/usr/local/bin/composer" ]]; then
     vvv_info " * Installing Composer..."
