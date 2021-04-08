@@ -27,8 +27,6 @@ function composer_setup() {
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
     mv "composer.phar" "/usr/local/bin/composer"
-    vvv_info " * Forcing composer to v2.x"
-    noroot composer selfupdate --2
     vvv_success " * Composer installer steps completed"
   fi
 

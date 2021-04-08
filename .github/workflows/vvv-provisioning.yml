@@ -31,11 +31,8 @@ jobs:
           sudo apt-get -q autoclean
 
           # remove pre-installed composer
-          which composer
           if [ -f /usr/bin/composer ]; then
-            echo " !! Remove me"
             sudo rm -f /usr/bin/composer
-            echo $?
           fi
 
           # create vagrant user
