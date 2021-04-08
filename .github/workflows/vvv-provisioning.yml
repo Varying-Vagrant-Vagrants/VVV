@@ -30,13 +30,18 @@ jobs:
           sudo apt-get -q --autoremove --purge remove php*
           sudo apt-get -q autoclean
 
+          # remove pre-installed composer
+          if [ -f /usr/bin/composer ]; then
+            sudo rm -f /usr/bin/composer
+          fi
+
           # create vagrant user
           sudo groupadd -g 2000 vagrant
           sudo useradd -u 2000 -g vagrant -m vagrant
 
           # vvv_symlink function to sumulate synced folders
           function vvv_symlink() {
-            if [ ! -d "${1}" ]; then 
+            if [ ! -d "${1}" ]; then
               sudo mkdir -p "${1}"
             fi
             sudo chown -R vagrant:vagrant "${1}"
