@@ -402,24 +402,7 @@ vvv_hook() {
 }
 export -f vvv_hook
 
-# @description Installs a selection of packages via `apt`
-# @example
-#   vvv_package_install wget curl etc
-vvv_package_install() {
-  declare -a packages=($@)
-
-  if [ ${#packages[@]} -eq 0 ]; then
-    vvv_info " * No packages to install"
-    return 0
-  fi
-
-  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
-  vvv_info " * Cleaning up dpkg lock file"
-  lockfiles=(/var/lib/dpkg/lock*)
-  if [ "${#lockfiles[@]}" ]; then
-    rm /var/lib/dpkg/lock*
-  fi
-
+vvv_apt_update() {
   vvv_info " * Updating apt keys"
   apt-key update -y
 
@@ -427,6 +410,62 @@ vvv_package_install() {
   vvv_info " * Running apt-get update..."
   rm -rf /var/lib/apt/lists/*
   apt-get update -y --fix-missing
+}
+
+vvv_apt_packages_upgrade() {
+  vvv_info " * Upgrading apt packages"
+  vvv_apt_update
+  dpkg --configure -a
+  if ! apt-get  -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew upgrade --fix-missing --no-install-recommends --fix-broken; then
+    vvv_error " * Upgrading apt packages returned a failure code, cleaning up apt caches then exiting"
+    apt-get clean -y
+    return 1
+  fi
+}
+export -f vvv_apt_packages_upgrade
+
+vvv_apt_cleanup() {
+  # Remove unnecessary packages
+  vvv_info " * Removing unnecessary apt packages..."
+  apt-get autoremove -y
+
+  # Clean up apt caches
+  vvv_info " * Cleaning apt caches..."
+  apt-get clean -y
+}
+
+# @description Installs a selection of packages via `apt`
+# @example
+#   vvv_package_install wget curl etc
+vvv_package_install() {
+  declare -a initialPackages=($@)
+  declare -a packages
+
+  # Ensure packages are not installed before adding them
+  if [ ${#initialPackages[@]} -ne 0 ]; then
+    for package in "${initialPackages[@]}"; do
+      if ! vvv_is_apt_pkg_installed "${package}"; then
+        packages+=("${package}")
+      fi
+    done
+  fi
+
+  # Ensure packages are actually installed before removing them
+  if [ ${#packages[@]} -ne 0 ]; then
+    for package in "${packages[@]}"; do
+      if dpkg -S "${package}"; then
+        packages=("${packages[@]/$package}")
+      fi
+    done
+  fi
+
+  if [ ${#packages[@]} -eq 0 ]; then
+    vvv_info " * No apt packages to install"
+    return 0
+  fi
+
+  vvv_cleanup_dpkg_locks
+  vvv_apt_update
 
   # Install required packages
   vvv_info " * Installing apt-get packages..."
@@ -439,44 +478,62 @@ vvv_package_install() {
     return 1
   fi
 
-  # Remove unnecessary packages
-  vvv_info " * Removing unnecessary apt packages..."
-  apt-get autoremove -y
-
-  # Clean up apt caches
-  vvv_info " * Cleaning apt caches..."
-  apt-get clean -y
+  vvv_apt_cleanup
 
   return 0
 }
 export -f vvv_package_install
 
-# @description removes a selection of packages via `apt`
-# @example
-#   vvv_package_remove wget curl etc
-vvv_package_remove() {
-  declare -a packages=($@)
+# @description checks if an apt package is installed, returns 0 if installed, 1 if not
+# @arg $1 string the package to check for
+vvv_is_apt_pkg_installed() {
+    # Get the number of packages installed that match $1
+    num=$(dpkg --dry-run -l "${1}" 2>/dev/null | egrep '^ii' | wc -l)
 
-  # Ensure packages are actually installed before removing them
-  if [ ${#packages[@]} -ne 0 ]; then
-    for package in "${packages[@]}"; do
-      if dpkg -S "${package}"; then
-        packages=("${packages[@]/$package}")
-      fi
-    done
-  fi
+    if [[ $num -eq 1 ]]; then
+        # it is installed
+        return 0
+    elif [[ $num -gt 1 ]]; then
+        # there is more than one package matching $1
+        return 0
+    fi
+    return 1
+}
 
-  if [ ${#packages[@]} -eq 0 ]; then
-    vvv_info " * No packages to remove"
-    return 0
-  fi
-
-  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+# @description cleans up dpkg lock files to avoid provisioning issues
+# based on a fix from https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+vvv_cleanup_dpkg_locks() {
   vvv_info " * Cleaning up dpkg lock file"
   lockfiles=(/var/lib/dpkg/lock*)
   if [ "${#lockfiles[@]}" ]; then
     rm /var/lib/dpkg/lock*
   fi
+}
+
+# @description removes a selection of packages via `apt`
+# @example
+#   vvv_apt_package_remove wget curl etc
+vvv_apt_package_remove() {
+  declare -a initialPackages=($@)
+  declare -a packages
+
+  # Ensure packages are actually installed before removing them
+  if [ ${#initialPackages[@]} -ne 0 ]; then
+    for package in "${initialPackages[@]}"; do
+      if vvv_is_apt_pkg_installed "${package}"; then
+        packages+=("${package}")
+      fi
+    done
+  fi
+
+  if [ ${#packages[@]} -eq 0 ]; then
+    vvv_info " * No apt packages to remove"
+    return 0
+  fi
+
+  vvv_info " * Removing ${#packages[@]} apt packages: '${packages[@]}'."
+
+  vvv_cleanup_dpkg_locks
 
   # Install required packages
   vvv_info " * Removing apt-get packages..."
@@ -489,14 +546,8 @@ vvv_package_remove() {
     return 1
   fi
 
-  # Remove unnecessary packages
-  vvv_info " * Removing unnecessary apt packages..."
-  apt-get autoremove -y
-
-  # Clean up apt caches
-  vvv_info " * Cleaning apt caches..."
-  apt-get clean -y
+  vvv_apt_cleanup
 
   return 0
 }
-export -f vvv_package_remove
+export -f vvv_apt_package_remove
