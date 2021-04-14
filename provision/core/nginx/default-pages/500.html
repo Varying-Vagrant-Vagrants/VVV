@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>40x Error</title>
+<title>500 Error</title>
 <style>
     html, body {
         height: 100%;
@@ -47,15 +47,15 @@
 </head>
 <body>
   <div class="box">
-    <h1>An 40X error occurred</h1>
+    <h1>You encountered a 500 error!</h1>
+    <p>Nginx tried to serve the page, but encountered an error code beginning with 50</p>
     <p>This could be because:</p>
     <ul>
-      <li>Provisioning is still running.</li>
-      <li>The last provision failed, you can find the logs in <code>VVV/log/provisioners</code>.</li>
-      <li>You visited a broken site or a file that does not exist.</li>
+      <li>Provisioning has not finished yet.</li>
+      <li>The last provision failed, you can find the logs in <code>log/provisioners</code>.</li>
+      <li>You made modifications to a sites Nginx config that contain mistakes.</li>
     </ul>
     <p>Double check the address, fix any Nginx configs you might have modified, and if you still have problems get in touch on <a href="https://github.com/Varying-Vagrant-Vagrants/VVV">GitHub</a> or <a href="https://varyingvagrantvagrants.org/docs/en-US/slack/">Slack</a>.</p>
   </div>
 </body>
 </html>
-
