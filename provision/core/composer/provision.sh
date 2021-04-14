@@ -18,6 +18,7 @@ function composer_setup() {
 
   export COMPOSER_ALLOW_SUPERUSER=1
   export COMPOSER_NO_INTERACTION=1
+  export COMPOSER_RUNTIME_ENV="vagrant"
 
   vvv_info " * Checking Composer is installed"
   if [[ ! -f "/usr/local/bin/composer" ]]; then
@@ -25,8 +26,8 @@ function composer_setup() {
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
     mv "composer.phar" "/usr/local/bin/composer"
-    vvv_info " * Forcing composer to v1.x"
-    composer selfupdate --1
+    vvv_info " * Forcing composer to v2.x"
+    noroot composer selfupdate --2
     vvv_success " * Composer installer steps completed"
   fi
 
@@ -46,7 +47,7 @@ function composer_setup() {
   if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
     vvv_info " * Updating Composer..."
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
-    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --1 --stable --no-progress --no-interaction
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --2 --stable --no-progress --no-interaction
     vvv_info " * Making sure the PHPUnit 7.5 package is available..."
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --prefer-dist --no-update --no-progress --no-interaction phpunit/phpunit:^7.5
   fi

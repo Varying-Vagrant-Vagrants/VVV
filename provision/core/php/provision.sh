@@ -2,11 +2,18 @@
 # @description Installs the default version of PHP
 set -eo pipefail
 
-VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.3"}
+VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.4"}
 function php_register_packages() {
-  if ! vvv_src_list_has "ondrej/php"; then
-    cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/php/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-php-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
+
+  cp -f "/srv/provision/core/php/ondrej-ppa-pin" "/etc/apt/preferences.d/ondrej-ppa-pin"
 
   if ! vvv_apt_keys_has 'Ondřej'; then
     # Apply the PHP signing key
@@ -29,7 +36,7 @@ function php_register_packages() {
 
     # Extra PHP modules that we find useful
     "php-pear"
-    "php-pcov"
+    "php${VVV_BASE_PHPVERSION}-pcov"
     "php${VVV_BASE_PHPVERSION}-ssh2"
     "php${VVV_BASE_PHPVERSION}-yaml"
     "php${VVV_BASE_PHPVERSION}-bcmath"
@@ -51,9 +58,9 @@ function php_register_packages() {
     imagemagick
   )
 
-  # XDebug
+  # Xdebug
   VVV_PACKAGE_LIST+=(
-    php-xdebug
+    "php${VVV_BASE_PHPVERSION}-xdebug"
   )
 }
 vvv_add_hook before_packages php_register_packages
@@ -70,7 +77,7 @@ function phpfpm_setup() {
       cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
     fi
   fi
-  
+
   vvv_info " * Checking supplementary PHP configs"
 
   for V in /etc/php/*; do
