@@ -3,8 +3,13 @@
 set -eo pipefail
 
 function nginx_register_packages() {
-  if ! vvv_src_list_has "nginx.org"; then
-    cp -f "/srv/provision/core/nginx/sources.list" "/etc/apt/sources.list.d/vvv-nginx-sources.list"
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/nginx/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-nginx-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
 
   # Before running `apt-get update`, we should add the public keys for
@@ -92,4 +97,5 @@ function nginx_cleanup() {
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 }
 export -f nginx_cleanup
+
 vvv_add_hook finalize nginx_cleanup
