@@ -50,9 +50,11 @@ function composer_setup() {
     COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --prefer-dist --no-update --no-progress --no-interaction phpunit/phpunit:^7.5
   fi
 
-  vvv_info " * Updating global composer packages..."
-  COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
-  vvv_success " * Global composer package update completed"
+  if [ -f /usr/local/src/composer/composer.json ]; then
+    vvv_info " * Updating global composer packages..."
+    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
+    vvv_success " * Global composer package update completed"
+  fi
 
   vvv_hook after_composer
 }
