@@ -9,7 +9,7 @@ VVV is a local developer environment, mainly aimed at [WordPress](https://wordpr
 To use it, download and install [Vagrant](https://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/). Then, clone this repository and run:
 
 ```shell
-vagrant plugin install vagrant-goodhosts --local
+vagrant plugin install --local
 vagrant up --provision
 ```
 
