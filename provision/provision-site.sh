@@ -361,9 +361,10 @@ function vvv_custom_folder_composer() {
             vvv_info " * Running composer update in ${folder}"
             noroot composer update
           fi
-        elif [[ "create-project" == "${key}" ]]; then
+        elif [[ "
+        project" == "${key}" ]]; then
           vvv_info " * Running composer create-project ${value} in ${folder}"
-          noroot composer create-project "${value}"
+          noroot composer create-project "${value}" .
         else
           vvv_warn " * Unknown key in Composer section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
