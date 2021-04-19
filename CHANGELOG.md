@@ -24,11 +24,11 @@ permalink: /docs/en-US/changelog/
 
 ### Bug Fixes
 
-* Fix PHP running as the wrong user
 * Fixed `vvv_error` not always printing messages
 * When a sites repo has the wrong URL for the origin remote, the user is now told. This avoids certain mistakes being made.
 * Remote changes are now fetched before resetting, not afterwards.
 * Increased the priority of Nodesource and Ondrej packages to avoid issues
+* Fixed Parallels mount permissions
 
 ## 3.6.2 ( 2021 March 17th )
 
