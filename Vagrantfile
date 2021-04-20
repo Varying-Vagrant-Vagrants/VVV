@@ -407,6 +407,14 @@ Vagrant.configure('2') do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
+
+    # Vagrant currently runs under Rosetta on M1 devices. As a result,
+    # this seems to be the most reliable way to detect whether or not we're
+    # running under ARM64.
+    if Etc.uname[:version].include? 'ARM64'
+      override.vm.box = 'rueian/ubuntu20-m1'
+      override.vm.box_version = "0.0.1"
+    end
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
@@ -520,7 +528,7 @@ Vagrant.configure('2') do |config|
     # those are specific to Virtualbox. The folder is therefore overridden with one that
     # uses corresponding Parallels mount options.
     config.vm.provider :parallels do |_v, override|
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: []
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: [ 'share' ]
     end
     # Neither does the HyperV provider
     config.vm.provider :hyperv do |_v, override|
@@ -574,19 +582,19 @@ Vagrant.configure('2') do |config|
   config.vm.provider :parallels do |_v, override|
     override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: [ 'share' ]
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'syslog', mount_options: []
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'syslog', mount_options: []
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'syslog', mount_options: []
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'syslog', mount_options: []
+    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'syslog', mount_options: [ 'share' ]
+    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'syslog', mount_options: [ 'share' ]
+    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'syslog', mount_options: [ 'share' ]
+    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'syslog', mount_options: [ 'share' ]
 
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: []
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: [ 'share' ]
     end
 
     vvv_config['sites'].each do |site, args|
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: []
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: [ 'share' ]
       end
     end
   end
