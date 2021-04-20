@@ -408,6 +408,14 @@ Vagrant.configure('2') do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-18.04'
+
+    # Vagrant currently runs under Rosetta on M1 devices. As a result,
+    # this seems to be the most reliable way to detect whether or not we're
+    # running under ARM64.
+    if Etc.uname[:version].include? 'ARM64'
+      override.vm.box = 'rueian/ubuntu20-m1'
+      override.vm.box_version = "0.0.1"
+    end
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
