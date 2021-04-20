@@ -22,6 +22,7 @@ permalink: /docs/en-US/changelog/
 * Provisioners now ask to install only packages that aren't installed
 * General package handling performance improvements
 * Experimental Apple silicon support using vagrant + parallels
+* Switch from Ubuntu 18.04 to 20.04 (current LTS release)
 
 ### Bug Fixes
 
