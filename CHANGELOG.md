@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
 * Added improved apt package upgrade routines
 * Provisioners now ask to install only packages that aren't installed
 * General package handling performance improvements
+* Experimental Apple silicon support using vagrant + parallels
 
 ### Bug Fixes
 
