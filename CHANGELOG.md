@@ -22,6 +22,7 @@ permalink: /docs/en-US/changelog/
 * Provisioners now ask to install only packages that aren't installed
 * General package handling performance improvements
 * Experimental Apple silicon support using vagrant + parallels
+* Disable backup and restore of databases by default
 
 ### Bug Fixes
 
