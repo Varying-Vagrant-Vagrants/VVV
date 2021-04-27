@@ -1,0 +1,3 @@
+# Provides PHP7
+deb http://ppa.launchpad.net/ondrej/php/ubuntu focal main
+deb-src http://ppa.launchpad.net/ondrej/php/ubuntu focal main
