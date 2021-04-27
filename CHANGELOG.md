@@ -23,6 +23,7 @@ permalink: /docs/en-US/changelog/
 * General package handling performance improvements
 * New config to exclude databases from backup in `config.yml` ( #2346 )
 * New config to gzip compress database backups in `config.yml` ( #2346 )
+* Experimental Apple silicon support using vagrant + parallels
 
 ### Bug Fixes
 
@@ -30,6 +31,7 @@ permalink: /docs/en-US/changelog/
 * When a sites repo has the wrong URL for the origin remote, the user is now told. This avoids certain mistakes being made.
 * Remote changes are now fetched before resetting, not afterwards.
 * Increased the priority of Nodesource and Ondrej packages to avoid issues
+* Fixed Parallels mount permissions
 
 ## 3.6.2 ( 2021 March 17th )
 
