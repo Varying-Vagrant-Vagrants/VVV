@@ -12,6 +12,8 @@ source /srv/provision/provision-helpers.sh
 mkdir -p /srv/database/backups
 vvv_info " * Performing Database Backups"
 databases=()
+gzip=$(get_config_value "general.db_backup.gzip")
+exclude_list=$(get_config_values "general.db_backup.exclude")
 
 vvv_info " * Fetching Database names"
 mysql --user="root" --password="root" -e 'show databases' | \
@@ -25,6 +27,17 @@ do
     [ "${db_name}" == "test" ] && vvv_info "   - skipped ${db_name}" && continue;
     [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
 
+    skip="false"
+    for exclude in ${exclude_list[@]}; do
+      if [ "${exclude}" == "${db_name}" ]; then
+        skip="true"
+      fi
+    done
+
+    if [ ${skip} == "true" ]; then
+        vvv_info "   - skipped <b>${db_name}</b>" && continue;
+    fi
+
     # don't back up databases with no tables
     mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
     db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
@@ -36,12 +49,20 @@ do
     databases+=( "${db_name}" )
 done < $TMPFIFODIR/dbnames
 
+ext=".sql"
+if [[ "${gzip}" == "True" ]]; then
+    ext=".sql.gz"
+fi
 count=0
 for db in "${databases[@]}"
 do
-    OUTPUT=$(printf "<info>   - %2s/%s Backing up </info><b>%-23s</b><info> to </info><b>'database/backups/%s.sql'</b>" "${count}" "${#databases[@]}" "'${db}'" "${db}")
+    OUTPUT=$(printf "<info>   - %2s/%s Backing up </info><b>%-23s</b><info> to </info><b>'database/backups/%s${ext}'</b>" "${count}" "${#databases[@]}" "'${db}'" "${db}")
     vvv_output "${OUTPUT}"
-    mysqldump -uroot -proot "${db}" > "/srv/database/backups/${db}.sql";
+    if [[ "${gzip}" == "True" ]]; then
+      mysqldump -uroot -proot "${db}" | gzip > "/srv/database/backups/${db}.sql.gz"
+    else
+      mysqldump -uroot -proot "${db}" > "/srv/database/backups/${db}.sql";
+    fi
     let "count=count+1"
 done
 

@@ -131,12 +131,19 @@ vm_config:
 
 # General VVV options
 general:
+
+  # Back up Options
+  # You can always backup/restore manually using vagrant ssh -c "db_backup" or vagrant ssh -c "db_restore"
+
   # Backup the databases to the database/backups subfolder on halt/suspend/destroy, set to false to disable
-  db_backup: true
+  db_backup: false
+
   # Import the databases if they're missing from backups
-  db_restore: true
+  db_restore: false
+
   # set to true to use a synced shared folder for MariaDB database storage
   db_share_type: false
+
   # GitHub token to use from composer
   #github_token: xxxxxx
 
