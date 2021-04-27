@@ -21,6 +21,8 @@ permalink: /docs/en-US/changelog/
 * Added improved apt package upgrade routines
 * Provisioners now ask to install only packages that aren't installed
 * General package handling performance improvements
+* New config to exclude databases from backup in `config.yml` ( #2346 )
+* New config to gzip compress database backups in `config.yml` ( #2346 )
 * Experimental Apple silicon support using vagrant + parallels
 * Disable backup and restore of databases by default
 
