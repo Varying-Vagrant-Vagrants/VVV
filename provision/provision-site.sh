@@ -493,8 +493,8 @@ if [[ ! -d "${VM_DIR}" ]]; then
 fi
 
 vvv_process_site_hosts
-vvv_custom_folders
 vvv_provision_site_script
+vvv_custom_folders
 vvv_provision_site_nginx
 
 vvv_info " * Reloading Nginx"
