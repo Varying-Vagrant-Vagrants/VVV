@@ -22,6 +22,10 @@ permalink: /docs/en-US/changelog/
 * Provisioners now ask to install only packages that aren't installed
 * General package handling performance improvements
 * Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
+* New config to exclude databases from backup in `config.yml` ( #2346 )
+* New config to gzip compress database backups in `config.yml` ( #2346 )
+* Experimental Apple silicon support using vagrant + parallels
+* Disable backup and restore of databases by default
 
 ### Bug Fixes
 
@@ -29,6 +33,7 @@ permalink: /docs/en-US/changelog/
 * When a sites repo has the wrong URL for the origin remote, the user is now told. This avoids certain mistakes being made.
 * Remote changes are now fetched before resetting, not afterwards.
 * Increased the priority of Nodesource and Ondrej packages to avoid issues
+* Fixed Parallels mount permissions
 
 ## 3.6.2 ( 2021 March 17th )
 
