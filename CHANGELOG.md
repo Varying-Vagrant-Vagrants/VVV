@@ -25,6 +25,7 @@ permalink: /docs/en-US/changelog/
 * New config to gzip compress database backups in `config.yml` ( #2346 )
 * Experimental Apple silicon support using vagrant + parallels
 * Disable backup and restore of databases by default
+* Improved Composer installation
 
 ### Bug Fixes
 
