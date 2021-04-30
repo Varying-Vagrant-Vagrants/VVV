@@ -25,6 +25,8 @@ permalink: /docs/en-US/changelog/
 * New config to gzip compress database backups in `config.yml` ( #2346 )
 * Experimental Apple silicon support using vagrant + parallels
 * Disable backup and restore of databases by default
+* Updated Mailhog to 1.0.1 for new installs
+* Improved MailHog downloading with retries and error output
 
 ### Bug Fixes
 
