@@ -12,7 +12,7 @@ function mailhog_setup() {
     vvv_info " * Installing MailHog"
     mailhog_bin="https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64"
     if [[ "aarch64" == $(uname -m) ]]; then
-      mailhog_bin="https://github.com/evertiro/MailHog/releases/download/v1.0.0-M1/MailHog_linux_arm64"
+      mailhog_bin="https://github.com/evertiro/MailHog/releases/download/v1.0.1-M1/MailHog_linux_arm64"
     fi
     if curl --silent -L -o /usr/local/bin/mailhog "${mailhog_bin}"; then
       chmod +x /usr/local/bin/mailhog
