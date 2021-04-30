@@ -18,7 +18,7 @@ function mailhog_setup() {
       chmod +x /usr/local/bin/mailhog
       vvv_success " * Mailhog binary installed"
     else
-      vvv_error " ! MailHog failed to download, check that you have a stable reliable network connection then try again. VVV tried to download '${mailhog_bin}'"
+      vvv_error " ! MailHog failed to download, error code: '${?}', check that you have a stable reliable network connection then try again. VVV tried to download '${mailhog_bin}'"
       return 1
     fi
   fi
@@ -32,7 +32,7 @@ function mailhog_setup() {
       chmod +x /usr/local/bin/mhsendmail
       vvv_success " * MHSendmail downloaded"
     else
-      vvv_error " ! MHSendmail failed to download, check that you have a stable reliable network connection then try again. VVV tried to download '${mhsendmail_bin}'"
+      vvv_error " ! MHSendmail failed to download, error code: '${?}', check that you have a stable reliable network connection then try again. VVV tried to download '${mhsendmail_bin}'"
       return 1
     fi
   fi
