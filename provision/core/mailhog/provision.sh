@@ -37,9 +37,11 @@ function mailhog_setup() {
     fi
   fi
 
-  vvv_info " * Adding Mailhog service file"
-  # Make it start on reboot
-  cp -f "/srv/provision/core/mailhog/mailhog.service" "/etc/systemd/system/mailhog.service"
+  if [[ -d /etc/systemd/system/ ]]; then
+    vvv_info " * Adding Mailhog service file"
+    # Make it start on reboot
+    cp -f "/srv/provision/core/mailhog/mailhog.service" "/etc/systemd/system/mailhog.service"
+  fi
 
   # Start on reboot
   if [ "${VVV_DOCKER}" != 1 ]; then
