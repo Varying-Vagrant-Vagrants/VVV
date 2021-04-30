@@ -14,11 +14,11 @@ function mailhog_setup() {
     if [[ "aarch64" == $(uname -m) ]]; then
       mailhog_bin="https://github.com/evertiro/MailHog/releases/download/v1.0.1-M1/MailHog_linux_arm64"
     fi
-    if curl --silent -L -o /usr/local/bin/mailhog "${mailhog_bin}"; then
+    if curl --retry 3 --retry-delay 1 --show-error --silent -L -o /usr/local/bin/mailhog "${mailhog_bin}"; then
       chmod +x /usr/local/bin/mailhog
       vvv_success " * Mailhog binary installed"
     else
-      vvv_error " ! MailHog failed to download, check that you have a stable reliable network connection then try again. VVV tried to download ${mailhog_bin}"
+      vvv_error " ! MailHog failed to download, check that you have a stable reliable network connection then try again. VVV tried to download '${mailhog_bin}'"
       return 1
     fi
   fi
@@ -28,11 +28,11 @@ function mailhog_setup() {
     if [[ "aarch64" == $(uname -m) ]]; then
       mhsendmail_bin="https://github.com/evertiro/mhsendmail/releases/download/v0.2.0-M1/mhsendmail_linux_arm64"
     fi
-    if curl --silent -L -o /usr/local/bin/mhsendmail "${mhsendmail_bin}"; then
+    if curl --retry 3 --retry-delay 1 --show-error --silent -L -o /usr/local/bin/mhsendmail "${mhsendmail_bin}"; then
       chmod +x /usr/local/bin/mhsendmail
       vvv_success " * MHSendmail downloaded"
     else
-      vvv_error " ! MHSendmail failed to download, check that you have a stable reliable network connection then try again. VVV tried to download ${mhsendmail_bin}"
+      vvv_error " ! MHSendmail failed to download, check that you have a stable reliable network connection then try again. VVV tried to download '${mhsendmail_bin}'"
       return 1
     fi
   fi
