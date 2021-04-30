@@ -52,7 +52,7 @@ export -f containsElement
 # @arg $1 string The address to test
 # @see check_network_connection_to_host
 function network_detection() {
-  local url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpad.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
@@ -64,7 +64,7 @@ export -f network_detection
 # @exitcode 0 If the address is reachable
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
-  local url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpad.net"}
   vvv_info " * Testing network connection to <url>${url}</url>"
 
   # Network Detection

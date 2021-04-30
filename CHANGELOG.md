@@ -27,6 +27,7 @@ permalink: /docs/en-US/changelog/
 * Disable backup and restore of databases by default
 * Updated Mailhog to 1.0.1 for new installs
 * Improved MailHog downloading with retries and error output
+* Improved Composer installation
 
 ### Bug Fixes
 
