@@ -36,6 +36,7 @@ permalink: /docs/en-US/changelog/
 * Remote changes are now fetched before resetting, not afterwards.
 * Increased the priority of Nodesource and Ondrej packages to avoid issues
 * Fixed Parallels mount permissions
+* Fixes for site names containing spaces causing Nginx and TLS issues
 
 ## 3.6.2 ( 2021 March 17th )
 
