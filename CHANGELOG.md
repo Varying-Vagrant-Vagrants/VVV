@@ -29,6 +29,7 @@ permalink: /docs/en-US/changelog/
 * Improved MailHog downloading with retries and error output
 * Improved Composer installation
 * webp support in Imagemagick
+* Switch from Ubuntu 18.04 to 20.04 (current LTS release)
 
 ### Bug Fixes
 
@@ -37,6 +38,7 @@ permalink: /docs/en-US/changelog/
 * Remote changes are now fetched before resetting, not afterwards.
 * Increased the priority of Nodesource and Ondrej packages to avoid issues
 * Fixed Parallels mount permissions
+* Fixes for site names containing spaces causing Nginx and TLS issues
 
 ## 3.6.2 ( 2021 March 17th )
 
