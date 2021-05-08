@@ -18,7 +18,7 @@ function nginx_register_packages() {
   if ! vvv_apt_keys_has 'nginx'; then
     # Retrieve the Nginx signing key from nginx.org
     vvv_info " * Applying Nginx signing key..."
-    apt-key add /srv/config/apt-keys/nginx_signing.key
+    apt-key add /srv/provision/core/nginx/apt-keys/nginx_signing.key
   fi
 
   VVV_PACKAGE_LIST+=(nginx)
