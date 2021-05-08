@@ -37,7 +37,7 @@ function mariadb_register_packages() {
   if ! vvv_apt_keys_has 'MariaDB'; then
     # Apply the MariaDB signing keyg
     vvv_info " * Applying the MariaDB signing key..."
-    apt-key add /srv/config/apt-keys/mariadb.key
+    apt-key add /srv/provision/core/mariadb/apt-keys/mariadb.key
   fi
 
   local OSID=$(lsb_release --id --short)
