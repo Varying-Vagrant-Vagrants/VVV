@@ -6,7 +6,7 @@
 
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
-. "/srv/config/bash_aliases"
+. "/srv/core/env/homedir/.bash_aliases"
 
 # cleanup
 mkdir -p /vagrant
