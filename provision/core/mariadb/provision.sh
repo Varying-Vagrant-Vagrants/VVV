@@ -31,8 +31,8 @@ function mariadb_register_packages() {
   fi
 
   mkdir -p "/etc/mysql/conf.d"
-  vvv_info " * Copying /srv/config/mysql-config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
-  cp -f "/srv/config/mysql-config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
+  vvv_info " * Copying /srv/provision/core/mariadb/config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
+  cp -f "/srv/provision/core/mariadb/config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
 
   if ! vvv_apt_keys_has 'MariaDB'; then
     # Apply the MariaDB signing keyg
@@ -93,12 +93,12 @@ function mysql_setup() {
   vvv_info " * Setting up database configuration file links..."
 
   # Copy mysql configuration from local
-  cp "/srv/config/mysql-config/my.cnf" "/etc/mysql/my.cnf"
-  vvv_info " * Copied /srv/config/mysql-config/my.cnf               to /etc/mysql/my.cnf"
+  cp -f "/srv/provision/core/mariadb/config/my.cnf" "/etc/mysql/my.cnf"
+  vvv_info " * Copied /srv/provision/core/mariadb/config/my.cnf               to /etc/mysql/my.cnf"
 
-  cp -f  "/srv/config/mysql-config/root-my.cnf" "/home/vagrant/.my.cnf"
+  cp -f  "/srv/provision/core/mariadb/config/root-my.cnf" "/home/vagrant/.my.cnf"
   chmod 0644 "/home/vagrant/.my.cnf"
-  vvv_info " * Copied /srv/config/mysql-config/root-my.cnf          to /home/vagrant/.my.cnf"
+  vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /home/vagrant/.my.cnf"
 
   if [ "${VVV_DOCKER}" != 1 ]; then
     check_mysql_root_password
