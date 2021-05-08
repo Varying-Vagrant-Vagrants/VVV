@@ -17,7 +17,7 @@ function nodejs_register_packages() {
   if ! vvv_apt_keys_has 'NodeSource'; then
     # Retrieve the NodeJS signing key from nodesource.com
     vvv_info " * Applying NodeSource NodeJS signing key..."
-    apt-key add /srv/config/apt-keys/nodesource.gpg.key
+    apt-key add /srv/provision/core/nodejs/apt-keys/nodesource.gpg.key
   fi
 
   VVV_PACKAGE_LIST+=(
