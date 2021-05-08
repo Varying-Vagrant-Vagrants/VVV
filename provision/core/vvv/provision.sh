@@ -51,6 +51,10 @@ function vvv_register_packages() {
     # Allows conversion of DOS style line endings to something less troublesome
     # in Linux.
     dos2unix
+    
+    # webp support
+    libwebp-dev
+    webp
   )
 }
 vvv_add_hook before_packages vvv_register_packages 0

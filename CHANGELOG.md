@@ -28,6 +28,7 @@ permalink: /docs/en-US/changelog/
 * Updated Mailhog to 1.0.1 for new installs
 * Improved MailHog downloading with retries and error output
 * Improved Composer installation
+* webp support in Imagemagick
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
 
 ### Bug Fixes
