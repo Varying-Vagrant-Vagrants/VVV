@@ -50,11 +50,11 @@ function nginx_setup() {
   vvv_info " * Setup configuration files..."
 
   # Copy nginx configuration from local
-  vvv_info " * Copying /srv/provision/core/nginx/configs/nginx.conf           to /etc/nginx/nginx.conf"
-  cp -f "/srv/provision/core/nginx/configs/nginx.conf" "/etc/nginx/nginx.conf"
+  vvv_info " * Copying /srv/provision/core/nginx/config/nginx.conf           to /etc/nginx/nginx.conf"
+  cp -f "/srv/provision/core/nginx/config/nginx.conf" "/etc/nginx/nginx.conf"
 
-  vvv_info " * Copying /srv/provision/core/nginx/configs/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
-  cp -f "/srv/provision/core/nginx/configs/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
+  vvv_info " * Copying /srv/provision/core/nginx/config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
+  cp -f "/srv/provision/core/nginx/config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
 
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir -p "/etc/nginx/upstreams/"
@@ -65,8 +65,8 @@ function nginx_setup() {
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir -p "/etc/nginx/custom-sites/"
   fi
-  vvv_info " * Rsync'ing /srv/provision/core/nginx/configs/sites/             to /etc/nginx/custom-sites"
-  rsync -rvzh --delete "/srv/provision/core/nginx/configs/sites/" "/etc/nginx/custom-sites/"
+  vvv_info " * Rsync'ing /srv/provision/core/nginx/config/sites/             to /etc/nginx/custom-sites"
+  rsync -rvzh --delete "/srv/provision/core/nginx/config/sites/" "/etc/nginx/custom-sites/"
 
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
     mkdir -p "/etc/nginx/custom-utilities/"
