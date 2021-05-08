@@ -29,6 +29,7 @@ permalink: /docs/en-US/changelog/
 * Improved MailHog downloading with retries and error output
 * Improved Composer installation
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
+* Simplified config folder
 
 ### Bug Fixes
 
