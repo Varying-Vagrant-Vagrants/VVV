@@ -133,24 +133,12 @@ function php_nginx_upstream() {
 }
 vvv_add_hook nginx_upstreams php_nginx_upstream
 
-function memcached_register_packages() {
+function vvv_php_memcached_register_packages() {
   # MemCached
   VVV_PACKAGE_LIST+=(
     php${VVV_BASE_PHPVERSION}-memcache
     php${VVV_BASE_PHPVERSION}-memcached
-
-    # memcached is made available for object caching
-    memcached
   )
 }
-vvv_add_hook before_packages memcached_register_packages
-function memcached_setup() {
-  # Copy memcached configuration from local
-  vvv_info " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
-}
-vvv_add_hook after_packages memcached_setup 60
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "service memcached restart"
-fi
+export -f vvv_php_memcached_register_packages
+vvv_add_hook before_packages vvv_php_memcached_register_packages
