@@ -18,7 +18,7 @@ function php_register_packages() {
   if ! vvv_apt_keys_has 'Ondřej'; then
     # Apply the PHP signing key
     vvv_info " * Applying the Ondřej PHP signing key..."
-    apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
+    apt-key add /srv/provision/core/php/apt-keys/ondrej_keyserver_ubuntu.key
   fi
 
   VVV_PACKAGE_LIST+=(
