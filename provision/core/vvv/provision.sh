@@ -20,6 +20,7 @@ function vvv_register_packages() {
 
   # remove the old Python 2 packages to avoid issues with python3-pip
   VVV_PACKAGE_REMOVAL_LIST+=(
+    mysql-common
     python-pip
     python-setuptools
   )
@@ -51,7 +52,7 @@ function vvv_register_packages() {
     # Allows conversion of DOS style line endings to something less troublesome
     # in Linux.
     dos2unix
-    
+
     # webp support
     libwebp-dev
     webp
