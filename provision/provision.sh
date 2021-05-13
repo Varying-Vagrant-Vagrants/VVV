@@ -41,7 +41,7 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 export VVV_PACKAGE_LIST=()
 export VVV_PACKAGE_REMOVAL_LIST=()
 
-. "/srv/provision/core/env/env.sh"
+. "/srv/provision/core/env/provision.sh"
 . '/srv/provision/core/deprecated.sh'
 . "/srv/provision/core/vvv/provision.sh"
 . "/srv/provision/core/git/provision.sh"
