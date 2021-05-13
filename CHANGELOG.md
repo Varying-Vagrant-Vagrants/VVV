@@ -40,6 +40,7 @@ permalink: /docs/en-US/changelog/
 * Increased the priority of Nodesource and Ondrej packages to avoid issues
 * Fixed Parallels mount permissions
 * Fixes for site names containing spaces causing Nginx and TLS issues
+* Warnings that you're missing vagrant plugins no longer show when running vagrant plugin commands
 
 ## 3.6.2 ( 2021 March 17th )
 

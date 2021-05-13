@@ -804,8 +804,14 @@ Vagrant.configure('2') do |config|
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
   else
-    puts "! Neither the HostManager, GoodHosts or HostsUpdater plugins are installed!!! Domains won't work without one of these plugins!"
-    puts "Run 'vagrant plugin install vagrant-goodhosts' then try again."
+    show_check = true if %w[up halt resume suspend status provision reload].include? ARGV[0]
+    if show_check
+      puts ""
+      puts " X ! There is no hosts file vagrant plugin installed!"
+      puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
+      puts " X Run 'vagrant plugin install --local' to fix this."
+      puts ""
+    end
   end
 
   # Vagrant Triggers
