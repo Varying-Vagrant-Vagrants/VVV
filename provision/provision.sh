@@ -6,7 +6,7 @@
 
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
-. "/srv/config/bash_aliases"
+. "/srv/provision/core/env/homedir/.bash_aliases"
 
 # cleanup
 mkdir -p /vagrant
@@ -41,13 +41,14 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 export VVV_PACKAGE_LIST=()
 export VVV_PACKAGE_REMOVAL_LIST=()
 
-. "/srv/provision/core/env.sh"
+. "/srv/provision/core/env/env.sh"
 . '/srv/provision/core/deprecated.sh'
 . "/srv/provision/core/vvv/provision.sh"
 . "/srv/provision/core/git/provision.sh"
 . "/srv/provision/core/mariadb/provision.sh"
 . "/srv/provision/core/postfix/provision.sh"
 . "/srv/provision/core/nginx/provision.sh"
+. "/srv/provision/core/memcached/provision.sh"
 . "/srv/provision/core/php/provision.sh"
 . "/srv/provision/core/composer/provision.sh"
 . "/srv/provision/core/nodejs/provision.sh"

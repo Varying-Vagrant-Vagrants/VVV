@@ -18,7 +18,7 @@ function nginx_register_packages() {
   if ! vvv_apt_keys_has 'nginx'; then
     # Retrieve the Nginx signing key from nginx.org
     vvv_info " * Applying Nginx signing key..."
-    apt-key add /srv/config/apt-keys/nginx_signing.key
+    apt-key add /srv/provision/core/nginx/apt-keys/nginx_signing.key
   fi
 
   VVV_PACKAGE_LIST+=(nginx)
@@ -50,11 +50,11 @@ function nginx_setup() {
   vvv_info " * Setup configuration files..."
 
   # Copy nginx configuration from local
-  vvv_info " * Copying /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
-  cp -f "/srv/config/nginx-config/nginx.conf" "/etc/nginx/nginx.conf"
+  vvv_info " * Copying /srv/provision/core/nginx/config/nginx.conf           to /etc/nginx/nginx.conf"
+  cp -f "/srv/provision/core/nginx/config/nginx.conf" "/etc/nginx/nginx.conf"
 
-  vvv_info " * Copying /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
-  cp -f "/srv/config/nginx-config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
+  vvv_info " * Copying /srv/provision/core/nginx/config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
+  cp -f "/srv/provision/core/nginx/config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
 
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir -p "/etc/nginx/upstreams/"
@@ -65,8 +65,8 @@ function nginx_setup() {
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir -p "/etc/nginx/custom-sites/"
   fi
-  vvv_info " * Rsync'ing /srv/config/nginx-config/sites/             to /etc/nginx/custom-sites"
-  rsync -rvzh --delete "/srv/config/nginx-config/sites/" "/etc/nginx/custom-sites/"
+  vvv_info " * Rsync'ing /srv/provision/core/nginx/config/sites/             to /etc/nginx/custom-sites"
+  rsync -rvzh --delete "/srv/provision/core/nginx/config/sites/" "/etc/nginx/custom-sites/"
 
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
     mkdir -p "/etc/nginx/custom-utilities/"

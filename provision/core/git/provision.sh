@@ -16,7 +16,7 @@ function git_register_packages() {
   if ! vvv_apt_keys_has 'git-lfs'; then
     # Apply the PackageCloud signing key which signs git lfs
     vvv_info " * Applying the PackageCloud Git-LFS signing key..."
-    apt-key add /srv/config/apt-keys/git-lfs.key
+    apt-key add /srv/provision/core/git/apt-keys/git-lfs.key
   fi
 
   local OSID=$(lsb_release --id --short)

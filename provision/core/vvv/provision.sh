@@ -15,7 +15,7 @@ function vvv_register_packages() {
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
     vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
-    apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
+    apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
   # remove the old Python 2 packages to avoid issues with python3-pip
@@ -95,8 +95,8 @@ fi
 
 function apt_hash_missmatch_fix() {
   if [ ! -f "/etc/apt/apt.conf.d/99hashmismatch" ]; then
-    vvv_info " * Copying /srv/config/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
-    cp -f "/srv/config/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
+    vvv_info " * Copying /srv/provision/core/vvv/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
+    cp -f "/srv/provision/core/vvv/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
   fi
 }
 export -f apt_hash_missmatch_fix

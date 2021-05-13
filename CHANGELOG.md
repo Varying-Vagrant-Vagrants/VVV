@@ -30,6 +30,7 @@ permalink: /docs/en-US/changelog/
 * Improved Composer installation
 * webp support in Imagemagick
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
+* Simplified config folder
 
 ### Bug Fixes
 
