@@ -138,8 +138,8 @@ general:
   # Backup the databases to the database/backups subfolder on halt/suspend/destroy, set to false to disable
   db_backup: false
      gzip: true
-     exclude:
-       - wordpress-trunk
+     #exclude:
+     #  - wordpress-trunk
 
   # Import the databases if they're missing from backups
   db_restore: false
