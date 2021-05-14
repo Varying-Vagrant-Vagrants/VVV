@@ -18,10 +18,13 @@ function vvv_register_packages() {
     apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 
-  # remove the old Python 2 packages to avoid issues with python3-pip
   VVV_PACKAGE_REMOVAL_LIST+=(
+    # remove the old Python 2 packages to avoid issues with python3-pip
     python-pip
     python-setuptools
+
+    # remove mysql-common to ensure mariadb installation works
+    mysql-common
   )
 
   VVV_PACKAGE_LIST+=(
@@ -51,7 +54,7 @@ function vvv_register_packages() {
     # Allows conversion of DOS style line endings to something less troublesome
     # in Linux.
     dos2unix
-    
+
     # webp support
     libwebp-dev
     webp
