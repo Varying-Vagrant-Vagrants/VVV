@@ -1,8 +1,8 @@
 ---
 name: Support/Question
 about: Having Trouble? Unsure of how something works? Don't spend all day trying to debug it, we can help!
-title: ''
-labels: 'support, question'
+title: 'Q: '
+labels: 'type:support, type:question'
 assignees: ''
 
 ---
