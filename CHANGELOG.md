@@ -41,6 +41,7 @@ permalink: /docs/en-US/changelog/
 * Fixed Parallels mount permissions
 * Fixes for site names containing spaces causing Nginx and TLS issues
 * Warnings that you're missing vagrant plugins no longer show when running vagrant plugin commands
+* Force the Virtual Machine to 64bit on VirtualBox to avoid infinite loops on 32bit architectures
 * Force the installation and update of grunt and grunt-cli so that old grunt is always overwritten when updated
 
 ## 3.6.2 ( 2021 March 17th )
