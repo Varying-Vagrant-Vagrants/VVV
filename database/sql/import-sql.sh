@@ -25,8 +25,8 @@ if [[ -f /srv/config/config.yml ]]; then
 	VVV_CONFIG=/srv/config/config.yml
 fi
 
-run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
-exclude_list=$(get_config_values "general.db_backup.exclude")
+run_restore=$(shyaml get-value general.db_restore.enable 2> /dev/null < ${VVV_CONFIG})
+exclude_list=$(get_config_values "general.db_restore.exclude")
 
 if [[ $run_restore == "False" ]]
 then

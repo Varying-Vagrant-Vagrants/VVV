@@ -143,7 +143,10 @@ general:
       #  - wordpress-trunk
 
   # Import the databases if they're missing from backups
-  db_restore: false
+  db_restore:
+    enable: false
+    #exclude:
+    #  - wordpress-trunk
 
   # set to true to use a synced shared folder for MariaDB database storage
   db_share_type: false
