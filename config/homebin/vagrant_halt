@@ -18,7 +18,7 @@ else
     fi
 
     # Check if backups are turned on or off
-    run_backups=`cat ${VVV_CONFIG} | shyaml get-value general.db_backup 2> /dev/null`
+    run_backups=`cat ${VVV_CONFIG} | shyaml get-value general.db_backup.enable 2> /dev/null`
 
     if [[ $run_backups != "False" ]]; then
 	    /srv/config/homebin/db_backup

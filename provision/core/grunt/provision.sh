@@ -3,7 +3,7 @@
 
 function install_grunt() {
   vvv_info " * Installing Grunt CLI"
-  npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional
+  npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional --force
   npm_config_loglevel=error hack_avoid_gyp_errors & npm install -g grunt-sass --no-optional; touch /tmp/stop_gyp_hack
   npm_config_loglevel=error npm install -g grunt-cssjanus --no-optional
   npm_config_loglevel=error npm install -g grunt-rtlcss --no-optional
@@ -12,7 +12,7 @@ function install_grunt() {
 
 function update_grunt() {
   vvv_info " * Updating Grunt CLI"
-  npm_config_loglevel=error npm update -g grunt grunt-cli --no-optional
+  npm_config_loglevel=error npm update -g grunt grunt-cli --no-optional --force
   npm_config_loglevel=error hack_avoid_gyp_errors & npm update -g grunt-sass; touch /tmp/stop_gyp_hack
   npm_config_loglevel=error npm update -g grunt-cssjanus --no-optional
   npm_config_loglevel=error npm update -g grunt-rtlcss --no-optional

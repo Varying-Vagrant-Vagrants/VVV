@@ -1,8 +1,8 @@
 ---
-name: Problems Provisioning
-about: For when running vagrant up --provision or vagrant provision
+name: Problems Provisioning on MacOS/Linux
+about: For when running vagrant up --provision or vagrant provision fails
 title: ''
-labels: ''
+labels: 'type:bug'
 assignees: ''
 
 ---
