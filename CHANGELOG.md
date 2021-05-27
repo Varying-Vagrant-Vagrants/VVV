@@ -31,6 +31,7 @@ permalink: /docs/en-US/changelog/
 * webp support in Imagemagick
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
 * Simplified config folder
+* Increased the default PHP memory limit from 128MB to 256MB
 
 ### Bug Fixes
 
