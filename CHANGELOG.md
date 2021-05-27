@@ -31,6 +31,7 @@ permalink: /docs/en-US/changelog/
 * webp support in Imagemagick
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
 * Simplified config folder
+* Update `memory_limit=128M` to `memory_limit=256M`
 
 ### Bug Fixes
 
