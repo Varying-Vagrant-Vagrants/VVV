@@ -29,10 +29,16 @@ fi
 
 vvv_info " * Restarting Nginx"
 sudo service nginx restart
+
 vvv_info " * Restarting MariaDB"
 sudo service mysql restart
-vvv_info " * Syncing clocks"
-sudo ntpdate -u ntp.ubuntu.com
+
+if [ -x "$(command -v ntpdate)" ]; then
+	vvv_info " * Syncing clocks"
+	sudo ntpdate -u ntp.ubuntu.com
+else
+	vvv_info " - skipping ntpdate clock sync, not installed yet"
+fi
 
 mkdir -p /vagrant/failed_provisioners
 if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then

@@ -18,6 +18,13 @@ rm -f /vagrant/version
 rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
+if [ -x "$(command -v ntpdate)" ]; then
+	echo " * Syncing clocks"
+	sudo ntpdate -u ntp.ubuntu.com
+else
+	echo " - skipping ntpdate clock sync, not installed yet"
+fi
+
 touch /vagrant/provisioned_at
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
 
