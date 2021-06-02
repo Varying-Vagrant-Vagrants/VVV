@@ -29,7 +29,7 @@ function wp_cli_setup() {
     chown vagrant /srv/config/wp-cli/wp-completion.bash
   else
     vvv_info " * Updating wp-cli..."
-    noroot wp cli update --nightly --yes --skip-wordpress
+    noroot wp cli update --nightly --yes
     vvv_success " * WP CLI Nightly updated"
   fi
 
@@ -37,11 +37,11 @@ function wp_cli_setup() {
     vvv_info " * Disabling debug mods if present before running wp package installs"
     xdebug_off
     vvv_info " * Installing WP CLI doctor sub-command"
-    noroot wp package install git@github.com:wp-cli/doctor-command.git --skip-wordpress
+    noroot wp package install git@github.com:wp-cli/doctor-command.git
     vvv_info " * Installed WP CLI doctor sub-command"
 
     vvv_info " * Updating WP packages"
-    noroot wp package update --skip-wordpress
+    noroot wp package update
     vvv_info " * WP package updates completed"
   fi
 }
