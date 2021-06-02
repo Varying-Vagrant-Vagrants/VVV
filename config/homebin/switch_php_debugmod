@@ -30,7 +30,8 @@ disable_phpmods() {
 		do
 			if is_module_enabled_fpm "${phpv}" "${i}"; then
 				vvv_info " ✘ Disabling active PHP <b>v${phpv}</b><info> debug mod: </info><b>'${i}'</b>"
-				sudo phpdismod -v "${phpv}" "${i}"
+				sudo phpdismod -q -s fpm -v "${phpv}" "${i}"
+        sudo phpdismod -q -s cli -v "${phpv}" "${i}"
 			fi
 		done
 	done
