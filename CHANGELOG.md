@@ -45,6 +45,7 @@ permalink: /docs/en-US/changelog/
 * Force the Virtual Machine to 64bit on VirtualBox to avoid infinite loops on 32bit architectures
 * Force the installation and update of grunt and grunt-cli so that old grunt is always overwritten when updated
 * Sync clocks before provisioning if ntpdate is available to avoid Apt mirror time issues
+* Fixed cloning the dashboard git repository with unknown remote branches
 
 ## 3.6.2 ( 2021 March 17th )
 
