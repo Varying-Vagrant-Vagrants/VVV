@@ -3,13 +3,29 @@
 set -eo pipefail
 
 function vvv_register_packages() {
-  cp -f "/srv/provision/core/vvv/sources.list" "/etc/apt/sources.list.d/vvv-sources.list"
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/vvv/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
+  fi
 
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
     vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
-    apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
+    apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
+
+  VVV_PACKAGE_REMOVAL_LIST+=(
+    # remove the old Python 2 packages to avoid issues with python3-pip
+    python-pip
+    python-setuptools
+
+    # remove mysql-common to ensure mariadb installation works
+    mysql-common
+  )
 
   VVV_PACKAGE_LIST+=(
     software-properties-common
@@ -23,8 +39,8 @@ function vvv_register_packages() {
     make
     vim
     colordiff
-    python-pip
-    python-setuptools
+    python3-pip
+    python3-setuptools
     lftp
 
     # ntp service to keep clock current
@@ -38,6 +54,10 @@ function vvv_register_packages() {
     # Allows conversion of DOS style line endings to something less troublesome
     # in Linux.
     dos2unix
+
+    # webp support
+    libwebp-dev
+    webp
   )
 }
 vvv_add_hook before_packages vvv_register_packages 0
@@ -48,8 +68,8 @@ function shyaml_setup() {
   # Used for passing custom parameters to the bash provisioning scripts
   if [ ! -f /usr/local/bin/shyaml ]; then
     vvv_info " * Installing Shyaml for bash provisioning.."
-    sudo pip install wheel
-    sudo pip install shyaml
+    sudo pip3 install wheel
+    sudo pip3 install shyaml
   fi
 }
 export -f shyaml_setup
@@ -78,8 +98,8 @@ fi
 
 function apt_hash_missmatch_fix() {
   if [ ! -f "/etc/apt/apt.conf.d/99hashmismatch" ]; then
-    vvv_info " * Copying /srv/config/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
-    cp -f "/srv/config/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
+    vvv_info " * Copying /srv/provision/core/vvv/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
+    cp -f "/srv/provision/core/vvv/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
   fi
 }
 export -f apt_hash_missmatch_fix

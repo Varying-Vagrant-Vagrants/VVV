@@ -1,0 +1,19 @@
+{
+  "name": "vvv/phpcs",
+  "type": "metapackage",
+  "description": "An open source Vagrant configuration for developing with WordPress",
+  "keywords": [
+    "vagrant",
+    "phpcs"
+  ],
+  "homepage": "https://varyingvagrantvagrants.org/",
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/Varying-Vagrant-Vagrants/VVV/issues/"
+  },
+  "require": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+    "automattic/vipwpcs": "^2.2.0",
+    "phpcompatibility/php-compatibility": "^9.3.5"
+  }
+}
