@@ -34,9 +34,15 @@ function wp_cli_setup() {
   fi
 
   if [ "${VVV_DOCKER}" != 1 ]; then
+    vvv_info " * Disabling debug mods if present before running wp package installs"
+    xdebug_off
     vvv_info " * Installing WP CLI doctor sub-command"
     noroot wp package install git@github.com:wp-cli/doctor-command.git
     vvv_info " * Installed WP CLI doctor sub-command"
+
+    vvv_info " * Updating WP packages"
+    noroot wp package update
+    vvv_info " * WP package updates completed"
   fi
 }
 export -f wp_cli_setup
