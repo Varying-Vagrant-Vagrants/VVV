@@ -491,6 +491,12 @@ vvv_is_apt_pkg_installed() {
     return 1
 }
 
+# @description change a placeholder text with a custom php version
+vvv_php_set_version_file() {
+  phpversion=$(get_php_version.sh)
+  sed -i "s/VVV_PHP_VERSION/$phpversion/" $1
+}
+
 # @description cleans up dpkg lock files to avoid provisioning issues
 # based on a fix from https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
 vvv_cleanup_dpkg_locks() {

@@ -2,7 +2,7 @@
 # @description Installs the default version of PHP
 set -eo pipefail
 
-VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.4"}
+VVV_BASE_PHPVERSION=$(get_php_version.sh)
 function php_register_packages() {
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
@@ -70,11 +70,14 @@ function phpfpm_setup() {
   if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/fpm" ]; then
     vvv_info " * Copying PHP configs"
     cp -f "/srv/config/php-config/php-fpm.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
+    vvv_php_set_version_file "/etc/php/${VVV_BASE_PHPVERSION}/fpm/php-fpm.conf"
     if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d" ]; then
       cp -f "/srv/config/php-config/php-www.conf" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
+      vvv_php_set_version_file "/etc/php/${VVV_BASE_PHPVERSION}/fpm/pool.d/www.conf"
     fi
     if [ -d "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d" ]; then
       cp -f "/srv/config/php-config/php-custom.ini" "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
+      vvv_php_set_version_file "/etc/php/${VVV_BASE_PHPVERSION}/fpm/conf.d/php-custom.ini"
     fi
   fi
 
@@ -130,6 +133,7 @@ vvv_add_hook services_restart phpfpm_services_restart
 function php_nginx_upstream() {
   vvv_info " * Copying /srv/config/php-config/upstream.conf to /etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
   cp -f "/srv/config/php-config/upstream.conf" "/etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
+  vvv_php_set_version_file "/etc/nginx/upstreams/php${VVV_BASE_PHPVERSION//.}.conf"
 }
 vvv_add_hook nginx_upstreams php_nginx_upstream
 

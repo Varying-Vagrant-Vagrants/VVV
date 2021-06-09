@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEFAULTPHP="7.4"
+DEFAULTPHP=$(get_php_version.sh)
 echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"
 update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
 update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
