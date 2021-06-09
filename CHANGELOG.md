@@ -32,6 +32,7 @@ permalink: /docs/en-US/changelog/
 * Switch from Ubuntu 18.04 to 20.04 (current LTS release)
 * Simplified config folder
 * Increased the default PHP memory limit from 128MB to 256MB
+* Function to change the global PHP version
 
 ### Bug Fixes
 
