@@ -494,7 +494,7 @@ vvv_is_apt_pkg_installed() {
 # @description change a placeholder text with a custom php version
 vvv_php_set_version_file() {
   phpversion=$(get_php_version.sh)
-  sed -i "s/VVV_PHP_VERSION/$phpversion/" $1
+  sed -i "s/VVV_PHP_VERSION/$phpversion/" "$1"
 }
 
 # @description cleans up dpkg lock files to avoid provisioning issues
