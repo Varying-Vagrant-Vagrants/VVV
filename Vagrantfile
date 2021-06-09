@@ -575,6 +575,7 @@ Vagrant.configure('2') do |config|
   config.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: ['dmode=775', 'fmode=774']
 
   vvv_config['sites'].each do |site, args|
+    next if args['skip_provisioning']
     if args['local_dir'] != File.join(vagrant_dir, 'www', site)
       config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: ['dmode=775', 'fmode=774']
     end
@@ -597,6 +598,7 @@ Vagrant.configure('2') do |config|
     end
 
     vvv_config['sites'].each do |site, args|
+      next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: [ 'share' ]
       end
@@ -623,6 +625,7 @@ Vagrant.configure('2') do |config|
     override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'syslog', mount_options: ['dir_mode=0777', 'file_mode=0666']
 
     vvv_config['sites'].each do |site, args|
+      next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: ['dir_mode=0775', 'file_mode=0774']
       end
@@ -646,6 +649,7 @@ Vagrant.configure('2') do |config|
     end
 
     vvv_config['sites'].each do |site, args|
+      next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: ['umask=002']
       end
