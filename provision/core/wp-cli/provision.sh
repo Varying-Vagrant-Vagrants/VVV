@@ -29,7 +29,7 @@ function wp_cli_setup() {
     chown vagrant /srv/config/wp-cli/wp-completion.bash
   else
     vvv_info " * Updating wp-cli..."
-    noroot wp cli update --nightly --yes
+    wp cli update --nightly --yes
     vvv_success " * WP CLI Nightly updated"
   fi
 
