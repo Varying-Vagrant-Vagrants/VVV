@@ -60,6 +60,14 @@ unless Vagrant::Util::Platform.windows?
   end
 end
 
+unless Vagrant::Util::Platform.windows?
+  if Process.uid == 0
+    puts " "
+    puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
+    puts " "
+  end
+end
+
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 show_logo = true if %w[up resume status provision reload].include? ARGV[0]
 show_logo = false if ENV['VVV_SKIP_LOGO']
@@ -79,20 +87,13 @@ if show_logo
 
   splashfirst = <<~HEREDOC
     \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
-    #{red}\\ V#{green}\\ V#{blue}\\ V / #{red}Varying #{green}Vagrant #{blue}Vagrants
-    #{red} \\_/#{green}\\_/#{blue}\\_/  #{purple}v#{version}#{creset}-#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
+    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Path:"#{vagrant_dir}"
+    #{red} \\_/#{green}\\_/#{blue}\\_/  #{creset}#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
 
   HEREDOC
   puts splashfirst
 end
 
-unless Vagrant::Util::Platform.windows?
-  if Process.uid == 0
-    puts " "
-    puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
-    puts " "
-  end
-end
 # Load the config file before the second section of the splash screen
 
 # Perform file migrations from older versions
@@ -221,7 +222,7 @@ $vvv_config = vvv_config
 # Show the second splash screen section
 
 if show_logo
-  platform = ['platform-' + Vagrant::Util::Platform.platform]
+  platform = [ Vagrant::Util::Platform.platform]
   if Vagrant::Util::Platform.windows?
     platform << 'windows '
     platform << 'wsl ' if Vagrant::Util::Platform.wsl?
@@ -295,7 +296,7 @@ if show_logo
   end
 
   splashsecond = <<~HEREDOC
-    #{yellow}Platform: #{yellow}#{platform.join(' ')}, #{purple}VVV Path: "#{vagrant_dir}"
+    #{yellow}Platform: #{yellow}#{platform.join(' ')}
     #{green}Vagrant: #{green}v#{Vagrant::VERSION}, #{blue}#{vvv_config['vm_config']['provider']}: #{blue}v#{provider_version}
 
     #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
@@ -398,6 +399,7 @@ Vagrant.configure('2') do |config|
   # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
   config.vm.box = 'ubuntu/focal64'
+  config.vm.box_check_update = false
 
   # If we're at a contributor day, switch the base box to the prebuilt one
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
