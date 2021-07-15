@@ -398,8 +398,6 @@ Vagrant.configure('2') do |config|
   # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
   config.vm.box = 'ubuntu/focal64'
-  config.vm.box_version = '>=20210415.0.0'
-  # config.vm.box = "varying-vagrant-vagrants/ubuntu-18.04"
 
   # If we're at a contributor day, switch the base box to the prebuilt one
   if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
@@ -411,7 +409,6 @@ Vagrant.configure('2') do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
-    override.vm.box_version = '>=202107.08.0'
 
     # Vagrant currently runs under Rosetta on M1 devices. As a result,
     # this seems to be the most reliable way to detect whether or not we're
@@ -425,20 +422,17 @@ Vagrant.configure('2') do |config|
   # The VMware Desktop Provider uses a different naming scheme.
   config.vm.provider :vmware_desktop do |v, override|
     override.vm.box = 'bento/ubuntu-20.04'
-    override.vm.box_version = '>=202107.08.0'
     v.gui = false
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
-    override.vm.box_version = '>=202107.08.0'
   end
 
   if defined? vvv_config['vm_config']['box']
     unless vvv_config['vm_config']['box'].nil?
       config.vm.box = vvv_config['vm_config']['box']
-      override.vm.box_version = '>= 0'
     end
   end
 
