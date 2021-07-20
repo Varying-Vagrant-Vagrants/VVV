@@ -134,6 +134,8 @@ end
 vvv_config['hosts'] = [] unless vvv_config['hosts'].is_a? Hash
 
 vvv_config['hosts'] += ['vvv.test']
+vvv_config['hosts'] += ['api.vvv.test']
+vvv_config['hosts'] += ['db.vvv.test']
 
 vvv_config['sites'].each do |site, args|
   if args.is_a? String
