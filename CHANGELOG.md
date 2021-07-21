@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.7.x ( 2021 )
+## 3.7.1 ( 2021 July 20th )
 
 ### Enhancements
 
