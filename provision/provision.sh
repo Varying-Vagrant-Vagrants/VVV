@@ -6,7 +6,7 @@
 
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
-. "/srv/config/bash_aliases"
+. "/srv/provision/core/env/homedir/.bash_aliases"
 
 # cleanup
 mkdir -p /vagrant
@@ -17,6 +17,13 @@ rm -f /vagrant/provisioned_at
 rm -f /vagrant/version
 rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
+
+if [ -x "$(command -v ntpdate)" ]; then
+	echo " * Syncing clocks"
+	sudo ntpdate -u ntp.ubuntu.com
+else
+	echo " - skipping ntpdate clock sync, not installed yet"
+fi
 
 touch /vagrant/provisioned_at
 echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
@@ -39,14 +46,16 @@ export VVV_CONFIG=/vagrant/config.yml
 
 export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 export VVV_PACKAGE_LIST=()
+export VVV_PACKAGE_REMOVAL_LIST=()
 
-. "/srv/provision/core/env.sh"
+. "/srv/provision/core/env/provision.sh"
 . '/srv/provision/core/deprecated.sh'
 . "/srv/provision/core/vvv/provision.sh"
 . "/srv/provision/core/git/provision.sh"
 . "/srv/provision/core/mariadb/provision.sh"
 . "/srv/provision/core/postfix/provision.sh"
 . "/srv/provision/core/nginx/provision.sh"
+. "/srv/provision/core/memcached/provision.sh"
 . "/srv/provision/core/php/provision.sh"
 . "/srv/provision/core/composer/provision.sh"
 . "/srv/provision/core/nodejs/provision.sh"
@@ -68,6 +77,14 @@ vvv_hook before_packages
 
 # Package and Tools Install
 vvv_info " * Main packages check and install."
+vvv_info " * Checking for apt packages to remove."
+if ! vvv_apt_package_remove ${VVV_PACKAGE_REMOVAL_LIST[@]}; then
+  vvv_error " ! Main packages removal failed, halting provision"
+  exit 1
+fi
+vvv_info " * Upgrading apt packages."
+vvv_apt_packages_upgrade
+vvv_info " * Checking for apt packages to install."
 if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   vvv_error " ! Main packages check and install failed, halting provision"
   exit 1

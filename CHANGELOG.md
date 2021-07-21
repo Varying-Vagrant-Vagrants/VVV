@@ -6,7 +6,52 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.7.1 ( 2021 July 20th )
+
+### Enhancements
+
+* Improved site provisioning messages
+* MariaDB upgraded to v10.5
+* Improved Apt source file handling in core provisioners
+* Upgraded to Composer 2
+* Upgraded to Python 3 setuptools and pip3
+* PHPCS installation improvements
+* Added ARM64 support for Mailhog
+* Improved the splash screen provider version fetching
+* Added improved apt package upgrade routines
+* Provisioners now ask to install only packages that aren't installed
+* General package handling performance improvements
+* New config to exclude databases from backup in `config.yml` ( #2346 )
+* New config to gzip compress database backups in `config.yml` ( #2346 )
+* Experimental Apple silicon support using vagrant + parallels
+* Disable backup and restore of databases by default
+* Updated Mailhog to 1.0.1 for new installs
+* Improved MailHog downloading with retries and error output
+* Improved Composer installation
+* webp support in Imagemagick
+* Switch from Ubuntu 18.04 to 20.04 (current LTS release)
+* Simplified config folder
+* Increased the default PHP memory limit from 128MB to 256MB
+
+### Bug Fixes
+
+* Fixed `vvv_error` not always printing messages
+* When a sites repo has the wrong URL for the origin remote, the user is now told. This avoids certain mistakes being made.
+* Remote changes are now fetched before resetting, not afterwards.
+* Increased the priority of Nodesource and Ondrej packages to avoid issues
+* Fixed Parallels mount permissions
+* Fixes for site names containing spaces causing Nginx and TLS issues
+* Warnings that you're missing vagrant plugins no longer show when running vagrant plugin commands
+* Force the Virtual Machine to 64bit on VirtualBox to avoid infinite loops on 32bit architectures
+* Force the installation and update of grunt and grunt-cli so that old grunt is always overwritten when updated
+* Sync clocks before provisioning if ntpdate is available to avoid Apt mirror time issues
+* Fixed cloning the dashboard git repository with unknown remote branches
+* Skip mounting custom folders for skipped sites
+* Improved WP CLI ownership and permission settings
+* Removed WP CLI doctor subcommand package that was causing issues for some users
+
 ## 3.6.2 ( 2021 March 17th )
+
 ### Bug Fixes
 
 * Replaced PHPCS symlinking to avoid issues with Windows

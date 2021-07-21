@@ -1,38 +1,37 @@
 #!/usr/bin/env bash
-# @description Installs composer and tools installed via composer packages
+# @description Installs Composer and tools installed via Composer packages
 set -eo pipefail
 
 # @noargs
 function composer_setup() {
-  # Disable xdebug before any composer provisioning.
+  # Disable XDebug before any Composer provisioning.
   vvv_info " * Turning off XDebug to avoid Composer performance issues"
   sh /srv/config/homebin/xdebug_off
-
-  vvv_info " * Making sure the composer cache is not owned by root"
-  mkdir -p /usr/local/src/composer
-  mkdir -p /usr/local/src/composer/cache
-  chown -R vagrant:www-data /usr/local/src/composer
-  chown -R vagrant:www-data /usr/local/bin
 
   # COMPOSER
 
   export COMPOSER_ALLOW_SUPERUSER=1
   export COMPOSER_NO_INTERACTION=1
+  export COMPOSER_RUNTIME_ENV="vagrant"
 
-  vvv_info " * Checking Composer is installed"
-  if [[ ! -f "/usr/local/bin/composer" ]]; then
+  vvv_info " * Checking if Composer is installed"
+  if ! command -v composer &> /dev/null; then
     vvv_info " * Installing Composer..."
     curl -sS "https://getcomposer.org/installer" | php
     chmod +x "composer.phar"
+    chown -R vagrant:www-data /usr/local/bin
     mv "composer.phar" "/usr/local/bin/composer"
-    vvv_info " * Forcing composer to v1.x"
-    noroot composer selfupdate --1
     vvv_success " * Composer installer steps completed"
   fi
 
-  vvv_info " * Checking for github tokens"
+  vvv_info " * Making sure the Composer cache is not owned by root"
+  COMPOSER_DATA_DIR=$(composer config -g data-dir)
+  mkdir -p "${COMPOSER_DATA_DIR}"/cache
+  chown -R vagrant:www-data "${COMPOSER_DATA_DIR}"
+
+  vvv_info " * Checking for GitHub tokens"
   if github_token=$(shyaml get-value -q "general.github_token" < "${VVV_CONFIG}"); then
-    vvv_info " * A personal GitHub token was found, configuring composer"
+    vvv_info " * A personal GitHub token was found, configuring Composer"
     rm /srv/provision/github.token
     echo "$github_token" >> /srv/provision/github.token
     ghtoken=$(cat /srv/provision/github.token)
@@ -42,18 +41,20 @@ function composer_setup() {
 
   # Update both Composer and any global packages. Updates to Composer are direct from
   # the master branch on its GitHub repository.
-  vvv_info " * Checking for composer updates"
-  if [[ -n "$(noroot composer --version --no-ansi | grep 'Composer version')" ]]; then
+  vvv_info " * Checking for Composer updates"
+  if ! noroot composer --version --no-ansi | grep 'Composer version'; then
     vvv_info " * Updating Composer..."
-    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global config bin-dir /usr/local/bin
-    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi self-update --1 --stable --no-progress --no-interaction
+    COMPOSER_HOME="${COMPOSER_DATA_DIR}" noroot composer --no-ansi global config bin-dir /usr/local/bin
+    COMPOSER_HOME="${COMPOSER_DATA_DIR}" noroot composer --no-ansi self-update --2 --stable --no-progress --no-interaction
     vvv_info " * Making sure the PHPUnit 7.5 package is available..."
-    COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global require --prefer-dist --no-update --no-progress --no-interaction phpunit/phpunit:^7.5
+    COMPOSER_HOME="${COMPOSER_DATA_DIR}" noroot composer --no-ansi global require --prefer-dist --no-update --no-progress --no-interaction phpunit/phpunit:^7.5
   fi
 
-  vvv_info " * Updating global composer packages..."
-  COMPOSER_HOME=/usr/local/src/composer noroot composer --no-ansi global update --no-progress --no-interaction
-  vvv_success " * Global composer package update completed"
+  if [ -f "${COMPOSER_DATA_DIR}"/composer.json ]; then
+    vvv_info " * Updating global Composer packages..."
+    COMPOSER_HOME="${COMPOSER_DATA_DIR}" noroot composer --no-ansi global update --no-progress --no-interaction
+    vvv_success " * Global Composer package update completed"
+  fi
 
   vvv_hook after_composer
 }

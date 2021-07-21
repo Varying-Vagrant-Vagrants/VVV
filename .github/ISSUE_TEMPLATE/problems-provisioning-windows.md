@@ -1,8 +1,8 @@
 ---
 name: Problems Provisioning on Windows
 about: For when running vagrant up --provision or vagrant provision
-title: ''
-labels: 'Windows'
+title: 'Bug: Windows: '
+labels: 'os:windows,type:support'
 assignees: ''
 
 ---
