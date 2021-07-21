@@ -86,7 +86,7 @@ function vvv_provision_site_nginx_config() {
   local SITE_NGINX_FILE=$2
   if [ ! -f "$SITE_NGINX_FILE" ]; then
     vvv_warn " * VVV didn't found any Nginx config file, it will use a fallback config file"
-    cp -f "/srv/provision/core/nginx/config/sites/fallback.conf" $SITE_NGINX_FILE
+    cp -f "/srv/provision/core/nginx/config/sites/fallback.conf" "$SITE_NGINX_FILE"
   fi
   local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
   local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
