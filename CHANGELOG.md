@@ -6,7 +6,14 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.7.2 ( 2021 )
+
+
 ## 3.7.1 ( 2021 July 20th )
+
+### Bug Fixes
+
+* Fixed dashboard updating
 
 ### Enhancements
 
