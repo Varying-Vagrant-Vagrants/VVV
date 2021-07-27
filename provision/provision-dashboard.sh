@@ -21,12 +21,12 @@ if [[ false != "dashboard" && false != "${REPO}" ]]; then
     fi
   else
     vvv_info " * Updating dashboard on the '${BRANCH}' branch."
-    popd "${DIR}"
+    pushd "${DIR}"
     vvv_info " * Fetching origin ${BRANCH}"
     noroot git fetch origin "${BRANCH}"
     vvv_info " * performing a hard reset on origin/${BRANCH}"
     noroot git reset "origin/${BRANCH}" --hard
-    pushd
+    popd
   fi
   vvv_warn " * Note that custom dashboards will be going away in a future update, use a site provisioner and a custom host instead such as dashboard.test."
 else
