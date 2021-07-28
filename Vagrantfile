@@ -694,7 +694,19 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n\""
+  # \033[38;5;4m
+  # \033[38;5;4m                                      \033[01;32mA full provision will take a bit.
+  # \033[38;5;4m    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄          ▄   ▄    \033[01;32mSit back, relax, and have some tea.
+  # \033[38;5;4m    █▒▒░░░░░░░░░▒▒█         █   █
+  # \033[38;5;4m     █░░█░░░░░█░░█         ▀   ▀      \033[01;32mIf you keep seeing this message,
+  # \033[38;5;4m  ▄▄  █░░░▀█▀░░░█  ▄▄  ▄▀▀█▀▀▀▀▀▀█    \033[01;32mmake sure you're running 'vagrant up'
+  # \033[38;5;4m █░░█ ▀▄░░░░░░░▄▀ █░░█ █  █      █
+  # \033[38;5;4m─────────────────────── ▀▀█      █ ───────────────
+  # \033[38;5;4m                           ▀▄▄▄▄▀
+  # \033[0m
+
+  # Changed the message here because it's going to show the first time you do vagrant up, which might be confusing
+  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"\033[38;5;4m\n\033[38;5;4m                                      \033[01;32mA full provision will take a bit.\n\033[38;5;4m    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄          ▄   ▄    \033[01;32mSit back, relax, and have some tea.\n\033[38;5;4m    █▒▒░░░░░░░░░▒▒█         █   █\n\033[38;5;4m     █░░█░░░░░█░░█         ▀   ▀      \033[01;32mIf you keep seeing this message,\n\033[38;5;4m  ▄▄  █░░░▀█▀░░░█  ▄▄  ▄▀▀█▀▀▀▀▀▀█    \033[01;32mmake sure you're running \'vagrant up\'\n\033[38;5;4m █░░█ ▀▄░░░░░░░▄▀ █░░█ █  █      █\n\033[38;5;4m─────────────────────── ▀▀█      █ ───────────────\n\033[38;5;4m                           ▀▄▄▄▄▀\n\033[0m\""
 
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
