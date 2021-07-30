@@ -693,17 +693,19 @@ Vagrant.configure('2') do |config|
       config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
     end
   end
-
-# \033[38;5;4m
-# \033[38;5;4m    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄     ▄   ▄    \033[0mA full provision will take a bit.
-# \033[38;5;4m    █▒▒░░░░░░░░░▒▒█    █   █     \033[0mSit back, relax, and have some tea.
-# \033[38;5;4m     █░░█░░░░░█░░█    ▀   ▀
-# \033[38;5;4m  ▄▄  █░░░▀█▀░░░█ ▄▀▀█▀▀▀▀▀▀█    \033[0mIf you keep seeing this message,
-# \033[38;5;4m █░░█ ▀▄░░░░░░░▄▀ █  █      █    \033[0mmake sure you're running 'vagrant up'.
-# \033[38;5;4m───────────────────────────────\033[0m
+  
+  long_provision_bear = <<~HTM
+  #{blue}#{creset}
+  #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄     ▄   ▄    #{green}A full provision will take a bit.#{creset}
+  #{blue}    █▒▒░░░░░░░░░▒▒█    █   █     #{green}Sit back, relax, and have some tea.#{creset}
+  #{blue}     █░░█░░░░░█░░█    ▀   ▀      #{creset}
+  #{blue}  ▄▄  █░░░▀█▀░░░█ ▄▀▀█▀▀▀▀▀▀█    #{green}If you keep seeing this message,#{creset}
+  #{blue} █░░█ ▀▄░░░░░░░▄▀ █  █      █    #{green}make sure you're running 'vagrant up'.#{creset}
+  #{blue}───────────────────────────────────────────────────────────────────────#{creset}
+  HTML
 
   # Changed the message here because it's going to show the first time you do vagrant up, which might be confusing
-  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"\n\033[38;5;4m    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄     ▄   ▄    \033[0mA full provision will take a bit.\n\033[38;5;4m    █▒▒░░░░░░░░░▒▒█    █   █     \033[0mSit back, relax, and have some tea.\n\033[38;5;4m     █░░█░░░░░█░░█    ▀   ▀\n\033[38;5;4m  ▄▄  █░░░▀█▀░░░█ ▄▀▀█▀▀▀▀▀▀█    \033[0mIf you keep seeing this message,\n\033[38;5;4m █░░█ ▀▄░░░░░░░▄▀ █  █      █    \033[0mmake sure you're running 'vagrant up'.\n\033[38;5;4m───────────────────────────────\033[0m\n\""
+  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"#{long_provision_bear}\""
 
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
