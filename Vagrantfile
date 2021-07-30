@@ -699,8 +699,8 @@ Vagrant.configure('2') do |config|
   #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}
   #{blue}    █▒▒░░░░░░░░░▒▒█   █   █     #{green}Sit back, relax, and have some tea.#{creset}
   #{blue}     █░░█░░░░░█░░█   ▀   ▀      #{creset}
-  #{blue}  ▄▄  █░░░▀█▀░░░█   █▀▀▀▀▀▀█    #{green}If you keep seeing this message,#{creset}
-  #{blue} █░░█ ▀▄░░░░░░░▄▀▄▀▀█      █    #{green}make sure you're running 'vagrant up'.#{creset}
+  #{blue}  ▄▄  █░░░▀█▀░░░█   █▀▀▀▀▀▀█    #{green}If you didn't want to provision you can#{creset}
+  #{blue} █░░█ ▀▄░░░░░░░▄▀▄▀▀█      █    #{green}turn VVV on with 'vagrant up'.#{creset}
   #{blue}───────────────────────────────────────────────────────────────────────#{creset}
   HTML
 
