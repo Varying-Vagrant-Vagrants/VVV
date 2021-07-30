@@ -8,6 +8,8 @@ permalink: /docs/en-US/changelog/
 
 ## 3.7.2 ( 2021 )
 
+* Updated message on full provision to be more clear
+* Added mascot to full provision message
 
 ## 3.7.1 ( 2021 July 20th )
 
