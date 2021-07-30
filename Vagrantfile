@@ -696,11 +696,11 @@ Vagrant.configure('2') do |config|
   
   long_provision_bear = <<~HTM
   #{blue}#{creset}
-  #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄     ▄   ▄    #{green}A full provision will take a bit.#{creset}
-  #{blue}    █▒▒░░░░░░░░░▒▒█    █   █     #{green}Sit back, relax, and have some tea.#{creset}
-  #{blue}     █░░█░░░░░█░░█    ▀   ▀      #{creset}
-  #{blue}  ▄▄  █░░░▀█▀░░░█ ▄▀▀█▀▀▀▀▀▀█    #{green}If you keep seeing this message,#{creset}
-  #{blue} █░░█ ▀▄░░░░░░░▄▀ █  █      █    #{green}make sure you're running 'vagrant up'.#{creset}
+  #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}
+  #{blue}    █▒▒░░░░░░░░░▒▒█   █   █     #{green}Sit back, relax, and have some tea.#{creset}
+  #{blue}     █░░█░░░░░█░░█   ▀   ▀      #{creset}
+  #{blue}  ▄▄  █░░░▀█▀░░░█   █▀▀▀▀▀▀█    #{green}If you keep seeing this message,#{creset}
+  #{blue} █░░█ ▀▄░░░░░░░▄▀▄▀▀█      █    #{green}make sure you're running 'vagrant up'.#{creset}
   #{blue}───────────────────────────────────────────────────────────────────────#{creset}
   HTML
 
