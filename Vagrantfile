@@ -693,8 +693,19 @@ Vagrant.configure('2') do |config|
       config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
     end
   end
+  
+  long_provision_bear = <<~HTM
+  #{blue}#{creset}
+  #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}
+  #{blue}    █▒▒░░░░░░░░░▒▒█   █   █     #{green}Sit back, relax, and have some tea.#{creset}
+  #{blue}     █░░█░░░░░█░░█   ▀   ▀      #{creset}
+  #{blue}  ▄▄  █░░░▀█▀░░░█   █▀▀▀▀▀▀█    #{green}If you didn't want to provision you can#{creset}
+  #{blue} █░░█ ▀▄░░░░░░░▄▀▄▀▀█      █    #{green}turn VVV on with 'vagrant up'.#{creset}
+  #{blue}───────────────────────────────────────────────────────────────────────#{creset}
+  HTML
 
-  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"\n༼ つ ◕_◕ ༽つ A full provision can take a little while!\n             Go make a cup of tea and sit back.\n             If you only wanted to turn VVV on, use vagrant up\n\""
+  # Changed the message here because it's going to show the first time you do vagrant up, which might be confusing
+  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"#{long_provision_bear}\""
 
   # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
   # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
