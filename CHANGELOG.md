@@ -8,8 +8,7 @@ permalink: /docs/en-US/changelog/
 
 ## 3.7.2 ( 2021 )
 
-* Updated message on full provision to be more clear
-* Added mascot to full provision message
+* Added a new bear to full provision message, and updated message to be more clear
 
 ## 3.7.1 ( 2021 July 20th )
 
