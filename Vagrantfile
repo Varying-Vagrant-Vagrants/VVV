@@ -694,7 +694,7 @@ Vagrant.configure('2') do |config|
     end
   end
   
-  long_provision_bear = <<~HTM
+  long_provision_bear = <<~HTML
   #{blue}#{creset}
   #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}
   #{blue}    █▒▒░░░░░░░░░▒▒█   █   █     #{green}Sit back, relax, and have some tea.#{creset}
