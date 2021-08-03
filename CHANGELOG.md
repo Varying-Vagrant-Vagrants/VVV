@@ -8,13 +8,14 @@ permalink: /docs/en-US/changelog/
 
 ## 3.7.2 ( 2021 )
 
+### Bug Fixes
+
+* Switched Ubuntu 20 boxes to Bento on VirtualBox to avoid folder mounting issues
+### Enhancements
+
 * Added a new bear to full provision message, and updated message to be more clear
 
 ## 3.7.1 ( 2021 July 20th )
-
-### Bug Fixes
-
-* Fixed dashboard updating
 
 ### Enhancements
 
@@ -57,6 +58,7 @@ permalink: /docs/en-US/changelog/
 * Skip mounting custom folders for skipped sites
 * Improved WP CLI ownership and permission settings
 * Removed WP CLI doctor subcommand package that was causing issues for some users
+* Fixed dashboard updating
 
 ## 3.6.2 ( 2021 March 17th )
 

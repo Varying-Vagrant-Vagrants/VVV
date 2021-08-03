@@ -395,10 +395,10 @@ Vagrant.configure('2') do |config|
 
   # Default Ubuntu Box
   #
-  # This box is provided by Ubuntu vagrantcloud.com and is a nicely sized
+  # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
   # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = 'ubuntu/focal64'
+  config.vm.box = 'bento/ubuntu-20.04'
   config.vm.box_check_update = false
 
   # If we're at a contributor day, switch the base box to the prebuilt one
