@@ -6,11 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.7.2 ( 2021 )
+## 3.7.2 ( 2021 August 3rd )
 
 ### Bug Fixes
 
 * Switched Ubuntu 20 boxes to Bento on VirtualBox to avoid folder mounting issues
+* Fixed a broken heredoc
 ### Enhancements
 
 * Added a new bear to full provision message, and updated message to be more clear
