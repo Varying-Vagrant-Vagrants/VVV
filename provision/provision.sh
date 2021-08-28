@@ -90,7 +90,7 @@ if ! vvv_package_install ${VVV_PACKAGE_LIST[@]}; then
   exit 1
 fi
 
-vvv_info " * Running tools_install"
+vvv_info " * Running after_packages"
 vvv_hook after_packages
 
 vvv_info " * Finalizing"

@@ -55,4 +55,4 @@ function node_setup() {
 }
 export -f node_setup
 
-vvv_add_hook after_packages node_setup
+vvv_add_hook tools_setup node_setup
