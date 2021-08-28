@@ -57,19 +57,17 @@ export VVV_PACKAGE_REMOVAL_LIST=()
 . "/srv/provision/core/nginx/provision.sh"
 . "/srv/provision/core/memcached/provision.sh"
 . "/srv/provision/core/php/provision.sh"
-. "/srv/provision/core/composer/provision.sh"
-. "/srv/provision/core/nodejs/provision.sh"
-. "/srv/provision/core/grunt/provision.sh"
 . "/srv/provision/core/mailhog/provision.sh"
-. "/srv/provision/core/wp-cli/provision.sh"
-. "/srv/provision/core/phpcs/provision.sh"
+. "/srv/provision/core/nodejs/provision.sh"
 
 ### SCRIPT
 #set -xv
 
 vvv_hook init
 
+# If you need to disable this check then something is terribly wrong, tell us on github/slack
 if ! network_check; then
+  vvv_warning " ! If this check fails despite succeeding in the browser, contact us in Slack or GitHub immediatley"
   exit 1
 fi
 
