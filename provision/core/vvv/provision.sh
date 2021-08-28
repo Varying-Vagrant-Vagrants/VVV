@@ -29,6 +29,9 @@ function vvv_register_packages() {
 
   VVV_PACKAGE_LIST+=(
     software-properties-common
+    
+    # Daily automatic security package upgrades
+    unattended-upgrades
 
     # other packages that come in handy
     subversion
