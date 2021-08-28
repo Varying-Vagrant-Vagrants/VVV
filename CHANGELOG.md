@@ -8,19 +8,24 @@ permalink: /docs/en-US/changelog/
 
 ## 3.8.x ( 2021 )
 
+### Enhancements
+
+* Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
+
 ### Bug Fixes
 
 * Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
 
 ## 3.7.2 ( 2021 August 3rd )
 
+### Enhancements
+
+* Added a new bear to full provision message, and updated message to be more clear
+
 ### Bug Fixes
 
 * Switched Ubuntu 20 boxes to Bento on VirtualBox to avoid folder mounting issues
 * Fixed a broken heredoc
-### Enhancements
-
-* Added a new bear to full provision message, and updated message to be more clear
 
 ## 3.7.1 ( 2021 July 20th )
 
