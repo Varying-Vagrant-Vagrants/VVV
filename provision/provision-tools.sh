@@ -4,10 +4,11 @@
 # `vagrant provision`, or `vagrant reload` are used. It provides all of the
 # default packages and configurations included with VVV.
 
+set -eo pipefail
+
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
 . "/srv/provision/core/env/homedir/.bash_aliases"
-
 
 export VVV_CONFIG=/vagrant/config.yml
 
@@ -22,7 +23,6 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 . "/srv/provision/core/wp-cli/provision.sh"
 
 ### SCRIPT
-#set -xv
 
 # Package and Tools Install
 vvv_info " * Running tools_install"
@@ -31,7 +31,6 @@ vvv_hook tools_setup
 vvv_info " * Finalizing Tools"
 vvv_hook tools_finalize
 
-#set +xv
 # And it's done
 
 provisioner_success
