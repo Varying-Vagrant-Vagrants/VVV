@@ -15,6 +15,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
+* Fixed the import of databases with spaces in there names
 
 ## 3.7.2 ( 2021 August 3rd )
 
