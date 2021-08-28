@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.8.x ( 2021 )
 
+### Enhancements
+
+* Split tools out into their own provisioner ( #2270 )
+
 ### Bug Fixes
 
 * Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
