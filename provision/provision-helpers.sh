@@ -381,7 +381,7 @@ export -f vvv_add_hook
 # @arg $1 string the hook to execute
 vvv_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    echo "Disallowed hookname '${1}'"
+    vvv_error " x Disallowed hookname '${1}'"
     return 1
   fi
 
