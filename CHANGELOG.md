@@ -6,6 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.8.x ( 2021 )
+
+### Bug Fixes
+
+* Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
+
 ## 3.7.2 ( 2021 August 3rd )
 
 ### Bug Fixes
