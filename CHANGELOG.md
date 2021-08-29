@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.8.x ( 2021 )
 
+### Enhancements
+
+* Add `jq` for CLI based JSON parsing ( #2518 )
+
 ### Bug Fixes
 
 * Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`

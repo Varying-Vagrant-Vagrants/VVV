@@ -39,9 +39,10 @@ function vvv_register_packages() {
     make
     vim
     colordiff
-    python3-pip
+    python3-pip # needed for shyaml
     python3-setuptools
     lftp
+    jq
 
     # ntp service to keep clock current
     ntp
