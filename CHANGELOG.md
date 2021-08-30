@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
+* Add `jq` for CLI based JSON parsing ( #2518 )
 
 ### Bug Fixes
 
