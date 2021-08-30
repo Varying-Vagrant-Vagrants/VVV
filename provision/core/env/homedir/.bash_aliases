@@ -34,9 +34,9 @@ fi
 
 # Ruby Gems
 if [ -d "$HOME/.gem/bin" ] ; then
-  if [[ $PATH != *"${HOME}/.gem/bin"* ]]; then
-	  export PATH="$PATH:${HOME}/.gem/bin"
-  fi
+	if [[ $PATH != *"${HOME}/.gem/bin"* ]]; then
+		export PATH="$PATH:${HOME}/.gem/bin"
+	fi
 fi
 
 # Vagrant scripts
@@ -46,8 +46,12 @@ fi
 
 if [ -n "$BASH" ]; then
 	# add autocomplete for grunt
-	[ ! type "grunt" > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
+	if [ ! type "grunt" > /dev/null 2>&1 ]; then
+		eval "$(grunt --completion=bash)"
+	fi
 
 	# add autocomplete for wp-cli
-	[ -s "/srv/config/wp-cli/wp-completion.bash" ] && . /srv/config/wp-cli/wp-completion.bash
+	if [ -s "/srv/config/wp-cli/wp-completion.bash" ]; then
+		. /srv/config/wp-cli/wp-completion.bash
+	fi
 fi
