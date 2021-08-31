@@ -40,6 +40,9 @@ vvv_info " * Starting MariaDB Database Import"
 mkdir -p /srv/database/backups
 cd /srv/database/backups/
 
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
+
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
 sql_count=$(ls -1 ./*.sql* 2>/dev/null | wc -l)
@@ -99,3 +102,5 @@ then
 else
 	vvv_success " * No custom databases to import"
 fi
+
+IFS=$SAVEIFS

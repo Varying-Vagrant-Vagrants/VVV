@@ -51,4 +51,4 @@ function wp_cli_setup() {
 }
 export -f wp_cli_setup
 
-vvv_add_hook after_packages wp_cli_setup
+vvv_add_hook tools_setup wp_cli_setup

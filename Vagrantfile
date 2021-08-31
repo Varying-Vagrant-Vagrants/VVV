@@ -726,6 +726,8 @@ Vagrant.configure('2') do |config|
     config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'provision.sh'), env: { "VVV_LOG" => "main" }
   end
 
+  config.vm.provision 'tools', type: 'shell', keep_color: true, path: File.join('provision', 'provision-tools.sh'), env: { "VVV_LOG" => "tools" }
+
   # Provision the dashboard that appears when you visit vvv.test
   config.vm.provision 'dashboard',
                       type: 'shell',
