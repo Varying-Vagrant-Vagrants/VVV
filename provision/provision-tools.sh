@@ -26,10 +26,10 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
 # Package and Tools Install
 vvv_info " * Running tools_install"
-vvv_hook tools_setup
+vvv_parallel_hook tools_setup
 
 vvv_info " * Finalizing Tools"
-vvv_hook tools_finalize
+vvv_parallel_hook tools_finalize
 
 # And it's done
 
