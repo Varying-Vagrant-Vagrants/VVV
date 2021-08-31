@@ -416,17 +416,26 @@ vvv_parallel_hook() {
 
   local hook_var_prios="VVV_HOOKS_${1}"
   local start=`date +%s`
-  vvv_info " ▷ Running <b>${1}</b><info> hook"
   eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
+  vvv_info " ▷ Running <b>${1}</b><info> hook"
   local sorted
   eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
-    local hooks_on_prio="${hook_var_prios}_${prio}"
-    eval "for j in \${!${hooks_on_prio}[@]}; do \${${hooks_on_prio}[\$j]} &; done"
+    hooks_on_prio="${hook_var_prios}_${prio}"
+    local loop=$(cat << HOOKLOOP
+for j in \${!${hooks_on_prio}[@]}; do
+  #vvv_info "   - Starting subhook \${${hooks_on_prio}[\$j]} with priority ${prio}"
+  \${${hooks_on_prio}[\$j]} &
+done
+wait
+#vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
+HOOKLOOP
+    )
+    eval "${loop}"
+
   done
-  wait
   local end=`date +%s`
   vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
 }
