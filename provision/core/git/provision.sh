@@ -4,13 +4,18 @@ set -eo pipefail
 
 # @noargs
 function git_register_packages() {
-  if ! vvv_src_list_has "git-core/ppa"; then
-    # Add ppa repo.
-    vvv_info " * Adding ppa:git-core/ppa repository"
-    add-apt-repository -y ppa:git-core/ppa
-    vvv_success " * git-core/ppa added"
-  else
-    vvv_info " * git-core/ppa already present, skipping"
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+
+  if [ "${OSID}" == "Ubuntu" ]; then
+    if ! vvv_src_list_has "git-core/ppa"; then
+      # Add ppa repo.
+      vvv_info " * Adding ppa:git-core/ppa repository"
+      add-apt-repository -y ppa:git-core/ppa
+      vvv_success " * git-core/ppa added"
+    else
+      vvv_info " * git-core/ppa already present, skipping"
+    fi
   fi
 
   if ! vvv_apt_keys_has 'git-lfs'; then
@@ -19,8 +24,6 @@ function git_register_packages() {
     apt-key add /srv/provision/core/git/apt-keys/git-lfs.key
   fi
 
-  local OSID=$(lsb_release --id --short)
-  local OSCODENAME=$(lsb_release --codename --short)
   local APTSOURCE="/srv/provision/core/git/sources-${OSID,,}-${OSCODENAME,,}.list"
   if [ -f "${APTSOURCE}" ]; then
     cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-git-sources.list"

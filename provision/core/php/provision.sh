@@ -14,6 +14,7 @@ function php_register_packages() {
   fi
 
   cp -f "/srv/provision/core/php/ondrej-ppa-pin" "/etc/apt/preferences.d/ondrej-ppa-pin"
+  cp -f "/srv/provision/core/php/apt-keys/php.gpg" "/etc/apt/trusted.gpg.d/php.gpg"
 
   if ! vvv_apt_keys_has 'Ondřej'; then
     # Apply the PHP signing key
