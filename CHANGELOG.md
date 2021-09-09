@@ -13,6 +13,7 @@ permalink: /docs/en-US/changelog/
 * Split tools out into their own provisioner ( #2270 )
 * Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
 * Add `jq` for CLI based JSON parsing ( #2518 )
+* Added basic Avahi support for vvv.local
 
 ### Bug Fixes
 
