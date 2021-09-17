@@ -26,7 +26,7 @@ jobs:
       # Make Symlinks
       - name: Create Vagrant Like Environment
         run: |
-          # uninstall pre installed packages (to test if utilities work)
+          # uninstall pre installed packages (to test if extensions work)
           sudo apt-get -q --autoremove --purge remove php*
           sudo apt-get -q autoclean
 
@@ -70,22 +70,25 @@ jobs:
       - name: Run provison-pre.sh
         run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && pre_hook'
 
-      - name: Run provison.sh
+      - name: Run provision.sh
         run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_main'
+
+      - name: Run provision-tools.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_tools'
 
       - name: Run provison-dashboard.sh
         run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_dashboard'
 
-      - name: Run provison-utility-source.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_utility_sources'
+      - name: Run provision-extension-source.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_extension_sources'
 
-      - name: Run provison-utility.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_utilities'
+      - name: Run provision-extension.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_extensions'
 
-      - name: Run provison-site.sh
+      - name: Run provision-site.sh
         run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_sites'
 
-      - name: Run provison-post.sh
+      - name: Run provision-post.sh
         run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && post_hook'
 
       # At this point, we would run some extra tests

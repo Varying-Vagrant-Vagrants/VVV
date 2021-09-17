@@ -162,3 +162,15 @@ function provision_main() {
   fi
   export VVV_CONFIG
 }
+
+function provision_tools() {
+  VVV_LOG="tools"
+  vvv_run_provisioner /srv/provision/provision-tools.sh
+
+  # refresh VVV_CONFIG, as the main provisioner actually creates the /vagrant/config.yml
+  VVV_CONFIG=/vagrant/vvv-custom.yml
+  if [[ -f /vagrant/config.yml ]]; then
+    VVV_CONFIG=/vagrant/config.yml
+  fi
+  export VVV_CONFIG
+}
