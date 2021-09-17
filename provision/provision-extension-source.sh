@@ -11,13 +11,13 @@ DIR="/srv/provision/extensions/${NAME}"
 if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the extension repository
   if [[ ! -d "${DIR}/.git" ]]; then
-    vvv_info "* Cloning the \"${NAME}\" extension, see \"${REPO}\""
+    vvv_info " * Cloning the \"${NAME}\" extension, see \"${REPO}\""
     git clone "${REPO}" --branch "${BRANCH}" "${DIR}" -q
     cd "${DIR}"
     git checkout "${BRANCH}" -q
     vvv_success " * Extension git clone and checkout complete"
   else
-    vvv_info "* Updating the \"${NAME}\" extension on the \"${BRANCH}\" branch..."
+    vvv_info " * Updating the \"${NAME}\" extension on the \"${BRANCH}\" branch..."
     cd "${DIR}"
     git pull origin "${BRANCH}" -q
     git checkout "${BRANCH}" -q
