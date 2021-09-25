@@ -12,6 +12,9 @@ function vvv_register_packages() {
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
 
+  #gnupg2 not installed; TODO: maybe add it to image
+  apt install gnupg2 software-properties-common -y
+
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
     vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."

@@ -45,11 +45,13 @@ function mailhog_setup() {
 
   # Start on reboot
   if [ "${VVV_DOCKER}" != 1 ]; then
+    # no systemd
     vvv_info " * Enabling MailHog Service"
-    systemctl enable mailhog
+    # systemctl enable mailhog
 
     vvv_info " * Starting MailHog Service"
-    systemctl start mailhog
+    # systemctl start mailhog
+    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
   fi
 }
 export -f mailhog_setup

@@ -378,6 +378,9 @@ Vagrant.configure('2') do |config|
     end
   end
 
+  # require disksize
+  (config.vagrant.plugins ||= []) << 'vagrant-disksize'
+
   # The vbguest plugin has issues for some users, so we're going to disable it for now
   config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
 
@@ -398,7 +401,7 @@ Vagrant.configure('2') do |config|
   # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
   # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = 'bento/ubuntu-20.04'
+  # config.vm.box = 'bento/ubuntu-20.04'
   config.vm.box_check_update = false
 
   # If we're at a contributor day, switch the base box to the prebuilt one
@@ -430,6 +433,12 @@ Vagrant.configure('2') do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
+  end
+
+  # Docker use image.
+  config.vm.provider :docker do |d|
+    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
+    d.has_ssh = true
   end
 
   if defined? vvv_config['vm_config']['box']
@@ -693,7 +702,7 @@ Vagrant.configure('2') do |config|
       config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
     end
   end
-  
+
   long_provision_bear = <<~HTML
   #{blue}#{creset}
   #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}

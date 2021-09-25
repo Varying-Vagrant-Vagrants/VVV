@@ -113,7 +113,9 @@ function profile_setup() {
     cp -f /srv/provision/core/env/ssh/sshd_config /etc/ssh/sshd_config
     if [ "${VVV_DOCKER}" != 1 ]; then
       vvv_info " * Reloading SSH Daemon"
-      systemctl reload ssh
+      ## no systemctl
+      # systemctl reload ssh
+      service ssh reload
     fi
   fi
 }
