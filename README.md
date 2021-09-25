@@ -1,14 +1,15 @@
 # VVV ( Varying Vagrant Vagrants )
+## with Docker as default provider
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/206b06167aaf48aab24422cd417e8afa)](https://www.codacy.com/gh/Varying-Vagrant-Vagrants/VVV?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Varying-Vagrant-Vagrants/VVV&amp;utm_campaign=Badge_Grade) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/varying-vagrant-vagrants/vvv.svg)](http://isitmaintained.com/project/varying-vagrant-vagrants/vvv "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/varying-vagrant-vagrants/vvv.svg)](http://isitmaintained.com/project/varying-vagrant-vagrants/vvv "Percentage of issues still open")
-
-VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and VirtualBox, and can be used to build sites, and contribute to WordPress.
+VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and Docker, and can be used to build sites, and contribute to WordPress.
 
 ## How To Use
 
-To use it, download and install [Vagrant](https://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/). Then, clone this repository and run:
+To use it, download and install [Vagrant](https://www.vagrantup.com) and [Docker](https://docs.docker.com/engine/install/). Then, clone this repository and run:
 
 ```shell
+git clone -b docker-provider https://github.com/pentatonicfunk/VVV-Docker.git ~/vvv-local
+cd ~/vvv-local
 vagrant plugin install --local
 vagrant up --provision
 ```
