@@ -378,9 +378,6 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  # require disksize
-  (config.vagrant.plugins ||= []) << 'vagrant-disksize'
-
   # The vbguest plugin has issues for some users, so we're going to disable it for now
   config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
 

@@ -137,5 +137,6 @@ general:
   #github_token: xxxxxx
 
 # Settings for the vagrant plugins supported by VVV
-vagrant-plugins:
-  disksize: 10GB # requires the disk size vagrant plugin
+# Docker doesn't need this
+#vagrant-plugins:
+#  disksize: 10GB # requires the disk size vagrant plugin
