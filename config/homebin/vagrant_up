@@ -33,12 +33,22 @@ sudo service nginx restart
 vvv_info " * Restarting MariaDB"
 sudo service mysql restart
 
+vvv_info " * Restarting PHP-FPM"
+find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+
+vvv_info " * Restarting Memcache"
+sudo service memcached restart
+
+vvv_info " * Restarting Mailhog"
+/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
+
 if [ -x "$(command -v ntpdate)" ]; then
 	vvv_info " * Syncing clocks disabled"
 	# sudo ntpdate -u ntp.ubuntu.com
 else
 	vvv_info " - skipping ntpdate clock sync, not installed yet"
 fi
+
 
 mkdir -p /vagrant/failed_provisioners
 if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then
