@@ -8,8 +8,8 @@ function mariadb_register_packages() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.5 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.5 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
 
   vvv_info " * Setting up MySQL configuration file links..."
 
@@ -57,13 +57,20 @@ function check_mysql_root_password() {
   vvv_info " * Checking the root user password is root"
   # Get if root has correct password and mysql_native_password as plugin
   sql=$( cat <<-SQL
-      SELECT count(*) from mysql.user WHERE
-      User='root' AND
-      authentication_string=PASSWORD('root') AND
-      plugin='mysql_native_password';
+      -- 10.5 SELECT count(*) from mysql.user WHERE
+      -- User='root' AND
+      -- authentication_string=PASSWORD('root') AND
+      -- plugin='mysql_native_password';
+      -- 10.3
+      SELECT count(*) from mysql.user where User='root' AND Password=PASSWORD('root');
 SQL
 )
+  vvv_info "${sql}"
+
   root_matches=$(mysql -u root --password=root -s -N -e "${sql}")
+
+  vvv_info "${root_matches}"
+
   if [[ $? -eq 0 && $root_matches == "1" ]]; then
     # mysql connected and the SQL above matched
     vvv_success " * The database root password is the expected value"
@@ -72,7 +79,9 @@ SQL
   # Do reset password in safemode
   vvv_warn " * The root password is not root, fixing"
   sql=$( cat <<-SQL
-      ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
+      -- 10.5 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
+      -- 10.3
+      ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
       FLUSH PRIVILEGES;
 SQL
 )
@@ -100,6 +109,10 @@ function mysql_setup() {
   chmod 0644 "/home/vagrant/.my.cnf"
   vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /home/vagrant/.my.cnf"
 
+  # Due to systemd dependencies, in docker, mysql service is not auto started
+  vvv_info " * Force Restarting mysql service"
+  service mysql restart
+
   if [ "${VVV_DOCKER}" != 1 ]; then
     check_mysql_root_password
   fi
@@ -107,7 +120,8 @@ function mysql_setup() {
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if [ $(service mysql status|grep 'mysql start/running' | wc -l) -ne 1 ]; then
+  # output bit different on docker container, cause no systemd
+  if [ $(service mysql status|grep 'Uptime' | wc -l) -ne 1 ]; then
     vvv_info " * Starting the mysql service"
     service mysql start
   else
