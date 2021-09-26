@@ -25,8 +25,8 @@ vvv_info " * Restarting Nginx"
 sudo service nginx restart
 vvv_info " * Restarting MariaDB"
 sudo service mysql restart
-vvv_info " * Syncing clocks"
-sudo ntpdate -u ntp.ubuntu.com
+vvv_info " * Syncing clocks disabled"
+# sudo ntpdate -u ntp.ubuntu.com
 
 RED="\033[38;5;9m"
 GREEN="\033[01;32m"

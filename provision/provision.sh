@@ -19,8 +19,8 @@ rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
 if [ -x "$(command -v ntpdate)" ]; then
-	echo " * Syncing clocks"
-	sudo ntpdate -u ntp.ubuntu.com
+	echo " * Syncing clocks disabled"
+	# sudo ntpdate -u ntp.ubuntu.com
 else
 	echo " - skipping ntpdate clock sync, not installed yet"
 fi

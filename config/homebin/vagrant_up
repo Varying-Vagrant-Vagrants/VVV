@@ -34,8 +34,8 @@ vvv_info " * Restarting MariaDB"
 sudo service mysql restart
 
 if [ -x "$(command -v ntpdate)" ]; then
-	vvv_info " * Syncing clocks"
-	sudo ntpdate -u ntp.ubuntu.com
+	vvv_info " * Syncing clocks disabled"
+	# sudo ntpdate -u ntp.ubuntu.com
 else
 	vvv_info " - skipping ntpdate clock sync, not installed yet"
 fi
