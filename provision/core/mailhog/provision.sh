@@ -51,7 +51,8 @@ function mailhog_setup() {
 
     vvv_info " * Starting MailHog Service"
     # systemctl start mailhog
-    exec su - vagrant -c "/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
+    /usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
+    vvv_info " * Started MailHog Service"
   fi
 }
 export -f mailhog_setup
@@ -59,7 +60,7 @@ export -f mailhog_setup
 vvv_add_hook after_packages mailhog_setup
 
 if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "service mailhog restart"
+  vvv_add_hook services_restart "kilall mailhog; /usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
 fi
 
 function mailhog_php_finalize() {
