@@ -59,8 +59,13 @@ export -f mailhog_setup
 
 vvv_add_hook after_packages mailhog_setup
 
+function mailhog_restart() {
+  killall mailhog; /usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
+}
+export -f mailhog_restart
+
 if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "killall mailhog; /usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &"
+  vvv_add_hook services_restart mailhog_restart
 fi
 
 function mailhog_php_finalize() {
