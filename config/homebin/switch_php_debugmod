@@ -51,7 +51,8 @@ enable_phpmod() {
 }
 
 is_module_enabled_fpm() {
-	if [ -f "/var/lib/php/modules/${1}/fpm/enabled_by_admin/${2}" ]; then
+  # Docker is enabled_by_maint, not admin, not sure why
+	if [ -f "/var/lib/php/modules/${1}/fpm/enabled_by_maint/${2}" ]; then
 		return 0
 	fi
 	return 1
