@@ -13,7 +13,7 @@ function vvv_register_packages() {
   fi
 
   #gnupg2 not installed; TODO: maybe add it to image
-  apt install gnupg2 software-properties-common -y
+  apt install gnupg2 software-properties-common apt-utils -y
 
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
@@ -91,7 +91,9 @@ function cleanup_vvv(){
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
     echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
-  mv /tmp/hosts /etc/hosts
+  # Docker: mv: cannot move '/tmp/hosts' to '/etc/hosts': Device or resource busy
+  # mv /tmp/hosts /etc/hosts
+  cat /tmp/hosts > /etc/hosts
 }
 export -f cleanup_vvv
 
