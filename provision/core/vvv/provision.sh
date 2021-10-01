@@ -30,6 +30,7 @@ function vvv_register_packages() {
   VVV_PACKAGE_LIST+=(
     software-properties-common
     ca-certificates
+    libgnutls30
     
     # Daily automatic security package upgrades
     unattended-upgrades
