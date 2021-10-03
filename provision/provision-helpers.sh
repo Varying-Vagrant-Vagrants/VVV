@@ -553,8 +553,10 @@ function get_vvv_sites() {
 }
 
 function re_init_etc_hosts() {
+  if test -f "/tmp/site-hosts"; then
+    sudo rm /tmp/site-hosts
+  fi
   local SITES=$(get_vvv_sites)
-  sudo rm /tmp/site-hosts
   for SITE in $SITES; do
     SITE_ESCAPED="${SITE//./\\.}"
     VVV_SITE_NAME=${SITE}
