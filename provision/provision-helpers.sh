@@ -545,3 +545,26 @@ vvv_apt_package_remove() {
   return 0
 }
 export -f vvv_apt_package_remove
+
+# Docker additional helpers
+function get_vvv_sites() {
+  local sites=$(shyaml -q keys "sites" <${VVV_CONFIG})
+  echo "${sites}"
+}
+
+function re_init_etc_hosts() {
+  local SITES=$(get_vvv_sites)
+  sudo rm /tmp/site-hosts
+  for SITE in $SITES; do
+    SITE_ESCAPED="${SITE//./\\.}"
+    VVV_SITE_NAME=${SITE}
+    local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" <${VVV_CONFIG})
+    for v in $value; do
+      echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}" >> /tmp/site-hosts
+    done
+  done
+
+  sudo cat /tmp/site-hosts >> /etc/hosts
+}
+
+export -f re_init_etc_hosts
