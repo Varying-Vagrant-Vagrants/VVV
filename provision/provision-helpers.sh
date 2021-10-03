@@ -567,6 +567,11 @@ function re_init_etc_hosts() {
   done
 
   sudo cat /tmp/site-hosts >> /etc/hosts
+
+  # cleanup
+  if test -f "/tmp/site-hosts"; then
+    sudo rm /tmp/site-hosts
+  fi
 }
 
 export -f re_init_etc_hosts
