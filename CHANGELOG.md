@@ -14,11 +14,13 @@ permalink: /docs/en-US/changelog/
 * Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
 * Add `jq` for CLI based JSON parsing ( #2518 )
 * Improved Debian/Raspbian compatibility in apt package provisioners ( #2522 )
+* Utiities have been renamed to extensions
 
 ### Bug Fixes
 
 * Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
 * Fixed the import of databases with spaces in there names
+* Improved root certificate trust chain handling
 
 ## 3.7.2 ( 2021 August 3rd )
 

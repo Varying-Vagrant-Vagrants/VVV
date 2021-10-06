@@ -86,11 +86,11 @@ sites:
   #  hosts:
   #    - my-example-site.test
 
-# Utilities https://varyingvagrantvagrants.org/docs/en-US/utilities/
+# Extensions https://varyingvagrantvagrants.org/docs/en-US/utilities/
 # are system level items that aren't websites, that install tools or packages
-# the core utilities install tools such as phpmyadmin
-utilities:
-  core: # The core VVV utility
+# the core extensions install tools such as phpmyadmin
+extensions:
+  core: # The core VVV extensions
     - tls-ca # HTTPS SSL/TLS certificates
     - phpmyadmin # Web based database client
     #- memcached-admin # Object cache management

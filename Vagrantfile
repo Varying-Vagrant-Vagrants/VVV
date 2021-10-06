@@ -171,8 +171,8 @@ vvv_config['sites'].each do |site, args|
   vvv_config['sites'][site].delete('hosts')
 end
 
-if vvv_config['utility-sources'].is_a? Hash
-  vvv_config['utility-sources'].each do |name, args|
+if vvv_config['extension-sources'].is_a? Hash
+  vvv_config['extension-sources'].each do |name, args|
     next unless args.is_a? String
 
     repo = args
@@ -180,10 +180,10 @@ if vvv_config['utility-sources'].is_a? Hash
     args['repo'] = repo
     args['branch'] = 'master'
 
-    vvv_config['utility-sources'][name] = args
+    vvv_config['extension-sources'][name] = args
   end
 else
-  vvv_config['utility-sources'] = {}
+  vvv_config['extension-sources'] = {}
 end
 
 vvv_config['dashboard'] = {} unless vvv_config['dashboard']
@@ -192,13 +192,16 @@ dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashbo
 dashboard_defaults['branch'] = 'master'
 vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
 
-unless vvv_config['utility-sources'].key?('core')
-  vvv_config['utility-sources']['core'] = {}
-  vvv_config['utility-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
-  vvv_config['utility-sources']['core']['branch'] = 'master'
+unless vvv_config['extension-sources'].key?('core')
+  vvv_config['extension-sources']['core'] = {}
+  vvv_config['extension-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
+  vvv_config['extension-sources']['core']['branch'] = 'master'
 end
 
 vvv_config['utilities'] = {} unless vvv_config['utilities'].is_a? Hash
+vvv_config['utility-sources'] = {} unless vvv_config['utility-sources'].is_a? Hash
+vvv_config['extension-sources'] = {} unless vvv_config['extension-sources'].is_a? Hash
+vvv_config['extensions'] = {} unless vvv_config['extensions'].is_a? Hash
 
 vvv_config['vm_config'] = {} unless vvv_config['vm_config'].is_a? Hash
 
@@ -550,7 +553,7 @@ Vagrant.configure('2') do |config|
 
   # /srv/config/
   #
-  # Map the provision folder so that utilities and provisioners can access helper scripts
+  # Map the provision folder so that extensions and provisioners can access helper scripts
   config.vm.synced_folder 'provision/', '/srv/provision'
 
   # /srv/certificates
@@ -740,34 +743,64 @@ Vagrant.configure('2') do |config|
                       env: { "VVV_LOG" => "dashboard" }
 
   vvv_config['utility-sources'].each do |name, args|
-    config.vm.provision "utility-source-#{name}",
+    config.vm.provision "extension-source-#{name}",
                         type: 'shell',
                         keep_color: true,
-                        path: File.join('provision', 'provision-utility-source.sh'),
+                        path: File.join('provision', 'provision-extension-source.sh'),
                         args: [
                           name,
                           args['repo'].to_s,
                           args['branch']
                         ],
-                        env: { "VVV_LOG" => "utility-source-#{name}" }
+                        env: { "VVV_LOG" => "extension-source-#{name}" }
+  end
+  vvv_config['extension-sources'].each do |name, args|
+    config.vm.provision "extension-source-#{name}",
+                        type: 'shell',
+                        keep_color: true,
+                        path: File.join('provision', 'provision-extension-source.sh'),
+                        args: [
+                          name,
+                          args['repo'].to_s,
+                          args['branch']
+                        ],
+                        env: { "VVV_LOG" => "extension-source-#{name}" }
   end
 
-  vvv_config['utilities'].each do |name, utilities|
-    utilities = {} unless utilities.is_a? Array
-    utilities.each do |utility|
-      if utility == 'tideways'
+  vvv_config['utilities'].each do |name, extensions|
+    extensions = {} unless extensions.is_a? Array
+    extensions.each do |extension|
+      if extension == 'tideways'
         vvv_config['hosts'] += ['tideways.vvv.test']
         vvv_config['hosts'] += ['xhgui.vvv.test']
       end
-      config.vm.provision "utility-#{name}-#{utility}",
+      config.vm.provision "extension-#{name}-#{extension}",
                           type: 'shell',
                           keep_color: true,
-                          path: File.join('provision', 'provision-utility.sh'),
+                          path: File.join('provision', 'provision-extension.sh'),
                           args: [
                             name,
-                            utility
+                            extension
                           ],
-                          env: { "VVV_LOG" => "utility-#{name}-#{utility}" }
+                          env: { "VVV_LOG" => "extension-#{name}-#{extension}" }
+    end
+  end
+  vvv_config['extensions'].each do |name, extensions|
+    extensions = {} unless extensions.is_a? Array
+    extensions.each do |extension|
+      if extension == 'tideways'
+        vvv_config['hosts'] += ['tideways.vvv.test']
+        vvv_config['hosts'] += ['xhgui.vvv.test']
+      end
+      config.vm.provision "extension-#{name}-#{extension}",
+                          type: 'shell',
+                          keep_color: true,
+                          path: File.join('provision', 'provision-extension.sh'),
+                          args: [
+                            name,
+                            extension
+                          ],
+                          env: { "VVV_LOG" => "extension-#{name}-#{extension}" }
     end
   end
 
