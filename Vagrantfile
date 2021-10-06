@@ -72,6 +72,25 @@ end
 show_logo = true if %w[up resume status provision reload].include? ARGV[0]
 show_logo = false if ENV['VVV_SKIP_LOGO']
 
+# OS Detection
+module OS
+    def OS.windows?
+        (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+    end
+
+    def OS.mac?
+        (/darwin/ =~ RUBY_PLATFORM) != nil
+    end
+
+    def OS.unix?
+        !OS.windows?
+    end
+
+    def OS.linux?
+        OS.unix? and not OS.mac?
+    end
+end
+
 # Show the initial splash screen
 if show_logo
   git_or_zip = 'zip-no-vcs'
@@ -436,6 +455,15 @@ Vagrant.configure('2') do |config|
   config.vm.provider :docker do |d|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
+    if OS.mac?
+        # Docker in mac need explicit ports publish to access
+        # before provision `sudo ifconfig lo0 alias 192.168.50.4/24`
+        d.ports = [ "#{vvv_config['vm_config']['private_network_ip']}:80:80" ]
+        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:443:443" ]
+        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:3306:3306" ]
+        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:8025:8025" ]
+        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:1025:1025" ]
+    end
   end
 
   if defined? vvv_config['vm_config']['box']

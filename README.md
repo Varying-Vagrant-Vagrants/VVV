@@ -1,25 +1,36 @@
 # VVV ( Varying Vagrant Vagrants )
+
 ## with Docker as default provider
 
-VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and Docker, and can be used to build sites, and contribute to WordPress.
+VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It
+uses [Vagrant](https://www.vagrantup.com) and Docker, and can be used to build sites, and contribute to WordPress.
 
 ## How To Use
 
-To use it, download and install [Vagrant](https://www.vagrantup.com) and [Docker](https://docs.docker.com/engine/install/). Then, clone this repository and run:
+To use it, download and install [Vagrant](https://www.vagrantup.com)
+and [Docker](https://docs.docker.com/engine/install/). Then, clone this repository and run:
 
 ```shell
 git clone -b docker-provider https://github.com/pentatonicfunk/VVV-Docker.git ~/vvv-local
 cd ~/vvv-local
 vagrant plugin install --local
+
+# MAC Only ( see: https://docs.docker.com/desktop/mac/networking/#per-container-ip-addressing-is-not-possible )
+sudo ifconfig lo0 alias 192.168.50.4/24
+# !! this doesn't survive restart, do it again before next vagrant up on future boot
+#MAC Only ( with this command in mac, now we can access 192.168.50.4, but we still have to publish ports, which will be done in Vagrantfile)
+
 vagrant up --provision
 ```
 
 When it's done, visit [http://vvv.test](http://vvv.test).
 
-The online documentation contains more detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
+The online documentation contains more
+detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
-* **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
+* **Contributing**: Contributions are more than welcome. Please see our
+  current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
 ## Minimum System requirements
 
@@ -27,4 +38,5 @@ The online documentation contains more detailed [installation instructions](http
 
 ## Software included
 
-For a comprehensive list, please see the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).
+For a comprehensive list, please see
+the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).
