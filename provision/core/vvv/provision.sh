@@ -12,6 +12,15 @@ function vvv_register_packages() {
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
 
+
+  # this package and another are necessary to ensure certificate trust store is up to date
+  # without this, some mirrors will faill due to changing letsencrypt intermediate root certificates
+  if [ $(dpkg-query -W -f='${Status}' ca-certificates 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    vvv_info " * Installing updated certificate stores before proceeding"
+    apt-get --yes install ca-certificates libgnutls30
+    vvv_info " * Installing updated certificate stores completed with code ${?}"
+  fi
+
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
     vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
@@ -31,7 +40,7 @@ function vvv_register_packages() {
     software-properties-common
     ca-certificates
     libgnutls30
-    
+
     # Daily automatic security package upgrades
     unattended-upgrades
 
@@ -117,5 +126,6 @@ function services_restart() {
   # Make sure the services we expect to be running are running.
   vvv_info " * Restarting services..."
   vvv_hook services_restart
+  vvv_info " * Services restarted..."
 }
 vvv_add_hook finalize services_restart 1000
