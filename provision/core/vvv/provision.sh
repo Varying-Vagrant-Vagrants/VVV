@@ -3,30 +3,6 @@
 set -eo pipefail
 
 function vvv_register_packages() {
-  local OSID=$(lsb_release --id --short)
-  local OSCODENAME=$(lsb_release --codename --short)
-  local APTSOURCE="/srv/provision/core/vvv/sources-${OSID,,}-${OSCODENAME,,}.list"
-  if [ -f "${APTSOURCE}" ]; then
-    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-sources.list"
-  else
-    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
-  fi
-
-
-  # this package and another are necessary to ensure certificate trust store is up to date
-  # without this, some mirrors will faill due to changing letsencrypt intermediate root certificates
-  if [ $(dpkg-query -W -f='${Status}' ca-certificates 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    vvv_info " * Installing updated certificate stores before proceeding"
-    apt-get --yes install ca-certificates libgnutls30
-    vvv_info " * Installing updated certificate stores completed with code ${?}"
-  fi
-
-  if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
-    # Apply the VVV signing key
-    vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
-    apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
-  fi
-
   VVV_PACKAGE_REMOVAL_LIST+=(
     # remove the old Python 2 packages to avoid issues with python3-pip
     python-pip
@@ -75,7 +51,39 @@ function vvv_register_packages() {
     webp
   )
 }
-vvv_add_hook before_packages vvv_register_packages 0
+vvv_add_hook register_apt_packages vvv_register_packages 0
+
+function vvv_register_apt_sources() {
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/vvv/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
+  fi
+}
+vvv_add_hook register_apt_sources vvv_register_apt_sources 0
+
+function vvv_register_keys() {
+  if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
+    # Apply the VVV signing key
+    vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
+    apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
+  fi
+}
+vvv_add_hook register_apt_sources vvv_register_sources 0
+
+function vvv_before_packages() {
+  # this package and another are necessary to ensure certificate trust store is up to date
+  # without this, some mirrors will faill due to changing letsencrypt intermediate root certificates
+  if [ $(dpkg-query -W -f='${Status}' ca-certificates 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    vvv_info " * Installing updated certificate stores before proceeding"
+    apt-get --yes install ca-certificates libgnutls30
+    vvv_info " * Installing updated certificate stores completed with code ${?}"
+  fi
+}
+vvv_add_hook before_packages vvv_before_packages 0
 
 function shyaml_setup() {
   # Shyaml

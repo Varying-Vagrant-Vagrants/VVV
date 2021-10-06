@@ -3,7 +3,13 @@
 set -eo pipefail
 
 VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.4"}
-function php_register_packages() {
+
+function php_before_packages() {
+  cp -f "/srv/provision/core/php/ondrej-ppa-pin" "/etc/apt/preferences.d/ondrej-ppa-pin"
+}
+vvv_add_hook before_packages php_before_packages
+
+function php_register_apt_sources() {
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
   local APTSOURCE="/srv/provision/core/php/sources-${OSID,,}-${OSCODENAME,,}.list"
@@ -12,16 +18,10 @@ function php_register_packages() {
   else
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
+}
+vvv_add_hook register_apt_sources php_register_apt_sources
 
-  cp -f "/srv/provision/core/php/ondrej-ppa-pin" "/etc/apt/preferences.d/ondrej-ppa-pin"
-  cp -f "/srv/provision/core/php/apt-keys/php.gpg" "/etc/apt/trusted.gpg.d/php.gpg"
-
-  if ! vvv_apt_keys_has 'Ondřej'; then
-    # Apply the PHP signing key
-    vvv_info " * Applying the Ondřej PHP signing key..."
-    apt-key add /srv/provision/core/php/apt-keys/ondrej_keyserver_ubuntu.key
-  fi
-
+function php_register_apt_packages() {
   VVV_PACKAGE_LIST+=(
     # PHP
     #
@@ -64,7 +64,19 @@ function php_register_packages() {
     "php${VVV_BASE_PHPVERSION}-xdebug"
   )
 }
-vvv_add_hook before_packages php_register_packages
+vvv_add_hook register_apt_packages php_register_apt_packages
+
+
+function php_register_apt_keys() {
+  cp -f "/srv/provision/core/php/apt-keys/php.gpg" "/etc/apt/trusted.gpg.d/php.gpg"
+
+  if ! vvv_apt_keys_has 'Ondřej'; then
+    # Apply the PHP signing key
+    vvv_info " * Applying the Ondřej PHP signing key..."
+    apt-key add /srv/provision/core/php/apt-keys/ondrej_keyserver_ubuntu.key
+  fi
+}
+vvv_add_hook register_apt_sources php_register_apt_keys
 
 function phpfpm_setup() {
   # Copy php-fpm configs from local
