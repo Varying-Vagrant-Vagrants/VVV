@@ -71,7 +71,6 @@ if ! network_check; then
   exit 1
 fi
 
-vvv_info " * Upgrading apt packages."
 vvv_apt_packages_upgrade
 
 vvv_info " * Apt package install pre-checks"
