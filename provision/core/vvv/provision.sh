@@ -72,7 +72,7 @@ function vvv_register_keys() {
     apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 }
-vvv_add_hook register_apt_sources vvv_register_sources 0
+vvv_add_hook register_apt_sources vvv_register_keys 0
 
 function vvv_before_packages() {
   # this package and another are necessary to ensure certificate trust store is up to date
