@@ -3,7 +3,7 @@
 set -eo pipefail
 
 # @noargs
-function git_register_packages() {
+function git_register_apt_sources() {
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
 
@@ -27,6 +27,7 @@ function git_register_packages() {
 }
 vvv_add_hook register_apt_sources git_register_apt_sources
 
+# @noargs
 function git_register_apt_packages() {
   VVV_PACKAGE_LIST+=(
     git
@@ -36,6 +37,7 @@ function git_register_apt_packages() {
 }
 vvv_add_hook register_apt_packages git_register_apt_packages
 
+# @noargs
 function git_register_apt_keys() {
   if ! vvv_apt_keys_has 'git-lfs'; then
     # Apply the PackageCloud signing key which signs git lfs
