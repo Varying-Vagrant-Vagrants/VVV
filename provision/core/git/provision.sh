@@ -18,23 +18,29 @@ function git_register_packages() {
     fi
   fi
 
-  if ! vvv_apt_keys_has 'git-lfs'; then
-    # Apply the PackageCloud signing key which signs git lfs
-    vvv_info " * Applying the PackageCloud Git-LFS signing key..."
-    apt-key add /srv/provision/core/git/apt-keys/git-lfs.key
-  fi
-
   local APTSOURCE="/srv/provision/core/git/sources-${OSID,,}-${OSCODENAME,,}.list"
   if [ -f "${APTSOURCE}" ]; then
     cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-git-sources.list"
   else
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
+}
+vvv_add_hook register_apt_sources git_register_apt_sources
 
+function git_register_apt_packages() {
   VVV_PACKAGE_LIST+=(
     git
     git-lfs
     git-svn
   )
 }
-vvv_add_hook before_packages git_register_packages
+vvv_add_hook register_apt_packages git_register_apt_packages
+
+function git_register_apt_keys() {
+  if ! vvv_apt_keys_has 'git-lfs'; then
+    # Apply the PackageCloud signing key which signs git lfs
+    vvv_info " * Applying the PackageCloud Git-LFS signing key..."
+    apt-key add /srv/provision/core/git/apt-keys/git-lfs.key
+  fi
+}
+vvv_add_hook register_apt_keys git_register_apt_keys

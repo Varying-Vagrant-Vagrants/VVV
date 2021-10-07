@@ -2,15 +2,15 @@
 # @description Installs MemCached
 set -eo pipefail
 
-function vvv_memcached_register_packages() {
+function vvv_memcached_register_apt_packages() {
   # MemCached
   VVV_PACKAGE_LIST+=(
     # memcached is made available for object caching
     memcached
   )
 }
-export -f vvv_memcached_register_packages
-vvv_add_hook before_packages vvv_memcached_register_packages
+export -f vvv_memcached_register_apt_packages
+vvv_add_hook register_apt_packages vvv_memcached_register_apt_packages
 
 function vvv_memcached_setup() {
   # Copy memcached configuration from local
