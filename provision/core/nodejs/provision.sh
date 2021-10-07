@@ -37,7 +37,7 @@ function nodejs_register_apt_keys() {
     apt-key add /srv/provision/core/nodejs/apt-keys/nodesource.gpg.key
   fi
 }
-vvv_add_hook register_apt_keys nodejs_register_apt_keysnodejs_register_apt_keys
+vvv_add_hook register_apt_keys nodejs_register_apt_keys
 
 function reinstall_node() {
   vvv_info " * Purging NodeJS package."
