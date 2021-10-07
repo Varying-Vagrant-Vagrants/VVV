@@ -8,8 +8,8 @@ function mariadb_register_packages() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.3 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.3 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.5 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.5 mysql-server/root_password_again password "root" | debconf-set-selections
 
   vvv_info " * Setting up MySQL configuration file links..."
 
@@ -57,12 +57,10 @@ function check_mysql_root_password() {
   vvv_info " * Checking the root user password is root"
   # Get if root has correct password and mysql_native_password as plugin
   sql=$( cat <<-SQL
-      -- 10.5 SELECT count(*) from mysql.user WHERE
-      -- User='root' AND
-      -- authentication_string=PASSWORD('root') AND
-      -- plugin='mysql_native_password';
-      -- 10.3
-      SELECT count(*) from mysql.user where User='root' AND Password=PASSWORD('root');
+      SELECT count(*) from mysql.user WHERE
+      User='root' AND
+      authentication_string=PASSWORD('root') AND
+      plugin='mysql_native_password';
 SQL
 )
   vvv_info "${sql}"
@@ -79,9 +77,7 @@ SQL
   # Do reset password in safemode
   vvv_warn " * The root password is not root, fixing"
   sql=$( cat <<-SQL
-      -- 10.5 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
-      -- 10.3
-      ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+      ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
       FLUSH PRIVILEGES;
 SQL
 )
@@ -111,7 +107,7 @@ function mysql_setup() {
 
   # Due to systemd dependencies, in docker, mysql service is not auto started
   vvv_info " * Force Restarting mysql service"
-  service mysql restart
+  service mariadb restart
 
   if [ "${VVV_DOCKER}" != 1 ]; then
     check_mysql_root_password
@@ -121,12 +117,12 @@ function mysql_setup() {
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
   # output bit different on docker container, cause no systemd
-  if [ $(service mysql status|grep 'Uptime' | wc -l) -ne 1 ]; then
+  if [ $(service mariadb status|grep 'Uptime' | wc -l) -ne 1 ]; then
     vvv_info " * Starting the mysql service"
-    service mysql start
+    service mariadb start
   else
     vvv_info " * Restarting mysql service"
-    service mysql restart
+    service mariadb restart
   fi
 
   # IMPORT SQL

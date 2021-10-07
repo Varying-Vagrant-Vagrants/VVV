@@ -42,6 +42,7 @@ function vvv_register_packages() {
     python3-pip
     python3-setuptools
     lftp
+    nano
 
     # ntp service to keep clock current
     ntp
