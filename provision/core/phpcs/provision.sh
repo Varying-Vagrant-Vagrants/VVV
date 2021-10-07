@@ -24,8 +24,8 @@ function php_codesniff_setup() {
 
   # Install the standards in PHPCS
   noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
-  vvv_info " * The following PHPCS standards are set up:"
-  noroot /srv/www/phpcs/bin/phpcs -i
+  local standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
+  vvv_info " * The following PHPCS standards are set up: ${standards}"
   vvv_success " * PHPCS provisioning has ended"
 }
 export -f php_codesniff_setup

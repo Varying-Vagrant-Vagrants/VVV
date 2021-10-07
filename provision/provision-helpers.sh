@@ -402,6 +402,45 @@ vvv_hook() {
 }
 export -f vvv_hook
 
+# @description Executes a hook. Functions added to this hook will be executed in parallel
+#
+# @example
+#   vvv_parallel_hook before_packages
+#
+# @arg $1 string the hook to execute
+vvv_parallel_hook() {
+  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
+    vvv_error " x Disallowed hookname '${1}'"
+    return 1
+  fi
+
+  local hook_var_prios="VVV_HOOKS_${1}"
+  local start=`date +%s`
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
+  vvv_info " ▷ Running <b>${1}</b><info> hook"
+  local sorted
+  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+
+  for i in ${!sorted[@]}; do
+    local prio="${sorted[$i]}"
+    hooks_on_prio="${hook_var_prios}_${prio}"
+    local loop=$(cat << HOOKLOOP
+for j in \${!${hooks_on_prio}[@]}; do
+  #vvv_info "   - Starting subhook \${${hooks_on_prio}[\$j]} with priority ${prio}"
+  \${${hooks_on_prio}[\$j]} &
+done
+wait
+#vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
+HOOKLOOP
+    )
+    eval "${loop}"
+
+  done
+  local end=`date +%s`
+  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
+}
+export -f vvv_parallel_hook
+
 vvv_apt_update() {
   vvv_info " * Updating apt keys"
   apt-key update -y
