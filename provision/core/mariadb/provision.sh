@@ -105,6 +105,10 @@ function mysql_setup() {
   chmod 0644 "/home/vagrant/.my.cnf"
   vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /home/vagrant/.my.cnf"
 
+  # this file should been obsolete, but somehow mariadb init.d script use it
+  cp -f  "/srv/provision/core/mariadb/config/debian.cnf" "/etc/mysql/debian.cnf"
+  vvv_info " * Copied /srv/provision/core/mariadb/config/debian.cnf          to /etc/mysql/debian.cnf"
+
   # Due to systemd dependencies, in docker, mysql service is not auto started
   vvv_info " * Force Restarting mysql service"
   service mariadb restart

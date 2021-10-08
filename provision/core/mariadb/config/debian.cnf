@@ -1,0 +1,15 @@
+# THIS FILE IS OBSOLETE. STOP USING IT IF POSSIBLE.
+# This file exists only for backwards compatibility for
+# tools that run '--defaults-file=/etc/mysql/debian.cnf'
+# and have root level access to the local filesystem.
+# With those permissions one can run 'mariadb' directly
+# anyway thanks to unix socket authentication and hence
+# this file is useless. See package README for more info.
+[client]
+user     = root
+password = root
+
+[mysqladmin]
+user     = root
+password = root
+# THIS FILE WILL BE REMOVED IN A FUTURE DEBIAN RELEASE.
