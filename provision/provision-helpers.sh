@@ -437,17 +437,14 @@ function vvv_parallel_hook() {
 
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
-    hooks_on_prio="${hook_var_prios}_${prio}"
-    local hookloop=$(cat << HOOKLOOP
-for j in \${!${hooks_on_prio}[@]}; do
-  #vvv_info "   - Starting subhook \${${hooks_on_prio}[\$j]} with priority ${prio}"
-  vvv_run_parallel_hook_function \${${hooks_on_prio}[\$j]} &
-done
-wait
-#vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
-HOOKLOOP
-    )
-    eval "${hookloop}"
+    hooks_on_prio="${hook_var_prios}_${prio}[@]"
+    local dhooks="${hooks_on_prio}[@]";
+    for f in ${!hooks_on_prio}; do
+      vvv_info "   - Starting subhook ${f} with priority ${prio}"
+      vvv_run_parallel_hook_function "${f}" &
+    done
+    wait
+    vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
 
   done
   local end=`date +%s`
