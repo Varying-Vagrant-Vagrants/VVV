@@ -74,4 +74,4 @@ function grunt_setup() {
 }
 export -f grunt_setup
 
-vvv_add_hook tools_setup_synchronous grunt_setup
+vvv_add_hook tools_setup grunt_setup

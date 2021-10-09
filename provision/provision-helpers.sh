@@ -184,6 +184,12 @@ function log_to_file() {
 }
 export -f log_to_file
 
+function end_log_to_file() {
+  exec 6>&1
+	exec 7>&2
+}
+export -f log_to_file
+
 # @description Run a command that cannot be ran as root
 function noroot() {
   sudo -EH -u "vagrant" "$@";
@@ -402,13 +408,21 @@ vvv_hook() {
 }
 export -f vvv_hook
 
+
+function vvv_run_parallel_hook_function() {
+  eval $1
+  end_log_to_file
+}
+
+export -f vvv_run_parallel_hook_function
+
 # @description Executes a hook. Functions added to this hook will be executed in parallel
 #
 # @example
 #   vvv_parallel_hook before_packages
 #
 # @arg $1 string the hook to execute
-vvv_parallel_hook() {
+function vvv_parallel_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
     vvv_error " x Disallowed hookname '${1}'"
     return 1
@@ -424,16 +438,16 @@ vvv_parallel_hook() {
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
     hooks_on_prio="${hook_var_prios}_${prio}"
-    local loop=$(cat << HOOKLOOP
+    local hookloop=$(cat << HOOKLOOP
 for j in \${!${hooks_on_prio}[@]}; do
   #vvv_info "   - Starting subhook \${${hooks_on_prio}[\$j]} with priority ${prio}"
-  \${${hooks_on_prio}[\$j]} &
+  vvv_run_parallel_hook_function \${${hooks_on_prio}[\$j]} &
 done
 wait
 #vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
 HOOKLOOP
     )
-    eval "${loop}"
+    eval "${hookloop}"
 
   done
   local end=`date +%s`
