@@ -3,38 +3,47 @@
 
 function install_grunt() {
   vvv_info " * Installing Grunt CLI"
-  npm_config_loglevel=error noroot npm install -g grunt grunt-cli --no-optional --force
+  npm_config_loglevel=error npm install -g grunt grunt-cli --no-optional --force
 
   npm_config_loglevel=error hack_avoid_gyp_errors &
-  process_id=$!
-  noroot npm install -g grunt-sass --no-optional  --unsafe
+  vvv_info " * Installing grunt-sass"
+  npm install -g grunt-sass --no-optional  --unsafe
+  vvv_info " * grunt-sass installed"
   touch /tmp/stop_gyp_hack
-  kill -STOP $process_id
 
-  npm_config_loglevel=error noroot npm install -g grunt-cssjanus --no-optional
-  npm_config_loglevel=error noroot npm install -g grunt-rtlcss --no-optional
-  vvv_success " * Completed Grunt CLI installation"
+  vvv_info " * Installing grun-cssjanus and grunt-rtlcss"
+  npm_config_loglevel=error npm install -g grunt-cssjanus --no-optional
+  npm_config_loglevel=error npm install -g grunt-rtlcss --no-optional
+  vvv_success " * Completed Grunt installation"
 }
 
 function update_grunt() {
   vvv_info " * Updating Grunt CLI"
-  npm_config_loglevel=error noroot npm update -g grunt grunt-cli --no-optional --force
+  npm_config_loglevel=error npm update -g grunt grunt-cli --no-optional --force
 
   npm_config_loglevel=error hack_avoid_gyp_errors &
-  process_id=$!
-  noroot npm update -g grunt-sass  --unsafe
+  vvv_info " * Updating grunt-sass"
+  npm update -g grunt-sass  --unsafe
+  vvv_info " * grunt-sass Updated"
   touch /tmp/stop_gyp_hack
-  kill -STOP $process_id
 
-  npm_config_loglevel=error noroot npm update -g grunt-cssjanus --no-optional
-  npm_config_loglevel=error noroot npm update -g grunt-rtlcss --no-optional
+  vvv_info " * Updating grun-cssjanus and grunt-rtlcss"
+  npm_config_loglevel=error npm update -g grunt-cssjanus --no-optional
+  npm_config_loglevel=error npm update -g grunt-rtlcss --no-optional
   vvv_success " * Completed Grunt CLI update"
 }
+
 # Grunt
 #
 # Install or Update Grunt based on current state.  Updates are direct
 # from NPM
 function hack_avoid_gyp_errors() {
+  # exit early if it's already been cancelled
+  if [ -f /tmp/stop_gyp_hack ]; then
+    rm -f /tmp/stop_gyp_hack
+    return 0
+  fi
+
   # Without this, we get a bunch of errors when installing `grunt-sass`:
   # > node scripts/install.js
   # Unable to save binary /usr/lib/node_modules/.../node-sass/.../linux-x64-48 :
@@ -50,7 +59,9 @@ function hack_avoid_gyp_errors() {
     fi
     sleep .2
   done
-  rm /tmp/stop_gyp_hack
+  vvv_info " * Stopped gyphack loop"
+  rm -f /tmp/stop_gyp_hack
+  return 0
 }
 
 function grunt_setup() {
@@ -63,4 +74,4 @@ function grunt_setup() {
 }
 export -f grunt_setup
 
-vvv_add_hook tools_setup grunt_setup
+vvv_add_hook tools_setup_synchronous grunt_setup
