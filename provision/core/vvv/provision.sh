@@ -42,7 +42,6 @@ function vvv_register_packages() {
     python3-pip
     python3-setuptools
     lftp
-    nano
 
     # ntp service to keep clock current
     ntp
@@ -63,6 +62,8 @@ function vvv_register_packages() {
     # not included in docker images by default, lets add
     iputils-ping
     net-tools
+    nano
+    less
   )
 }
 vvv_add_hook before_packages vvv_register_packages 0
