@@ -402,7 +402,7 @@ vvv_hook() {
     local prio="${sorted[$i]}"
     hooks_on_prio="${hook_var_prios}_${prio}[@]"
     for f in ${!hooks_on_prio}; do
-      eval "${f}"
+      $f
     done
   done
   local end=`date +%s`
