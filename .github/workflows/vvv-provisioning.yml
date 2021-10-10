@@ -25,6 +25,9 @@ jobs:
         with:
           ref: stable
 
+      - name: install goodhosts
+        run: vagrant plugin install --local
+
       - name: vagrant up (stable)
         run: vagrant up
 
@@ -59,6 +62,9 @@ jobs:
         with:
           ref: develop
 
+      - name: install goodhosts
+        run: vagrant plugin install --local
+
       - name: vagrant up (develop)
         run: vagrant up
 
@@ -90,6 +96,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      - name: install goodhosts
+        run: vagrant plugin install --local
 
       - name: vagrant up (current branch)
         run: vagrant up
