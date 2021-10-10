@@ -32,6 +32,8 @@ jobs:
         run: vagrant up
 
       - uses: actions/checkout@v2
+        with:
+          clean: false
 
       - name: vagrant up (current branch)
         run: vagrant up --provision
@@ -69,6 +71,8 @@ jobs:
         run: vagrant up
 
       - uses: actions/checkout@v2
+        with:
+          clean: false
 
       - name: vagrant up (current branch)
         run: vagrant up --provision
