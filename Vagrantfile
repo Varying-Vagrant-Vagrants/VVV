@@ -365,7 +365,6 @@ Vagrant.configure('2') do |config|
   config.vm.provider :hyperv do |v|
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']
-    v.enable_virtualization_extensions = true
     v.linked_clone = true
   end
 
