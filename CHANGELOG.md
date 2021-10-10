@@ -23,6 +23,7 @@ permalink: /docs/en-US/changelog/
 * Improved root certificate trust chain handling
 * Service restarts now have dedicated functions
 * Several evals removed from the hook functions
+* Disabled nested virtualisation under Hyper-V
 
 ## 3.7.2 ( 2021 August 3rd )
 
