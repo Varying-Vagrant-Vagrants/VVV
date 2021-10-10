@@ -38,19 +38,11 @@ jobs:
       - name: vagrant up (current branch)
         run: vagrant up --provision
 
-      - name: Prepare Output
-        if: ${{ always() }}
-        run: |
-          sudo cp -rf "$GITHUB_WORKSPACE/log" "/vvv-logs"
-          MYUID=$(id -u -n)
-          MYGID=$(id -g -n)
-          sudo chown -R $MYUID:$MYGID "/vvv-logs"
-
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: logs
-          path: "/vvv-logs"
+          path: "$GITHUB_WORKSPACE/log"
 
   on-develop:
     name: Develop Reprovision
@@ -77,19 +69,11 @@ jobs:
       - name: vagrant up (current branch)
         run: vagrant up --provision
 
-      - name: Prepare Output
-        if: ${{ always() }}
-        run: |
-          sudo cp -rf "$GITHUB_WORKSPACE/log" "/vvv-logs"
-          MYUID=$(id -u -n)
-          MYGID=$(id -g -n)
-          sudo chown -R $MYUID:$MYGID "/vvv-logs"
-
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: logs
-          path: "/vvv-logs"
+          path: "$GITHUB_WORKSPACE/log"
 
   on-clean:
     name: Clean Provision
@@ -107,16 +91,8 @@ jobs:
       - name: vagrant up (current branch)
         run: vagrant up
 
-      - name: Prepare Output
-        if: ${{ always() }}
-        run: |
-          sudo cp -rf "$GITHUB_WORKSPACE/log" "/vvv-logs"
-          MYUID=$(id -u -n)
-          MYGID=$(id -g -n)
-          sudo chown -R $MYUID:$MYGID "/vvv-logs"
-
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: logs
-          path: "/vvv-logs"
+          path: "$GITHUB_WORKSPACE/log"
