@@ -13,89 +13,86 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
-    name: Run Provisioner
+  on-stable:
+    name: Stable Reprovision
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: macos-10.15
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          ref: stable
+
+      - name: vagrant up (stable)
+        run: vagrant up
+
+      - uses: actions/checkout@v2
+
+      - name: vagrant up (current branch)
+        run: vagrant up --provision
+
+      - name: Prepare Output
+        if: ${{ always() }}
+        run: |
+          sudo cp -rf "$GITHUB_WORKSPACE/log" "/vvv-logs"
+          MYUID=$(id -u -n)
+          MYGID=$(id -g -n)
+          sudo chown -R $MYUID:$MYGID "/vvv-logs"
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: logs
+          path: "/vvv-logs"
+
+  on-develop:
+    name: Develop Reprovision
+    # The type of runner that the job will run on
+    runs-on: macos-10.15
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+
+      - name: vagrant up (develop)
+        run: vagrant up
+
+      - uses: actions/checkout@v2
+
+      - name: vagrant up (current branch)
+        run: vagrant up --provision
+
+      - name: Prepare Output
+        if: ${{ always() }}
+        run: |
+          sudo cp -rf "$GITHUB_WORKSPACE/log" "/vvv-logs"
+          MYUID=$(id -u -n)
+          MYGID=$(id -g -n)
+          sudo chown -R $MYUID:$MYGID "/vvv-logs"
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: logs
+          path: "/vvv-logs"
+
+  on-clean:
+    name: Clean Provision
+    # The type of runner that the job will run on
+    runs-on: macos-10.15
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Make Symlinks
-      - name: Create Vagrant Like Environment
-        run: |
-          # uninstall pre installed packages (to test if extensions work)
-          sudo apt-get -q --autoremove --purge remove php*
-          sudo apt-get -q autoclean
-
-          # remove pre-installed composer
-          if [ -f /usr/bin/composer ]; then
-            sudo rm -f /usr/bin/composer
-          fi
-
-          # create vagrant user
-          sudo groupadd -g 2000 vagrant
-          sudo useradd -u 2000 -g vagrant -m vagrant
-
-          # vvv_symlink function to sumulate synced folders
-          function vvv_symlink() {
-            if [ ! -d "${1}" ]; then
-              sudo mkdir -p "${1}"
-            fi
-            sudo chown -R vagrant:vagrant "${1}"
-            sudo ln -sf "${1}" "${2}"
-          }
-
-          # create srv folder
-          sudo -u "vagrant" mkdir -p "/srv"
-
-          # copy files provided by vagrant
-          sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
-          sudo cp -f "$GITHUB_WORKSPACE/version" "/home/vagrant/version"
-
-          # make folders available
-          vvv_symlink "$GITHUB_WORKSPACE/database/sql" "/srv/database"
-          vvv_symlink "$GITHUB_WORKSPACE/config" "/srv/config"
-          vvv_symlink "$GITHUB_WORKSPACE/provision" "/srv/provision"
-          vvv_symlink "$GITHUB_WORKSPACE/certificates" "/srv/certificates"
-          vvv_symlink "$GITHUB_WORKSPACE/www" "/srv/www"
-          vvv_symlink "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
-          vvv_symlink "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
-          vvv_symlink "$GITHUB_WORKSPACE/log/php" "/var/log/php"
-          vvv_symlink "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
-
-      # Runs the provisioners in the expected order
-      - name: Run provison-pre.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && pre_hook'
-
-      - name: Run provision.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_main'
-
-      - name: Run provision-tools.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_tools'
-
-      - name: Run provison-dashboard.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_dashboard'
-
-      - name: Run provision-extension-source.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_extension_sources'
-
-      - name: Run provision-extension.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_extensions'
-
-      - name: Run provision-site.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_sites'
-
-      - name: Run provision-post.sh
-        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && post_hook'
-
-      # At this point, we would run some extra tests
-      # TODO: Ideas
-      # - Add screenshots of provisioned sites
-      # - CURL mailhog API to see if it's working or not
-      # - Check VM hostfile
+      - name: vagrant up (current branch)
+        run: vagrant up
 
       - name: Prepare Output
         if: ${{ always() }}
