@@ -38,6 +38,9 @@ jobs:
       - name: vagrant up (current branch)
         run: vagrant up --provision
 
+      - name: tests
+        run: provision/tests/macos-tests.sh
+
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
@@ -69,6 +72,9 @@ jobs:
       - name: vagrant up (current branch)
         run: vagrant up --provision
 
+      - name: tests
+        run: provision/tests/macos-tests.sh
+
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
@@ -90,6 +96,9 @@ jobs:
 
       - name: vagrant up (current branch)
         run: vagrant up
+
+      - name: tests
+        run: provision/tests/macos-tests.sh
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
