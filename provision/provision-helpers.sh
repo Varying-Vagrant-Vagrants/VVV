@@ -184,12 +184,6 @@ function log_to_file() {
 }
 export -f log_to_file
 
-function end_log_to_file() {
-  exec 6>&1
-	exec 7>&2
-}
-export -f log_to_file
-
 # @description Run a command that cannot be ran as root
 function noroot() {
   sudo -EH -u "vagrant" "$@";
@@ -413,7 +407,9 @@ export -f vvv_hook
 
 function vvv_run_parallel_hook_function() {
   eval $1
-  end_log_to_file
+
+  # kill all sub-processes
+  pkill -P $$
 }
 
 export -f vvv_run_parallel_hook_function
