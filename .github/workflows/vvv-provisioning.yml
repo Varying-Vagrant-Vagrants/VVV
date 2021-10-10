@@ -45,7 +45,7 @@ jobs:
         if: ${{ always() }}
         with:
           name: logs
-          path: "$GITHUB_WORKSPACE/log"
+          path: "${{ github.workspace }}/log"
 
   on-develop:
     name: Develop Reprovision
@@ -79,7 +79,7 @@ jobs:
         if: ${{ always() }}
         with:
           name: logs
-          path: "$GITHUB_WORKSPACE/log"
+          path: "${{ github.workspace }}/log"
 
   on-clean:
     name: Clean Provision
@@ -104,4 +104,4 @@ jobs:
         if: ${{ always() }}
         with:
           name: logs
-          path: "$GITHUB_WORKSPACE/log"
+          path: "${{ github.workspace }}/log"
