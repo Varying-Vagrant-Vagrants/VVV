@@ -96,6 +96,13 @@ jobs:
       # - CURL mailhog API to see if it's working or not
       # - Check VM hostfile
 
+      - name: Prepare Output
+        if: ${{ always() }}
+        run: |
+          MYUID=$(id -u -n)
+          MYGID=$(id -g -n)
+          sudo chown -R $MYUID:$MYGID "$GITHUB_WORKSPACE/log"
+
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
