@@ -106,7 +106,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: logs
+          name: logs-on-docker
           path: "${{ github.workspace }}/log"
 
   # This workflow contains a single job called "build"
@@ -141,7 +141,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: logs
+          name: logs-on-stable
           path: "${{ github.workspace }}/log"
 
   on-develop:
@@ -175,7 +175,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: logs
+          name: logs-on-develop
           path: "${{ github.workspace }}/log"
 
   on-clean:
@@ -200,5 +200,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: logs
+          name: logs-on-clean
           path: "${{ github.workspace }}/log"
