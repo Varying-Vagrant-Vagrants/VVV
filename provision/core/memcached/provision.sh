@@ -21,6 +21,10 @@ function vvv_memcached_setup() {
 export -f vvv_memcached_setup
 vvv_add_hook after_packages vvv_memcached_setup 60
 
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "service memcached restart"
-fi
+function vvv_memcached_restart() {
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    service memcached restart
+  fi
+}
+
+vvv_add_hook services_restart vvv_memcached_restart

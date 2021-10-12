@@ -73,11 +73,19 @@ function deprecated_distro() {
   fi
 }
 
-# @description Clean up the old resources folder, as VVV 3 moved utilities to a utilities folder
+# @description Clean up the old resources folder, as VVV 3 moved extensions to a utilities folder
 remove_v2_resources() {
   if [ -d /srv/provision/resources ]; then
     vvv_warn " * An old /srv/provision/resources folder was found, removing the deprecated folder ( utilities are stored in /srv/provision/utilitys now )"
     rm -rf /srv/provision/resources ## remove deprecated folder
+  fi
+}
+
+# @description Clean up the old utilities folder, as VVV 3.8 moved utilities to an extensions folder
+move_v3_utilities() {
+  if [ -d /srv/provision/utilities ]; then
+    vvv_warn " * An old /srv/provision/utilities folder was found, renaming to extensions"
+    mv /srv/provision/utilities /srv/provision/extensions
   fi
 }
 
@@ -91,5 +99,6 @@ support_v2_certificate_path() {
 }
 
 vvv_add_hook init remove_v2_resources 5
+vvv_add_hook init move_v3_utilities 5
 vvv_add_hook init support_v2_certificate_path 5
 vvv_add_hook init deprecated_distro 5

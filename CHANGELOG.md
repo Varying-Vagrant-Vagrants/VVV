@@ -11,14 +11,20 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Split tools out into their own provisioner ( #2270 )
+* Parallelised the tools provisioner ( #2520 )
 * Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
 * Add `jq` for CLI based JSON parsing ( #2518 )
-* Added basic Avahi support for vvv.local
+* Added basic Avahi support for vvv.local ( #2523 )
+* Utiities have been renamed to extensions
 
 ### Bug Fixes
 
 * Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
 * Fixed the import of databases with spaces in there names
+* Improved root certificate trust chain handling
+* Service restarts now have dedicated functions
+* Several evals removed from the hook functions
+* Disabled nested virtualisation under Hyper-V
 
 ## 3.7.2 ( 2021 August 3rd )
 

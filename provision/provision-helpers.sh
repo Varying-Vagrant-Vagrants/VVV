@@ -394,13 +394,60 @@ vvv_hook() {
 
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
-    local hooks_on_prio="${hook_var_prios}_${prio}"
-    eval "for j in \${!${hooks_on_prio}[@]}; do \${${hooks_on_prio}[\$j]}; done"
+    hooks_on_prio="${hook_var_prios}_${prio}[@]"
+    for f in ${!hooks_on_prio}; do
+      $f
+    done
   done
   local end=`date +%s`
   vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
 }
 export -f vvv_hook
+
+
+function vvv_run_parallel_hook_function() {
+  eval $1
+
+  # kill all sub-processes
+  pkill -P $$
+}
+
+export -f vvv_run_parallel_hook_function
+
+# @description Executes a hook. Functions added to this hook will be executed in parallel
+#
+# @example
+#   vvv_parallel_hook before_packages
+#
+# @arg $1 string the hook to execute
+function vvv_parallel_hook() {
+  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
+    vvv_error " x Disallowed hookname '${1}'"
+    return 1
+  fi
+
+  local hook_var_prios="VVV_HOOKS_${1}"
+  local start=`date +%s`
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
+  vvv_info " ▷ Running <b>${1}</b><info> hook"
+  local sorted
+  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+
+  for i in ${!sorted[@]}; do
+    local prio="${sorted[$i]}"
+    hooks_on_prio="${hook_var_prios}_${prio}[@]"
+    for f in ${!hooks_on_prio}; do
+      vvv_info "   - Starting subhook ${f} with priority ${prio}"
+      vvv_run_parallel_hook_function "${f}" &
+    done
+    wait
+    vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
+
+  done
+  local end=`date +%s`
+  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
+}
+export -f vvv_parallel_hook
 
 vvv_apt_update() {
   vvv_info " * Updating apt keys"
