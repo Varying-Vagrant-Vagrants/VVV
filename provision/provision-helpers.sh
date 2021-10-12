@@ -2,6 +2,8 @@
 # @description This file is for common helper functions that
 # get called in other provisioners
 
+export DEBIAN_FRONTEND=noninteractive
+
 export DEFAULT_TEXT="\033[39m"
 export BOLD="\033[1m"
 export UNBOLD="\033[21m"
