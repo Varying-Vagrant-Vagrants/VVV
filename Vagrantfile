@@ -73,21 +73,21 @@ show_logo = true if %w[up resume status provision reload].include? ARGV[0]
 show_logo = false if ENV['VVV_SKIP_LOGO']
 
 # OS Detection
-module OS
-    def OS.windows?
+module VOS
+    def VOS.windows?
         (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
     end
 
-    def OS.mac?
+    def VOS.mac?
         (/darwin/ =~ RUBY_PLATFORM) != nil
     end
 
-    def OS.unix?
-        !OS.windows?
+    def VOS.unix?
+        !VOS.windows?
     end
 
-    def OS.linux?
-        OS.unix? and not OS.mac?
+    def VOS.linux?
+        VOS.unix? and not VOS.mac?
     end
 end
 
@@ -455,7 +455,7 @@ Vagrant.configure('2') do |config|
   config.vm.provider :docker do |d|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
-    if OS.mac?
+    if VOS.mac?
         # Docker in mac need explicit ports publish to access
         # before provision `sudo ifconfig lo0 alias 192.168.50.4/24`
         d.ports = [ "#{vvv_config['vm_config']['private_network_ip']}:80:80" ]
