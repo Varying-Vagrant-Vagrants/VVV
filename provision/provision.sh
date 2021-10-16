@@ -59,6 +59,7 @@ export VVV_PACKAGE_REMOVAL_LIST=()
 . "/srv/provision/core/php/provision.sh"
 . "/srv/provision/core/mailhog/provision.sh"
 . "/srv/provision/core/nodejs/provision.sh"
+. "/srv/provision/core/avahi/provision.sh"
 
 ### SCRIPT
 #set -xv

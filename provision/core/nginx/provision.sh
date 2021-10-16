@@ -95,9 +95,13 @@ export -f nginx_setup
 
 vvv_add_hook after_packages nginx_setup 40
 
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "service nginx restart"
-fi
+function vvv_nginx_restart() {
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    service nginx restart
+  fi
+}
+
+vvv_add_hook services_restart vvv_nginx_restart
 
 function nginx_cleanup() {
   vvv_info " * Cleaning up Nginx configs"

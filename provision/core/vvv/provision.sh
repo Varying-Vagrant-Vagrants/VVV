@@ -99,7 +99,13 @@ export -f shyaml_setup
 
 vvv_add_hook after_packages shyaml_setup 0
 
-vvv_add_hook services_restart "service ntp restart"
+function vvv_ntp_restart() {
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    service ntp restart
+  fi
+}
+
+vvv_add_hook services_restart vvv_ntp_restart
 
 function cleanup_vvv(){
   # Cleanup the hosts file
