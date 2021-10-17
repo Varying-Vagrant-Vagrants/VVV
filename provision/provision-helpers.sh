@@ -566,7 +566,7 @@ function vvv_update_guest_hosts() {
     done
   done
 
-  sudo cat /tmp/site-hosts >> /etc/hosts
+  echo "$(</tmp/site-hosts)" | sudo tee -a /etc/hosts > /dev/null
 
   # cleanup
   if test -f "/tmp/site-hosts"; then

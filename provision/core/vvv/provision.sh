@@ -94,9 +94,7 @@ function cleanup_vvv(){
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
     echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
-  # Docker: mv: cannot move '/tmp/hosts' to '/etc/hosts': Device or resource busy
-  # mv /tmp/hosts /etc/hosts
-  cat /tmp/hosts > /etc/hosts
+  echo "$(</tmp/hosts)" | sudo tee -a /etc/hosts > /dev/null
 }
 export -f cleanup_vvv
 
