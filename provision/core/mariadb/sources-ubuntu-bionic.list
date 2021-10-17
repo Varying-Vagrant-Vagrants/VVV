@@ -1,4 +1,3 @@
-## sorry, had to be 10.5 due to systemd and rc-d dependencies on 10.4 and 10.5
 # MariaDB 10.5 Amsterdam
 deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.5/ubuntu bionic main
 deb-src http://ams2.mirrors.digitalocean.com/mariadb/repo/10.5/ubuntu bionic main
