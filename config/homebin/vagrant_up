@@ -30,7 +30,7 @@ fi
 
 # /etc/host doesn't survive restart on docker
 vvv_info " * Reinit /etc/hosts"
-re_init_etc_hosts
+vvv_update_guest_hosts
 
 vvv_info " * Restarting Nginx"
 sudo service nginx restart
