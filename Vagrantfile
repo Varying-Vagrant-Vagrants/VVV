@@ -417,7 +417,6 @@ Vagrant.configure('2') do |config|
   # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
   # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = 'bento/ubuntu-20.04'
   config.vm.box_check_update = false
 
   # If we're at a contributor day, switch the base box to the prebuilt one
@@ -451,9 +450,13 @@ Vagrant.configure('2') do |config|
     override.vm.box = 'bento/ubuntu-20.04'
   end
 
+  # virtualbox
+  config.vm.provider :virtualbox do |_v, override|
+    override.vm.box = 'bento/ubuntu-20.04'
+  end
+
   # Docker use image.
   config.vm.provider :docker do |d|
-    config.vm.box = ''
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
     if VOS.mac?
