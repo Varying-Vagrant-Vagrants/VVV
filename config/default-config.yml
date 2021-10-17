@@ -62,6 +62,22 @@ sites:
     hosts:
       - trunk.wordpress.test
 
+  # The following commented out site configuration will create a environment useful
+  # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
+  wordpress-meta-environment:
+    skip_provisioning: true # disabled by default, this takes a long time to provision
+    description: "An environment useful for contributions to the WordPress meta team."
+    repo: https://github.com/WordPress/meta-environment.git
+    hosts:
+      - wp-meta.test
+    custom:
+      provision_site:
+        "buddypressorg.test": true
+        "jobs.wordpressnet.test": true
+        "wordcamp.test": true
+        "wordpressorg.test": true
+        "wordpresstv.test": true
+
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.test.
   # Remember, whitespace is significant! Tabs and spaces mean different things
@@ -77,8 +93,8 @@ utilities:
   core: # The core VVV utility
     - tls-ca # HTTPS SSL/TLS certificates
     - phpmyadmin # Web based database client
-    - memcached-admin # Object cache management
-    - opcache-status # opcache management
+    #- memcached-admin # Object cache management
+    #- opcache-status # opcache management
     #- webgrind # PHP Debugging
     #- mongodb # needed for Tideways/XHGui
     #- tideways # PHP profiling tool, also installs xhgui check https://varyingvagrantvagrants.org/docs/en-US/references/tideways-xhgui/
@@ -86,9 +102,9 @@ utilities:
     #- php56
     #- php70
     #- php71
-    - php72
-    - php73
-    - php74
+    #- php72
+    #- php73
+    #- php74
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
 # increase the memory given to VVV and the number of CPU cores.
@@ -97,9 +113,9 @@ utilities:
 vm_config:
   # For WP core development we recommend at least 2GB ( 2048 ),
   # If you have 4GB of RAM, lower this to 768MB or you may encounter issues
-  # memory: 2048
+  memory: 2048
   # CPU cores:
-  # cores: 2
+  cores: 2
 
   # this tells VVV to use the prebuilt box copied from the USB drive at contributor days
   # once set to false, do not change back to true, and reprovision
@@ -137,6 +153,5 @@ general:
   #github_token: xxxxxx
 
 # Settings for the vagrant plugins supported by VVV
-# Docker doesn't need this
-#vagrant-plugins:
-#  disksize: 10GB # requires the disk size vagrant plugin
+vagrant-plugins:
+  disksize: 10GB # requires the disk size vagrant plugin
