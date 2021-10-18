@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * Parallelised the tools provisioner ( #2520 )
 * Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
 * Add `jq` for CLI based JSON parsing ( #2518 )
+* Improved Debian/Raspbian compatibility in apt package provisioners ( #2522 )
 * Added basic Avahi support for vvv.local ( #2523 )
 * Utiities have been renamed to extensions
 
