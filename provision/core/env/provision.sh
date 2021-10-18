@@ -111,10 +111,8 @@ function profile_setup() {
     cp -f /srv/provision/core/env/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts
     vvv_info " * Copying /srv/provision/core/env/ssh/sshd_config                       to /etc/ssh/sshd_config"
     cp -f /srv/provision/core/env/ssh/sshd_config /etc/ssh/sshd_config
-    if [ "${VVV_DOCKER}" != 1 ]; then
-      vvv_info " * Reloading SSH Daemon"
-      systemctl reload ssh
-    fi
+    vvv_info " * Reloading SSH Daemon"
+    service ssh reload
   fi
 }
 
