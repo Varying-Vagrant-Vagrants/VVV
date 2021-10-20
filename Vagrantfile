@@ -72,25 +72,6 @@ end
 show_logo = true if %w[up resume status provision reload].include? ARGV[0]
 show_logo = false if ENV['VVV_SKIP_LOGO']
 
-# OS Detection
-module VOS
-    def VOS.windows?
-        (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
-    end
-
-    def VOS.mac?
-        (/darwin/ =~ RUBY_PLATFORM) != nil
-    end
-
-    def VOS.unix?
-        !VOS.windows?
-    end
-
-    def VOS.linux?
-        VOS.unix? and not VOS.mac?
-    end
-end
-
 # Show the initial splash screen
 if show_logo
   git_or_zip = 'zip-no-vcs'
@@ -459,9 +440,8 @@ Vagrant.configure('2') do |config|
   config.vm.provider :docker do |d|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
-    if VOS.mac?
+    if Vagrant::Util::Platform.platform == 'darwin19'
         # Docker in mac need explicit ports publish to access
-        # before provision `sudo ifconfig lo0 alias 192.168.50.4/24`
         d.ports = [ "#{vvv_config['vm_config']['private_network_ip']}:80:80" ]
         d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:443:443" ]
         d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:3306:3306" ]
@@ -888,6 +868,24 @@ Vagrant.configure('2') do |config|
           sudo_warnings
         end
       end
+    end
+  end
+
+  # specific trigger for mac and docker
+  if Vagrant::Util::Platform.platform == 'darwin19' && vvv_config['vm_config']['provider'] == 'docker'
+    config.trigger.before :up do |trigger|
+      trigger.name = "VVV Setup docker local network before up"
+      trigger.run = {inline: "bash -c 'sudo ifconfig lo0 alias #{vvv_config['vm_config']['private_network_ip']}/24'"}
+    end
+    config.trigger.after :halt do |trigger|
+      trigger.name = 'VVV delete docker local network after halt'
+      trigger.run = {inline: "bash -c 'sudo ifconfig lo0 inet delete #{vvv_config['vm_config']['private_network_ip']}'"}
+      trigger.on_error = :continue
+    end
+    config.trigger.after :destroy do |trigger|
+      trigger.name = 'VVV delete docker local network after destroy'
+      trigger.run = {inline: "bash -c 'sudo ifconfig lo0 inet delete #{vvv_config['vm_config']['private_network_ip']}'"}
+      trigger.on_error = :continue
     end
   end
 

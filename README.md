@@ -14,12 +14,6 @@ and [Docker](https://docs.docker.com/engine/install/). Then, clone this reposito
 git clone -b docker-provider https://github.com/pentatonicfunk/VVV-Docker.git ~/vvv-local
 cd ~/vvv-local
 vagrant plugin install --local
-
-# MAC Only ( see: https://docs.docker.com/desktop/mac/networking/#per-container-ip-addressing-is-not-possible )
-sudo ifconfig lo0 alias 192.168.50.4/24
-# !! this doesn't survive restart, do it again before next vagrant up on future boot
-#MAC Only ( with this command in mac, now we can access 192.168.50.4, but we still have to publish ports, which will be done in Vagrantfile)
-
 vagrant up --provision
 ```
 
