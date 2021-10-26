@@ -63,17 +63,20 @@ then
 		[ "${db_name}" == "test" ] && continue;
 
 		vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
-		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
-		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
 		[ "${db_name}" == "wordpress_unit_tests" ] && continue;
 
 		skip="false"
-		for exclude in ${exclude_list[@]}; do
-			if [ "${exclude}" == "${db_name}" ]; then
-				skip="true"
-			fi
-		done
+		if [ -d "/var/lib/mysql/${db_name}" ] ; then
+			for exclude in ${exclude_list[@]}; do
+				if [ "${exclude}" == "${db_name}" ]; then
+					skip="true"
+				fi
+			done
+		fi
+
+		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
+		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
 		if [ ${skip} == "true" ]; then
 			vvv_info "   - skipped <b>${db_name}</b>" && continue;
