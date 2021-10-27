@@ -65,7 +65,7 @@ then
 		vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
 
 		skip="false"
-    RESULT=`mysqlshow ${db_name} | grep -v Wildcard | grep -o ${db_name}`
+    RESULT=$(mysqlshow ${db_name} | grep -v Wildcard | grep -o ${db_name})
 		if [ "$RESULT" == "${db_name}" ] ; then
 			for exclude in ${exclude_list[@]}; do
 				if [ "${exclude}" == "${db_name}" ]; then
