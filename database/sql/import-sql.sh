@@ -27,6 +27,7 @@ fi
 
 run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
 exclude_list=$(get_config_values "general.db_backup.exclude")
+restore_list=$(get_config_values "general.db_backup.restore")
 
 if [[ $run_restore == "False" ]]
 then
@@ -65,18 +66,24 @@ then
 		vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
 
 		skip="false"
-    RESULT=$(mysqlshow ${db_name} | grep -v Wildcard | grep -o ${db_name})
+		for exclude in ${exclude_list[@]}; do
+			if [ "${exclude}" == "${db_name}" ]; then
+				skip="true"
+			fi
+		done
+
+		RESULT=$(mysqlshow ${db_name} | grep -v Wildcard | grep -o ${db_name})
 		if [ "$RESULT" == "${db_name}" ] ; then
-			for exclude in ${exclude_list[@]}; do
-				if [ "${exclude}" == "${db_name}" ]; then
-					skip="true"
+			for restore in ${restore_list[@]}; do
+				if [ "${restore}" == "${db_name}" ]; then
+					skip="false"
 				fi
 			done
 		fi
 
 		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
 		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
-    
+
 		[ "${db_name}" == "wordpress_unit_tests" ] && continue;
 
 		if [ ${skip} == "true" ]; then
