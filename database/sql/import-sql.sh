@@ -72,7 +72,7 @@ then
 			fi
 		done
 
-		RESULT=$(mysqlshow ${db_name} | grep -v Wildcard | grep -o ${db_name})
+		RESULT=$(mysqlshow "${db_name}" | grep -v Wildcard | grep -o "${db_name}")
 		if [ "$RESULT" == "${db_name}" ] ; then
 			for restore in ${restore_list[@]}; do
 				if [ "${restore}" == "${db_name}" ]; then
