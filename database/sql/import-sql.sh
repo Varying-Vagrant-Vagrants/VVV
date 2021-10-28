@@ -1,4 +1,4 @@
-#!/bin/bash
+c#!/bin/bash
 #
 # Import provided SQL files in to MariaDB/MySQL.
 #
@@ -26,8 +26,9 @@ if [[ -f /srv/config/config.yml ]]; then
 fi
 
 run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
-exclude_list=$(get_config_values "general.db_backup.exclude")
-restore_list=$(get_config_values "general.db_backup.restore")
+exclude_list=$(get_config_values "general.db_restore.exclude")
+include_list=$(get_config_values "general.db_restore.include")
+restore_by_default=$(get_config_values "general.db_restore.restore_by_default")
 
 if [[ $run_restore == "False" ]]
 then
@@ -66,20 +67,21 @@ then
 		vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
 
 		skip="false"
+
+		if [ "${restore_by_default}" == "true" ]; then
+				skip="true"
+		fi
+
 		for exclude in ${exclude_list[@]}; do
 			if [ "${exclude}" == "${db_name}" ]; then
 				skip="true"
 			fi
 		done
-
-		RESULT=$(mysqlshow "${db_name}" | grep -v Wildcard | grep -o "${db_name}")
-		if [ "$RESULT" == "${db_name}" ] ; then
-			for restore in ${restore_list[@]}; do
-				if [ "${restore}" == "${db_name}" ]; then
-					skip="false"
-				fi
-			done
-		fi
+		for include in ${include_list[@]}; do
+			if [ "${include}" == "${db_name}" ]; then
+				skip="false"
+			fi
+		done
 
 		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
 		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
