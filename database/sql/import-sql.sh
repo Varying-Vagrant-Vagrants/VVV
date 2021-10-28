@@ -1,4 +1,4 @@
-c#!/bin/bash
+#!/bin/bash
 #
 # Import provided SQL files in to MariaDB/MySQL.
 #
