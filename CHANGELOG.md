@@ -26,7 +26,7 @@ permalink: /docs/en-US/changelog/
 * Service restarts now have dedicated functions
 * Several evals removed from the hook functions
 * Disabled nested virtualisation under Hyper-V
-* Import a DB dump when excluded, the db doesn't exists and the dump file exists
+* Added db.restore.exclude/include/restore_by_default parameters
 
 ## 3.7.2 ( 2021 August 3rd )
 
