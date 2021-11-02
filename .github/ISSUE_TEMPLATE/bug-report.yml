@@ -1,4 +1,5 @@
 name: Bug report
+title: 'Bug: '
 description: Report a problem with VVV
 labels: [ 'type:bug' ]
 body:
@@ -21,7 +22,7 @@ body:
           label: Is it a new VVV or an existing VVV that used to work?
           multiple: false
           options:
-             - 'Used to work but now broken'
+             - 'Existing, worked but now broken'
              - 'New fresh install'
              - "Don't know"
       validations:
