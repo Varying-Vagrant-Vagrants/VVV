@@ -1,0 +1,81 @@
+name: Bug report
+description: Report a problem with VVV
+body:
+    - type: dropdown
+      id: version
+      attributes:
+          label: Are you using the latest stable or develop branch version of VVV?
+          description: Newer versions of VVV may have fixed your problem already.
+          multiple: false
+          options:
+             - 'Yes (develop)'
+             - 'Yes (stable)'
+             - 'No'
+             - "Don't know"
+      validations:
+          required: true
+    - type: dropdown
+      id: new_or_existng
+      attributes:
+          label: Is it a new VVV or an existing VVV that used to work?
+          description: Newer versions of VVV may have fixed your problem already.
+          multiple: false
+          options:
+             - 'Used to work but now broken'
+             - 'New fresh install'
+             - "Don't know"
+      validations:
+          required: true
+    - type: textarea
+      attributes:
+          label: Whats the problem?
+          description: |
+              Be as descriptive as possible.
+      validations:
+          required: true
+    - type: textarea
+      attributes:
+          label: How do we reproduce it?
+          description: |
+              Be as descriptive as possible.
+      validations:
+          required: false
+    - type: textarea
+      attributes:
+          label: VVV Status screen
+          description: |
+              Run `vagrant status` and copy paste the result here
+          placeholder: |
+            __ __ __ __
+            \ V\ V\ V / v1.2.3 Path:"/Users/janedoe/vvv-local"
+             \_/\_/\_/  git::develop(69d6f31)
+            
+            Platform: darwin19 shell:/bin/bash vagrant-goodhosts vagrant-vbguest shared_db_folder_disabled
+            Vagrant: v2.3.4, virtualbox: v6.7.8
+      validations:
+          required: true
+    - type: dropdown
+      id: operating_system
+      attributes:
+          label: Which Operating System are you using?
+          description: You can do this by searching https://github.com/WordPress/gutenberg/issues and making sure the bug is not related to another plugin.
+          multiple: false
+          options:
+             - 'Apple MacOS'
+             - 'Microsoft Windows'
+             - 'Linux'
+             - 'Other'
+      validations:
+          required: true
+    - type: dropdown
+      id: provider
+      attributes:
+          label: Which provider are you using?
+          multiple: false
+          options:
+             - 'VirtualBox'
+             - 'Parallels'
+             - 'VMWare'
+             - 'Other'
+      validations:
+          required: true
