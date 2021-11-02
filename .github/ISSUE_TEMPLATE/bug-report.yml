@@ -1,5 +1,6 @@
 name: Bug report
 description: Report a problem with VVV
+labels: [ 'type:bug' ]
 body:
     - type: dropdown
       id: version
@@ -18,7 +19,6 @@ body:
       id: new_or_existng
       attributes:
           label: Is it a new VVV or an existing VVV that used to work?
-          description: Newer versions of VVV may have fixed your problem already.
           multiple: false
           options:
              - 'Used to work but now broken'
@@ -43,12 +43,13 @@ body:
     - type: textarea
       attributes:
           label: VVV Status screen
+          render: shell
           description: |
               Run `vagrant status` and copy paste the result here
           placeholder: |
             __ __ __ __
             \ V\ V\ V / v1.2.3 Path:"/Users/janedoe/vvv-local"
-             \_/\_/\_/  git::develop(69d6f31)
+            .\_/\_/\_/  git::develop(69d6f31)
             
             Platform: darwin19 shell:/bin/bash vagrant-goodhosts vagrant-vbguest shared_db_folder_disabled
             Vagrant: v2.3.4, virtualbox: v6.7.8
