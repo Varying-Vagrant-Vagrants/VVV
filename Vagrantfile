@@ -418,8 +418,7 @@ Vagrant.configure('2') do |config|
     # this seems to be the most reliable way to detect whether or not we're
     # running under ARM64.
     if Etc.uname[:version].include? 'ARM64'
-      override.vm.box = 'rueian/ubuntu20-m1'
-      override.vm.box_version = "0.0.1"
+      override.vm.box = 'mpasternak/focal64-arm'
     end
   end
 
@@ -454,6 +453,9 @@ Vagrant.configure('2') do |config|
   if !vvv_config['vagrant-plugins']['disksize'].nil? && defined?(Vagrant::Disksize)
     config.vm.provider :virtualbox do |_v, override|
       override.disksize.size = vvv_config['vagrant-plugins']['disksize']
+    end
+    if Etc.uname[:version].include? 'ARM64'
+      puts "WARNING: Vagrant disksize requires VirtualBox and is incompatible with Arm devices, uninstall immediatley"
     end
   end
 
