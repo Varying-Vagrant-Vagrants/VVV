@@ -23,7 +23,8 @@ body:
         These versions of VirtualBox are known to have networking problems on Linux/Windows/MacOS, not everybody encounters these problems though.
         VirtualBox v6.1.24 works though, stick to v6.1.24 until we can confirm if 6.1.29 fixes the problems.
         
-        ---"
+        ---
+        "
   - type: textarea
     id: what-happened
     attributes:
