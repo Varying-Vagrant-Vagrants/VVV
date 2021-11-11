@@ -4,7 +4,8 @@ labels: [ 'type:support' ]
 body:
   - type: markdown
     attributes:
-      value: |"
+      value: |
+        "
         ## MacOS 12 Monterey
 
         ***Do not upgrade to Monterey.***
