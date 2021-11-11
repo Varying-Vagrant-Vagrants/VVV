@@ -10,10 +10,8 @@ body:
         Until VirtualBox 6.1.29 is officially released, do not upgrade past MacOS 11 Big Sur. Test release builds are not guaranteed to work.
         The fastest way to restore VirtualBox is to downgrade back to MacOS 11 Big Sur, and use v6.1.24.
         ### But My New M1 Mac Only Support MacOS 12!
-
         Use Parallels, new Macs don't support VirtualBox.
         ## Timeouts and VirtualBox 6.1.26 and 6.1.28
-
         These versions of VirtualBox are known to have networking problems on Linux/Windows/MacOS, not everybody encounters these problems though.
         VirtualBox v6.1.24 works though, stick to v6.1.24 until we can confirm if 6.1.29 fixes the problems.
         "
