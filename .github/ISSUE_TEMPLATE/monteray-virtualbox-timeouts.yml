@@ -4,7 +4,8 @@ labels: [ 'type:support' ]
 body:
   - type: markdown
     attributes:
-      value: |"## MacOS 12 Monterey
+      value: | "
+        ## MacOS 12 Monterey
         *Do not upgrade to Monterey.*
         There are no known working versions of VirtualBox for MacOS 12, do not upgrade. ***VirtualBox intend to fix this in v6.1.29***.
         Until VirtualBox 6.1.29 is officially released, do not upgrade past MacOS 11 Big Sur. Test release builds are not guaranteed to work.
