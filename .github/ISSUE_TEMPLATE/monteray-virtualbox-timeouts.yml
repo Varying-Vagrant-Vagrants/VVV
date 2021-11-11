@@ -14,13 +14,12 @@ body:
         Use Parallels, new Macs don't support VirtualBox.
         ## Timeouts and VirtualBox 6.1.26 and 6.1.28
         These versions of VirtualBox are known to have networking problems on Linux/Windows/MacOS, not everybody encounters these problems though.
-        VirtualBox v6.1.24 works though, stick to v6.1.24 until we can confirm if 6.1.29 fixes the problems.
-        "
+        VirtualBox v6.1.24 works though, stick to v6.1.24 until we can confirm if 6.1.29 fixes the problems."
   - type: textarea
     id: what-happened
     attributes:
       label: I have news related to this!
       description: Did they relelase 6.1.29? Is there a change to the vagrant file that can be made?
       placeholder: Tell us what you know!
-  validations:
-    required: true
+    validations:
+      required: true
