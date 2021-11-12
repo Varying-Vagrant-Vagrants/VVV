@@ -26,6 +26,7 @@ permalink: /docs/en-US/changelog/
 * Service restarts now have dedicated functions
 * Several evals removed from the hook functions
 * Disabled nested virtualisation under Hyper-V
+* Added db.restore.exclude/include/restore_by_default parameters
 
 ## 3.7.2 ( 2021 August 3rd )
 
