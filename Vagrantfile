@@ -212,7 +212,7 @@ defaults['memory'] = 2048
 defaults['cores'] = 1
 defaults['provider'] = 'virtualbox'
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
-defaults['private_network_ip'] = '192.168.50.4'
+defaults['private_network_ip'] = '192.168.56.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
 vvv_config['hosts'] = vvv_config['hosts'].uniq
