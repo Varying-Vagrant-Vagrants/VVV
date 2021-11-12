@@ -46,6 +46,7 @@ function mariadb_register_apt_keys() {
 vvv_add_hook register_apt_keys mariadb_register_apt_keys
 
 function mariadb_register_apt_sources() {
+  vvv_info " * installing MariaDB apt sources"
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
   local APTSOURCE="/srv/provision/core/mariadb/sources-${OSID,,}-${OSCODENAME,,}.list"

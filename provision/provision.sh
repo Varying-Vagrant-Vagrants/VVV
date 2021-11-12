@@ -81,13 +81,15 @@ fi
 vvv_info " * Apt package install pre-checks"
 vvv_hook before_packages
 
+vvv_info " * Registering apt sources"
+vvv_hook register_apt_sources
+
 vvv_apt_packages_upgrade
 
 vvv_info " * Registering apt packages to install"
 vvv_hook register_apt_packages
 
-vvv_info " * Registering apt sources"
-vvv_hook register_apt_sources
+
 
 vvv_info " * Registering apt keys"
 vvv_hook register_apt_keys
