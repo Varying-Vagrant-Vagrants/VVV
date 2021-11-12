@@ -33,6 +33,9 @@ function vvv_register_packages() {
     python3-setuptools
     lftp
     jq
+    less
+    iputils-ping
+    net-tools
 
     # ntp service to keep clock current
     ntp
