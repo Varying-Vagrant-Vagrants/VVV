@@ -46,3 +46,13 @@ function git_register_apt_keys() {
   fi
 }
 vvv_add_hook register_apt_keys git_register_apt_keys
+
+# @noargs
+function git_after_packages() {
+  # if this setting isn't set, git will exit and provisioning will fail
+  if ! git config --global pull.rebase; then
+    vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
+    git config --global pull.rebase false
+  fi
+}
+vvv_add_hook after_packages git_after_packages

@@ -30,6 +30,7 @@ permalink: /docs/en-US/changelog/
 * Clock synchronisation now fails gracefully
 * The private IP requested has been changed to fit the restrictions in VirtualBox 6.1.28
 * Added db.restore.exclude/include/restore_by_default parameters
+* If unset, VVV will now set the global git branch merge strategy to avoid provisioner failure
 
 ## 3.7.2 ( 2021 August 3rd )
 
