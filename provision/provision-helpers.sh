@@ -92,15 +92,17 @@ function network_check() {
   fi
 
   # Make an HTTP request to ppa.launchpad.net to determine if
-  # outside access is available to us. Also check the mariadb
+  # outside access is available to us. Also check the mariadb mirrors.
+  #
+  # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
-    "http://ppa.launchpad.net"
-    "https://wordpress.org"
-    "https://github.com"
-    "https://raw.githubusercontent.com"
-    "https://getcomposer.org"
-    "http://ams2.mirrors.digitalocean.com"
-    "https://deb.nodesource.com"
+    "http://ppa.launchpad.net" # needed for core ubuntu packages
+    "https://wordpress.org" # WordPress!!
+    "https://github.com" # needed for dashboard, extensions, etc
+    "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
+    "https://getcomposer.org" # composer is used for lots of sites and provisioners
+    "https://deb.nodesource.com" # Node JS installation
+    "http://ftp.yz.yamagata-u.ac.jp" # MariaDB mirror
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
