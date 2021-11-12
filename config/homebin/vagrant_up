@@ -31,7 +31,7 @@ vvv_info " * Restarting Nginx"
 sudo service nginx restart
 
 vvv_info " * Restarting MariaDB"
-sudo service mysql restart
+sudo service mariadb restart
 
 if [ -x "$(command -v ntpdate)" ]; then
 	vvv_info " * Syncing clocks"

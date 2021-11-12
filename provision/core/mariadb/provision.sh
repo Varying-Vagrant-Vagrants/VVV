@@ -96,7 +96,7 @@ SQL
 function mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
   if ! command -v mysql &> /dev/null; then
-    vvv_error " ! MySQL is not installed. No databases imported."
+    vvv_error " ! MariaDB/MySQL is not installed. No databases imported."
     return 1
   fi
   vvv_info " * Setting up database configuration file links..."
@@ -116,12 +116,12 @@ function mysql_setup() {
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if [ $(service mysql status|grep 'mysql start/running' | wc -l) -ne 1 ]; then
-    vvv_info " * Starting the mysql service"
-    service mysql start
+  if [ $(service mariadb status|grep 'mysql start/running' | wc -l) -ne 1 ]; then
+    vvv_info " * Starting the mariadb service"
+    service mariadb start
   else
-    vvv_info " * Restarting mysql service"
-    service mysql restart
+    vvv_info " * Restarting mariadb service"
+    service mariadb restart
   fi
 
   # IMPORT SQL
