@@ -17,6 +17,7 @@ permalink: /docs/en-US/changelog/
 * Improved Debian/Raspbian compatibility in apt package provisioners ( #2522 )
 * Added basic Avahi support for vvv.local ( #2523 )
 * Utiities have been renamed to extensions
+* VVV now warns when `vagrant-disksize` is installed on Arm/Apple Silicon devices
 
 ### Bug Fixes
 
@@ -26,6 +27,8 @@ permalink: /docs/en-US/changelog/
 * Service restarts now have dedicated functions
 * Several evals removed from the hook functions
 * Disabled nested virtualisation under Hyper-V
+* Clock synchronisation now fails gracefully
+* The private IP requested has been changed to fit the restrictions in VirtualBox 6.1.28
 
 ## 3.7.2 ( 2021 August 3rd )
 
