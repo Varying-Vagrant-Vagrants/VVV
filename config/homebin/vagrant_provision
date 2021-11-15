@@ -21,12 +21,22 @@ if [[ -f /srv/config/homebin/vagrant_provision_custom ]]; then
 	/srv/config/homebin/vagrant_provision_custom
 fi
 
-vvv_info " * Restarting Nginx"
+vvv_info " * Restarting Nginx service"
 sudo service nginx restart
-vvv_info " * Restarting MariaDB"
-sudo service mysql restart
-vvv_info " * Syncing clocks"
-sudo ntpdate -u ntp.ubuntu.com
+
+vvv_info " * Restarting MariaDB service"
+sudo service mariadb restart
+
+if [ -x "$(command -v ntpdate)" ]; then
+	vvv_info " * Syncing clocks"
+	if sudo ntpdate -u ntp.ubuntu.com; then
+		vvv_info " * clocks synced"
+	else
+		vvv_warn " - clock synchronisation failed"
+	fi
+else
+	vvv_info " - skipping ntpdate clock sync, not installed yet"
+fi
 
 RED="\033[38;5;9m"
 GREEN="\033[01;32m"

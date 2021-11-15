@@ -1,0 +1,3 @@
+# git lfs (large file storage plugin for git)
+deb https://packagecloud.io/github/git-lfs/debian/ buster main
+deb-src https://packagecloud.io/github/git-lfs/debian/ buster main

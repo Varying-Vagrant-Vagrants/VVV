@@ -2,7 +2,7 @@
 # @description Install and configure Nginx
 set -eo pipefail
 
-function nginx_register_packages() {
+function nginx_register_apt_sources() {
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
   local APTSOURCE="/srv/provision/core/nginx/sources-${OSID,,}-${OSCODENAME,,}.list"
@@ -11,7 +11,10 @@ function nginx_register_packages() {
   else
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
+}
+vvv_add_hook register_apt_sources nginx_register_apt_sources
 
+function nginx_register_apt_keys() {
   # Before running `apt-get update`, we should add the public keys for
   # the packages that we are installing from non standard sources via
   # our appended apt source.list
@@ -20,10 +23,15 @@ function nginx_register_packages() {
     vvv_info " * Applying Nginx signing key..."
     apt-key add /srv/provision/core/nginx/apt-keys/nginx_signing.key
   fi
-
-  VVV_PACKAGE_LIST+=(nginx)
 }
-vvv_add_hook before_packages nginx_register_packages
+vvv_add_hook register_apt_keys nginx_register_apt_keys
+
+function nginx_register_apt_packages() {
+  VVV_PACKAGE_LIST+=(
+    nginx
+  )
+}
+vvv_add_hook register_apt_packages nginx_register_apt_packages
 
 function nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
@@ -87,9 +95,13 @@ export -f nginx_setup
 
 vvv_add_hook after_packages nginx_setup 40
 
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "service nginx restart"
-fi
+function vvv_nginx_restart() {
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    service nginx restart
+  fi
+}
+
+vvv_add_hook services_restart vvv_nginx_restart
 
 function nginx_cleanup() {
   vvv_info " * Cleaning up Nginx configs"

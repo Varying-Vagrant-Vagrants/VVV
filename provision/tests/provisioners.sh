@@ -48,68 +48,68 @@ function provision_dashboard() {
   vvv_run_provisioner /srv/provision/provision-dashboard.sh "${dashboard_repo}" "${dashboard_branch}"
 }
 
-function provision_utility_sources() {
+function provision_extension_sources() {
   local name=()
   local repo=()
   local branch=()
 
-  local key="utility-sources"
+  local key="extension-sources"
 
-  local utilities=$(get_config_type "${key}")
-  if [[ "${utilities}" == "struct" ]]; then
-    utilities=($(get_config_keys "${key}"))
+  local extensions=$(get_config_type "${key}")
+  if [[ "${extensions}" == "struct" ]]; then
+    extensions=($(get_config_keys "${key}"))
   else
-    utilities=$(get_config_value "${key}")
-    if [[ ! -z "${utilities}" ]]; then
+    extensions=$(get_config_value "${key}")
+    if [[ ! -z "${extensions}" ]]; then
       vvv_error "Malformed ${key} config"
     fi
-    utilities=()
+    extensions=()
   fi
 
-  containsElement "core" "${utilities}"
+  containsElement "core" "${extensions}"
   if [[ $? -ne 0 ]]; then
     name+=("core")
     repo+=("https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git")
     branch+=("master")
   fi
 
-  local utility
-  for utility in "${utilities[@]}"; do
-    type=$(get_config_type "${key}.${utility}")
-    name+=(${utility})
+  local extension
+  for extension in "${extensions[@]}"; do
+    type=$(get_config_type "${key}.${extension}")
+    name+=(${extension})
     if [[ "${type}" == "str" ]]; then
-      repo+=($(get_config_value "${key}.${utility}"))
+      repo+=($(get_config_value "${key}.${extension}"))
       branch+=(master)
     else
-      repo+=($(get_config_value "${key}.${utility}.repo"))
-      branch+=($(get_config_value "${key}.${utility}.branch" "master"))
+      repo+=($(get_config_value "${key}.${extension}.repo"))
+      branch+=($(get_config_value "${key}.${extension}.branch" "master"))
     fi
   done
 
   local i
   for i in ${!name[@]}; do
-    VVV_LOG="utility-source-${name[$i]}"
-    vvv_run_provisioner /srv/provision/provision-utility-source.sh "${name[$i]}" "${repo[$i]}" "${branch[$i]}"
+    VVV_LOG="extension-source-${name[$i]}"
+    vvv_run_provisioner /srv/provision/provision-extension-source.sh "${name[$i]}" "${repo[$i]}" "${branch[$i]}"
   done
 }
 
-function provision_utilities() {
-  local groups=($(get_config_keys utilities))
+function provision_extensions() {
+  local groups=($(get_config_keys extensions))
   local group
-  local utility
+  local extension
   for group in ${groups[@]}; do
-    local utilities=($(get_config_values utilities."${group}"))
-    for utility in ${utilities[@]}; do
-      provision_utility "${group}" "${utility}"
+    local extensions=($(get_config_values extensions."${group}"))
+    for extension in ${extensions[@]}; do
+      provision_extension "${group}" "${extension}"
     done
   done
 }
 
-function provision_utility() {
+function provision_extension() {
   local group=$1
-  local utility=$2
-  VVV_LOG="utility-${group}-${utility}"
-  vvv_run_provisioner /srv/provision/provision-utility.sh "${group}" "${utility}"
+  local extension=$2
+  VVV_LOG="extension-${group}-${extension}"
+  vvv_run_provisioner /srv/provision/provision-extension.sh "${group}" "${extension}"
 }
 
 function provision_sites() {
@@ -154,6 +154,18 @@ function provision_main() {
     VVV_LOG="main"
     vvv_run_provisioner /srv/provision/provision.sh
   fi
+
+  # refresh VVV_CONFIG, as the main provisioner actually creates the /vagrant/config.yml
+  VVV_CONFIG=/vagrant/vvv-custom.yml
+  if [[ -f /vagrant/config.yml ]]; then
+    VVV_CONFIG=/vagrant/config.yml
+  fi
+  export VVV_CONFIG
+}
+
+function provision_tools() {
+  VVV_LOG="tools"
+  vvv_run_provisioner /srv/provision/provision-tools.sh
 
   # refresh VVV_CONFIG, as the main provisioner actually creates the /vagrant/config.yml
   VVV_CONFIG=/vagrant/vvv-custom.yml

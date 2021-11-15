@@ -7,7 +7,7 @@
 #
 # IMPORTANT, if you change this file, you have to reprovision,  no exceptions
 # Do this by running either this command:
-# vagrant reload --provision
+# vagrant up --provision
 
 # Or, if your machine is already turned on:
 # vagrant provision
@@ -62,22 +62,6 @@ sites:
     hosts:
       - trunk.wordpress.test
 
-  # The following commented out site configuration will create a environment useful
-  # for contributions to the WordPress meta team, .e.g WordCamps, .org, etc:
-  wordpress-meta-environment:
-    skip_provisioning: true # disabled by default, this takes a long time to provision
-    description: "An environment useful for contributions to the WordPress meta team."
-    repo: https://github.com/WordPress/meta-environment.git
-    hosts:
-      - wp-meta.test
-    custom:
-      provision_site:
-        "buddypressorg.test": true
-        "jobs.wordpressnet.test": true
-        "wordcamp.test": true
-        "wordpressorg.test": true
-        "wordpresstv.test": true
-
   # The following commented out site configuration will create a standard WordPress
   # site in www/example-site/ available at http://my-example-site.test.
   # Remember, whitespace is significant! Tabs and spaces mean different things
@@ -86,11 +70,14 @@ sites:
   #  hosts:
   #    - my-example-site.test
 
-# Utilities https://varyingvagrantvagrants.org/docs/en-US/utilities/
+# Extensions https://varyingvagrantvagrants.org/docs/en-US/utilities/
 # are system level items that aren't websites, that install tools or packages
-# the core utilities install tools such as phpmyadmin
-utilities:
-  core: # The core VVV utility
+# the core extensions install tools such as phpmyadmin or new PHP versions
+#
+# these used to be called utilities but people kept requesting
+# extensions not realising so it was renamed
+extensions:
+  core: # The core VVV extensions
     - tls-ca # HTTPS SSL/TLS certificates
     - phpmyadmin # Web based database client
     #- memcached-admin # Object cache management
@@ -105,6 +92,7 @@ utilities:
     #- php72
     #- php73
     #- php74
+    #- php80
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
 # increase the memory given to VVV and the number of CPU cores.
@@ -113,8 +101,16 @@ utilities:
 vm_config:
   # For WP core development we recommend at least 2GB ( 2048 ),
   # If you have 4GB of RAM, lower this to 768MB or you may encounter issues
+  #
+  # For theme or plugin development 2GB is more than enough for page loads,
+  # if you need more for web requests consider reducing your memory footprint.
+  #
+  # More memory won't speed things up.
   memory: 2048
-  # CPU cores:
+
+  # How many virtual CPU cores, does not apply to Docker. Additional CPU cores
+  # will only have a performance impact if you have those cores to spare and are
+  # running heavy CLI tasks
   cores: 2
 
   # this tells VVV to use the prebuilt box copied from the USB drive at contributor days

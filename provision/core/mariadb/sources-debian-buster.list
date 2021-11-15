@@ -1,0 +1,4 @@
+# MariaDB 10.5 repository list - created 2021-11-14 10:28 UTC
+# https://mariadb.org/download/
+deb [arch=amd64,arm64,ppc64el] https://mirror.rackspace.com/mariadb/repo/10.5/debian buster main
+deb-src https://mirror.rackspace.com/mariadb/repo/10.5/debian buster main
