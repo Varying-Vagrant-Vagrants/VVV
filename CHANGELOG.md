@@ -6,6 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.9
+
+### Enhancements
+
+* VVV now switches to Parallels by default on Arm machines ( #2560 )
+
 ## 3.8.1 ( 2021 November 15th )
 
 ### Enhancements
