@@ -211,6 +211,12 @@ defaults = {}
 defaults['memory'] = 2048
 defaults['cores'] = 1
 defaults['provider'] = 'virtualbox'
+
+# if Arm default to parallels
+if Etc.uname[:version].include? 'ARM64'
+  defaults['provider'] = 'parallels'
+end
+
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
 defaults['private_network_ip'] = '192.168.56.4'
 
