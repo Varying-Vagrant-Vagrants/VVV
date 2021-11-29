@@ -11,6 +11,8 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * VVV now switches to Parallels by default on Arm machines ( #2560 )
+* Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
+
 
 ## 3.8.1 ( 2021 November 15th )
 
@@ -65,7 +67,6 @@ permalink: /docs/en-US/changelog/
 * Added improved apt package upgrade routines
 * Provisioners now ask to install only packages that aren't installed
 * General package handling performance improvements
-* Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
 * New config to exclude databases from backup in `config.yml` ( #2346 )
 * New config to gzip compress database backups in `config.yml` ( #2346 )
 * Experimental Apple silicon support using vagrant + parallels
