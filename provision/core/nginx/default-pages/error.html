@@ -12,7 +12,7 @@
 				height: 100%;
 			}
 			body {
-				width: 80%;
+				width: 90%;
 				margin: 0 auto;
 				font-family: Tahoma, Verdana, Arial, sans-serif;
 				background-color: #2b303b;
@@ -36,11 +36,9 @@
 				display: flex;
 				border-radius: 4px;
 				padding: 1.5em;
-				background: #343d46;
 				box-sizing: border-box;
-				margin-bottom: 1em;
-				margin-top: 1em;
-				max-width: 70%;
+				margin: 1em 20px;
+				max-width: 800px;
 			}
 			.right {
 				align-self: center;
@@ -60,6 +58,20 @@
 			}
 			a:focus, a:active {
 				color: magenta;
+			}
+			@media only screen and (max-width: 601px) {
+				main {
+					flex-direction: column;
+					margin: 1em 0;
+					padding: 0;
+				}
+				.right {
+					order: 0;
+					padding-left: 0;
+				}
+				.left {
+					order: 1;
+				}
 			}
 		</style>
 	</head>
