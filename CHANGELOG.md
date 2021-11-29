@@ -6,7 +6,51 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.7.x ( 2021 )
+## 3.9
+
+### Enhancements
+
+* VVV now switches to Parallels by default on Arm machines ( #2560 )
+
+## 3.8.1 ( 2021 November 15th )
+
+### Enhancements
+
+* Split tools out into their own provisioner ( #2270 )
+* Parallelised the tools provisioner ( #2520 )
+* Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
+* Add `jq` for CLI based JSON parsing ( #2518 )
+* Improved Debian/Raspbian compatibility in apt package provisioners ( #2522 )
+* Added basic Avahi support for vvv.local ( #2523 )
+* Utiities have been renamed to extensions
+* VVV now warns when `vagrant-disksize` is installed on Arm/Apple Silicon devices
+* Changed Parallels Arm64 box
+* Added db.restore.exclude/include/restore_by_default parameters
+
+### Bug Fixes
+
+* Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
+* Fixed the import of databases with spaces in there names
+* Improved root certificate trust chain handling
+* Service restarts now have dedicated functions
+* Several evals removed from the hook functions
+* Disabled nested virtualisation under Hyper-V
+* Clock synchronisation now fails gracefully
+* The private IP requested has been changed to fit the restrictions in VirtualBox 6.1.28
+* If unset, VVV will now set the global git branch merge strategy to avoid provisioner failure
+
+## 3.7.2 ( 2021 August 3rd )
+
+### Enhancements
+
+* Added a new bear to full provision message, and updated message to be more clear
+
+### Bug Fixes
+
+* Switched Ubuntu 20 boxes to Bento on VirtualBox to avoid folder mounting issues
+* Fixed a broken heredoc
+
+## 3.7.1 ( 2021 July 20th )
 
 ### Enhancements
 
@@ -26,6 +70,13 @@ permalink: /docs/en-US/changelog/
 * New config to gzip compress database backups in `config.yml` ( #2346 )
 * Experimental Apple silicon support using vagrant + parallels
 * Disable backup and restore of databases by default
+* Updated Mailhog to 1.0.1 for new installs
+* Improved MailHog downloading with retries and error output
+* Improved Composer installation
+* webp support in Imagemagick
+* Switch from Ubuntu 18.04 to 20.04 (current LTS release)
+* Simplified config folder
+* Increased the default PHP memory limit from 128MB to 256MB
 
 ### Bug Fixes
 
@@ -34,6 +85,16 @@ permalink: /docs/en-US/changelog/
 * Remote changes are now fetched before resetting, not afterwards.
 * Increased the priority of Nodesource and Ondrej packages to avoid issues
 * Fixed Parallels mount permissions
+* Fixes for site names containing spaces causing Nginx and TLS issues
+* Warnings that you're missing vagrant plugins no longer show when running vagrant plugin commands
+* Force the Virtual Machine to 64bit on VirtualBox to avoid infinite loops on 32bit architectures
+* Force the installation and update of grunt and grunt-cli so that old grunt is always overwritten when updated
+* Sync clocks before provisioning if ntpdate is available to avoid Apt mirror time issues
+* Fixed cloning the dashboard git repository with unknown remote branches
+* Skip mounting custom folders for skipped sites
+* Improved WP CLI ownership and permission settings
+* Removed WP CLI doctor subcommand package that was causing issues for some users
+* Fixed dashboard updating
 
 ## 3.6.2 ( 2021 March 17th )
 

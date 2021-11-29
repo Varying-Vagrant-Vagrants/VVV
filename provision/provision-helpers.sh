@@ -2,6 +2,8 @@
 # @description This file is for common helper functions that
 # get called in other provisioners
 
+export DEBIAN_FRONTEND=noninteractive
+
 export DEFAULT_TEXT="\033[39m"
 export BOLD="\033[1m"
 export UNBOLD="\033[21m"
@@ -52,7 +54,7 @@ export -f containsElement
 # @arg $1 string The address to test
 # @see check_network_connection_to_host
 function network_detection() {
-  local url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpad.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
@@ -64,7 +66,7 @@ export -f network_detection
 # @exitcode 0 If the address is reachable
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
-  local url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpad.net"}
   vvv_info " * Testing network connection to <url>${url}</url>"
 
   # Network Detection
@@ -90,15 +92,17 @@ function network_check() {
   fi
 
   # Make an HTTP request to ppa.launchpad.net to determine if
-  # outside access is available to us. Also check the mariadb
+  # outside access is available to us. Also check the mariadb mirrors.
+  #
+  # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
-    "http://ppa.launchpad.net"
-    "https://wordpress.org"
-    "https://github.com"
-    "https://raw.githubusercontent.com"
-    "https://getcomposer.org"
-    "http://ams2.mirrors.digitalocean.com"
-    "https://deb.nodesource.com"
+    "http://ppa.launchpad.net" # needed for core ubuntu packages
+    "https://wordpress.org" # WordPress!!
+    "https://github.com" # needed for dashboard, extensions, etc
+    "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
+    "https://getcomposer.org" # composer is used for lots of sites and provisioners
+    "https://deb.nodesource.com" # Node JS installation
+    "http://ftp.yz.yamagata-u.ac.jp" # MariaDB mirror
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
@@ -381,7 +385,7 @@ export -f vvv_add_hook
 # @arg $1 string the hook to execute
 vvv_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    echo "Disallowed hookname"
+    vvv_error " x Disallowed hookname '${1}'"
     return 1
   fi
 
@@ -394,13 +398,60 @@ vvv_hook() {
 
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
-    local hooks_on_prio="${hook_var_prios}_${prio}"
-    eval "for j in \${!${hooks_on_prio}[@]}; do \${${hooks_on_prio}[\$j]}; done"
+    hooks_on_prio="${hook_var_prios}_${prio}[@]"
+    for f in ${!hooks_on_prio}; do
+      $f
+    done
   done
   local end=`date +%s`
   vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
 }
 export -f vvv_hook
+
+
+function vvv_run_parallel_hook_function() {
+  eval $1
+
+  # kill all sub-processes
+  pkill -P $$
+}
+
+export -f vvv_run_parallel_hook_function
+
+# @description Executes a hook. Functions added to this hook will be executed in parallel
+#
+# @example
+#   vvv_parallel_hook before_packages
+#
+# @arg $1 string the hook to execute
+function vvv_parallel_hook() {
+  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
+    vvv_error " x Disallowed hookname '${1}'"
+    return 1
+  fi
+
+  local hook_var_prios="VVV_HOOKS_${1}"
+  local start=`date +%s`
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
+  vvv_info " ▷ Running <b>${1}</b><info> hook"
+  local sorted
+  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+
+  for i in ${!sorted[@]}; do
+    local prio="${sorted[$i]}"
+    hooks_on_prio="${hook_var_prios}_${prio}[@]"
+    for f in ${!hooks_on_prio}; do
+      vvv_info "   - Starting subhook ${f} with priority ${prio}"
+      vvv_run_parallel_hook_function "${f}" &
+    done
+    wait
+    vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
+
+  done
+  local end=`date +%s`
+  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
+}
+export -f vvv_parallel_hook
 
 vvv_apt_update() {
   vvv_info " * Updating apt keys"

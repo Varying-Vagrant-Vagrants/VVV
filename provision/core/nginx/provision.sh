@@ -2,7 +2,7 @@
 # @description Install and configure Nginx
 set -eo pipefail
 
-function nginx_register_packages() {
+function nginx_register_apt_sources() {
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
   local APTSOURCE="/srv/provision/core/nginx/sources-${OSID,,}-${OSCODENAME,,}.list"
@@ -11,19 +11,27 @@ function nginx_register_packages() {
   else
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
+}
+vvv_add_hook register_apt_sources nginx_register_apt_sources
 
+function nginx_register_apt_keys() {
   # Before running `apt-get update`, we should add the public keys for
   # the packages that we are installing from non standard sources via
   # our appended apt source.list
   if ! vvv_apt_keys_has 'nginx'; then
     # Retrieve the Nginx signing key from nginx.org
     vvv_info " * Applying Nginx signing key..."
-    apt-key add /srv/config/apt-keys/nginx_signing.key
+    apt-key add /srv/provision/core/nginx/apt-keys/nginx_signing.key
   fi
-
-  VVV_PACKAGE_LIST+=(nginx)
 }
-vvv_add_hook before_packages nginx_register_packages
+vvv_add_hook register_apt_keys nginx_register_apt_keys
+
+function nginx_register_apt_packages() {
+  VVV_PACKAGE_LIST+=(
+    nginx
+  )
+}
+vvv_add_hook register_apt_packages nginx_register_apt_packages
 
 function nginx_setup() {
   # Create an SSL key and certificate for HTTPS support.
@@ -50,11 +58,11 @@ function nginx_setup() {
   vvv_info " * Setup configuration files..."
 
   # Copy nginx configuration from local
-  vvv_info " * Copying /srv/config/nginx-config/nginx.conf           to /etc/nginx/nginx.conf"
-  cp -f "/srv/config/nginx-config/nginx.conf" "/etc/nginx/nginx.conf"
+  vvv_info " * Copying /srv/provision/core/nginx/config/nginx.conf           to /etc/nginx/nginx.conf"
+  cp -f "/srv/provision/core/nginx/config/nginx.conf" "/etc/nginx/nginx.conf"
 
-  vvv_info " * Copying /srv/config/nginx-config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
-  cp -f "/srv/config/nginx-config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
+  vvv_info " * Copying /srv/provision/core/nginx/config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
+  cp -f "/srv/provision/core/nginx/config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
 
   # Copy nginx default pages from local
   vvv_info " * Copying /srv/provision/core/nginx/default-pages           to /usr/share/nginx/html"
@@ -69,8 +77,8 @@ function nginx_setup() {
   if [[ ! -d "/etc/nginx/custom-sites" ]]; then
     mkdir -p "/etc/nginx/custom-sites/"
   fi
-  vvv_info " * Rsync'ing /srv/config/nginx-config/sites/             to /etc/nginx/custom-sites"
-  rsync -rvzh --delete "/srv/config/nginx-config/sites/" "/etc/nginx/custom-sites/"
+  vvv_info " * Rsync'ing /srv/provision/core/nginx/config/sites/             to /etc/nginx/custom-sites"
+  rsync -rvzh --delete "/srv/provision/core/nginx/config/sites/" "/etc/nginx/custom-sites/"
 
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
     mkdir -p "/etc/nginx/custom-utilities/"
@@ -91,9 +99,13 @@ export -f nginx_setup
 
 vvv_add_hook after_packages nginx_setup 40
 
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "service nginx restart"
-fi
+function vvv_nginx_restart() {
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    service nginx restart
+  fi
+}
+
+vvv_add_hook services_restart vvv_nginx_restart
 
 function nginx_cleanup() {
   vvv_info " * Cleaning up Nginx configs"
