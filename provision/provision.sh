@@ -72,8 +72,9 @@ vvv_hook init
 
 # If you need to disable this check then something is terribly wrong, tell us on github/slack
 if ! network_check; then
-  vvv_warning " ! If this check fails despite succeeding in the browser, contact us in Slack or GitHub immediatley"
-  exit 1
+  vvv_warn " =================================================================================================="
+  vvv_warn " ! If this check fails despite succeeding in the browser, contact us in Slack or GitHub immediately"
+  vvv_warn " =================================================================================================="
 fi
 
 vvv_info " * Apt package install pre-checks"
