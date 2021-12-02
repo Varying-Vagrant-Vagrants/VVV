@@ -11,6 +11,8 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * VVV now switches to Parallels by default on Arm machines ( #2560 )
+* Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
+
 
 ## 3.8.1 ( 2021 November 15th )
 

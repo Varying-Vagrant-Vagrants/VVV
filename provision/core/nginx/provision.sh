@@ -64,6 +64,10 @@ function nginx_setup() {
   vvv_info " * Copying /srv/provision/core/nginx/config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
   cp -f "/srv/provision/core/nginx/config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
 
+  # Copy nginx default pages from local
+  vvv_info " * Copying /srv/provision/core/nginx/default-pages           to /usr/share/nginx/html"
+  cp -f /srv/provision/core/nginx/default-pages/*.html "/usr/share/nginx/html"
+
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir -p "/etc/nginx/upstreams/"
   fi
@@ -109,5 +113,4 @@ function nginx_cleanup() {
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 }
 export -f nginx_cleanup
-
 vvv_add_hook finalize nginx_cleanup
