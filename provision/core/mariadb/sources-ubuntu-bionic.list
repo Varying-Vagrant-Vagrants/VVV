@@ -1,0 +1,4 @@
+# MariaDB 10.5 repository list - created  UTC
+# https://mariadb.org/download/
+deb [arch=amd64,arm64,ppc64el,s390x] https://mirror.rackspace.com/mariadb/repo/10.5/ubuntu bionic main
+deb-src https://mirror.rackspace.com/mariadb/repo/10.5/ubuntu bionic main

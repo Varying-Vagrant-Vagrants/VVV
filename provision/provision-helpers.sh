@@ -2,6 +2,8 @@
 # @description This file is for common helper functions that
 # get called in other provisioners
 
+export DEBIAN_FRONTEND=noninteractive
+
 export DEFAULT_TEXT="\033[39m"
 export BOLD="\033[1m"
 export UNBOLD="\033[21m"
@@ -52,7 +54,7 @@ export -f containsElement
 # @arg $1 string The address to test
 # @see check_network_connection_to_host
 function network_detection() {
-  local url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpad.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
@@ -64,7 +66,7 @@ export -f network_detection
 # @exitcode 0 If the address is reachable
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
-  local url=${1:-"https://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpad.net"}
   vvv_info " * Testing network connection to <url>${url}</url>"
 
   # Network Detection
@@ -90,15 +92,17 @@ function network_check() {
   fi
 
   # Make an HTTP request to ppa.launchpad.net to determine if
-  # outside access is available to us. Also check the mariadb
+  # outside access is available to us. Also check the mariadb mirrors.
+  #
+  # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
-    "http://ppa.launchpad.net"
-    "https://wordpress.org"
-    "https://github.com"
-    "https://raw.githubusercontent.com"
-    "https://getcomposer.org"
-    "http://ams2.mirrors.digitalocean.com"
-    "https://deb.nodesource.com"
+    "http://ppa.launchpad.net" # needed for core ubuntu packages
+    "https://wordpress.org" # WordPress!!
+    "https://github.com" # needed for dashboard, extensions, etc
+    "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
+    "https://getcomposer.org" # composer is used for lots of sites and provisioners
+    "https://deb.nodesource.com" # Node JS installation
+    "http://ftp.yz.yamagata-u.ac.jp" # MariaDB mirror
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
@@ -273,8 +277,8 @@ export -f vvv_info
 #
 # @arg $1 string The message to print
 function vvv_error() {
-  local MSG=$(vvv_format_output "<error>${1}</error>")
-	echo -e "${MSG}"
+  local MSG=$(vvv_format_output )
+  vvv_output "<error>${1}</error>"
 }
 export -f vvv_error
 
@@ -381,7 +385,7 @@ export -f vvv_add_hook
 # @arg $1 string the hook to execute
 vvv_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    echo "Disallowed hookname"
+    vvv_error " x Disallowed hookname '${1}'"
     return 1
   fi
 
@@ -394,24 +398,62 @@ vvv_hook() {
 
   for i in ${!sorted[@]}; do
     local prio="${sorted[$i]}"
-    local hooks_on_prio="${hook_var_prios}_${prio}"
-    eval "for j in \${!${hooks_on_prio}[@]}; do \${${hooks_on_prio}[\$j]}; done"
+    hooks_on_prio="${hook_var_prios}_${prio}[@]"
+    for f in ${!hooks_on_prio}; do
+      $f
+    done
   done
   local end=`date +%s`
   vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
 }
 export -f vvv_hook
 
-# @description Installs a selection of packages via `apt`
+
+function vvv_run_parallel_hook_function() {
+  eval $1
+
+  # kill all sub-processes
+  pkill -P $$
+}
+
+export -f vvv_run_parallel_hook_function
+
+# @description Executes a hook. Functions added to this hook will be executed in parallel
+#
 # @example
-#   vvv_package_install wget curl etc
-vvv_package_install() {
-  declare -a packages=($@)
+#   vvv_parallel_hook before_packages
+#
+# @arg $1 string the hook to execute
+function vvv_parallel_hook() {
+  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
+    vvv_error " x Disallowed hookname '${1}'"
+    return 1
+  fi
 
-  # fix https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
-  vvv_info " * Cleaning up dpkg lock file"
-  rm /var/lib/dpkg/lock*
+  local hook_var_prios="VVV_HOOKS_${1}"
+  local start=`date +%s`
+  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
+  vvv_info " ▷ Running <b>${1}</b><info> hook"
+  local sorted
+  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
+  for i in ${!sorted[@]}; do
+    local prio="${sorted[$i]}"
+    hooks_on_prio="${hook_var_prios}_${prio}[@]"
+    for f in ${!hooks_on_prio}; do
+      vvv_info "   - Starting subhook ${f} with priority ${prio}"
+      vvv_run_parallel_hook_function "${f}" &
+    done
+    wait
+    vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
+
+  done
+  local end=`date +%s`
+  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
+}
+export -f vvv_parallel_hook
+
+vvv_apt_update() {
   vvv_info " * Updating apt keys"
   apt-key update -y
 
@@ -419,18 +461,21 @@ vvv_package_install() {
   vvv_info " * Running apt-get update..."
   rm -rf /var/lib/apt/lists/*
   apt-get update -y --fix-missing
+}
 
-  # Install required packages
-  vvv_info " * Installing apt-get packages..."
-
-  # To avoid issues on provisioning and failed apt installation
+vvv_apt_packages_upgrade() {
+  vvv_info " * Upgrading apt packages"
+  vvv_apt_update
   dpkg --configure -a
-  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
-    vvv_info " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+  if ! apt-get  -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew upgrade --fix-missing --no-install-recommends --fix-broken; then
+    vvv_error " * Upgrading apt packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean -y
     return 1
   fi
+}
+export -f vvv_apt_packages_upgrade
 
+vvv_apt_cleanup() {
   # Remove unnecessary packages
   vvv_info " * Removing unnecessary apt packages..."
   apt-get autoremove -y
@@ -438,6 +483,113 @@ vvv_package_install() {
   # Clean up apt caches
   vvv_info " * Cleaning apt caches..."
   apt-get clean -y
+}
+
+# @description Installs a selection of packages via `apt`
+# @example
+#   vvv_package_install wget curl etc
+vvv_package_install() {
+  declare -a initialPackages=($@)
+  declare -a packages
+
+  # Ensure packages are not installed before adding them
+  if [ ${#initialPackages[@]} -ne 0 ]; then
+    for package in "${initialPackages[@]}"; do
+      if ! vvv_is_apt_pkg_installed "${package}"; then
+        packages+=("${package}")
+      fi
+    done
+  fi
+
+  if [ ${#packages[@]} -eq 0 ]; then
+    vvv_info " * No apt packages to install"
+    return 0
+  fi
+
+  vvv_cleanup_dpkg_locks
+  vvv_apt_update
+
+  # Install required packages
+  vvv_info " * Installing apt-get packages..."
+
+  # To avoid issues on provisioning and failed apt installation
+  dpkg --configure -a
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
+    vvv_error " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    apt-get clean -y
+    return 1
+  fi
+
+  vvv_apt_cleanup
 
   return 0
 }
+export -f vvv_package_install
+
+# @description checks if an apt package is installed, returns 0 if installed, 1 if not
+# @arg $1 string the package to check for
+vvv_is_apt_pkg_installed() {
+    # Get the number of packages installed that match $1
+    num=$(dpkg --dry-run -l "${1}" 2>/dev/null | egrep '^ii' | wc -l)
+
+    if [[ $num -eq 1 ]]; then
+        # it is installed
+        return 0
+    elif [[ $num -gt 1 ]]; then
+        # there is more than one package matching $1
+        return 0
+    fi
+    return 1
+}
+
+# @description cleans up dpkg lock files to avoid provisioning issues
+# based on a fix from https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
+vvv_cleanup_dpkg_locks() {
+  vvv_info " * Cleaning up dpkg lock file"
+  lockfiles=(/var/lib/dpkg/lock*)
+  if [ "${#lockfiles[@]}" ]; then
+    rm /var/lib/dpkg/lock*
+  fi
+}
+
+# @description removes a selection of packages via `apt`
+# @example
+#   vvv_apt_package_remove wget curl etc
+vvv_apt_package_remove() {
+  declare -a initialPackages=($@)
+  declare -a packages
+
+  # Ensure packages are actually installed before removing them
+  if [ ${#initialPackages[@]} -ne 0 ]; then
+    for package in "${initialPackages[@]}"; do
+      if vvv_is_apt_pkg_installed "${package}"; then
+        packages+=("${package}")
+      fi
+    done
+  fi
+
+  if [ ${#packages[@]} -eq 0 ]; then
+    vvv_info " * No apt packages to remove"
+    return 0
+  fi
+
+  vvv_info " * Removing ${#packages[@]} apt packages: '${packages[@]}'."
+
+  vvv_cleanup_dpkg_locks
+
+  # Install required packages
+  vvv_info " * Removing apt-get packages..."
+
+  # To avoid issues on provisioning and failed apt installation
+  dpkg --configure -a
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew remove --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
+    vvv_error " * Removing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    apt-get clean -y
+    return 1
+  fi
+
+  vvv_apt_cleanup
+
+  return 0
+}
+export -f vvv_apt_package_remove

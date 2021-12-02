@@ -1,3 +1,0 @@
-# Provides Node.js
-deb https://deb.nodesource.com/node_14.x bionic main
-deb-src https://deb.nodesource.com/node_14.x bionic main

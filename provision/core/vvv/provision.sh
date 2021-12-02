@@ -3,16 +3,22 @@
 set -eo pipefail
 
 function vvv_register_packages() {
-  cp -f "/srv/provision/core/vvv/sources.list" "/etc/apt/sources.list.d/vvv-sources.list"
+  VVV_PACKAGE_REMOVAL_LIST+=(
+    # remove the old Python 2 packages to avoid issues with python3-pip
+    python-pip
+    python-setuptools
 
-  if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
-    # Apply the VVV signing key
-    vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
-    apt-key add /srv/config/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
-  fi
+    # remove mysql-common to ensure mariadb installation works
+    mysql-common
+  )
 
   VVV_PACKAGE_LIST+=(
     software-properties-common
+    ca-certificates
+    libgnutls30
+
+    # Daily automatic security package upgrades
+    unattended-upgrades
 
     # other packages that come in handy
     subversion
@@ -23,9 +29,13 @@ function vvv_register_packages() {
     make
     vim
     colordiff
-    python-pip
-    python-setuptools
+    python3-pip # needed for shyaml
+    python3-setuptools
     lftp
+    jq
+    less
+    iputils-ping
+    net-tools
 
     # ntp service to keep clock current
     ntp
@@ -38,9 +48,45 @@ function vvv_register_packages() {
     # Allows conversion of DOS style line endings to something less troublesome
     # in Linux.
     dos2unix
+
+    # webp support
+    libwebp-dev
+    webp
   )
 }
-vvv_add_hook before_packages vvv_register_packages 0
+vvv_add_hook register_apt_packages vvv_register_packages 0
+
+function vvv_register_apt_sources() {
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/vvv/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
+  fi
+}
+vvv_add_hook register_apt_sources vvv_register_apt_sources 0
+
+function vvv_register_keys() {
+  if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
+    # Apply the VVV signing key
+    vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
+    apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
+  fi
+}
+vvv_add_hook register_apt_sources vvv_register_keys 0
+
+function vvv_before_packages() {
+  # this package and another are necessary to ensure certificate trust store is up to date
+  # without this, some mirrors will faill due to changing letsencrypt intermediate root certificates
+  if [ $(dpkg-query -W -f='${Status}' ca-certificates 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    vvv_info " * Installing updated certificate stores before proceeding"
+    apt-get --yes install ca-certificates libgnutls30
+    vvv_info " * Installing updated certificate stores completed with code ${?}"
+  fi
+}
+vvv_add_hook before_packages vvv_before_packages 0
 
 function shyaml_setup() {
   # Shyaml
@@ -48,15 +94,21 @@ function shyaml_setup() {
   # Used for passing custom parameters to the bash provisioning scripts
   if [ ! -f /usr/local/bin/shyaml ]; then
     vvv_info " * Installing Shyaml for bash provisioning.."
-    sudo pip install wheel
-    sudo pip install shyaml
+    sudo pip3 install wheel
+    sudo pip3 install shyaml
   fi
 }
 export -f shyaml_setup
 
 vvv_add_hook after_packages shyaml_setup 0
 
-vvv_add_hook services_restart "service ntp restart"
+function vvv_ntp_restart() {
+  if [ "${VVV_DOCKER}" != 1 ]; then
+    service ntp restart
+  fi
+}
+
+vvv_add_hook services_restart vvv_ntp_restart
 
 function cleanup_vvv(){
   # Cleanup the hosts file
@@ -78,8 +130,8 @@ fi
 
 function apt_hash_missmatch_fix() {
   if [ ! -f "/etc/apt/apt.conf.d/99hashmismatch" ]; then
-    vvv_info " * Copying /srv/config/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
-    cp -f "/srv/config/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
+    vvv_info " * Copying /srv/provision/core/vvv/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
+    cp -f "/srv/provision/core/vvv/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
   fi
 }
 export -f apt_hash_missmatch_fix
@@ -91,5 +143,6 @@ function services_restart() {
   # Make sure the services we expect to be running are running.
   vvv_info " * Restarting services..."
   vvv_hook services_restart
+  vvv_info " * Services restarted..."
 }
 vvv_add_hook finalize services_restart 1000

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
-PROVISIONER="/srv/provision/utilities/${1}/${2}/provision.sh"
+PROVISIONER="/srv/provision/extensions/${1}/${2}/provision.sh"
 
 . "/srv/provision/provisioners.sh"
 
@@ -14,7 +14,7 @@ if [[ -f $PROVISIONER ]]; then
 		exit 1
 	fi
 else
-	vvv_error " ! VVV Tried to run the utility provisioner for '${1}/${2}' but ${PROVISIONER} doesn't exist."
+	vvv_error " ! VVV Tried to run the extension provisioner for '${1}/${2}' but ${PROVISIONER} doesn't exist."
 	exit 1
 fi
 

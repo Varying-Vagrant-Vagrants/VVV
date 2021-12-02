@@ -3,17 +3,25 @@
 set -eo pipefail
 
 VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"7.4"}
-function php_register_packages() {
-  if ! vvv_src_list_has "ondrej/php"; then
-    cp -f "/srv/provision/core/php/sources.list" "/etc/apt/sources.list.d/vvv-php-sources.list"
-  fi
 
-  if ! vvv_apt_keys_has 'Ondřej'; then
-    # Apply the PHP signing key
-    vvv_info " * Applying the Ondřej PHP signing key..."
-    apt-key add /srv/config/apt-keys/ondrej_keyserver_ubuntu.key
-  fi
+function php_before_packages() {
+  cp -f "/srv/provision/core/php/ondrej-ppa-pin" "/etc/apt/preferences.d/ondrej-ppa-pin"
+}
+vvv_add_hook before_packages php_before_packages
 
+function php_register_apt_sources() {
+  local OSID=$(lsb_release --id --short)
+  local OSCODENAME=$(lsb_release --codename --short)
+  local APTSOURCE="/srv/provision/core/php/sources-${OSID,,}-${OSCODENAME,,}.list"
+  if [ -f "${APTSOURCE}" ]; then
+    cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-php-sources.list"
+  else
+    vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
+  fi
+}
+vvv_add_hook register_apt_sources php_register_apt_sources
+
+function php_register_apt_packages() {
   VVV_PACKAGE_LIST+=(
     # PHP
     #
@@ -56,7 +64,19 @@ function php_register_packages() {
     "php${VVV_BASE_PHPVERSION}-xdebug"
   )
 }
-vvv_add_hook before_packages php_register_packages
+vvv_add_hook register_apt_packages php_register_apt_packages
+
+
+function php_register_apt_keys() {
+  cp -f "/srv/provision/core/php/apt-keys/php.gpg" "/etc/apt/trusted.gpg.d/php.gpg"
+
+  if ! vvv_apt_keys_has 'Ondřej'; then
+    # Apply the PHP signing key
+    vvv_info " * Applying the Ondřej PHP signing key..."
+    apt-key add /srv/provision/core/php/apt-keys/ondrej_keyserver_ubuntu.key
+  fi
+}
+vvv_add_hook register_apt_sources php_register_apt_keys
 
 function phpfpm_setup() {
   # Copy php-fpm configs from local
@@ -126,24 +146,12 @@ function php_nginx_upstream() {
 }
 vvv_add_hook nginx_upstreams php_nginx_upstream
 
-function memcached_register_packages() {
+function vvv_php_memcached_register_packages() {
   # MemCached
   VVV_PACKAGE_LIST+=(
     php${VVV_BASE_PHPVERSION}-memcache
     php${VVV_BASE_PHPVERSION}-memcached
-
-    # memcached is made available for object caching
-    memcached
   )
 }
-vvv_add_hook before_packages memcached_register_packages
-function memcached_setup() {
-  # Copy memcached configuration from local
-  vvv_info " * Copying /srv/config/memcached-config/memcached.conf to /etc/memcached.conf and /etc/memcached_default.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached.conf"
-  cp -f "/srv/config/memcached-config/memcached.conf" "/etc/memcached_default.conf"
-}
-vvv_add_hook after_packages memcached_setup 60
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart "service memcached restart"
-fi
+export -f vvv_php_memcached_register_packages
+vvv_add_hook before_packages vvv_php_memcached_register_packages
