@@ -13,6 +13,9 @@ permalink: /docs/en-US/changelog/
 * VVV now switches to Parallels by default on Arm machines ( #2560 )
 * Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
 
+### Bug Fixes
+
+* Refactored the certificate check to check for the certificate file, not the TLS-CA utility ( #2563 )
 
 ## 3.8.1 ( 2021 November 15th )
 
