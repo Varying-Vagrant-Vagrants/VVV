@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.9
+## 3.9 ( 2022 )
 
 ### Enhancements
 
