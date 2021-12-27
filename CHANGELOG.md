@@ -16,6 +16,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * Refactored the certificate check to check for the certificate file, not the TLS-CA utility ( #2563 )
+* Fixed an issue with `composer create-project` not running when specified in `config.yml` ( #2565 )
 
 ## 3.8.1 ( 2021 November 15th )
 

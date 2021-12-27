@@ -361,8 +361,7 @@ function vvv_custom_folder_composer() {
             vvv_info " * Running composer update in ${folder}"
             noroot composer update
           fi
-        elif [[ "
-        project" == "${key}" ]]; then
+        elif [[ "create-project" == "${key}" ]]; then
           vvv_info " * Running composer create-project ${value} in ${folder}"
           noroot composer create-project "${value}" .
         else
