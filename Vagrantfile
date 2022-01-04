@@ -469,7 +469,7 @@ Vagrant.configure('2') do |config|
   #
   # A private network is created by default. This is the IP address through which your
   # host machine will communicate to the guest. In this default configuration, the virtual
-  # machine will have an IP address of 192.168.50.4 and a virtual network adapter will be
+  # machine will have an IP address of 192.168.56.4 and a virtual network adapter will be
   # created on your host machine with the IP of 192.168.50.1 as a gateway.
   #
   # Access to the guest machine is only available to your local host. To provide access to
@@ -703,7 +703,7 @@ Vagrant.configure('2') do |config|
       config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
     end
   end
-  
+
   long_provision_bear = <<~HTML
   #{blue}#{creset}
   #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}
