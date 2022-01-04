@@ -690,7 +690,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Refactor handling of custom PHP, APC, and xdebug configurations
 * Bump default memcached memory allocation to 128M
 * Introduce custom `apc.ini` file, bump `apc.shm_size` to 128M
-* Provide a phpinfo URL at `http://192.168.56.4/phpinfo/`
+* Provide a phpinfo URL at `http://vvv.test/phpinfo/`
 * Set `WP_DEBUG` to true by default for included installations of WordPress
 
 ## 0.6
