@@ -16,12 +16,19 @@ function composer_setup() {
 
   vvv_info " * Checking if Composer is installed"
   if ! command -v composer &> /dev/null; then
-    vvv_info " * Installing Composer..."
+    vvv_info " * Running Composer Installer..."
     curl -sS "https://getcomposer.org/installer" | php
-    chmod +x "composer.phar"
-    chown -R vagrant:www-data /usr/local/bin
-    mv "composer.phar" "/usr/local/bin/composer"
-    vvv_success " * Composer installer steps completed"
+    if -f composer.phar; then
+      vvv_info " * Setting ownership and executable bit of composer..."
+      chmod +x "composer.phar"
+      chown -R vagrant:www-data /usr/local/bin
+      vvv_info " * Moving composer into place..."
+      mv "composer.phar" "/usr/local/bin/composer"
+      vvv_success " * Composer installer steps completed"
+    else
+      vvv_error " ! Expected to find a composer.phar after running composer installer, but none was found"
+      return 1
+    fi
   fi
 
   vvv_info " * Making sure the Composer cache is not owned by root"
