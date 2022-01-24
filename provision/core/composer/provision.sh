@@ -18,7 +18,7 @@ function composer_setup() {
   if ! command -v composer &> /dev/null; then
     vvv_info " * Running Composer Installer..."
     curl -sS "https://getcomposer.org/installer" | php
-    if -f composer.phar; then
+    if [ -f composer.phar ]; then
       vvv_info " * Setting ownership and executable bit of composer..."
       chmod +x "composer.phar"
       chown -R vagrant:www-data /usr/local/bin
