@@ -23,8 +23,12 @@ function composer_setup() {
       chmod +x "composer.phar"
       chown -R vagrant:www-data /usr/local/bin
       vvv_info " * Moving composer into place..."
-      mv "composer.phar" "/usr/local/bin/composer"
-      vvv_success " * Composer installer steps completed"
+      if mv "composer.phar" "/usr/local/bin/composer"; then
+        vvv_success " * Composer installed to /usr/local/bin"
+      else
+        vvv_error " ! Moving composer.phar to /usr/local/bin/composer did not succeed"
+        return 1
+      fi
     else
       vvv_error " ! Expected to find a composer.phar after running composer installer, but none was found"
       return 1
