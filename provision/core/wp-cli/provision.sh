@@ -15,9 +15,9 @@ function wp_cli_setup() {
 
   if [[ ! -f "/usr/local/bin/wp" ]]; then
     vvv_info " * Downloading wp-cli nightly, see <url>http://wp-cli.org</url>"
-    curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
-    mv wp-cli-nightly.phar /usr/local/bin/wp
-    chown vagrant /usr/local/bin/wp
+    noroot curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar /tmp/wp-cli-nightly.phar
+    chown -R vagrant:www-data /usr/local/bin
+    noroot mv -f /tmp/wp-cli-nightly.phar /usr/local/bin/wp
     chmod +x /usr/local/bin/wp
 
     vvv_success " * WP CLI Nightly Installed"
@@ -29,7 +29,7 @@ function wp_cli_setup() {
     curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
     chown vagrant /srv/config/wp-cli/wp-completion.bash
   else
-    chown vagrant /usr/local/bin/wp
+    chown -R vagrant:www-data /usr/local/bin
     chmod +x /usr/local/bin/wp
     vvv_info " * Updating wp-cli..."
     noroot wp cli update --nightly --yes
@@ -37,7 +37,7 @@ function wp_cli_setup() {
   fi
 
   # ensure WP CLI is owned by the right user and executable
-  chown vagrant /usr/local/bin/wp
+  chown -R vagrant:www-data /usr/local/bin
   chmod +x /usr/local/bin/wp
 
   if [ "${VVV_DOCKER}" != 1 ]; then
