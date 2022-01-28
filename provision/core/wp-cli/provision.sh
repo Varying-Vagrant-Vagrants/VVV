@@ -40,9 +40,6 @@ function wp_cli_setup() {
   chmod +x /usr/local/bin/wp
 
   if [ "${VVV_DOCKER}" != 1 ]; then
-    vvv_info " * [WP-CLI]: Disabling debug mods if present before running wp package installs"
-    xdebug_off
-
     vvv_info " * [WP-CLI]: Updating packages"
     noroot wp package update
     vvv_info " * [WP-CLI]: Package updates completed"

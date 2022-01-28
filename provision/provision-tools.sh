@@ -25,7 +25,10 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 ### SCRIPT
 
 # Package and Tools Install
-vvv_info " * Running tools_install"
+vvv_info " * Running tools_pre_setup"
+vvv_hook tools_pre_setup
+
+vvv_info " * Running tools_setup"
 vvv_parallel_hook tools_setup
 
 # For tool provisioners that have trouble with parallelisation

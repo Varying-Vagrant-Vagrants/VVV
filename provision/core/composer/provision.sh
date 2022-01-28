@@ -2,12 +2,16 @@
 # @description Installs Composer and tools installed via Composer packages
 set -eo pipefail
 
+
+function composer_pre_setup() {
+  # Disable XDebug before any Composer provisioning.
+  vvv_info " * [Composer]: Turning off PHP debug mods to avoid Composer performance issues"
+  sh /srv/config/homebin/switch_php_debugmod none
+}
+export -f composer_pre_setup
+
 # @noargs
 function composer_setup() {
-  # Disable XDebug before any Composer provisioning.
-  vvv_info " * [Composer]: Turning off XDebug to avoid Composer performance issues"
-  sh /srv/config/homebin/xdebug_off
-
   # COMPOSER
   export COMPOSER_ALLOW_SUPERUSER=1
   export COMPOSER_NO_INTERACTION=1
@@ -74,4 +78,5 @@ function composer_setup() {
 }
 export -f composer_setup
 
+vvv_add_hook tools_pre_setup composer_pre_setup
 vvv_add_hook tools_setup composer_setup
