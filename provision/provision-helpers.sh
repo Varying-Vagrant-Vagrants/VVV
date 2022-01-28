@@ -102,7 +102,7 @@ function network_check() {
     "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
     "https://getcomposer.org" # composer is used for lots of sites and provisioners
     "https://deb.nodesource.com" # Node JS installation
-    "http://ftp.yz.yamagata-u.ac.jp" # MariaDB mirror
+    "https://mirror.rackspace.com" # MariaDB mirror
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
