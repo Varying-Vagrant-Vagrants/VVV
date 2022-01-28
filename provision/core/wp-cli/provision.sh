@@ -13,11 +13,10 @@ function wp_cli_setup() {
 
   if [[ ! -f "/usr/local/bin/wp" ]]; then
     vvv_info " * [WP CLI]: Downloading WP CLI nightly, see <url>http://wp-cli.org</url>"
-    noroot curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar /tmp/wp-cli-nightly.phar
+    curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar /tmp/wp-cli-nightly.phar
+    mv -f /tmp/wp-cli-nightly.phar /usr/local/bin/wp
     chown -R vagrant:www-data /usr/local/bin
-    noroot mv -f /tmp/wp-cli-nightly.phar /usr/local/bin/wp
     chmod +x /usr/local/bin/wp
-
     vvv_success " * [WP CLI]: WP CLI Nightly Installed"
 
     vvv_info " * [WP CLI]: Grabbing bash completions"
