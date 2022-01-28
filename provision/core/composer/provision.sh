@@ -2,11 +2,11 @@
 # @description Installs Composer and tools installed via Composer packages
 set -eo pipefail
 
-
+# @noargs
 function composer_pre_setup() {
   # Disable XDebug before any Composer provisioning.
   vvv_info " * [Composer]: Turning off PHP debug mods to avoid Composer performance issues"
-  sh /srv/config/homebin/switch_php_debugmod none
+  . /srv/config/homebin/switch_php_debugmod none
 }
 export -f composer_pre_setup
 
