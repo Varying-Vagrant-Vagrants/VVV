@@ -426,7 +426,7 @@ export -f vvv_run_parallel_hook_function
 # @arg $1 string the hook to execute
 function vvv_parallel_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    vvv_error " x Disallowed hookname '${1}'"
+    vvv_error " x Disallowed hookname '${1}', aborting"
     return 1
   fi
 
