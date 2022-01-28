@@ -58,7 +58,7 @@ function hack_avoid_gyp_errors() {
     if [ -d /usr/lib/node_modules/grunt-sass/ ]; then
       chown -R nobody:vagrant /usr/lib/node_modules/grunt-sass/
     fi
-    sleep .2
+    sleep .1
   done
   vvv_success " * [Grunt]: Stopped gyphack loop"
   rm -f /tmp/stop_gyp_hack
@@ -73,7 +73,6 @@ function grunt_setup() {
     install_grunt
   fi
 }
-
 export -f grunt_setup
 
 vvv_add_hook tools_setup_synchronous grunt_setup
