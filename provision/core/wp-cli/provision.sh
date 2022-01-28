@@ -13,12 +13,15 @@ function wp_cli_setup() {
 
   if [[ ! -f "/usr/local/bin/wp" ]]; then
     vvv_info " * [WP CLI]: Downloading WP CLI nightly, see <url>http://wp-cli.org</url>"
-    curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar /tmp/wp-cli-nightly.phar
-    mv -f /tmp/wp-cli-nightly.phar /usr/local/bin/wp
-    chown -R vagrant:www-data /usr/local/bin
-    chmod +x /usr/local/bin/wp
-    vvv_success " * [WP CLI]: WP CLI Nightly Installed"
-
+    if curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar /tmp/wp-cli-nightly.phar; then
+      vvv_info " * [WP CLI]: Downloaded, moving wp-cli-nightly.phar"
+      mv -f /tmp/wp-cli-nightly.phar /usr/local/bin/wp
+      chown -R vagrant:www-data /usr/local/bin
+      chmod +x /usr/local/bin/wp
+      vvv_success " * [WP CLI]: WP CLI Nightly Installed"
+    else
+      vvv_error " ! [WP CLI]: wp-cli-nightly.phar failed to download, curl exited with a bad error code ${?}"
+    fi
     vvv_info " * [WP CLI]: Grabbing bash completions"
     # Install bash completions
     mkdir -p /srv/config/wp-cli/
