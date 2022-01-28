@@ -6,7 +6,7 @@ set -eo pipefail
 function composer_pre_setup() {
   # Disable XDebug before any Composer provisioning.
   vvv_info " * [Composer]: Turning off PHP debug mods to avoid Composer performance issues"
-  . /srv/config/homebin/switch_php_debugmod none
+  /srv/config/homebin/switch_php_debugmod none
 }
 export -f composer_pre_setup
 
@@ -72,7 +72,7 @@ function composer_setup() {
     vvv_success " * [Composer]: Global Composer package update completed"
   fi
 
-  vvv_info " * [Composer]: Main tasks completed, running after_composer hook"
+  vvv_success " * [Composer]: Main tasks completed, running after_composer hook"
 
   vvv_hook after_composer
 }
