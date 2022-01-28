@@ -21,14 +21,18 @@ function wp_cli_setup() {
       vvv_success " * [WP CLI]: WP CLI Nightly Installed"
     else
       vvv_error " ! [WP CLI]: wp-cli-nightly.phar failed to download, curl exited with a bad error code ${?}"
+      return 1
     fi
     vvv_info " * [WP CLI]: Grabbing bash completions"
     # Install bash completions
     mkdir -p /srv/config/wp-cli/
     vvv_info " * [WP CLI]: Downloading bash completions"
-    curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash
-    chown vagrant /srv/config/wp-cli/wp-completion.bash
-    vvv_success " * [WP CLI]: Bash completions downloaded"
+    if curl -s https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -o /srv/config/wp-cli/wp-completion.bash; then
+      chown vagrant /srv/config/wp-cli/wp-completion.bash
+      vvv_success " * [WP CLI]: Bash completions downloaded"
+    else
+      vvv_warn " ! [WP CLI]: wp-completion.bash failed to download, curl exited with a bad error code ${?}"
+    fi
   else
     vvv_info " * [WP CLI]: Updating WP CLI Nightly"
     chown -R vagrant:www-data /usr/local/bin
