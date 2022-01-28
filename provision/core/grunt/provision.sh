@@ -40,6 +40,7 @@ function update_grunt() {
 function hack_avoid_gyp_errors() {
   # exit early if it's already been cancelled
   if [ -f /tmp/stop_gyp_hack ]; then
+    vvv_success " * [Grunt]: Stopping gyphack loop early"
     rm -f /tmp/stop_gyp_hack
     return 0
   fi
@@ -59,7 +60,7 @@ function hack_avoid_gyp_errors() {
     fi
     sleep .2
   done
-  vvv_info " * [Grunt]: Stopped gyphack loop"
+  vvv_success " * [Grunt]: Stopped gyphack loop"
   rm -f /tmp/stop_gyp_hack
   return 0
 }
