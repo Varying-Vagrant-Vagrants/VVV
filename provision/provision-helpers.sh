@@ -74,7 +74,7 @@ function check_network_connection_to_host() {
   # If 3 attempts with a timeout of 5 seconds are not successful,
   # then we'll skip a few things further in provisioning rather
   # than create a bunch of errors.
-  if wget --spider --timeout=5 --tries=3 "${url}"; then
+  if wget -q --spider --timeout=5 --tries=3 "${url}"; then
     vvv_success " * Successful Network connection to <url>${url}</url><success> detected"
     return 0
   fi
