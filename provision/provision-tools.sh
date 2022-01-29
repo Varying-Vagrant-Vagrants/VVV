@@ -26,11 +26,11 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
 # Package and Tools Install
 vvv_hook tools_pre_setup
-vvv_parallel_hook tools_setup
+vvv_hook tools_setup
 
 # For tool provisioners that have trouble with parallelisation
 vvv_hook tools_setup_synchronous
-vvv_parallel_hook tools_finalize
+vvv_hook tools_finalize
 
 # And it's done
 
