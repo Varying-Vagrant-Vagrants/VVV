@@ -9,7 +9,6 @@
 # it does not exist, then we'll handle some basic tasks.
 set -eo pipefail
 source /srv/provision/provision-helpers.sh
-#source /srv/provision/provision-site.sh
 
 RED="\033[38;5;9m"
 R=$RED
@@ -48,12 +47,15 @@ vvv_info " * Restarting Mailhog"
 /usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
 
 if [ -x "$(command -v ntpdate)" ]; then
-	vvv_info " * Syncing clocks disabled"
-	# sudo ntpdate -u ntp.ubuntu.com
+	vvv_info " * Syncing clocks"
+	if sudo ntpdate -u ntp.ubuntu.com; then
+		vvv_info " * clocks synced"
+	else
+		vvv_warn " - clock synchronisation failed"
+	fi
 else
 	vvv_info " - skipping ntpdate clock sync, not installed yet"
 fi
-
 
 mkdir -p /vagrant/failed_provisioners
 if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then

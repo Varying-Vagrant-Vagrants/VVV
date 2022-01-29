@@ -60,4 +60,4 @@ function composer_setup() {
 }
 export -f composer_setup
 
-vvv_add_hook after_packages composer_setup
+vvv_add_hook tools_setup composer_setup

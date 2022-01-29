@@ -6,10 +6,11 @@ TZ=Europe/London
 
 pre_hook
 provision_main
+provision_tools
 provision_dashboard
 if [ "${VVV_DOCKER}" != 1 ]; then
-	provision_utility_sources
-	provision_utilities
+	provision_extension_sources
+	provision_extensions
 	provision_sites
 fi
 post_hook

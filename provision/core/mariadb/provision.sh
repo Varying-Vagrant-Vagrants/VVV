@@ -3,7 +3,7 @@
 set -eo pipefail
 
 # MariaDB/MySQL
-function mariadb_register_packages() {
+function mariadb_before_packages() {
   #
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
@@ -33,13 +33,20 @@ function mariadb_register_packages() {
   mkdir -p "/etc/mysql/conf.d"
   vvv_info " * Copying /srv/provision/core/mariadb/config/vvv-core.cnf to /etc/mysql/conf.d/vvv-core.cnf"
   cp -f "/srv/provision/core/mariadb/config/vvv-core.cnf" "/etc/mysql/conf.d/vvv-core.cnf"
+}
+vvv_add_hook before_packages mariadb_before_packages
 
+function mariadb_register_apt_keys() {
   if ! vvv_apt_keys_has 'MariaDB'; then
     # Apply the MariaDB signing keyg
     vvv_info " * Applying the MariaDB signing key..."
     apt-key add /srv/provision/core/mariadb/apt-keys/mariadb.key
   fi
+}
+vvv_add_hook register_apt_keys mariadb_register_apt_keys
 
+function mariadb_register_apt_sources() {
+  vvv_info " * installing MariaDB apt sources"
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
   local APTSOURCE="/srv/provision/core/mariadb/sources-${OSID,,}-${OSCODENAME,,}.list"
@@ -48,10 +55,13 @@ function mariadb_register_packages() {
   else
     vvv_error " ! VVV could not copy an Apt source file ( ${APTSOURCE} ), the current OS/Version (${OSID,,}-${OSCODENAME,,}) combination is unavailable"
   fi
+}
+vvv_add_hook register_apt_sources mariadb_register_apt_sources
 
+function mariadb_register_apt_packages() {
   VVV_PACKAGE_LIST+=(mariadb-server)
 }
-vvv_add_hook before_packages mariadb_register_packages
+vvv_add_hook register_apt_packages mariadb_register_apt_packages
 
 function check_mysql_root_password() {
   vvv_info " * Checking the root user password is root"
@@ -87,7 +97,7 @@ SQL
 function mysql_setup() {
   # If MariaDB/MySQL is installed, go through the various imports and service tasks.
   if ! command -v mysql &> /dev/null; then
-    vvv_error " ! MySQL is not installed. No databases imported."
+    vvv_error " ! MariaDB/MySQL is not installed. No databases imported."
     return 1
   fi
   vvv_info " * Setting up database configuration file links..."
@@ -115,12 +125,11 @@ function mysql_setup() {
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  # output bit different on docker container, cause no systemd
   if [ $(service mariadb status|grep 'Uptime' | wc -l) -ne 1 ]; then
-    vvv_info " * Starting the mysql service"
+    vvv_info " * Starting the mariadb service"
     service mariadb start
   else
-    vvv_info " * Restarting mysql service"
+    vvv_info " * Restarting mariadb service"
     service mariadb restart
   fi
 

@@ -64,9 +64,7 @@ function mailhog_restart() {
 }
 export -f mailhog_restart
 
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook services_restart mailhog_restart
-fi
+vvv_add_hook services_restart mailhog_restart
 
 function mailhog_php_finalize() {
   # Enable PHP MailHog sendmail settings by default
