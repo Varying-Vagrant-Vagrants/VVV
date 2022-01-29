@@ -28,7 +28,7 @@ if ( getenv( 'WP_TESTS_DB_HOST' ) ) {
 } else if ( file_exists( '/vagrant' ) ) {
 	define( 'DB_HOST', 'localhost' );
 } else {
-	define( 'DB_HOST', '192.168.50.4' );
+	define( 'DB_HOST', '192.168.56.4' );
 }
 define( 'DB_NAME', getenv( 'WP_TESTS_DB_NAME' ) ?: 'wordpress_unit_tests' );
 if ( getenv( 'WP_TESTS_DB_USER' ) ) {

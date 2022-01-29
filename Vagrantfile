@@ -481,13 +481,13 @@ Vagrant.configure('2') do |config|
   #
   # A private network is created by default. This is the IP address through which your
   # host machine will communicate to the guest. In this default configuration, the virtual
-  # machine will have an IP address of 192.168.50.4 and a virtual network adapter will be
-  # created on your host machine with the IP of 192.168.50.1 as a gateway.
+  # machine will have an IP address of 192.168.56.4 and a virtual network adapter will be
+  # created on your host machine with the IP of 192.168.56.1 as a gateway.
   #
   # Access to the guest machine is only available to your local host. To provide access to
   # other devices, a public network should be configured or port forwarding enabled.
   #
-  # Note: If your existing network is using the 192.168.50.x subnet, this default IP address
+  # Note: If your existing network is using the 192.168.56.x subnet, this default IP address
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
