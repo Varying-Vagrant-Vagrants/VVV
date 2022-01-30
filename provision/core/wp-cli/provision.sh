@@ -14,7 +14,7 @@ function wp_cli_setup() {
   if [[ ! -f "/usr/local/bin/wp" ]]; then
     vvv_info " * [WP CLI]: Downloading WP CLI nightly, see <url>http://wp-cli.org</url>"
     CURLOUTPUT=$(curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar -o /tmp/wp-cli-nightly.phar)
-    if [ $? -eq 0]; then
+    if [ $? -eq 0 ]; then
       vvv_info " * [WP CLI]: Downloaded, moving wp-cli-nightly.phar"
       mv -f /tmp/wp-cli-nightly.phar /usr/local/bin/wp
       chown -R vagrant:www-data /usr/local/bin
