@@ -2,6 +2,9 @@
 
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
+
+VAGRANTFILE_API_VERSION = "2"
+
 Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
@@ -323,12 +326,8 @@ end
 
 ENV['LC_ALL'] = 'en_US.UTF-8'
 
-Vagrant.configure('2') do |config|
-  # Store the current version of Vagrant for use in conditionals when dealing
-  # with possible backward compatible issues.
-  vagrant_version = Vagrant::VERSION.sub(/^v/, '')
-
-  # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # VirtualBox
   config.vm.provider :virtualbox do |v|
     v.customize ['modifyvm', :id, '--uartmode1', 'file', File.join(vagrant_dir, 'log/ubuntu-cloudimg-console.log')]
     v.customize ['modifyvm', :id, '--memory', vvv_config['vm_config']['memory']]
