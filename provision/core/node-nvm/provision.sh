@@ -17,8 +17,8 @@ function nvm_setup() {
     vvv_success " ✓ NVM is already installed, checking for updates"
     (
       cd "$NVM_DIR"
-      git fetch --tags origin
-      git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+      noroot git fetch --tags origin
+      noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
     ) && \. "$NVM_DIR/nvm.sh"
   else
     if [[ -d "${NVMFOLDER}" && ! -f "${NVMFOLDER}/nvm.sh" ]]
@@ -31,9 +31,9 @@ function nvm_setup() {
 
     echo " * Installing NVM via git"
     (
-      git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+      noroot git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
       cd "${NVM_DIR}"
-      git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+      noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
     ) && \. "$NVM_DIR/nvm.sh"
     vvv_success " ✓ NVM installed"
 
@@ -42,15 +42,20 @@ function nvm_setup() {
     echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> /home/vagrant/.bashrc
   fi
 
+  vvv_info " - ensuring vagrant user owns its own nvm folder"
+  chown -R vagrant:vagrant /home/vagrant/.nvm/
+
   vvv_info " - Installing Node 14 via nvm"
-  nvm install 14
+  noroot nvm install 14
 
   vvv_info " - Installing Node 16 via nvm"
-  nvm install 16
+  noroot nvm install 16
 
   vvv_info " - setting the default to 16"
-  nvm alias default 16
-  nvm use 16
+  noroot nvm alias default 16
+  noroot nvm use 16
+
+  vvv_success " - NVM setup completed"
 }
 
 vvv_add_hook after_packages nvm_setup
