@@ -12,14 +12,17 @@ export NVM_DIR="/home/vagrant/.nvm"
 
 function nvm_setup() {
   vvv_info " * Checking for NVM"
+
   if [[ -d "${NVM_DIR}" && -f "${NVM_DIR}/nvm.sh" ]]
   then
     vvv_success " ✓ NVM is already installed, checking for updates"
-    (
-      cd "$NVM_DIR"
-      noroot git fetch --tags origin
-      noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
-    ) && \. "$NVM_DIR/nvm.sh"
+    cd "${NVM_DIR}"
+    noroot git fetch --tags origin
+    noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    cd -
+    vvv_info " - Loading nvm"
+    [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh" && vvv_info "${?}"
+    vvv_info " - nvm loaded"
   else
     if [[ -d "${NVMFOLDER}" && ! -f "${NVMFOLDER}/nvm.sh" ]]
     then
@@ -29,12 +32,15 @@ function nvm_setup() {
       rm -rf "${NVM_DIR}"
     fi
 
-    echo " * Installing NVM via git"
-    (
-      noroot git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-      cd "${NVM_DIR}"
-      noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
-    ) && \. "$NVM_DIR/nvm.sh"
+    vvv_info " - Installing NVM via git"
+    noroot git clone https://github.com/nvm-sh/nvm.git "${NVM_DIR}"
+    cd "${NVM_DIR}"
+    noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    cd -
+    vvv_info " - Loading nvm"
+    [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
+    vvv_info " - nvm loaded"
+
     vvv_success " ✓ NVM installed"
 
     echo 'export NVM_DIR="$HOME/.nvm"' >> /home/vagrant/.bashrc
@@ -42,18 +48,16 @@ function nvm_setup() {
     echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> /home/vagrant/.bashrc
   fi
 
+  vvv_info " - Installing Node 14 via nvm"
+  nvm install 14
+
+  vvv_info " - Installing Node 16 LTS Gallium via nvm"
+  nvm install lts/gallium
+
+  nvm use lts/gallium
+
   vvv_info " - ensuring vagrant user owns its own nvm folder"
   chown -R vagrant:vagrant /home/vagrant/.nvm/
-
-  vvv_info " - Installing Node 14 via nvm"
-  noroot nvm install 14
-
-  vvv_info " - Installing Node 16 via nvm"
-  noroot nvm install 16
-
-  vvv_info " - setting the default to 16"
-  noroot nvm alias default 16
-  noroot nvm use 16
 
   vvv_success " - NVM setup completed"
 }
