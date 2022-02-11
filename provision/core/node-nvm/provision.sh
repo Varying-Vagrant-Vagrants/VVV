@@ -8,11 +8,10 @@
 
 set -eo pipefail
 
-echo " * Checking for NVM"
-
 export NVM_DIR="/home/vagrant/.nvm"
 
 function nvm_setup() {
+  vvv_info " * Checking for NVM"
   if [[ -d "${NVM_DIR}" && -f "${NVM_DIR}/nvm.sh" ]]
   then
     vvv_success " ✓ NVM is already installed, checking for updates"
