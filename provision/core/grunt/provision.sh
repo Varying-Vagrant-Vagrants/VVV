@@ -66,7 +66,9 @@ function hack_avoid_gyp_errors() {
 }
 
 function grunt_setup() {
-  chown -R vagrant:vagrant /usr/lib/node_modules/
+  if [ -d /usr/lib/node_modules/grunt-sass/ ]; then
+    chown -R vagrant:vagrant /usr/lib/node_modules/
+  fi
   if command -v grunt >/dev/null 2>&1; then
     update_grunt
   else
