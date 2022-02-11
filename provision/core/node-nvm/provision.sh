@@ -21,7 +21,7 @@ function nvm_setup() {
     noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
     cd -
     vvv_info " - Loading nvm"
-    [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh" && vvv_info "${?}"
+    [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
     vvv_info " - nvm loaded"
   else
     if [[ -d "${NVMFOLDER}" && ! -f "${NVMFOLDER}/nvm.sh" ]]
@@ -43,9 +43,14 @@ function nvm_setup() {
 
     vvv_success " ✓ NVM installed"
 
-    echo 'export NVM_DIR="$HOME/.nvm"' >> /home/vagrant/.bashrc
-    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm' >> /home/vagrant/.bashrc
-    echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> /home/vagrant/.bashrc
+    echo 'export NVM_DIR="/home/vagrant/.nvm"' >> /home/vagrant/.bashrc
+    echo '[ -s "/home/vagrant/.nvm/nvm.sh" ] && \. "/home/vagrant/.nvm/nvm.sh" # This loads nvm' >> /home/vagrant/.bashrc
+    echo '[ -s "/home/vagrant/.nvm/bash_completion" ] && \. "/home/vagrant/.nvm/bash_completion"  # This loads nvm bash_completion' >> /home/vagrant/.bashrc
+
+    echo 'export NVM_DIR="/home/vagrant/.nvm"' >> /root/.bashrc
+    echo '[ -s "/home/vagrant/.nvm/nvm.sh" ] && \. "/home/vagrant/.nvm/nvm.sh" # This loads nvm' >> /root/.bashrc
+    echo '[ -s "/home/vagrant/.nvm/bash_completion" ] && \. "/home/vagrant/.nvm/bash_completion"  # This loads nvm bash_completion' >> /root/.bashrc
+
   fi
 
   vvv_info " - Installing Node 14 via nvm"

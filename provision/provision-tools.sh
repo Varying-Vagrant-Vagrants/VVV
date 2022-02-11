@@ -10,6 +10,7 @@ set -eo pipefail
 # this shell session
 [ -s "/home/vagrant/.bashrc" ] && \. "/home/vagrant/.bashrc"
 . "/srv/provision/core/env/homedir/.bash_aliases"
+[ -s "/home/vagrant/.nvm/nvm.sh" ] && . "/home/vagrant/.nvm/nvm.sh"
 
 export VVV_CONFIG=/vagrant/config.yml
 
