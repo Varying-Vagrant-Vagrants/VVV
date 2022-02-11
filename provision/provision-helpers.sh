@@ -67,14 +67,14 @@ export -f network_detection
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
   local url=${1:-"http://ppa.launchpad.net"}
-  vvv_info " * Testing network connection to <url>${url}</url>"
+  vvv_info " * Testing network connection to <url>${url}</url> with wget -q --spider --timeout=5 --tries=3 ${url}"
 
   # Network Detection
   #
   # If 3 attempts with a timeout of 5 seconds are not successful,
   # then we'll skip a few things further in provisioning rather
   # than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=10 "${url}" -O /dev/null 2>&1 | grep 'connected')" ]]; then
+  if wget -q --spider --timeout=5 --tries=3 "${url}"; then
     vvv_success " * Successful Network connection to <url>${url}</url><success> detected"
     return 0
   fi
@@ -116,15 +116,10 @@ function network_check() {
     vvv_error " "
     vvv_error "! Network Problem:"
     vvv_error " "
-    vvv_error "VVV tried to ping several domains it needs but some failed:"
+    vvv_error "VVV tried to check several domains it needs to provision but ${#failed_hosts[@]} of ${#hosts_to_test[@]} failed:"
     vvv_error " "
-    for i in "${hosts_to_test[@]}"; do
-      local url="${i}"
-      if containsElement "${i}" "${failed_hosts}"; then
-        echo -e "${CRESET} [${RED}x${CRESET}] ${url}${RED}"
-      else
-        echo -e "${CRESET} [${GREEN}✓${CRESET}] ${url}${RED}"
-      fi
+    for url in "${hosts_to_test[@]}"; do
+      echo -e "${CRESET} [${RED}x${CRESET}] ${url}${RED}|"
     done
     vvv_error " "
     vvv_error "Make sure you have a working internet connection, that you "
@@ -426,7 +421,7 @@ export -f vvv_run_parallel_hook_function
 # @arg $1 string the hook to execute
 function vvv_parallel_hook() {
   if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    vvv_error " x Disallowed hookname '${1}'"
+    vvv_error " x Disallowed hookname '${1}', aborting"
     return 1
   fi
 
