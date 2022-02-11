@@ -44,10 +44,10 @@ function nvm_setup() {
   fi
 
   vvv_info " - Installing Node 14 via nvm"
-  nvm install 14 --reinstall-packages-from=node
+  nvm install 14
 
   vvv_info " - Installing Node 16 via nvm"
-  nvm install 16 --reinstall-packages-from=node
+  nvm install 16
 
   vvv_info " - setting the default to 16"
   nvm alias default 16
