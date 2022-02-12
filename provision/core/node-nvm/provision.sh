@@ -35,7 +35,7 @@ function nvm_setup() {
     vvv_info " - Installing NVM via git"
     noroot git clone https://github.com/nvm-sh/nvm.git "${NVM_DIR}"
     cd "${NVM_DIR}"
-    noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    noroot git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
     cd -
     vvv_info " - Loading nvm"
     [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
