@@ -56,10 +56,7 @@ function nvm_setup() {
   vvv_info " - Installing Node 14 via nvm"
   nvm install 14
 
-  vvv_info " - Installing Node 16 LTS Gallium via nvm"
-  nvm install lts/gallium
-
-  nvm use lts/gallium
+  nvm use 14
 
   vvv_info " - ensuring vagrant user owns its own nvm folder"
   chown -R vagrant:vagrant /home/vagrant/.nvm/
