@@ -18,7 +18,7 @@ function nvm_setup() {
     vvv_success " ✓ NVM is already installed, checking for updates"
     cd "${NVM_DIR}"
     noroot git fetch --tags origin
-    noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    noroot git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
     cd -
     vvv_info " - Loading nvm"
     [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
