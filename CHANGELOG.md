@@ -12,12 +12,14 @@ permalink: /docs/en-US/changelog/
 
 * VVV now switches to Parallels by default on Arm machines ( #2560 )
 * Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
+* NVM is now used to manage NodeJS, VVV will auto-switch the node version to that used by `.nvmrc` when inside the guest VM ( #2581 )
 
 ### Bug Fixes
 
 * Refactored the certificate check to check for the certificate file, not the TLS-CA utility ( #2563 )
 * Fixed an issue with `composer create-project` not running when specified in `config.yml` ( #2565 )
 * Switched obsolete mirror check for MariaDB to the one already used (#2575)
+* Fixed a broken warning in the network checks
 
 ## 3.8.1 ( 2021 November 15th )
 

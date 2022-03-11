@@ -8,7 +8,13 @@ set -eo pipefail
 
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
+[ -s "/home/vagrant/.bashrc" ] && \. "/home/vagrant/.bashrc"
 . "/srv/provision/core/env/homedir/.bash_aliases"
+if [ -s "/home/vagrant/.nvm/nvm.sh" ]; then
+  . "/home/vagrant/.nvm/nvm.sh"
+else
+  echo "NVM NOT PRESENT!"
+fi
 
 export VVV_CONFIG=/vagrant/config.yml
 
