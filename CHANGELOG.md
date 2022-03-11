@@ -13,6 +13,7 @@ permalink: /docs/en-US/changelog/
 * VVV now switches to Parallels by default on Arm machines ( #2560 )
 * Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
 * NVM is now used to manage NodeJS, VVV will auto-switch the node version to that used by `.nvmrc` when inside the guest VM ( #2581 )
+* The PHP Redis extension is now installed with the default PHP version ( #2582 )
 
 ### Bug Fixes
 
