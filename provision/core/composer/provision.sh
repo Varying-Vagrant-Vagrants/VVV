@@ -43,7 +43,9 @@ function composer_setup() {
   vvv_info " * [Composer]: Making sure the Composer cache is not owned by root"
   COMPOSER_DATA_DIR=$(composer config -g data-dir)
   mkdir -p "${COMPOSER_DATA_DIR}"/cache
+  mkdir -p /root/.local/share/composer
   chown -R vagrant:www-data "${COMPOSER_DATA_DIR}"
+  chown -R vagrant:www-data /root/.local/share/composer
 
   vvv_info " * [Composer]: Checking for GitHub tokens"
   if github_token=$(shyaml get-value -q "general.github_token" < "${VVV_CONFIG}"); then
@@ -59,8 +61,10 @@ function composer_setup() {
   # the master branch on its GitHub repository.
   vvv_info " * [Composer]: Checking for Composer updates"
   if ! noroot composer --version --no-ansi | grep 'Composer version'; then
-    vvv_info " * [Composer]: Updating Composer..."
+    mkdir -p /root/.local/share/composer
+    vvv_info " * [Composer]: Setting bin dir"
     COMPOSER_HOME="${COMPOSER_DATA_DIR}" noroot composer --no-ansi global config bin-dir /usr/local/bin
+    vvv_info " * [Composer]: Updating Composer"
     COMPOSER_HOME="${COMPOSER_DATA_DIR}" noroot composer --no-ansi self-update --2 --stable --no-progress --no-interaction
     vvv_info " * [Composer]: Making sure the PHPUnit ^7.5 package is available..."
     COMPOSER_HOME="${COMPOSER_DATA_DIR}" noroot composer --no-ansi global require --prefer-dist --no-update --no-progress --no-interaction phpunit/phpunit:^7.5
