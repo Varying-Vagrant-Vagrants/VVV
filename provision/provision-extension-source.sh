@@ -12,6 +12,7 @@ if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the extension repository
   if [[ ! -d "${DIR}/.git" ]]; then
     vvv_info " * Cloning the \"${NAME}\" extension, see \"${REPO}\""
+    noroot mkdir -p "${DIR}"
     noroot git clone "${REPO}" --branch "${BRANCH}" "${DIR}" -q
     cd "${DIR}"
     noroot git checkout "${BRANCH}" -q
