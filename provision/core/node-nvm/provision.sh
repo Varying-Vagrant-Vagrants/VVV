@@ -18,7 +18,7 @@ function nvm_setup() {
     vvv_success " ✓ NVM is already installed, checking for updates"
     cd "${NVM_DIR}"
     noroot git fetch --tags origin
-    noroot git checkout $(noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
+    noroot git checkout $(noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(noroot git rev-list --tags --max-count=1))
     cd -
     vvv_info " - Loading nvm"
     [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
@@ -58,7 +58,7 @@ function nvm_setup() {
 
   nvm use 14
 
-  vvv_info " - ensuring vagrant user owns its own nvm folder"
+  vvv_info " - Ensuring vagrant user owns its own nvm folder"
   chown -R vagrant:vagrant /home/vagrant/.nvm/
 
   vvv_success " - NVM setup completed"
