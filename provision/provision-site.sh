@@ -193,7 +193,7 @@ function vvv_provision_site_repo() {
         echo " * Any local changes not present on the server will be discarded in favor of the remote branch"
         cd "${VM_DIR}"
         echo " * Checking that remote origin is ${REPO}"
-        CURRENTORIGIN=$(git remote get-url origin)
+        CURRENTORIGIN=$(noroot git remote get-url origin)
         if [[ "${CURRENTORIGIN}" != "${REPO}" ]]; then
           vvv_error " ! The site config said to use <b>${REPO}</b>"
           vvv_error " ! But the origin remote is actually <b>${CURRENTORIGIN}</b>"
