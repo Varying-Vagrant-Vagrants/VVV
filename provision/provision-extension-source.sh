@@ -12,6 +12,7 @@ if [[ false != "${NAME}" && false != "${REPO}" ]]; then
   # Clone or pull the extension repository
   if [[ ! -d "${DIR}/.git" ]]; then
     vvv_info " * Cloning the \"${NAME}\" extension, see \"${REPO}\""
+    git config --global --add safe.directory "${DIR}"
     git clone "${REPO}" --branch "${BRANCH}" "${DIR}" -q
     cd "${DIR}"
     git checkout "${BRANCH}" -q
