@@ -22,6 +22,7 @@ permalink: /docs/en-US/changelog/
 * Switched obsolete mirror check for MariaDB to the one already used (#2575)
 * Fixed a broken warning in the network checks
 * Fixed an issue with `/root/.local/share/composer` when provisioning (#2589)
+* Fixed an issue with the new Git release that was crashing the provisioner beucase of wrong user permissions ( #2593 )
 
 ## 3.8.1 ( 2021 November 15th )
 
