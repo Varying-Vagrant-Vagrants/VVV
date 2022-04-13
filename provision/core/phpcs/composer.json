@@ -1,7 +1,7 @@
 {
   "name": "vvv/phpcs",
   "type": "metapackage",
-  "description": "An open source Vagrant configuration for developing with WordPress",
+  "description": "PHPCS for VVV",
   "keywords": [
     "vagrant",
     "phpcs"
@@ -13,7 +13,8 @@
   },
   "require": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-    "automattic/vipwpcs": "^2.2.0",
-    "phpcompatibility/php-compatibility": "^9.3.5"
+    "automattic/vipwpcs": "^2.3.3",
+    "phpcompatibility/php-compatibility": "^9.3.5",
+    "phpcompatibility/phpcompatibility-wp": "^2.1.3"
   }
 }

@@ -8,8 +8,8 @@ function vvv_register_packages() {
     python-pip
     python-setuptools
 
-    # remove mysql-common to ensure mariadb installation works
-    mysql-common
+    # remove nodesource js etc we have nvm for that
+    nodejs
   )
 
   VVV_PACKAGE_LIST+=(

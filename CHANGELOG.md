@@ -6,6 +6,24 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.9.1 ( 2022 April 13th )
+
+### Enhancements
+
+* VVV now switches to Parallels by default on Arm machines ( #2560 )
+* Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
+* NVM is now used to manage NodeJS, VVV will auto-switch the node version to that used by `.nvmrc` when inside the guest VM ( #2581 )
+* The PHP Redis extension is now installed with the default PHP version ( #2582 )
+
+### Bug Fixes
+
+* Refactored the certificate check to check for the certificate file, not the TLS-CA utility ( #2563 )
+* Fixed an issue with `composer create-project` not running when specified in `config.yml` ( #2565 )
+* Switched obsolete mirror check for MariaDB to the one already used (#2575)
+* Fixed a broken warning in the network checks
+* Fixed an issue with `/root/.local/share/composer` when provisioning (#2589)
+* Fixed an issue with the new Git release that was crashing the provisioner beucase of wrong user permissions ( #2593 )
+
 ## 3.8.1 ( 2021 November 15th )
 
 ### Enhancements
@@ -579,7 +597,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * ***Possible Breaking:*** Ubuntu has been upgraded from 12.04 LTS to 14.04 LTS. We have also moved from 32bit to 64bit.
 * A full `vagrant destroy` is recommended for best results.
 * A new box will be downloaded for the base virtual machine. If you'd like to free space, remove the old box with `vagrant box remove precise32`. Running `vagrant box list` will show you all base VMs on your local machine.
-* With a new operating system comes a new RSA key. If you are connecting via SSH through an application that relies on your machines `known_hosts` file, you will need to clear the old key for 192.168.50.4. [See #365](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/365)
+* With a new operating system comes a new RSA key. If you are connecting via SSH through an application that relies on your machines `known_hosts` file, you will need to clear the old key for 192.168.56.4. [See #365](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/365)
 * Init scripts are now fired with `source` rather than `bash`. Due to this change, something like `cd "$(dirname $0)"` no longer works as expected. See [#373](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/373) and [#370](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/370) for reasoning and discussion.
 * WordPress: Add `develop_git` to convert the default SVN checkout to Git.
 * PHP: Update to PHP 5.5.x
@@ -678,7 +696,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Refactor handling of custom PHP, APC, and xdebug configurations
 * Bump default memcached memory allocation to 128M
 * Introduce custom `apc.ini` file, bump `apc.shm_size` to 128M
-* Provide a phpinfo URL at `http://192.168.50.4/phpinfo/`
+* Provide a phpinfo URL at `http://vvv.test/phpinfo/`
 * Set `WP_DEBUG` to true by default for included installations of WordPress
 
 ## 0.6

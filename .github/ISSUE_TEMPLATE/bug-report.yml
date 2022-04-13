@@ -31,7 +31,7 @@ body:
       attributes:
           label: Whats the problem?
           description: |
-              Be as descriptive as possible.
+              Be as descriptive as possible!!!
       validations:
           required: true
     - type: textarea
@@ -63,7 +63,8 @@ body:
           description: You can do this by searching https://github.com/WordPress/gutenberg/issues and making sure the bug is not related to another plugin.
           multiple: false
           options:
-             - 'Apple MacOS'
+             - 'Apple MacOS (Intel)'
+             - 'Apple MacOS (Arm/Apple Silicon)'
              - 'Microsoft Windows'
              - 'Linux'
              - 'Other'
@@ -76,7 +77,9 @@ body:
           multiple: false
           options:
              - 'VirtualBox'
-             - 'Parallels'
+             - 'Parallels (Intel)'
+             - 'Parallels (Apple Silicon/Arm)'
+             - 'Hyper-V'
              - 'VMWare'
              - 'Other'
       validations:

@@ -8,7 +8,13 @@ set -eo pipefail
 
 # source bash_aliases before anything else so that PATH is properly configured on
 # this shell session
+[ -s "/home/vagrant/.bashrc" ] && \. "/home/vagrant/.bashrc"
 . "/srv/provision/core/env/homedir/.bash_aliases"
+if [ -s "/home/vagrant/.nvm/nvm.sh" ]; then
+  . "/home/vagrant/.nvm/nvm.sh"
+else
+  echo "NVM NOT PRESENT!"
+fi
 
 export VVV_CONFIG=/vagrant/config.yml
 
@@ -25,14 +31,12 @@ export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 ### SCRIPT
 
 # Package and Tools Install
-vvv_info " * Running tools_install"
-vvv_parallel_hook tools_setup
+vvv_hook tools_pre_setup
+vvv_hook tools_setup
 
 # For tool provisioners that have trouble with parallelisation
 vvv_hook tools_setup_synchronous
-
-vvv_info " * Finalizing Tools"
-vvv_parallel_hook tools_finalize
+vvv_hook tools_finalize
 
 # And it's done
 

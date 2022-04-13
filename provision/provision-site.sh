@@ -107,12 +107,12 @@ function vvv_provision_site_nginx_config() {
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
 
-  if /srv/config/homebin/is_utility_installed core tls-ca; then
+  if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
     sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
     sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   else
-    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the core tls-ca is not installed#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}#\# TLS key not included as the core tls-ca is not installed#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   fi
 
   # Resolve relative paths since not supported in Nginx root.
@@ -193,7 +193,7 @@ function vvv_provision_site_repo() {
         echo " * Any local changes not present on the server will be discarded in favor of the remote branch"
         cd "${VM_DIR}"
         echo " * Checking that remote origin is ${REPO}"
-        CURRENTORIGIN=$(git remote get-url origin)
+        CURRENTORIGIN=$(noroot git remote get-url origin)
         if [[ "${CURRENTORIGIN}" != "${REPO}" ]]; then
           vvv_error " ! The site config said to use <b>${REPO}</b>"
           vvv_error " ! But the origin remote is actually <b>${CURRENTORIGIN}</b>"
@@ -361,8 +361,7 @@ function vvv_custom_folder_composer() {
             vvv_info " * Running composer update in ${folder}"
             noroot composer update
           fi
-        elif [[ "
-        project" == "${key}" ]]; then
+        elif [[ "create-project" == "${key}" ]]; then
           vvv_info " * Running composer create-project ${value} in ${folder}"
           noroot composer create-project "${value}" .
         else
