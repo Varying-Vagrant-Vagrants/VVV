@@ -6,6 +6,14 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.10 ( 2022 TBD )
+
+### Enhancements
+
+### Bug Fixes
+
+* WP CLI package update failures now fail gracefully instead of stopping a provision ( #2601 )
+
 ## 3.9.1 ( 2022 April 13th )
 
 ### Enhancements
