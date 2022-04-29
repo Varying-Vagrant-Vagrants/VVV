@@ -121,8 +121,10 @@ function vvv_provision_site_nginx_config() {
   # "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
   local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-provision/} # remove the provision folder name
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-.vvv/} # remove the .vvv folder name
   local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
-  local DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
+  local DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
 
   vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"
   rm -f "${TMPFILE}"
@@ -502,9 +504,6 @@ vvv_process_site_hosts
 vvv_provision_site_script
 vvv_custom_folders
 vvv_provision_site_nginx
-
-vvv_info " * Reloading Nginx"
-service nginx reload
 
 if [ "${SUCCESS}" -ne "0" ]; then
   vvv_error " ! ${SITE} provisioning had some issues, check the log files as the site may not function correctly."
