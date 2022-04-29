@@ -613,9 +613,8 @@ function vvv_maybe_install_nginx_config() {
 
   sudo cp -f "${SOURCE_FILE}" "${TARGET_FILE}"
 
-  vvv_info " * Reloading Nginx configs after installing ${TARGET_NAME} into ${TARGET}"
   if ! sudo service nginx reload; then
-    vvv_error " ! Installing an Nginx config failed! VVV tried to install ${SOURCE_FILE} to ${TARGET_FILE} but Nginx failed to reload"
+    vvv_error " ! Installing an Nginx config failed! VVV tried to install ${TARGET_NAME} into ${TARGET} from ${SOURCE_FILE} but the Nginx service failed to reload"
     vvv_error " ! Running sudo nginx -t to diagnose error:"
     sudo nginx -t
     vvv_error " ! VVV is now deleting the config to avoid further breakage"
