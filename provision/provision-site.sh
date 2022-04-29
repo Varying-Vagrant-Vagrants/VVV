@@ -126,7 +126,10 @@ function vvv_provision_site_nginx_config() {
   local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
   local DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
 
-  vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"
+  if ! vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"; then
+    vvv_warn " ! This sites nginx config had problems, it may not load. Look at the above errors to diagnose the problem"
+    vvv_info " ! VVV will now continue with provisioning so that other sites have an opportunity to run"
+  fi
   rm -f "${TMPFILE}"
 }
 
