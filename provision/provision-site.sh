@@ -84,41 +84,47 @@ function get_primary_host() {
 function vvv_provision_site_nginx_config() {
   local SITE_NAME=$1
   local SITE_NGINX_FILE=$2
-  local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
-  local DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
   VVV_HOSTS=$(get_hosts)
+  local TMPFILE=$(mktemp /tmp/vvv-site-XXXXX)
+  cat "${SITE_NGINX_FILE}" >> "${TMPFILE}"
 
   vvv_info " * VVV is adding an Nginx config from ${SITE_NGINX_FILE}"
 
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
   # while still having an Nginx config which works.
-  local DIR="$(dirname "$SITE_NGINX_FILE")"
-  sed "s#{vvv_path_to_folder}#${DIR}#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_path_to_site}#${VM_DIR}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_site_name}#${SITE_NAME}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  local DIR="$(dirname "${SITE_NGINX_FILE}")"
+  sed "s#{vvv_path_to_folder}#${DIR}#" "${SITE_NGINX_FILE}" >  "${TMPFILE}"
+  sed -i "s#{vvv_path_to_site}#${VM_DIR}#"  "${TMPFILE}"
+  sed -i "s#{vvv_site_name}#${SITE_NAME}#"  "${TMPFILE}"
+  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
 
   if [ 'php' != "${NGINX_UPSTREAM}" ] && [ ! -f "/etc/nginx/upstreams/${NGINX_UPSTREAM}.conf" ]; then
     vvv_error " * Upstream value '${NGINX_UPSTREAM}' doesn't match a valid upstream. Defaulting to 'php'.${CRESET}"
     NGINX_UPSTREAM='php'
   fi
-  sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
 
   if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
-    sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#"  "${TMPFILE}"
+    sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "${TMPFILE}"
   else
-    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#"  "${TMPFILE}"
+    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#"  "${TMPFILE}"
   fi
 
   # Resolve relative paths since not supported in Nginx root.
-  while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"; do
-    sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  while grep -sqE '/[^/][^/]*/\.\.'  "${TMPFILE}"; do
+    sed -i 's#/[^/][^/]*/\.\.##g'  "${TMPFILE}"
   done
+
+  # "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
+  local DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
+
+  vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"
 }
 
 # @description add hosts from a file to VVVs hosts file (the guest, not the host machine)
