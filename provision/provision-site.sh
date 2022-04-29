@@ -125,6 +125,7 @@ function vvv_provision_site_nginx_config() {
   local DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
 
   vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"
+  rm -f "${TMPFILE}"
 }
 
 # @description add hosts from a file to VVVs hosts file (the guest, not the host machine)
