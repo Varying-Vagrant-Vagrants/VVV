@@ -10,9 +10,13 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
+* Improved provisioning output
+* VVV will now attempt to test Nginx configs on installation and recover ( #2604 )
+
 ### Bug Fixes
 
 * WP CLI package update failures now fail gracefully instead of stopping a provision ( #2601 )
+* Fixed an edge case updating NVM via git ( #2604 )
 
 ## 3.9.1 ( 2022 April 13th )
 
