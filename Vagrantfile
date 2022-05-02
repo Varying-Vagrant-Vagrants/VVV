@@ -90,7 +90,7 @@ if show_logo
 
   splashfirst = <<~HEREDOC
     \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
-    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Path:"#{vagrant_dir}"
+    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Ruby Version:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
     #{red} \\_/#{green}\\_/#{blue}\\_/  #{creset}#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
 
   HEREDOC
