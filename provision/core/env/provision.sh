@@ -91,11 +91,11 @@ function profile_setup() {
     noroot mkdir -p "/home/vagrant/.subversion"
   fi
 
-  vvv_info " * Copying /srv/provision/core/env/homedir/.subversion/subversion-servers                to /home/vagrant/.subversion/servers"
+  vvv_info " * Copying /srv/provision/core/env/homedir/.subversion/subversion-servers     to /home/vagrant/.subversion/servers"
   rm -f /home/vagrant/.subversion/servers
   noroot cp "/srv/provision/core/env/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
 
-  vvv_info " * Copying /srv/provision/core/env/homedir/.subversion/subversion-config                 to /home/vagrant/.subversion/config"
+  vvv_info " * Copying /srv/provision/core/env/homedir/.subversion/subversion-config      to /home/vagrant/.subversion/config"
   rm -f /home/vagrant/.subversion/config
   noroot cp "/srv/provision/core/env/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
 
@@ -107,9 +107,9 @@ function profile_setup() {
   fi
 
   if [ -d "/etc/ssh" ]; then
-    vvv_info " * Copying /srv/provision/core/env/ssh/ssh_known_hosts                   to /etc/ssh/ssh_known_hosts"
+    vvv_info " * Copying /srv/provision/core/env/ssh/ssh_known_hosts                        to /etc/ssh/ssh_known_hosts"
     cp -f /srv/provision/core/env/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts
-    vvv_info " * Copying /srv/provision/core/env/ssh/sshd_config                       to /etc/ssh/sshd_config"
+    vvv_info " * Copying /srv/provision/core/env/ssh/sshd_config                            to /etc/ssh/sshd_config"
     cp -f /srv/provision/core/env/ssh/sshd_config /etc/ssh/sshd_config
     vvv_info " * Reloading SSH Daemon"
     service ssh reload
