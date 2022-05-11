@@ -519,7 +519,7 @@ vvv_package_install() {
 
   return 0
 }
-export -f vvv_package_install
+export -f vvv_package_install;
 
 # @description checks if an apt package is installed, returns 0 if installed, 1 if not
 # @arg $1 string the package to check for
@@ -587,4 +587,42 @@ vvv_apt_package_remove() {
 
   return 0
 }
-export -f vvv_apt_package_remove
+export -f vvv_apt_package_remove;
+
+# @description Installs an Nginx config file and reload Nginx.
+# If Nginx fails to load after doing this it will print an
+# error and attempt to undo the change.
+#
+# @arg $1 string the path and filename of the nginx config that needs to be installed
+# @arg $2 string the file name of the config when installed
+# @arg $3 the type of config, valid values as sites and utilities
+#
+# @example
+#    vvv_maybe_install_nginx_config /tmp/nginx-site-config.conf vvv-site-mysite.conf sites
+function vvv_maybe_install_nginx_config() {
+  SOURCE_FILE="${1}"
+  TARGET_NAME="${2}"
+  TARGET="${3}"
+  TARGET_DIR="/etc/nginx/custom-${3}/"
+  TARGET_FILE="${TARGET_DIR}${TARGET_NAME}"
+  if [ -f "${TARGET_FILE}" ]; then
+    sudo rm -f "${TARGET_FILE}"
+  fi
+
+  sudo mkdir -p "${TARGET_DIR}"
+
+  sudo cp -f "${SOURCE_FILE}" "${TARGET_FILE}"
+
+  if ! sudo nginx -t; then
+    vvv_error " ! Installing an Nginx config failed! VVV tried to install ${TARGET_NAME} into ${TARGET} from ${SOURCE_FILE} but a syntax test with sudo nginx -t failed!"
+    vvv_error " ! VVV is now deleting the config to avoid further breakage"
+    sudo rm -f "${TARGET_FILE}"
+    return 1
+  fi
+
+  sudo service nginx reload
+
+  return 0
+}
+
+export -f vvv_maybe_install_nginx_config;
