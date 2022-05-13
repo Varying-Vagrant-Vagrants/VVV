@@ -54,19 +54,19 @@ export -f containsElement
 # @arg $1 string The address to test
 # @see check_network_connection_to_host
 function network_detection() {
-  local url=${1:-"http://ppa.launchpad.net"}
+  local url=${1:-"https://ppa.launchpadcontent.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
 
 # @description Test that we have network connectivity with a URL.
 #
-# @arg $1 string The address to test, defaults to `https://ppa.launchpad.net`
+# @arg $1 string The address to test, defaults to `https://ppa.launchpadcontent.net`
 #
 # @exitcode 0 If the address is reachable
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
-  local url=${1:-"http://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpadcontent.net"}
   vvv_info " * Testing network connection to <url>${url}</url> with wget -q --spider --timeout=5 --tries=3 ${url}"
 
   # Network Detection
@@ -91,12 +91,12 @@ function network_check() {
     return 0
   fi
 
-  # Make an HTTP request to ppa.launchpad.net to determine if
+  # Make an HTTP request to ppa.launchpadcontent.net to determine if
   # outside access is available to us. Also check the mariadb mirrors.
   #
   # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
-    "http://ppa.launchpad.net" # needed for core ubuntu packages
+    "https://ppa.launchpadcontent.net" # needed for core ubuntu packages
     "https://wordpress.org" # WordPress!!
     "https://github.com" # needed for dashboard, extensions, etc
     "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
