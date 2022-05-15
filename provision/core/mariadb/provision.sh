@@ -106,6 +106,10 @@ function mysql_setup() {
   cp -f "/srv/provision/core/mariadb/config/my.cnf" "/etc/mysql/my.cnf"
   vvv_info " * Copied /srv/provision/core/mariadb/config/my.cnf               to /etc/mysql/my.cnf"
 
+  cp -f  "/srv/provision/core/mariadb/config/root-my.cnf" "/root/.my.cnf"
+  chmod 0644 "/root/.my.cnf"
+  vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /root/.my.cnf"
+
   cp -f  "/srv/provision/core/mariadb/config/root-my.cnf" "/home/vagrant/.my.cnf"
   chmod 0644 "/home/vagrant/.my.cnf"
   vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /home/vagrant/.my.cnf"
