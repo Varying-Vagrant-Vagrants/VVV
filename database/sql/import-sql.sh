@@ -123,8 +123,8 @@ then
 			fi
 		done
 
-		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
-		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+		mysql -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
+		mysql -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
 		[ "${db_name}" == "wordpress_unit_tests" ] && continue;
 
@@ -133,7 +133,7 @@ then
 		fi
 
 		mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
-		db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
+		db_exist=$(mysql --skip-column-names -e "${mysql_cmd}")
 		if [ "$?" != "0" ]
 		then
 			vvv_error " * Error - Create the <b>${db_name}</b><error> database via init-custom.sql before attempting import"
@@ -141,9 +141,9 @@ then
 			if [ "" == "${db_exist}" ]; then
 				vvv_info " * Importing <b>${db_name}</b><info> from <b>${file}</b>"
 				if [ "${file: -3}" == ".gz" ]; then
-					gunzip < "${file}" | mysql -u root -proot "${db_name}"
+					gunzip < "${file}" | mysql "${db_name}"
 				else
-					mysql -u root -proot "${db_name}" < "${file}"
+					mysql "${db_name}" < "${file}"
 				fi
 				vvv_success " * Import of <b>'${db_name}'</b><success> successful</success>"
 			else
