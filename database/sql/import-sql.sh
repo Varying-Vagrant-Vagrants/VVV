@@ -17,6 +17,8 @@
 # through {vvv-dir}/database/data
 #
 # Let's begin...
+set -eo pipefail
+set -u
 
 source /srv/provision/provision-helpers.sh
 
