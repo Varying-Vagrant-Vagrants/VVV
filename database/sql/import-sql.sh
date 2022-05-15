@@ -25,6 +25,26 @@ if [[ -f /srv/config/config.yml ]]; then
 	VVV_CONFIG=/srv/config/config.yml
 fi
 
+FORCE_RESTORE="0"
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -f|--force) # quick mode
+      FORCE_RESTORE="1"
+      shift # past argument
+      ;;
+    --*|-*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
 run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
 exclude_list=$(get_config_values "general.db_restore.exclude")
 include_list=$(get_config_values "general.db_restore.include")
@@ -58,13 +78,32 @@ then
 			db_name=$(basename "${file}" .sql.gz)
 		fi
 
+		# if we specified databases, only restore specified ones
+		if [[ "${#@}" -gt 0 ]]; then
+			FOUND=0
+			for var in "$@"; do
+				if [[ "${var}" == "${db_name}" ]]; then
+					FOUND=1
+					break;
+				fi
+			done
+			if [[ "${FOUND}" -eq 0 ]]; then
+				continue;
+			fi
+		fi
+
 		# skip these databases
 		[ "${db_name}" == "mysql" ] && continue;
 		[ "${db_name}" == "information_schema" ] && continue;
 		[ "${db_name}" == "performance_schema" ] && continue;
 		[ "${db_name}" == "test" ] && continue;
 
-		vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
+		if [ "1" == "${FORCE_RESTORE}" ]; then
+			vvv_info " * Forcing restore of <b>${db_name}</b><info> database, and granting the wp user access"
+			mysql -e "DROP DATABASE IF EXISTS \`${db_name}\`"
+		else
+			vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
+		fi
 
 		skip="false"
 
