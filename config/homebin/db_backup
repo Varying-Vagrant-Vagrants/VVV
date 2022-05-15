@@ -53,7 +53,7 @@ ext=".sql"
 if [[ "${gzip}" == "True" ]]; then
     ext=".sql.gz"
 fi
-count=0
+count=1
 for db in "${databases[@]}"
 do
     OUTPUT=$(printf "<info>   - %2s/%s Backing up </info><b>%-23s</b><info> to </info><b>'database/backups/%s${ext}'</b>" "${count}" "${#databases[@]}" "'${db}'" "${db}")
