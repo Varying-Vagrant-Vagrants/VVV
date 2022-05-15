@@ -35,7 +35,7 @@ while read db_name; do
     done
 
     if [ ${skip} == "true" ]; then
-        vvv_info "   - skipped <b>${db_name}</b>" && continue;
+        vvv_info "   - excluded <b>${db_name}</b>" && continue;
     fi
 
     # don't back up databases with no tables
