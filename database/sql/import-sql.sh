@@ -96,6 +96,7 @@ then
 		[ "${db_name}" == "mysql" ] && continue;
 		[ "${db_name}" == "information_schema" ] && continue;
 		[ "${db_name}" == "performance_schema" ] && continue;
+		[ "${db_name}" == "sys" ] && continue;
 		[ "${db_name}" == "test" ] && continue;
 
 		if [ "1" == "${FORCE_RESTORE}" ]; then

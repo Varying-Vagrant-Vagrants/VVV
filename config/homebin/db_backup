@@ -24,6 +24,7 @@ do
     [ "${db_name}" == "mysql" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "information_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "performance_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
+    [ "${db_name}" == "sys" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "test" ] && vvv_info "   - skipped ${db_name}" && continue;
     [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
 
