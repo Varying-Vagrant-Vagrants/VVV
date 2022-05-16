@@ -73,7 +73,7 @@ function check_mysql_root_password() {
       plugin='mysql_native_password';
 SQL
 )
-  root_matches=$(mysql -u root --password=root -s -N -e "${sql}")
+  root_matches=$(mysql -u root -proot -s -N -e "${sql}")
   if [[ $? -eq 0 && $root_matches == "1" ]]; then
     # mysql connected and the SQL above matched
     vvv_success " * The database root password is the expected value"
