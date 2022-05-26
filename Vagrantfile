@@ -354,7 +354,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Configuration options for the Parallels provider.
   config.vm.provider :parallels do |v|
-    v.update_guest_tools = true
     v.customize ['set', :id, '--longer-battery-life', 'off']
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']
