@@ -300,7 +300,7 @@ export -f vvv_success
 # @arg $2 string a default value to fall back upon
 function get_config_value() {
   local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
+  echo "${value:-${2:-}}"
 }
 export -f get_config_value
 
@@ -311,7 +311,7 @@ export -f get_config_value
 # @arg $2 string a default value to fall back upon
 function get_config_values() {
   local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
+  echo "${value:-${2:-}}"
 }
 export -f get_config_values
 
@@ -332,7 +332,7 @@ export -f get_config_type
 # @arg $2 string a default value to fall back upon
 function get_config_keys() {
   local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
+  echo "${value:-${2:-}}"
 }
 export -f get_config_keys
 
