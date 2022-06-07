@@ -136,7 +136,7 @@ function apt_hash_missmatch_fix() {
 
   # Avoid bad hardware implementations that interfere with gcrypt by disabling hardware support
   # reference https://askubuntu.com/a/1242739
-  mkdir /etc/gcrypt
+  mkdir -p /etc/gcrypt
   echo all >> /etc/gcrypt/hwf.deny
 }
 export -f apt_hash_missmatch_fix
