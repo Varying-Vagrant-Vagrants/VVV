@@ -133,6 +133,8 @@ function apt_hash_missmatch_fix() {
     vvv_info " * Copying /srv/provision/core/vvv/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
     cp -f "/srv/provision/core/vvv/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
   fi
+
+  # Avoid bad hardware implementations that interfere with gcrypt by disabling hardware support
   # reference https://askubuntu.com/a/1242739
   mkdir /etc/gcrypt
   echo all >> /etc/gcrypt/hwf.deny
