@@ -18,6 +18,7 @@ permalink: /docs/en-US/changelog/
 
 * WP CLI package update failures now fail gracefully instead of stopping a provision ( #2601 )
 * Fixed an edge case updating NVM via git ( #2604 )
+* Disable hardware support for gcrypt to avoid bad VirtualBox implementations ( #2609 )
 
 ## 3.9.1 ( 2022 April 13th )
 
