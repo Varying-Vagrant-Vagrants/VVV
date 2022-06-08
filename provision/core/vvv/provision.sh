@@ -71,7 +71,7 @@ vvv_add_hook register_apt_sources vvv_register_apt_sources 0
 function vvv_register_keys() {
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
-    vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
+    vvv_info " * Applying the VVV mirror signing key..."
     apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 }
