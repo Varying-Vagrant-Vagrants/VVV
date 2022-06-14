@@ -6,6 +6,8 @@
 set -eo pipefail
 set -u
 
+export VVV_LOG=""
+
 trap 'rm -rf $TMPFIFODIR' EXIT; TMPFIFODIR=$(mktemp -d); mkfifo $TMPFIFODIR/dbnames
 
 source /srv/provision/provision-helpers.sh
