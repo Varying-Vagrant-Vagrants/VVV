@@ -20,6 +20,7 @@ permalink: /docs/en-US/changelog/
 * Fixed an edge case updating NVM via git ( #2604 )
 * Disable hardware support for gcrypt to avoid bad VirtualBox implementations ( #2609 )
 * Fix unbound variable in `db_backup` ( #2617 )
+* Ensured npm and nvm are always available in site provisioners
 
 ## 3.9.1 ( 2022 April 13th )
 
