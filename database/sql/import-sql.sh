@@ -20,6 +20,8 @@
 set -eo pipefail
 set -u
 
+export VVV_LOG=""
+
 source /srv/provision/provision-helpers.sh
 
 VVV_CONFIG=/srv/config/default-config.yml
