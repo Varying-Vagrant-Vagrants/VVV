@@ -490,6 +490,14 @@ if [[ true == "${SKIP_PROVISIONING}" ]]; then
   exit 0
 fi
 
+# Ensure npm is available
+if ! command -v nvm &> /dev/null; then
+  if [ -f /home/vagrant/.nvm/nvm.sh ]; then
+    source /home/vagrant/.nvm/nvm.sh
+  fi
+fi
+nvm use default
+
 vvv_provision_site_repo
 
 if [[ ! -d "${VM_DIR}" ]]; then
