@@ -6,7 +6,167 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.5.x ( 2020 TBA )
+## 3.10 ( 2022 TBD )
+
+### Enhancements
+
+* Improved provisioning output
+* VVV will now attempt to test Nginx configs on installation and recover ( #2604 )
+* Switched to new launchpad PPA domains with HTTPS ( #2586 )
+
+### Bug Fixes
+
+* WP CLI package update failures now fail gracefully instead of stopping a provision ( #2601 )
+* Fixed an edge case updating NVM via git ( #2604 )
+* Disable hardware support for gcrypt to avoid bad VirtualBox implementations ( #2609 )
+* Fix unbound variable in `db_backup` ( #2617 )
+
+## 3.9.1 ( 2022 April 13th )
+
+### Enhancements
+
+* VVV now switches to Parallels by default on Arm machines ( #2560 )
+* Adds default Nginx pages for 40x and 50x errors to help on troubleshooting ( #2345 )
+* NVM is now used to manage NodeJS, VVV will auto-switch the node version to that used by `.nvmrc` when inside the guest VM ( #2581 )
+* The PHP Redis extension is now installed with the default PHP version ( #2582 )
+
+### Bug Fixes
+
+* Refactored the certificate check to check for the certificate file, not the TLS-CA utility ( #2563 )
+* Fixed an issue with `composer create-project` not running when specified in `config.yml` ( #2565 )
+* Switched obsolete mirror check for MariaDB to the one already used (#2575)
+* Fixed a broken warning in the network checks
+* Fixed an issue with `/root/.local/share/composer` when provisioning (#2589)
+* Fixed an issue with the new Git release that was crashing the provisioner beucase of wrong user permissions ( #2593 )
+
+## 3.8.1 ( 2021 November 15th )
+
+### Enhancements
+
+* Split tools out into their own provisioner ( #2270 )
+* Parallelised the tools provisioner ( #2520 )
+* Added the `unattended-upgrades` package to auto-upgrade packages with security updates ( #2513 )
+* Add `jq` for CLI based JSON parsing ( #2518 )
+* Improved Debian/Raspbian compatibility in apt package provisioners ( #2522 )
+* Added basic Avahi support for vvv.local ( #2523 )
+* Utiities have been renamed to extensions
+* VVV now warns when `vagrant-disksize` is installed on Arm/Apple Silicon devices
+* Changed Parallels Arm64 box
+* Added db.restore.exclude/include/restore_by_default parameters
+
+### Bug Fixes
+
+* Fixed backwards compatibility for enabling backups in `config.yml` via `backup: true`
+* Fixed the import of databases with spaces in there names
+* Improved root certificate trust chain handling
+* Service restarts now have dedicated functions
+* Several evals removed from the hook functions
+* Disabled nested virtualisation under Hyper-V
+* Clock synchronisation now fails gracefully
+* The private IP requested has been changed to fit the restrictions in VirtualBox 6.1.28
+* If unset, VVV will now set the global git branch merge strategy to avoid provisioner failure
+
+## 3.7.2 ( 2021 August 3rd )
+
+### Enhancements
+
+* Added a new bear to full provision message, and updated message to be more clear
+
+### Bug Fixes
+
+* Switched Ubuntu 20 boxes to Bento on VirtualBox to avoid folder mounting issues
+* Fixed a broken heredoc
+
+## 3.7.1 ( 2021 July 20th )
+
+### Enhancements
+
+* Improved site provisioning messages
+* MariaDB upgraded to v10.5
+* Improved Apt source file handling in core provisioners
+* Upgraded to Composer 2
+* Upgraded to Python 3 setuptools and pip3
+* PHPCS installation improvements
+* Added ARM64 support for Mailhog
+* Improved the splash screen provider version fetching
+* Added improved apt package upgrade routines
+* Provisioners now ask to install only packages that aren't installed
+* General package handling performance improvements
+* New config to exclude databases from backup in `config.yml` ( #2346 )
+* New config to gzip compress database backups in `config.yml` ( #2346 )
+* Experimental Apple silicon support using vagrant + parallels
+* Disable backup and restore of databases by default
+* Updated Mailhog to 1.0.1 for new installs
+* Improved MailHog downloading with retries and error output
+* Improved Composer installation
+* webp support in Imagemagick
+* Switch from Ubuntu 18.04 to 20.04 (current LTS release)
+* Simplified config folder
+* Increased the default PHP memory limit from 128MB to 256MB
+
+### Bug Fixes
+
+* Fixed `vvv_error` not always printing messages
+* When a sites repo has the wrong URL for the origin remote, the user is now told. This avoids certain mistakes being made.
+* Remote changes are now fetched before resetting, not afterwards.
+* Increased the priority of Nodesource and Ondrej packages to avoid issues
+* Fixed Parallels mount permissions
+* Fixes for site names containing spaces causing Nginx and TLS issues
+* Warnings that you're missing vagrant plugins no longer show when running vagrant plugin commands
+* Force the Virtual Machine to 64bit on VirtualBox to avoid infinite loops on 32bit architectures
+* Force the installation and update of grunt and grunt-cli so that old grunt is always overwritten when updated
+* Sync clocks before provisioning if ntpdate is available to avoid Apt mirror time issues
+* Fixed cloning the dashboard git repository with unknown remote branches
+* Skip mounting custom folders for skipped sites
+* Improved WP CLI ownership and permission settings
+* Removed WP CLI doctor subcommand package that was causing issues for some users
+* Fixed dashboard updating
+
+## 3.6.2 ( 2021 March 17th )
+
+### Bug Fixes
+
+* Replaced PHPCS symlinking to avoid issues with Windows
+
+## 3.6.1 ( 2021 March 16th )
+
+### Important Note
+
+Lots of provisioners now run in strict mode. Your custom site and utility provisioners may fail if they do not handle bad return codes from commands correctly. For example if you ran `composer create-project` on a folder that was not empty, it will fail. In v3.5 this failure was ignored and the script continued despite the critical error, in v3.6 VVV will halt provisioning so that the error can be seen.
+
+Make sure that commands are only ran at their appropriate times, e.g. only install things if they aren't installed, and if you're checking the return value of a command, do it in an if check, not as a temporary variable. If you're feeling adventurous you can unset the strict flags ( danger! ).
+
+Finally, check that your custom modifications haven't been added in the official site templates.
+
+### Enhancements
+
+* Improve the way that PHPCS gets provisioned to avoid conflicts with composer v2 (#2357)
+* PHP v7.4 is now the default PHP ( other versions are available on CLI if installed via `php73`, `php72`, etc )
+* Beautify the PHP debug switcher script
+* Support for basic formatting tags in `vvv_warn` `vvv_error` `vvv_info` and `vvv_success`
+* A new `vvv_output` and `vvv_format_output` bash functions
+* Minor refactors and colours added to the main provisioner
+* Improved output of backup and import scripts
+* SHDocs added to core provisioners
+* Improved PHP configuration file installation
+* Sites can now define composer create-project/install/update commands to run in their folders section in addition to the git options added in v3.5.1
+* Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
+* `switch_php_debugmod` now checks if a module is installed and enabled, with improved output to make it clearer which versions of PHP support the module
+* Print provision log if there are errors
+* Adds an Xdebug Info button to the dashboard when Xdebug is enabled
+
+### Bug Fixes
+
+* Fixed the use of `vvv_warn` `vvv_success` `vvv_error` and `vvv_info` outside of provisioners
+* Don't try to install shyaml if it's already installed
+* Global composer packages were only updated when composer itself was updated
+* Skip the WordPress unit tests database when running backups
+* Don't back up databases that have no tables
+* Xdebug deprecated configuration option warnings fixed
+* Use HTTPS instead of SSH for WP CLI Doctor subcommand installation
+* Install missing library for Xdebug support
+
+## 3.5.1 ( 2020 December 11th )
 
 ### Enhancements
 
@@ -452,7 +612,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * ***Possible Breaking:*** Ubuntu has been upgraded from 12.04 LTS to 14.04 LTS. We have also moved from 32bit to 64bit.
 * A full `vagrant destroy` is recommended for best results.
 * A new box will be downloaded for the base virtual machine. If you'd like to free space, remove the old box with `vagrant box remove precise32`. Running `vagrant box list` will show you all base VMs on your local machine.
-* With a new operating system comes a new RSA key. If you are connecting via SSH through an application that relies on your machines `known_hosts` file, you will need to clear the old key for 192.168.50.4. [See #365](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/365)
+* With a new operating system comes a new RSA key. If you are connecting via SSH through an application that relies on your machines `known_hosts` file, you will need to clear the old key for 192.168.56.4. [See #365](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/365)
 * Init scripts are now fired with `source` rather than `bash`. Due to this change, something like `cd "$(dirname $0)"` no longer works as expected. See [#373](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/373) and [#370](https://github.com/Varying-Vagrant-Vagrants/VVV/issues/370) for reasoning and discussion.
 * WordPress: Add `develop_git` to convert the default SVN checkout to Git.
 * PHP: Update to PHP 5.5.x
@@ -551,7 +711,7 @@ The decision to include breaking changes in a release is not made lightly. The n
 * Refactor handling of custom PHP, APC, and xdebug configurations
 * Bump default memcached memory allocation to 128M
 * Introduce custom `apc.ini` file, bump `apc.shm_size` to 128M
-* Provide a phpinfo URL at `http://192.168.50.4/phpinfo/`
+* Provide a phpinfo URL at `http://vvv.test/phpinfo/`
 * Set `WP_DEBUG` to true by default for included installations of WordPress
 
 ## 0.6

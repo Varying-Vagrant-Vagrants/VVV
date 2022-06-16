@@ -1,0 +1,3 @@
+# VVV mirror packages
+# deb https://ppa.launchpadcontent.net/varying-vagrant-vagrants/php/ubuntu focal main
+# deb-src https://ppa.launchpadcontent.net/varying-vagrant-vagrants/php/ubuntu focal main

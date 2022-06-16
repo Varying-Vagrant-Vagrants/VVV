@@ -1,24 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# @description PHP Codesniffer
+set -eo pipefail
 
+# @noargs
 function php_codesniff_setup() {
-  export DEBIAN_FRONTEND=noninteractive
+  export COMPOSER_ALLOW_SUPERUSER=1
+  export COMPOSER_NO_INTERACTION=1
+
+  if [[ -f "/srv/www/phpcs/CodeSniffer.conf" ]]; then
+    vvv_info " * [PHPCS]: Removing the old PHPCS setup"
+    rm -rf /srv/www/phpcs
+  fi
 
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
   # Sniffs WordPress Coding Standards
-  echo -e "\n * Install/Update PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
-  echo -e "\n * Install/Update WordPress-Coding-Standards, sniffs for PHP_CodeSniffer, see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards"
-  cd /srv/provision/phpcs
-  noroot composer update --no-ansi --no-autoloader --no-progress
+  vvv_info " * [PHPCS]: Provisioning PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
 
-  # Link `phpcbf` and `phpcs` to the `/usr/local/bin` directory so
-  # that it can be used on the host in an editor with matching rules
-  ln -sf "/srv/www/phpcs/bin/phpcbf" "/usr/local/bin/phpcbf"
-  ln -sf "/srv/www/phpcs/bin/phpcs" "/usr/local/bin/phpcs"
+  noroot mkdir -p /srv/www/phpcs
+  noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
+  cd /srv/www/phpcs
+  COMPOSER_BIN_DIR="bin" noroot composer update --no-ansi --no-progress
+
+  vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
   # Install the standards in PHPCS
-  phpcs --config-set installed_paths ./CodeSniffer/Standards/WordPress/,./CodeSniffer/Standards/VIP-Coding-Standards/,./CodeSniffer/Standards/PHPCompatibility/,./CodeSniffer/Standards/PHPCompatibilityParagonie/,./CodeSniffer/Standards/PHPCompatibilityWP/
-  phpcs --config-set default_standard WordPress-Core
-  phpcs -i
+  noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
+  local standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
+  vvv_success " * [PHPCS]: Completed with the following PHPCS standards set up: ${standards}"
 }
 export -f php_codesniff_setup
 

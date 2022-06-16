@@ -11,19 +11,32 @@
 # Look for a custom trigger file. If this exists, we'll assume that
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
+#set -eo pipefail
+source /srv/provision/provision-helpers.sh
 
-echo " ▷ Post provision script"
+vvv_success " ▷ Post provision script"
 
 if [[ -f /srv/config/homebin/vagrant_provision_custom ]]; then
-	echo " * Custom vagrant provision script found, executing vagrant_provision_custom"
+	vvv_info " * Custom vagrant provision script found, executing vagrant_provision_custom"
 	/srv/config/homebin/vagrant_provision_custom
 fi
 
-echo " * Restarting Nginx and MySQL"
+vvv_info " * Restarting Nginx service"
 sudo service nginx restart
-sudo service mysql restart
-echo " * Syncing clocks"
-sudo ntpdate -u ntp.ubuntu.com
+
+vvv_info " * Restarting MariaDB service"
+sudo service mariadb restart
+
+if [ -x "$(command -v ntpdate)" ]; then
+	vvv_info " * Syncing clocks"
+	if sudo ntpdate -u ntp.ubuntu.com; then
+		vvv_info " * clocks synced"
+	else
+		vvv_warn " - clock synchronisation failed"
+	fi
+else
+	vvv_info " - skipping ntpdate clock sync, not installed yet"
+fi
 
 RED="\033[38;5;9m"
 GREEN="\033[01;32m"
@@ -52,6 +65,7 @@ else
 	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
 	echo -e " "
 	echo -e "${RED}    ⚠ oh noes :'( ⚠"
+	echo -e "${RED}"
 	echo -e "${RED}   ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ ${CRESET}"
 	echo -e "${RED}   █▒▒░░░░░░░░░▒▒█    ⚠ Provisioning${CRESET}"
 	echo -e "${RED}    █░░${E}░░░░░${E}░░█     ⚠ incomplete!${CRESET}"
@@ -65,6 +79,6 @@ else
 	echo -e "${RED} ⚠ The failed provisioners left these logs:"
 
 	# List failed provisioners, and pipe them through xargs to print them in a formatted way.
-	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" echo -e "   - log/provisioners/${date_time}/LOGFILE.log"
+	ls -A /vagrant/failed_provisioners/ | xargs -I "LOGFILE" echo -e "   - <b>log/provisioners/${date_time}/LOGFILE.log</b>"
 	echo -e "${RED} ──────────────────────────────────────────────────${CRESET}"
 fi

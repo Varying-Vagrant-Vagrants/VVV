@@ -1,0 +1,3 @@
+# VVV mirror packages
+deb https://ppa.launchpadcontent.net/varying-vagrant-vagrants/php/ubuntu bionic main
+deb-src https://ppa.launchpadcontent.net/varying-vagrant-vagrants/php/ubuntu bionic main

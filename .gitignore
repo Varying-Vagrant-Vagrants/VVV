@@ -21,6 +21,7 @@ Icon\r\r
 /provision/github.token
 /provision/resources/
 /provision/utilities/
+/provision/extensions/
 /provision/phpcs/
 
 # Ignore custom trigger scripts in config/homebin.
@@ -72,6 +73,9 @@ Icon\r\r
 
 # And we provide our default host names in a dat file.
 !/www/vvv-hosts
+
+# not the phpinfo
+!/www/phpinfo
 
 # But not the custom phpMyAdmin config in the database-admin directory.
 /www/default/database-admin/config.inc.custom.php

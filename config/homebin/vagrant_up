@@ -7,6 +7,8 @@
 # Look for a custom trigger file. If this exists, we'll assume that
 # all trigger actions should be handled by this custom script. If
 # it does not exist, then we'll handle some basic tasks.
+set -eo pipefail
+source /srv/provision/provision-helpers.sh
 
 RED="\033[38;5;9m"
 R=$RED
@@ -21,15 +23,26 @@ EYE="${CYAN}█${RED}"
 URL="\033[4;38;5;3m"
 
 if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
-	echo -e "${GREEN} * Custom vagrant up script found, executing vagrant_up_custom${CRESET}"
+	vvv_info " * Custom vagrant up script found, executing vagrant_up_custom"
 	/srv/config/homebin/vagrant_up_custom
 fi
 
-echo -e "${GREEN} * Restarting Nginx and MySQL${CRESET}"
+vvv_info " * Restarting Nginx"
 sudo service nginx restart
-sudo service mysql restart
-echo -e "${GREEN} * Syncing clocks${CRESET}"
-sudo ntpdate -u ntp.ubuntu.com
+
+vvv_info " * Restarting MariaDB"
+sudo service mariadb restart
+
+if [ -x "$(command -v ntpdate)" ]; then
+	vvv_info " * Syncing clocks"
+	if sudo ntpdate -u ntp.ubuntu.com; then
+		vvv_info " * clocks synced"
+	else
+		vvv_warn " - clock synchronisation failed"
+	fi
+else
+	vvv_info " - skipping ntpdate clock sync, not installed yet"
+fi
 
 mkdir -p /vagrant/failed_provisioners
 if [ -z "$(ls -A /vagrant/failed_provisioners/)" ]; then

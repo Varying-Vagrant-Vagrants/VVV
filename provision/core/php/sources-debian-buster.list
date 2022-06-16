@@ -1,0 +1,2 @@
+# Provides PHP
+deb https://packages.sury.org/php/ buster main
