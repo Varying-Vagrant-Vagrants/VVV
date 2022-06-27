@@ -72,6 +72,7 @@ IFS=$(echo -en "\n\b")
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
 sql_count=$(ls -1 ./*.sql* 2>/dev/null | wc -l)
+vvv_info " * Found ${sql_count} database dumps"
 if [ "$sql_count" != 0 ]
 then
 	for file in $( ls ./*.sql* )
@@ -81,6 +82,15 @@ then
 		if [ "${file: -3}" == ".gz" ]; then
 			db_name=$(basename "${file}" .sql.gz)
 		fi
+
+		# skip these databases
+		[ "${db_name}" == "mysql" ] && continue;
+		[ "${db_name}" == "information_schema" ] && continue;
+		[ "${db_name}" == "performance_schema" ] && continue;
+		[ "${db_name}" == "sys" ] && continue;
+		[ "${db_name}" == "test" ] && continue;
+
+    vvv_info " * Processing ${db_name} dump"
 
 		# if we specified databases, only restore specified ones
 		if [[ "${#@}" -gt 0 ]]; then
@@ -95,13 +105,6 @@ then
 				continue;
 			fi
 		fi
-
-		# skip these databases
-		[ "${db_name}" == "mysql" ] && continue;
-		[ "${db_name}" == "information_schema" ] && continue;
-		[ "${db_name}" == "performance_schema" ] && continue;
-		[ "${db_name}" == "sys" ] && continue;
-		[ "${db_name}" == "test" ] && continue;
 
 		if [ "1" == "${FORCE_RESTORE}" ]; then
 			vvv_info " * Forcing restore of <b>${db_name}</b><info> database, and granting the wp user access"
@@ -121,6 +124,7 @@ then
 				skip="true"
 			fi
 		done
+
 		for include in ${include_list[@]}; do
 			if [ "${include}" == "${db_name}" ]; then
 				skip="false"
@@ -159,5 +163,7 @@ then
 else
 	vvv_success " * No custom databases to import"
 fi
+
+vvv_success " * Database importing finished"
 
 IFS=$SAVEIFS
