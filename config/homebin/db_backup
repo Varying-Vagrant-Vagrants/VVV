@@ -6,7 +6,7 @@
 set -eo pipefail
 set -u
 
-if [ ! -v "$VVV_LOG" ]; then
+if [ -z "${VVV_LOG+x}" ]; then
   export VVV_LOG=""
 fi
 
