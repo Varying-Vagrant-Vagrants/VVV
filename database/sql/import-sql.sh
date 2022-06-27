@@ -20,7 +20,9 @@
 set -eo pipefail
 set -u
 
-export VVV_LOG=""
+if [ ! -v "$VVV_LOG" ]; then
+  export VVV_LOG=""
+fi
 
 source /srv/provision/provision-helpers.sh
 
