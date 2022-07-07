@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
 * Disable hardware support for gcrypt to avoid bad VirtualBox implementations ( #2609 )
 * Fix unbound variable in `db_backup` ( #2617 )
 * Ensured npm and nvm are always available in site provisioners
+* Explicitly allow a composer plugin when installing PHPCS to avoid issues in July 2022 ( #2620 )
 
 ## 3.9.1 ( 2022 April 13th )
 
