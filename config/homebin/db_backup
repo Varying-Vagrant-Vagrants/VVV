@@ -6,7 +6,9 @@
 set -eo pipefail
 set -u
 
-export VVV_LOG=""
+if [ -z "${VVV_LOG+x}" ]; then
+  export VVV_LOG=""
+fi
 
 trap 'rm -rf $TMPFIFODIR' EXIT; TMPFIFODIR=$(mktemp -d); mkfifo $TMPFIFODIR/dbnames
 

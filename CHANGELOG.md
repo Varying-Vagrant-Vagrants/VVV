@@ -13,6 +13,7 @@ permalink: /docs/en-US/changelog/
 * Improved provisioning output
 * VVV will now attempt to test Nginx configs on installation and recover ( #2604 )
 * Switched to new launchpad PPA domains with HTTPS ( #2586 )
+* Improved the verboseness of the DB import scripts ( #2621 )
 
 ### Bug Fixes
 
