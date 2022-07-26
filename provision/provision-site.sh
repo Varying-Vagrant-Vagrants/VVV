@@ -24,16 +24,6 @@ VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 VVV_HOSTS=""
 
-local DEFAULTPHP=$(vvv_get_site_config_value 'php' "${VVV_BASE_PHPVERSION}")
-echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
-update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
-update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
-update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
-update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
-update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
-
-SUCCESS=1
-
 VVV_CONFIG=/vagrant/config.yml
 
 . "/srv/provision/provisioners.sh"
@@ -46,6 +36,16 @@ function vvv_get_site_config_value() {
   local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
   echo "${value}"
 }
+
+local DEFAULTPHP=$(vvv_get_site_config_value 'php' "${VVV_BASE_PHPVERSION}")
+echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
+update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
+update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
+update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
+update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
+update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
+
+SUCCESS=1
 
 # @description Reset the PHP global version to the default
 function vvv_set_php_cli_version() {
