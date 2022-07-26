@@ -130,12 +130,14 @@ function vvv_provision_site_nginx_config() {
   sed -i "s#{vvv_site_name}#${SITE_NAME}#"  "${TMPFILE}"
   sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
 
+  # if nginx upstream is not 'php' then it has been changed in config.yml
   if [ 'php' != "${NGINX_UPSTREAM}" ] && [ ! -f "/etc/nginx/upstreams/${NGINX_UPSTREAM}.conf" ]; then
     vvv_error " * Upstream value '${NGINX_UPSTREAM}' doesn't match a valid upstream. Defaulting to 'php'.${CRESET}"
     NGINX_UPSTREAM='php'
-    DEFAULTPHP=$(vvv_get_site_config_value 'php' "")
+    DEFAULTPHP=$(vvv_get_site_config_value 'php' "" | tr --delete .)
+    # if php: is configured, set the upstream to match
     if [ '' != "${DEFAULTPHP}" ]; then
-      NGINX_UPSTREAM=$DEFAULTPHP
+      NGINX_UPSTREAM="php${DEFAULTPHP}"
     fi
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
