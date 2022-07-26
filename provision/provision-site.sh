@@ -23,6 +23,7 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 VVV_HOSTS=""
+SUCCESS=1
 
 VVV_CONFIG=/vagrant/config.yml
 
@@ -37,27 +38,20 @@ function vvv_get_site_config_value() {
   echo "${value}"
 }
 
-local DEFAULTPHP=$(vvv_get_site_config_value 'php' "${VVV_BASE_PHPVERSION}")
-echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
-update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
-update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
-update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
-update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
-update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
-
-SUCCESS=1
-
 # @description Reset the PHP global version to the default
+#
+# @internal
+# @noargs
 function vvv_set_php_cli_version() {
   php_version=$(readlink -f /usr/bin/php)
-  if [[ $php_version != *"${VVV_BASE_PHPVERSION}"* ]]; then
-    DEFAULTPHP=$(vvv_get_site_config_value 'php' "${VVV_BASE_PHPVERSION}")
+  DEFAULTPHP=$(vvv_get_site_config_value 'php' "${DEFAULTPHP}")
+  if [[ $php_version != *"${DEFAULTPHP}"* ]]; then
     echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
-    update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
-    update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
-    update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
-    update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
-    update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
+    update-alternatives --set php "/usr/bin/php${DEFAULTPHP}" &> /dev/null
+    update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}" &> /dev/null
+    update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}" &> /dev/null
+    update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}" &> /dev/null
+    update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}" &> /dev/null
   fi
 }
 
@@ -134,11 +128,12 @@ function vvv_provision_site_nginx_config() {
   if [ 'php' != "${NGINX_UPSTREAM}" ] && [ ! -f "/etc/nginx/upstreams/${NGINX_UPSTREAM}.conf" ]; then
     vvv_error " * Upstream value '${NGINX_UPSTREAM}' doesn't match a valid upstream. Defaulting to 'php'.${CRESET}"
     NGINX_UPSTREAM='php'
-    DEFAULTPHP=$(vvv_get_site_config_value 'php' "" | tr --delete .)
-    # if php: is configured, set the upstream to match
-    if [ '' != "${DEFAULTPHP}" ]; then
-      NGINX_UPSTREAM="php${DEFAULTPHP}"
-    fi
+  fi
+
+  # if php: is configured, set the upstream to match
+  if [ "${DEFAULTPHP}" != "${VVV_DEFAULTPHP}" ]; then
+    NGINX_UPSTREAM="php${DEFAULTPHP}"
+    NGINX_UPSTREAM=$(echo $NGINX_UPSTREAM | tr --delete .)
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
 
@@ -513,7 +508,9 @@ function vvv_custom_folders() {
 }
 
 # -------------------------------
-vvv_set_php_cli_version()
+source /srv/config/homebin/vvv_restore_php_default
+VVV_DEFAULTPHP=$DEFAULT_PHP
+vvv_set_php_cli_version
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
   vvv_warn " * Skipping provisioning of <b>${SITE}</b>"
