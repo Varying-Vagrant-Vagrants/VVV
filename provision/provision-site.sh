@@ -132,8 +132,8 @@ function vvv_provision_site_nginx_config() {
 
   # if php: is configured, set the upstream to match
   if [ "${DEFAULTPHP}" != "${VVV_DEFAULTPHP}" ]; then
-    NGINX_UPSTREAM="php${DEFAULTPHP}"
     NGINX_UPSTREAM=$(echo $NGINX_UPSTREAM | tr --delete .)
+    NGINX_UPSTREAM="php${DEFAULTPHP}"
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
 
