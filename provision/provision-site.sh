@@ -46,12 +46,17 @@ function vvv_set_php_cli_version() {
   php_version=$(readlink -f /usr/bin/php)
   DEFAULTPHP=$(vvv_get_site_config_value 'php' "${DEFAULTPHP}")
   if [[ $php_version != *"${DEFAULTPHP}"* ]]; then
-    echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
-    update-alternatives --set php "/usr/bin/php${DEFAULTPHP}" &> /dev/null
-    update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}" &> /dev/null
-    update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}" &> /dev/null
-    update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}" &> /dev/null
-    update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}" &> /dev/null
+    length=$(echo "$DEFAULTPHP" | wc -c)
+    if [[ $length != '3' ]]; then
+      vvv_warning " ! Warning: PHP version defined is using a wrong format"
+    else
+      echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
+      update-alternatives --set php "/usr/bin/php${DEFAULTPHP}" &> /dev/null
+      update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}" &> /dev/null
+      update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}" &> /dev/null
+      update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}" &> /dev/null
+      update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}" &> /dev/null
+    fi
   fi
 }
 
@@ -132,7 +137,7 @@ function vvv_provision_site_nginx_config() {
 
   # if php: is configured, set the upstream to match
   if [ "${DEFAULTPHP}" != "${VVV_DEFAULTPHP}" ]; then
-    NGINX_UPSTREAM=$(echo $NGINX_UPSTREAM | tr --delete .)
+    NGINX_UPSTREAM=$(echo "$NGINX_UPSTREAM" | tr --delete .)
     NGINX_UPSTREAM="php${DEFAULTPHP}"
   fi
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
