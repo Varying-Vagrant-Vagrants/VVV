@@ -38,7 +38,7 @@ function vvv_get_site_config_value() {
   echo "${value}"
 }
 
-# @description Reset the PHP global version to the default
+# @description sets a sites PHP version as the global version, or to the VVV default if none is specified
 #
 # @internal
 # @noargs
