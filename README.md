@@ -5,6 +5,12 @@
 VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It
 uses [Vagrant](https://www.vagrantup.com) and Docker, and can be used to build sites, and contribute to WordPress.
 
+## Which branch of VVV it's using as upstream ?
+
+[develop](https://github.com/Varying-Vagrant-Vagrants/VVV). Although `develop` sometimes get new features that has issues, but this branch actively developed, and critical issue more than often get fixed in this branch fairly quick 
+This is nature of VVV :
+> normally `develop` is more stable, but, `develop` can sometimes be unstable if something has just been merged and we didn't spot it in time
+
 ## How To Use
 
 To use it, download and install [Vagrant](https://www.vagrantup.com)
