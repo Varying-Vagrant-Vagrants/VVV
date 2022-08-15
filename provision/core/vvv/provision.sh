@@ -77,7 +77,7 @@ vvv_add_hook register_apt_sources vvv_register_apt_sources 0
 function vvv_register_keys() {
   if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
     # Apply the VVV signing key
-    vvv_info " * Applying the Varying Vagrant Vagrants mirror signing key..."
+    vvv_info " * Applying the VVV mirror signing key..."
     apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
   fi
 }
@@ -139,6 +139,11 @@ function apt_hash_missmatch_fix() {
     vvv_info " * Copying /srv/provision/core/vvv/apt-conf-d/99hashmismatch to /etc/apt/apt.conf.d/99hashmismatch"
     cp -f "/srv/provision/core/vvv/apt-conf-d/99hashmismatch" "/etc/apt/apt.conf.d/99hashmismatch"
   fi
+
+  # Avoid bad hardware implementations that interfere with gcrypt by disabling hardware support
+  # reference https://askubuntu.com/a/1242739
+  mkdir -p /etc/gcrypt
+  echo all >> /etc/gcrypt/hwf.deny
 }
 export -f apt_hash_missmatch_fix
 vvv_add_hook init apt_hash_missmatch_fix

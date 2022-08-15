@@ -54,19 +54,19 @@ export -f containsElement
 # @arg $1 string The address to test
 # @see check_network_connection_to_host
 function network_detection() {
-  local url=${1:-"http://ppa.launchpad.net"}
+  local url=${1:-"https://ppa.launchpadcontent.net"}
   check_network_connection_to_host "${url}"
 }
 export -f network_detection
 
 # @description Test that we have network connectivity with a URL.
 #
-# @arg $1 string The address to test, defaults to `https://ppa.launchpad.net`
+# @arg $1 string The address to test, defaults to `https://ppa.launchpadcontent.net`
 #
 # @exitcode 0 If the address is reachable
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
-  local url=${1:-"http://ppa.launchpad.net"}
+  local url=${1:-"http://ppa.launchpadcontent.net"}
   vvv_info " * Testing network connection to <url>${url}</url> with wget -q --spider --timeout=5 --tries=3 ${url}"
 
   # Network Detection
@@ -91,12 +91,12 @@ function network_check() {
     return 0
   fi
 
-  # Make an HTTP request to ppa.launchpad.net to determine if
+  # Make an HTTP request to ppa.launchpadcontent.net to determine if
   # outside access is available to us. Also check the mariadb mirrors.
   #
   # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
-    "http://ppa.launchpad.net" # needed for core ubuntu packages
+    "https://ppa.launchpadcontent.net" # needed for core ubuntu packages
     "https://wordpress.org" # WordPress!!
     "https://github.com" # needed for dashboard, extensions, etc
     "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
@@ -300,7 +300,7 @@ export -f vvv_success
 # @arg $2 string a default value to fall back upon
 function get_config_value() {
   local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
+  echo "${value:-${2:-}}"
 }
 export -f get_config_value
 
@@ -311,7 +311,7 @@ export -f get_config_value
 # @arg $2 string a default value to fall back upon
 function get_config_values() {
   local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
+  echo "${value:-${2:-}}"
 }
 export -f get_config_values
 
@@ -332,7 +332,7 @@ export -f get_config_type
 # @arg $2 string a default value to fall back upon
 function get_config_keys() {
   local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
-  echo "${value:-$2}"
+  echo "${value:-${2:-}}"
 }
 export -f get_config_keys
 
@@ -519,7 +519,7 @@ vvv_package_install() {
 
   return 0
 }
-export -f vvv_package_install
+export -f vvv_package_install;
 
 # @description checks if an apt package is installed, returns 0 if installed, 1 if not
 # @arg $1 string the package to check for
@@ -587,7 +587,45 @@ vvv_apt_package_remove() {
 
   return 0
 }
-export -f vvv_apt_package_remove
+export -f vvv_apt_package_remove;
+
+# @description Installs an Nginx config file and reload Nginx.
+# If Nginx fails to load after doing this it will print an
+# error and attempt to undo the change.
+#
+# @arg $1 string the path and filename of the nginx config that needs to be installed
+# @arg $2 string the file name of the config when installed
+# @arg $3 the type of config, valid values as sites and utilities
+#
+# @example
+#    vvv_maybe_install_nginx_config /tmp/nginx-site-config.conf vvv-site-mysite.conf sites
+function vvv_maybe_install_nginx_config() {
+  SOURCE_FILE="${1}"
+  TARGET_NAME="${2}"
+  TARGET="${3}"
+  TARGET_DIR="/etc/nginx/custom-${3}/"
+  TARGET_FILE="${TARGET_DIR}${TARGET_NAME}"
+  if [ -f "${TARGET_FILE}" ]; then
+    sudo rm -f "${TARGET_FILE}"
+  fi
+
+  sudo mkdir -p "${TARGET_DIR}"
+
+  sudo cp -f "${SOURCE_FILE}" "${TARGET_FILE}"
+
+  if ! sudo nginx -t; then
+    vvv_error " ! Installing an Nginx config failed! VVV tried to install ${TARGET_NAME} into ${TARGET} from ${SOURCE_FILE} but a syntax test with sudo nginx -t failed!"
+    vvv_error " ! VVV is now deleting the config to avoid further breakage"
+    sudo rm -f "${TARGET_FILE}"
+    return 1
+  fi
+
+  sudo service nginx reload
+
+  return 0
+}
+
+export -f vvv_maybe_install_nginx_config;
 
 # Docker additional helpers
 function vvv_get_sites() {

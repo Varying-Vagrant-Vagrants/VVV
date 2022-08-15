@@ -6,6 +6,24 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.10 ( 2022 TBD )
+
+### Enhancements
+
+* Improved provisioning output
+* VVV will now attempt to test Nginx configs on installation and recover ( #2604 )
+* Switched to new launchpad PPA domains with HTTPS ( #2586 )
+* Improved the verboseness of the DB import scripts ( #2621 )
+
+### Bug Fixes
+
+* WP CLI package update failures now fail gracefully instead of stopping a provision ( #2601 )
+* Fixed an edge case updating NVM via git ( #2604 )
+* Disable hardware support for gcrypt to avoid bad VirtualBox implementations ( #2609 )
+* Fix unbound variable in `db_backup` ( #2617 )
+* Ensured npm and nvm are always available in site provisioners
+* Explicitly allow a composer plugin when installing PHPCS to avoid issues in July 2022 ( #2620 )
+
 ## 3.9.1 ( 2022 April 13th )
 
 ### Enhancements

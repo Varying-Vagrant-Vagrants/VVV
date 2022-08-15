@@ -1,4 +1,4 @@
-# VVV ( Varying Vagrant Vagrants )
+# VVV
 
 ## with Docker as default provider
 

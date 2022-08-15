@@ -90,7 +90,7 @@ if show_logo
 
   splashfirst = <<~HEREDOC
     \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
-    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Path:"#{vagrant_dir}"
+    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Ruby:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
     #{red} \\_/#{green}\\_/#{blue}\\_/  #{creset}#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
 
   HEREDOC
@@ -354,7 +354,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Configuration options for the Parallels provider.
   config.vm.provider :parallels do |v|
-    v.update_guest_tools = true
     v.customize ['set', :id, '--longer-battery-life', 'off']
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']

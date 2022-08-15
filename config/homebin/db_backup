@@ -4,6 +4,11 @@
 # are imported automatically during an initial provision if
 # the databases exist per the import-sql.sh process.
 set -eo pipefail
+set -u
+
+if [ -z "${VVV_LOG+x}" ]; then
+  export VVV_LOG=""
+fi
 
 trap 'rm -rf $TMPFIFODIR' EXIT; TMPFIFODIR=$(mktemp -d); mkfifo $TMPFIFODIR/dbnames
 
@@ -16,14 +21,13 @@ gzip=$(get_config_value "general.db_backup.gzip")
 exclude_list=$(get_config_values "general.db_backup.exclude")
 
 vvv_info " * Fetching Database names"
-mysql --user="root" --password="root" -e 'show databases' | \
-grep -v -F "Database" > $TMPFIFODIR/dbnames &
-while read db_name
-do
+mysql -e 'show databases' | grep -v -F "Database" > $TMPFIFODIR/dbnames &
+while read db_name; do
     # skip these databases
     [ "${db_name}" == "mysql" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "information_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "performance_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
+    [ "${db_name}" == "sys" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
     [ "${db_name}" == "test" ] && vvv_info "   - skipped ${db_name}" && continue;
     [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
 
@@ -35,12 +39,12 @@ do
     done
 
     if [ ${skip} == "true" ]; then
-        vvv_info "   - skipped <b>${db_name}</b>" && continue;
+        vvv_info "   - excluded <b>${db_name}</b>" && continue;
     fi
 
     # don't back up databases with no tables
     mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
-    db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
+    db_exist=$(mysql --skip-column-names -e "${mysql_cmd}")
     if [ "$?" == "0" ]; then
         if [ "" == "${db_exist}" ]; then
             vvv_info "   - skipped <b>${db_name}</b><info>, no tables in database to back up</info>" && continue;
@@ -53,15 +57,15 @@ ext=".sql"
 if [[ "${gzip}" == "True" ]]; then
     ext=".sql.gz"
 fi
-count=0
+count=1
 for db in "${databases[@]}"
 do
     OUTPUT=$(printf "<info>   - %2s/%s Backing up </info><b>%-23s</b><info> to </info><b>'database/backups/%s${ext}'</b>" "${count}" "${#databases[@]}" "'${db}'" "${db}")
     vvv_output "${OUTPUT}"
     if [[ "${gzip}" == "True" ]]; then
-      mysqldump -uroot -proot "${db}" | gzip > "/srv/database/backups/${db}.sql.gz"
+      mysqldump "${db}" | gzip > "/srv/database/backups/${db}.sql.gz"
     else
-      mysqldump -uroot -proot "${db}" > "/srv/database/backups/${db}.sql";
+      mysqldump "${db}" > "/srv/database/backups/${db}.sql";
     fi
     let "count=count+1"
 done
