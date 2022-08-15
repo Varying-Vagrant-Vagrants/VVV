@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Nginx Default Page</title>
+<style>
+    html, body {
+        height: 100%;
+    }
+    body {
+        width: 80%;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+        background-color: #2b303b;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content : center;
+        color: #c0c5ce;
+        height:100%;
+    }
+    pre, code {
+        background: #2b303b;
+        border-radius: 4px;
+        border: 1px solid #4f5b66;
+    }
+    code {
+        color: #a3be8c;
+        padding: .1em .2em;
+    }
+    .box {
+        border-radius: 4px;
+        padding: 1.5em;
+        background: #343d46;
+        box-sizing: border-box;
+        margin-bottom: 1em;
+        margin-top: 1em;
+    }
+    h1 {
+        color:white;
+    }
+    a {
+        color: #ebcb8b;
+        text-decoration: none;
+        background: #ebcb8b11;
+    }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>Nginx is Installed, but Has not Been Configured Yet</h1>
+    <p>Provisioning hasn't finished yet!</p>
+    <p>This could be because:</p>
+    <ul>
+      <li>Provisioning has not finished yet.</li>
+      <li>Provisioning failed, you can find the logs in <code>VVV/log/provisioners</code>.</li>
+    </ul>
+    <p>Reprovision using <code>vagrant up --provision</code>, or wait for the command to finish. If you still have problems get in touch on <a href="https://github.com/Varying-Vagrant-Vagrants/VVV">GitHub</a> or <a href="https://varyingvagrantvagrants.org/docs/en-US/slack/">Slack</a>.</p>
+  </div>
+</body>
+</html>

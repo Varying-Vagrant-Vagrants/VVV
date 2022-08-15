@@ -152,7 +152,6 @@ function php_nginx_upstream() {
 vvv_add_hook nginx_upstreams php_nginx_upstream
 
 function vvv_php_memcached_register_packages() {
-  # MemCached
   VVV_PACKAGE_LIST+=(
     php${VVV_BASE_PHPVERSION}-memcache
     php${VVV_BASE_PHPVERSION}-memcached
@@ -160,3 +159,12 @@ function vvv_php_memcached_register_packages() {
 }
 export -f vvv_php_memcached_register_packages
 vvv_add_hook before_packages vvv_php_memcached_register_packages
+
+
+function vvv_php_redis_register_packages() {
+  VVV_PACKAGE_LIST+=(
+    php${VVV_BASE_PHPVERSION}-redis
+  )
+}
+export -f vvv_php_redis_register_packages
+vvv_add_hook before_packages vvv_php_redis_register_packages

@@ -2,6 +2,9 @@
 
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
+
+VAGRANTFILE_API_VERSION = "2"
+
 Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
@@ -211,6 +214,12 @@ defaults = {}
 defaults['memory'] = 2048
 defaults['cores'] = 1
 defaults['provider'] = 'virtualbox'
+
+# if Arm default to parallels
+if Etc.uname[:version].include? 'ARM64'
+  defaults['provider'] = 'parallels'
+end
+
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
 defaults['private_network_ip'] = '192.168.56.4'
 
@@ -317,12 +326,8 @@ end
 
 ENV['LC_ALL'] = 'en_US.UTF-8'
 
-Vagrant.configure('2') do |config|
-  # Store the current version of Vagrant for use in conditionals when dealing
-  # with possible backward compatible issues.
-  vagrant_version = Vagrant::VERSION.sub(/^v/, '')
-
-  # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # VirtualBox
   config.vm.provider :virtualbox do |v|
     v.customize ['modifyvm', :id, '--uartmode1', 'file', File.join(vagrant_dir, 'log/ubuntu-cloudimg-console.log')]
     v.customize ['modifyvm', :id, '--memory', vvv_config['vm_config']['memory']]
@@ -400,6 +405,7 @@ Vagrant.configure('2') do |config|
   # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
   # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
   # to your host computer, it is cached for future use under the specified box name.
+  config.vm.box = 'bento/ubuntu-20.04'
   config.vm.box_check_update = false
 
   # If we're at a contributor day, switch the base box to the prebuilt one
@@ -482,7 +488,7 @@ Vagrant.configure('2') do |config|
   # A private network is created by default. This is the IP address through which your
   # host machine will communicate to the guest. In this default configuration, the virtual
   # machine will have an IP address of 192.168.56.4 and a virtual network adapter will be
-  # created on your host machine with the IP of 192.168.56.1 as a gateway.
+  # created on your host machine with the IP of 192.168.50.1 as a gateway.
   #
   # Access to the guest machine is only available to your local host. To provide access to
   # other devices, a public network should be configured or port forwarding enabled.

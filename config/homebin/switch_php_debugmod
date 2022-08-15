@@ -1,6 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -eo pipefail
-
 
 source /srv/provision/provision-helpers.sh
 

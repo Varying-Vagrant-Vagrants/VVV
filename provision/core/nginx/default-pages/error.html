@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>HTTP <!--# echo var="status" default="" -->, <!--# echo var="status_text" default="Something goes wrong" --></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!--# if expr="$status = 502" -->
+			<meta http-equiv="refresh" content="5">
+		<!--# endif -->
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				width: 90%;
+				margin: 0 auto;
+				font-family: Tahoma, Verdana, Arial, sans-serif;
+				background-color: #2b303b;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				align-content : center;
+				color: #c0c5ce;
+				height:100%;
+			}
+			pre, code {
+				background: #2b303b;
+				border-radius: 4px;
+				border: 1px solid #4f5b66;
+			}
+			code {
+				color: #a3be8c;
+				padding: .1em .2em;
+			}
+			main {
+				display: flex;
+				border-radius: 4px;
+				padding: 1.5em;
+				box-sizing: border-box;
+				margin: 1em 20px;
+				max-width: 800px;
+			}
+			.right {
+				align-self: center;
+				font-size:120px;
+				padding-left:60px;
+			}
+			h1 {
+				color:white;
+			}
+			a {
+				color: #ebcb8b;
+				background: #ebcb8b11;
+			}
+			a:hover {
+				background: #ebcb8b;
+				color: #ebcb8b11;
+			}
+			a:focus, a:active {
+				color: magenta;
+			}
+			@media only screen and (max-width: 601px) {
+				main {
+					flex-direction: column;
+					margin: 1em 0;
+					padding: 0;
+				}
+				.right {
+					order: 0;
+					padding-left: 0;
+				}
+				.left {
+					order: 1;
+				}
+			}
+		</style>
+	</head>
+<body>
+	<main>
+		<div class="left">
+			<h1>HTTP <!--# echo var="status" default="" -->, <!--# echo var="status_text" default="Something goes wrong" --></h1>
+			<p>This is a default Nginx error page. If you are running a provisioning command, wait for it to finish and try again.</p>
+		<!--# if expr="$status = 502" -->
+			<p>A 502 error means that when Nginx passed the request along to PHP/etc to generate the page, it failed. This could be because PHP hasn't finished being installed yet, the requested version is missing, bad custom Nginx configs, etc.</p>
+			<p><em>This page will auto-refresh every 5 seconds.</em></p>
+		<!--# elif expr="$status = 500" -->
+			<p>Check your sites PHP error log for more information, they are in the logs/php folder.</p>
+		<!--# elif expr="$status = 404" -->
+			<p>Did you get the URL right?</p>
+		<!--# endif -->
+			<p><a href="https://httpstatuses.com/<!--# echo var="status" default="" -->" target="_blank">What does a <!--# echo var="status" default="" --> code mean?</a></p>
+			<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/<!--# echo var="status" default="" -->" target="_blank">Mozilla Web Docs HTTP Code <!--# echo var="status" default="" --></a></p>
+		</div>
+		<div class="right">
+			<!--# if expr="$status = 404" -->
+				🔍
+			<!--# elif expr="$status = 500" -->
+				🐞
+			<!--# else -->
+				🤔
+			<!--#endif -->
+		</div>
+	</main>
+</body>
+</html>

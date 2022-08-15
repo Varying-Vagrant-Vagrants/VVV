@@ -38,12 +38,12 @@ function nginx_setup() {
   if [[ ! -e /root/.rnd ]]; then
     vvv_info " * Generating Random Number for cert generation..."
     local vvvgenrnd="$(openssl rand -out /root/.rnd -hex 256 2>&1)"
-    vvv_info "$vvvgenrnd"
+    #vvv_info "Rand gen number: ${vvvgenrnd}"
   fi
   if [[ ! -e /etc/nginx/server-2.1.0.key ]]; then
     vvv_info " * Generating Nginx server private key..."
     local vvvgenrsa="$(openssl genrsa -out /etc/nginx/server-2.1.0.key 2048 2>&1)"
-    vvv_info "$vvvgenrsa"
+    #vvv_info "Rand gen rsa: ${vvvgenrsa}"
   fi
   if [[ ! -e /etc/nginx/server-2.1.0.crt ]]; then
     vvv_info " * Sign the certificate using the above private key..."
@@ -52,7 +52,7 @@ function nginx_setup() {
             -out /etc/nginx/server-2.1.0.crt \
             -days 3650 \
             -subj /CN=*.wordpress-develop.test/CN=*.wordpress.test/CN=*.wordpress-develop.dev/CN=*.wordpress.dev/CN=*.vvv.dev/CN=*.vvv.local/CN=*.vvv.localhost/CN=*.vvv.test 2>&1)"
-    vvv_info "$vvvsigncert"
+    #vvv_info "VVV sign cert: ${vvvsigncert}"
   fi
 
   vvv_info " * Setup configuration files..."
@@ -63,6 +63,10 @@ function nginx_setup() {
 
   vvv_info " * Copying /srv/provision/core/nginx/config/nginx-wp-common.conf to /etc/nginx/nginx-wp-common.conf"
   cp -f "/srv/provision/core/nginx/config/nginx-wp-common.conf" "/etc/nginx/nginx-wp-common.conf"
+
+  # Copy nginx default pages from local
+  vvv_info " * Copying /srv/provision/core/nginx/default-pages           to /usr/share/nginx/html"
+  cp -f /srv/provision/core/nginx/default-pages/*.html "/usr/share/nginx/html"
 
   if [[ ! -d "/etc/nginx/upstreams" ]]; then
     mkdir -p "/etc/nginx/upstreams/"
@@ -109,5 +113,4 @@ function nginx_cleanup() {
   find /etc/nginx/custom-sites -name 'vvv-auto-*.conf' -exec rm {} \;
 }
 export -f nginx_cleanup
-
 vvv_add_hook finalize nginx_cleanup
