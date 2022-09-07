@@ -47,8 +47,8 @@ function vvv_set_php_cli_version() {
   DEFAULTPHP=$(vvv_get_site_config_value 'php' "${DEFAULTPHP}")
   if [[ $php_version != *"${DEFAULTPHP}"* ]]; then
     length=$(echo "$DEFAULTPHP" | wc -c)
-    if [[ $length != '3' ]]; then
-      vvv_warn " ! Warning: PHP version defined is using a wrong format"
+    if [[ $length > '3' ]]; then
+      vvv_warn " ! Warning: PHP version defined is using a wrong format: '${DEFAULTPHP}' with length '${length}'"
     else
       echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
       update-alternatives --set php "/usr/bin/php${DEFAULTPHP}" &> /dev/null
