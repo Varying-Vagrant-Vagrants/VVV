@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.10 ( 2022 September 10th )
+## 3.10.1 ( 2022 September 10th )
 
 ### Enhancements
 
