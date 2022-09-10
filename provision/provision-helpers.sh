@@ -403,7 +403,8 @@ vvv_hook() {
 }
 export -f vvv_hook
 
-
+# @description Necessary for vvv_parallel_hook, do not use.
+# @internal
 function vvv_run_parallel_hook_function() {
   eval $1
 
@@ -448,6 +449,7 @@ function vvv_parallel_hook() {
 }
 export -f vvv_parallel_hook
 
+# @description Updates Apt keys then fetches Apt updates.
 vvv_apt_update() {
   vvv_info " * Updating apt keys"
   apt-key update -y
@@ -458,6 +460,7 @@ vvv_apt_update() {
   apt-get update -y --fix-missing
 }
 
+# @description Upgrades all Apt packages.
 vvv_apt_packages_upgrade() {
   vvv_info " * Upgrading apt packages"
   vvv_apt_update
@@ -470,6 +473,7 @@ vvv_apt_packages_upgrade() {
 }
 export -f vvv_apt_packages_upgrade
 
+# @description Performs Apt autoremoval and cleanup.
 vvv_apt_cleanup() {
   # Remove unnecessary packages
   vvv_info " * Removing unnecessary apt packages..."
@@ -626,3 +630,36 @@ function vvv_maybe_install_nginx_config() {
 }
 
 export -f vvv_maybe_install_nginx_config;
+
+# @description Retrieves a list of sites.
+# @noargs
+function vvv_get_sites() {
+  local sites=$(shyaml -q keys "sites" <${VVV_CONFIG})
+  echo "${sites}"
+}
+
+# @description Updates the guest environments hosts file.
+# @noargs
+function vvv_update_guest_hosts() {
+  if test -f "/tmp/site-hosts"; then
+    sudo rm /tmp/site-hosts
+  fi
+  local SITES=$(vvv_get_sites)
+  for SITE in $SITES; do
+    SITE_ESCAPED="${SITE//./\\.}"
+    VVV_SITE_NAME=${SITE}
+    local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" <${VVV_CONFIG})
+    for v in $value; do
+      echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}" >> /tmp/site-hosts
+    done
+  done
+
+  echo "$(</tmp/site-hosts)" | sudo tee -a /etc/hosts > /dev/null
+
+  # cleanup
+  if test -f "/tmp/site-hosts"; then
+    sudo rm /tmp/site-hosts
+  fi
+}
+
+export -f vvv_update_guest_hosts

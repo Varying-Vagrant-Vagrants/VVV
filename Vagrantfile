@@ -407,13 +407,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = 'bento/ubuntu-20.04'
   config.vm.box_check_update = false
 
-  # If we're at a contributor day, switch the base box to the prebuilt one
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
-      config.vm.box = 'vvv/contribute'
-    end
-  end
-
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
@@ -435,6 +428,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
+  end
+
+  # Virtualbox.
+  config.vm.provider :virtualbox do |_v, override|
+    override.vm.box = 'bento/ubuntu-20.04'
+
+    # If we're at a contributor day, switch the base box to the prebuilt one
+    if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
+      if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
+        override.vm.box = 'vvv/contribute'
+      end
+    end
   end
 
   if defined? vvv_config['vm_config']['box']
