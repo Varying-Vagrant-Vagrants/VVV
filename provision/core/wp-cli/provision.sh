@@ -49,11 +49,14 @@ function wp_cli_setup() {
 
   if [ "${VVV_DOCKER}" != 1 ]; then
     vvv_info " * [WP-CLI]: Updating packages"
-    noroot wp package update
-    vvv_info " * [WP-CLI]: Package updates completed"
+    if noroot wp package update; then
+      vvv_info " ✓ [WP-CLI]: Package updates completed"
+    else
+      vvv_warn " ! [WP-CLI]: Package update did not complete, wp package update exited with a bad error code ${?}"
+    fi
   fi
 
-  vvv_success " * [WP-CLI]: WP CLI setup completed"
+  vvv_success " ✓ [WP-CLI]: WP CLI setup completed"
 }
 export -f wp_cli_setup
 

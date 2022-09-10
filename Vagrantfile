@@ -90,7 +90,7 @@ if show_logo
 
   splashfirst = <<~HEREDOC
     \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
-    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Path:"#{vagrant_dir}"
+    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Ruby:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
     #{red} \\_/#{green}\\_/#{blue}\\_/  #{creset}#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
 
   HEREDOC
@@ -354,7 +354,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Configuration options for the Parallels provider.
   config.vm.provider :parallels do |v|
-    v.update_guest_tools = true
     v.customize ['set', :id, '--longer-battery-life', 'off']
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']
@@ -408,13 +407,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = 'bento/ubuntu-20.04'
   config.vm.box_check_update = false
 
-  # If we're at a contributor day, switch the base box to the prebuilt one
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
-      config.vm.box = 'vvv/contribute'
-    end
-  end
-
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
@@ -436,6 +428,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
+  end
+
+  # Virtualbox.
+  config.vm.provider :virtualbox do |_v, override|
+    override.vm.box = 'bento/ubuntu-20.04'
+
+    # If we're at a contributor day, switch the base box to the prebuilt one
+    if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
+      if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
+        override.vm.box = 'vvv/contribute'
+      end
+    end
   end
 
   if defined? vvv_config['vm_config']['box']

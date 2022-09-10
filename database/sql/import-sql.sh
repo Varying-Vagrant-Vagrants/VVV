@@ -17,6 +17,12 @@
 # through {vvv-dir}/database/data
 #
 # Let's begin...
+set -eo pipefail
+set -u
+
+if [ -z "${VVV_LOG+x}" ]; then
+  export VVV_LOG=""
+fi
 
 source /srv/provision/provision-helpers.sh
 
@@ -24,6 +30,26 @@ VVV_CONFIG=/srv/config/default-config.yml
 if [[ -f /srv/config/config.yml ]]; then
 	VVV_CONFIG=/srv/config/config.yml
 fi
+
+FORCE_RESTORE="0"
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -f|--force) # quick mode
+      FORCE_RESTORE="1"
+      shift # past argument
+      ;;
+    --*|-*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 run_restore=$(shyaml get-value general.db_restore 2> /dev/null < ${VVV_CONFIG})
 exclude_list=$(get_config_values "general.db_restore.exclude")
@@ -48,6 +74,7 @@ IFS=$(echo -en "\n\b")
 # Parse through each file in the directory and use the file name to
 # import the SQL file into the database of the same name
 sql_count=$(ls -1 ./*.sql* 2>/dev/null | wc -l)
+vvv_info " * Found ${sql_count} database dumps"
 if [ "$sql_count" != 0 ]
 then
 	for file in $( ls ./*.sql* )
@@ -62,9 +89,31 @@ then
 		[ "${db_name}" == "mysql" ] && continue;
 		[ "${db_name}" == "information_schema" ] && continue;
 		[ "${db_name}" == "performance_schema" ] && continue;
+		[ "${db_name}" == "sys" ] && continue;
 		[ "${db_name}" == "test" ] && continue;
 
-		vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
+    vvv_info " * Processing ${db_name} dump"
+
+		# if we specified databases, only restore specified ones
+		if [[ "${#@}" -gt 0 ]]; then
+			FOUND=0
+			for var in "$@"; do
+				if [[ "${var}" == "${db_name}" ]]; then
+					FOUND=1
+					break;
+				fi
+			done
+			if [[ "${FOUND}" -eq 0 ]]; then
+				continue;
+			fi
+		fi
+
+		if [ "1" == "${FORCE_RESTORE}" ]; then
+			vvv_info " * Forcing restore of <b>${db_name}</b><info> database, and granting the wp user access"
+			mysql -e "DROP DATABASE IF EXISTS \`${db_name}\`"
+		else
+			vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
+		fi
 
 		skip="false"
 
@@ -77,14 +126,15 @@ then
 				skip="true"
 			fi
 		done
+
 		for include in ${include_list[@]}; do
 			if [ "${include}" == "${db_name}" ]; then
 				skip="false"
 			fi
 		done
 
-		mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
-		mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+		mysql -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
+		mysql -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
 		[ "${db_name}" == "wordpress_unit_tests" ] && continue;
 
@@ -93,7 +143,7 @@ then
 		fi
 
 		mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
-		db_exist=$(mysql -u root -proot --skip-column-names -e "${mysql_cmd}")
+		db_exist=$(mysql --skip-column-names -e "${mysql_cmd}")
 		if [ "$?" != "0" ]
 		then
 			vvv_error " * Error - Create the <b>${db_name}</b><error> database via init-custom.sql before attempting import"
@@ -101,9 +151,9 @@ then
 			if [ "" == "${db_exist}" ]; then
 				vvv_info " * Importing <b>${db_name}</b><info> from <b>${file}</b>"
 				if [ "${file: -3}" == ".gz" ]; then
-					gunzip < "${file}" | mysql -u root -proot "${db_name}"
+					gunzip < "${file}" | mysql "${db_name}"
 				else
-					mysql -u root -proot "${db_name}" < "${file}"
+					mysql "${db_name}" < "${file}"
 				fi
 				vvv_success " * Import of <b>'${db_name}'</b><success> successful</success>"
 			else
@@ -115,5 +165,7 @@ then
 else
 	vvv_success " * No custom databases to import"
 fi
+
+vvv_success " * Database importing finished"
 
 IFS=$SAVEIFS
