@@ -61,6 +61,7 @@ function mailhog_restart() {
     service mailhog restart
   fi
 }
+export -f mailhog_restart
 
 vvv_add_hook services_restart mailhog_restart
 
