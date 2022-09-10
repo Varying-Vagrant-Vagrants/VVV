@@ -6,6 +6,16 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.11.0 ( WIP )
+
+### Enhancements
+
+* ....
+
+### Bug Fixes
+
+* ....
+
 ## 3.10.1 ( 2022 September 10th )
 
 ### Enhancements
