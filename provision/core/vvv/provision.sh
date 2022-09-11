@@ -53,12 +53,6 @@ function vvv_register_packages() {
     # webp support
     libwebp-dev
     webp
-
-    # not included in docker images by default, lets add
-    iputils-ping
-    net-tools
-    nano
-    less
   )
 }
 vvv_add_hook register_apt_packages vvv_register_packages 0
