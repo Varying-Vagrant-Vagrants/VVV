@@ -6,14 +6,9 @@ VVV is a local developer environment, mainly aimed at [WordPress](https://wordpr
 
 _VVV stands for Varying Vagrant Vagrants._
 
-## With Docker as default provider
-
-VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It
-uses [Vagrant](https://www.vagrantup.com) and Docker, and can be used to build sites, and contribute to WordPress.
-
 ## How To Use
 
-To use it, download and install [Vagrant](https://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/). Then, clone this repository and run:
+To use it, download and install [Vagrant](https://www.vagrantup.com) and a provider such as [VirtualBox](https://www.virtualbox.org/), Docker, or Parallels Pro. Then, clone this repository and run:
 
 ```shell
 vagrant plugin install --local
