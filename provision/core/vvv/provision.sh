@@ -36,6 +36,7 @@ function vvv_register_packages() {
     less
     iputils-ping
     net-tools
+    nano
 
     # ntp service to keep clock current
     ntp

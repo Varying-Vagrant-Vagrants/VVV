@@ -119,7 +119,7 @@ function mysql_setup() {
   vvv_info " * Copied /srv/provision/core/mariadb/config/debian.cnf          to /etc/mysql/debian.cnf"
 
   # Due to systemd dependencies, in docker, mysql service is not auto started
-  vvv_info " * Force Restarting mysql service"
+  vvv_info " * Ensuring MariaDB service is started"
   service mariadb restart
 
   if [ "${VVV_DOCKER}" != 1 ]; then

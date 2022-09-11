@@ -406,13 +406,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # to your host computer, it is cached for future use under the specified box name.
   config.vm.box_check_update = false
 
-  # If we're at a contributor day, switch the base box to the prebuilt one
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
-      config.vm.box = 'vvv/contribute'
-    end
-  end
-
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
@@ -436,22 +429,29 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.box = 'bento/ubuntu-20.04'
   end
 
-  # virtualbox
-  config.vm.provider :virtualbox do |_v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
-  end
-
   # Docker use image.
   config.vm.provider :docker do |d|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
     if Vagrant::Util::Platform.platform == 'darwin19'
-        # Docker in mac need explicit ports publish to access
-        d.ports = [ "#{vvv_config['vm_config']['private_network_ip']}:80:80" ]
-        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:443:443" ]
-        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:3306:3306" ]
-        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:8025:8025" ]
-        d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:1025:1025" ]
+      # Docker in mac need explicit ports publish to access
+      d.ports = [ "#{vvv_config['vm_config']['private_network_ip']}:80:80" ]
+      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:443:443" ]
+      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:3306:3306" ]
+      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:8025:8025" ]
+      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:1025:1025" ]
+    end
+  end
+
+  # Virtualbox.
+  config.vm.provider :virtualbox do |_v, override|
+    override.vm.box = 'bento/ubuntu-20.04'
+
+    # If we're at a contributor day, switch the base box to the prebuilt one
+    if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
+      if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
+        override.vm.box = 'vvv/contribute'
+      end
     end
   end
 
