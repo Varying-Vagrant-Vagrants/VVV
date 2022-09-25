@@ -38,26 +38,47 @@ function vvv_get_site_config_value() {
   echo "${value}"
 }
 
+function vvv_get_site_php_version() {
+  SITE_PHP=$(vvv_get_site_config_value 'php' "${DEFAULTPHP}")
+
+  # remove whitespace
+  SITE_PHP=$(echo -n "${SITE_PHP}" | xargs | tr -d '\n' | tr -d '\r')
+
+  # Handle when php:8 instead of 8.0 or if it's parsed as a number
+  if [[ "${#SITE_PHP}" -eq "1" ]]; then
+    SITE_PHP="${SITE_PHP}.0"
+  fi
+
+  echo -n "${SITE_PHP}"
+}
+
+vvv_validate_site_php_version() {
+  SITE_PHP=$(vvv_get_site_php_version)
+  if [[ "${#SITE_PHP}" > "3" ]]; then
+    vvv_warn " ! Warning: PHP version defined is using a wrong format: '${SITE_PHP}' with length '${length}'"
+    vvv_warn "            If you are trying to use a more specific version of PHP such as 7.4.1 or 7.4.0 you"
+    vvv_warn "            need to be less specific and use 7.4"
+  fi
+
+  if [[ ! -e "/usr/bin/php${SITE_PHP}" ]]; then
+    vvv_warn " ! Warning: Chosen PHP version doesn't exist in this environment: '${SITE_PHP}' looking for '/usr/bin/php${SITE_PHP}'"
+  fi
+}
+
 # @description sets a sites PHP version as the global version, or to the VVV default if none is specified
 #
 # @internal
 # @noargs
-function vvv_set_php_cli_version() {
-  php_version=$(readlink -f /usr/bin/php)
-  DEFAULTPHP=$(vvv_get_site_config_value 'php' "${DEFAULTPHP}")
-  if [[ $php_version != *"${DEFAULTPHP}"* ]]; then
-    length=$(echo "$DEFAULTPHP" | wc -c  | tr '\n' ''  | tr '\r' '')
-    if [[ $length > '3' ]]; then
-      vvv_warn " ! Warning: PHP version defined is using a wrong format: '${DEFAULTPHP}' with length '${length}'"
-    else
-      echo " * Setting the default PHP CLI version ( ${DEFAULTPHP} ) for this site"
-      update-alternatives --set php "/usr/bin/php${DEFAULTPHP}" &> /dev/null
-      update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}" &> /dev/null
-      update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}" &> /dev/null
-      update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}" &> /dev/null
-      update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}" &> /dev/null
-    fi
-  fi
+function vvv_apply_site_php_cli_version() {
+  vvv_validate_site_php_version
+  SITE_PHP=$(vvv_get_site_php_version)
+
+  echo " * Setting the default PHP CLI version ( ${SITE_PHP} ) for this site"
+  update-alternatives --set php "/usr/bin/php${SITE_PHP}" &> /dev/null
+  update-alternatives --set phar "/usr/bin/phar${SITE_PHP}" &> /dev/null
+  update-alternatives --set phar.phar "/usr/bin/phar.phar${SITE_PHP}" &> /dev/null
+  update-alternatives --set phpize "/usr/bin/phpize${SITE_PHP}" &> /dev/null
+  update-alternatives --set php-config "/usr/bin/php-config${SITE_PHP}" &> /dev/null
 }
 
 # @description Takes 2 values, a key to fetch a value for, and an optional default value
@@ -516,7 +537,7 @@ function vvv_custom_folders() {
 # -------------------------------
 source /srv/config/homebin/vvv_restore_php_default
 VVV_DEFAULTPHP=$DEFAULT_PHP
-vvv_set_php_cli_version
+vvv_apply_site_php_cli_version
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
   vvv_warn " * Skipping provisioning of <b>${SITE}</b>"
