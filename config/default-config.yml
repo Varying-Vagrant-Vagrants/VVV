@@ -36,6 +36,7 @@ sites:
     skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
+    php: 7.4 # change the PHP version to use for the provision and nginx
     custom:
       # locale: it_IT
       delete_default_plugins: true

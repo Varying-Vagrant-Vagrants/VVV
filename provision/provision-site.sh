@@ -23,12 +23,63 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 VVV_HOSTS=""
-
 SUCCESS=1
 
 VVV_CONFIG=/vagrant/config.yml
 
 . "/srv/provision/provisioners.sh"
+
+# @description Retrieves a config value for the given site as specified in `config.yml`
+#
+# @arg $1 string the config value to fetch
+# @arg $2 string the default value
+function vvv_get_site_config_value() {
+  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
+  echo "${value}"
+}
+
+function vvv_get_site_php_version() {
+  SITE_PHP=$(vvv_get_site_config_value 'php' "${DEFAULTPHP}")
+
+  # remove whitespace
+  SITE_PHP=$(echo -n "${SITE_PHP}" | xargs | tr -d '\n' | tr -d '\r')
+
+  # Handle when php:8 instead of 8.0 or if it's parsed as a number
+  if [[ "${#SITE_PHP}" -eq "1" ]]; then
+    SITE_PHP="${SITE_PHP}.0"
+  fi
+
+  echo -n "${SITE_PHP}"
+}
+
+vvv_validate_site_php_version() {
+  SITE_PHP=$(vvv_get_site_php_version)
+  if [[ "${#SITE_PHP}" > "3" ]]; then
+    vvv_warn " ! Warning: PHP version defined is using a wrong format: '${SITE_PHP}' with length '${length}'"
+    vvv_warn "            If you are trying to use a more specific version of PHP such as 7.4.1 or 7.4.0 you"
+    vvv_warn "            need to be less specific and use 7.4"
+  fi
+
+  if [[ ! -e "/usr/bin/php${SITE_PHP}" ]]; then
+    vvv_warn " ! Warning: Chosen PHP version doesn't exist in this environment: '${SITE_PHP}' looking for '/usr/bin/php${SITE_PHP}'"
+  fi
+}
+
+# @description sets a sites PHP version as the global version, or to the VVV default if none is specified
+#
+# @internal
+# @noargs
+function vvv_apply_site_php_cli_version() {
+  vvv_validate_site_php_version
+  SITE_PHP=$(vvv_get_site_php_version)
+
+  echo " * Setting the default PHP CLI version ( ${SITE_PHP} ) for this site"
+  update-alternatives --set php "/usr/bin/php${SITE_PHP}" &> /dev/null
+  update-alternatives --set phar "/usr/bin/phar${SITE_PHP}" &> /dev/null
+  update-alternatives --set phar.phar "/usr/bin/phar.phar${SITE_PHP}" &> /dev/null
+  update-alternatives --set phpize "/usr/bin/phpize${SITE_PHP}" &> /dev/null
+  update-alternatives --set php-config "/usr/bin/php-config${SITE_PHP}" &> /dev/null
+}
 
 # @description Takes 2 values, a key to fetch a value for, and an optional default value
 #
@@ -99,10 +150,18 @@ function vvv_provision_site_nginx_config() {
   sed -i "s#{vvv_site_name}#${SITE_NAME}#"  "${TMPFILE}"
   sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
 
+  # if php: is configured, set the upstream to match
+  if [ "${DEFAULTPHP}" != "${VVV_DEFAULTPHP}" ]; then
+    NGINX_UPSTREAM="php${DEFAULTPHP}"
+    NGINX_UPSTREAM=$(echo "$NGINX_UPSTREAM" | tr --delete .)
+  fi
+
+  # check if the nginx upstream value has been set and is valid
   if [ 'php' != "${NGINX_UPSTREAM}" ] && [ ! -f "/etc/nginx/upstreams/${NGINX_UPSTREAM}.conf" ]; then
     vvv_error " * Upstream value '${NGINX_UPSTREAM}' doesn't match a valid upstream. Defaulting to 'php'.${CRESET}"
     NGINX_UPSTREAM='php'
   fi
+
   sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
 
   if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
@@ -331,14 +390,6 @@ function vvv_provision_site_nginx() {
   fi
 }
 
-# @description Retrieves a config value for the given site as specified in `config.yml`
-#
-# @arg $1 string the config value to fetch
-# @arg $2 string the default value
-function vvv_get_site_config_value() {
-  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
-  echo "${value}"
-}
 
 # @description Clones a git repository into a sites sub-folder
 #
@@ -484,6 +535,9 @@ function vvv_custom_folders() {
 }
 
 # -------------------------------
+source /srv/config/homebin/vvv_restore_php_default
+VVV_DEFAULTPHP=$DEFAULT_PHP
+vvv_apply_site_php_cli_version
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
   vvv_warn " * Skipping provisioning of <b>${SITE}</b>"
@@ -520,5 +574,7 @@ if [ "${SUCCESS}" -ne "0" ]; then
   vvv_error " ! ${SITE} provisioning had some issues, check the log files as the site may not function correctly."
   exit 1
 fi
+
+vvv_restore_php_default
 
 provisioner_success
