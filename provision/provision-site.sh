@@ -575,6 +575,6 @@ if [ "${SUCCESS}" -ne "0" ]; then
   exit 1
 fi
 
-vvv_restore_php_default
+/srv/config/homebin/vvv_restore_php_default
 
 provisioner_success
