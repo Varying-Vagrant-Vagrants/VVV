@@ -54,5 +54,17 @@ function git_after_packages() {
     vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
     git config --global pull.rebase false
   fi
+  git_maybe_wildcard_safe_directory
+}
+
+# @noargs
+function git_maybe_wildcard_safe_directory(){
+  (
+  set -f # noglob / avoid wildcard expansion
+  cmd=$(set -f;git config --get-all safe.directory)
+  safe_directories=($cmd)
+  wildcard_symbol="*"
+  [[ " ${safe_directories[*]} " =~ " ${wildcard_symbol} " ]] && echo "* already added in git safe.directory" || echo "adding * wildcard to git safe directory" && git config --global --add safe.directory *
+  )
 }
 vvv_add_hook after_packages git_after_packages
