@@ -14,7 +14,8 @@ permalink: /docs/en-US/changelog/
 
 ### Bug Fixes
 
-* ....
+* Fixed faulty Vagrant plugin check.
+
 
 ## 3.10.1 ( 2022 September 10th )
 

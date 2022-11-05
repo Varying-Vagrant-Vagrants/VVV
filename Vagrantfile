@@ -851,29 +851,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # located in the www/ directory and in config/config.yml.
   #
 
-  if Vagrant.has_plugin?('vagrant-goodhosts')
+  if config.vagrant.plugins.include? 'vagrant-goodhosts'
     config.goodhosts.aliases = vvv_config['hosts']
     config.goodhosts.remove_on_suspend = true
-  elsif Vagrant.has_plugin?('vagrant-hostsmanager')
+  elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'
     config.hostmanager.aliases = vvv_config['hosts']
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
     config.hostmanager.manage_guest = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
-  elsif Vagrant.has_plugin?('vagrant-hostsupdater')
+  elsif config.vagrant.plugins.include? 'vagrant-hostsupdater'
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
-  else
-    show_check = true if %w[up halt resume suspend status provision reload].include? ARGV[0]
-    if show_check
-      puts ""
-      puts " X ! There is no hosts file vagrant plugin installed!"
-      puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
-      puts " X Run 'vagrant plugin install --local' to fix this."
-      puts ""
-    end
+  elsif %w[up halt resume suspend status provision reload].include? ARGV[0]
+    puts ""
+    puts " X ! There is no hosts file vagrant plugin installed!"
+    puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
+    puts " X Run 'vagrant plugin install --local' to fix this."
+    puts ""
   end
 
   # Vagrant Triggers
