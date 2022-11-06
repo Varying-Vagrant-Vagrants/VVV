@@ -1,0 +1,25 @@
+AllCops:
+  NewCops: enable
+  Exclude:
+   - 'Vagrantfile'
+
+Layout/LineLength:
+  Max: 80
+
+Metrics/ClassLength:
+  Max: 128
+  CountComments: false
+
+Metrics/MethodLength:
+  Max: 20
+  CountComments: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - '.vvv/lib/config.rb'
+    - '.vvv/lib/info.rb'
+    - '.vvv/lib/migrate.rb'
+    - '.vvv/lib/splash_screens.rb'

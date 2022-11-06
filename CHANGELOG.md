@@ -10,7 +10,8 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
-* ....
+* Moved a large chunk of code from the Vagrantfile to a separate Ruby module
+* Information on installed Vagrant plugins is displayed during the bootstrap process
 
 ### Bug Fixes
 

@@ -8,6 +8,8 @@ jobs:
     # This job runs on Linux
     runs-on: ubuntu-latest
     steps:
+      - name: RuboCop Linter Action
+        uses: andrewmcodes/rubocop-linter-action@v3.3.0
       - name: YAML Lint
         uses: ibiqlik/action-yamllint@v0.0.1
         with:

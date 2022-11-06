@@ -1,0 +1,23 @@
+  ┌-──────────────────────────────────────────────────────────────────────────────┐
+  │                                                                               │
+  │  ⚠ DANGER DO NOT USE SUDO ⚠                                                   │
+  │                                                                               │
+  │ ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.          │
+  │  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(                            │
+  │    █░░█░▄▄░░█░░█ !                                                            │
+  │     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful        │
+  │  !  ▀▄░█░░██░░█      cleanup commands to fix this.                            │
+  │                                                                               │
+  │  If vagrant does not work for you without sudo, open a GitHub issue instead   │
+  │  In the future, this warning will halt provisioning to prevent new users      │
+  │  making this mistake.                                                         │
+  │                                                                               │
+  │  ⚠ DANGER SUDO DETECTED!                                                      │
+  │                                                                               │
+  │  In the future the VVV team will be making it harder to use VVV with sudo.    │
+  │  We will require a config option so that users can do data recovery, and      │
+  │  disable sites and the dashboard.                                             │
+  │                                                                               │
+  │  DO NOT USE SUDO, use ctrl+c/cmd+c and cancel this command ASAP!!!            │
+  │                                                                               │
+  └───────────────────────────────────────────────────────────────────────────────┘

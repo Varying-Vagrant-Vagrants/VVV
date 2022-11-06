@@ -3,328 +3,38 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby ts=2 sw=2 et:
 
-VAGRANTFILE_API_VERSION = "2"
+VAGRANTFILE_API_VERSION = '2'
+ENV['LC_ALL']           = 'en_US.UTF-8'
 
 Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
 
-def sudo_warnings
-  red = "\033[38;5;9m" # 124m"
-  creset = "\033[0m"
-  puts "#{red}┌-──────────────────────────────────────────────────────────────────────────────┐#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  ⚠ DANGER DO NOT USE SUDO ⚠                                                   │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│ ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.          │#{creset}"
-  puts "#{red}│  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(                            │#{creset}"
-  puts "#{red}│    █░░█░▄▄░░█░░█ !                                                            │#{creset}"
-  puts "#{red}│     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful        │#{creset}"
-  puts "#{red}│  !  ▀▄░█░░██░░█      cleanup commands to fix this.                            │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  If vagrant does not work for you without sudo, open a GitHub issue instead   │#{creset}"
-  puts "#{red}│  In the future, this warning will halt provisioning to prevent new users      │#{creset}"
-  puts "#{red}│  making this mistake.                                                         │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  ⚠ DANGER SUDO DETECTED!                                                      │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  In the future the VVV team will be making it harder to use VVV with sudo.    │#{creset}"
-  puts "#{red}│  We will require a config option so that users can do data recovery, and      │#{creset}"
-  puts "#{red}│  disable sites and the dashboard.                                             │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  DO NOT USE SUDO, use ctrl+c/cmd+c and cancel this command ASAP!!!            │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}└───────────────────────────────────────────────────────────────────────────────┘#{creset}"
-  # exit
-end
+require './.vvv/lib/info'
+require './.vvv/lib/config'
+require './.vvv/lib/splash_screens'
+require './.vvv/lib/bootstrap'
+require './.vvv/lib/migrate'
 
-vagrant_dir = __dir__
-show_logo = false
-branch_c = "\033[38;5;6m" # 111m"
-red = "\033[38;5;9m" # 124m"
-green = "\033[1;38;5;2m" # 22m"
-blue = "\033[38;5;4m" # 33m"
-purple = "\033[38;5;5m" # 129m"
-docs = "\033[0m"
-yellow = "\033[38;5;3m" # 136m"
-yellow_underlined = "\033[4;38;5;3m" # 136m"
-url = yellow_underlined
-creset = "\033[0m"
+VVV::SplashScreens.v_logo_with_info if VVV::Bootstrap.show_logo?
+VVV.SplashScreens.warning_sudo_bear if VVV::Bootstrap.show_sudo_bear?
 
-version = '?'
-File.open("#{vagrant_dir}/version", 'r') do |f|
-  version = f.read
-  version = version.gsub("\n", '')
-end
+VVV::Migrate.migrate_config
+VVV::Migrate.migrate_sql_database_backups
 
-unless Vagrant::Util::Platform.windows?
-  if Process.uid == 0
-    sudo_warnings
+vvv_config  = VVV::Config.new.values
+vagrant_dir = VVV::Info.vagrant_dir
+
+if VVV::Bootstrap.show_logo?
+  VVV::SplashScreens.info_platform vvv_config
+  VVV::SplashScreens.info_provider(
+    vvv_config['vm_config']['provider'],
+    VVV::Info.provider_version(vvv_config['vm_config']['provider'])
+  )
+  if VVV::Bootstrap.box_overridden?(vvv_config)
+    VVV::SplashScreens.info_box_overridden
   end
 end
-
-unless Vagrant::Util::Platform.windows?
-  if Process.uid == 0
-    puts " "
-    puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
-    puts " "
-  end
-end
-
-# whitelist when we show the logo, else it'll show on global Vagrant commands
-show_logo = true if %w[up resume status provision reload].include? ARGV[0]
-show_logo = false if ENV['VVV_SKIP_LOGO']
-
-# Show the initial splash screen
-if show_logo
-  git_or_zip = 'zip-no-vcs'
-  branch = ''
-  commit = ''
-  if File.directory?("#{vagrant_dir}/.git")
-    git_or_zip = 'git::'
-    branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
-    branch = branch.chomp("\n"); # remove trailing newline so it doesn't break the ascii art
-    commit = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --short HEAD`
-    commit = '(' + commit.chomp("\n") + ')'; # remove trailing newline so it doesn't break the ascii art
-  end
-
-  splashfirst = <<~HEREDOC
-    \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
-    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Ruby:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
-    #{red} \\_/#{green}\\_/#{blue}\\_/  #{creset}#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
-
-  HEREDOC
-  puts splashfirst
-end
-
-# Load the config file before the second section of the splash screen
-
-# Perform file migrations from older versions
-vvv_config_file = File.join(vagrant_dir, 'config/config.yml')
-unless File.file?(vvv_config_file)
-  old_vvv_config = File.join(vagrant_dir, 'vvv-custom.yml')
-  if File.file?(old_vvv_config)
-    puts "#{yellow}Migrating #{red}vvv-custom.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow}.#{creset}\n\n"
-    FileUtils.mv(old_vvv_config, vvv_config_file)
-  else
-    puts "#{yellow}Copying #{red}config/default-config.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
-    FileUtils.cp(File.join(vagrant_dir, 'config/default-config.yml'), vvv_config_file)
-  end
-end
-
-old_db_backup_dir = File.join(vagrant_dir, 'database/backups/')
-new_db_backup_dir = File.join(vagrant_dir, 'database/sql/backups/')
-if (File.directory?(old_db_backup_dir) == true) && (File.directory?(new_db_backup_dir) == false)
-  puts 'Moving db backup directory into database/sql/backups'
-  FileUtils.mv(old_db_backup_dir, new_db_backup_dir)
-end
-
-begin
-  vvv_config = YAML.load_file(vvv_config_file)
-  unless vvv_config['sites'].is_a? Hash
-    vvv_config['sites'] = {}
-
-    puts "#{red}config/config.yml is missing a sites section.#{creset}\n\n"
-  end
-rescue StandardError => e
-  puts "#{red}config/config.yml isn't a valid YAML file.#{creset}\n\n"
-  puts "#{red}VVV cannot be executed!#{creset}\n\n"
-
-  warn e.message
-  exit
-end
-
-vvv_config['hosts'] = [] unless vvv_config['hosts'].is_a? Hash
-
-vvv_config['hosts'] += ['vvv.test']
-
-vvv_config['sites'].each do |site, args|
-  if args.is_a? String
-    repo = args
-    args = {}
-    args['repo'] = repo
-  end
-
-  args = {} unless args.is_a? Hash
-
-  defaults = {}
-  defaults['repo'] = false
-  defaults['vm_dir'] = "/srv/www/#{site}"
-  defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
-  defaults['branch'] = 'master'
-  defaults['skip_provisioning'] = false
-  defaults['allow_customfile'] = false
-  defaults['nginx_upstream'] = 'php'
-  defaults['hosts'] = []
-
-  vvv_config['sites'][site] = defaults.merge(args)
-
-  unless vvv_config['sites'][site]['skip_provisioning']
-    site_host_paths = Dir.glob(Array.new(4) { |i| vvv_config['sites'][site]['local_dir'] + '/*' * (i + 1) + '/vvv-hosts' })
-    vvv_config['sites'][site]['hosts'] += site_host_paths.map do |path|
-      lines = File.readlines(path).map(&:chomp)
-      lines.grep(/\A[^#]/)
-    end.flatten
-    if vvv_config['sites'][site]['hosts'].is_a? Array
-      vvv_config['hosts'] += vvv_config['sites'][site]['hosts']
-    else
-      vvv_config['hosts'] += ["#{site}.test"]
-    end
-  end
-  vvv_config['sites'][site].delete('hosts')
-end
-
-if vvv_config['extension-sources'].is_a? Hash
-  vvv_config['extension-sources'].each do |name, args|
-    next unless args.is_a? String
-
-    repo = args
-    args = {}
-    args['repo'] = repo
-    args['branch'] = 'master'
-
-    vvv_config['extension-sources'][name] = args
-  end
-else
-  vvv_config['extension-sources'] = {}
-end
-
-vvv_config['dashboard'] = {} unless vvv_config['dashboard']
-dashboard_defaults = {}
-dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashboard.git'
-dashboard_defaults['branch'] = 'master'
-vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
-
-unless vvv_config['extension-sources'].key?('core')
-  vvv_config['extension-sources']['core'] = {}
-  vvv_config['extension-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
-  vvv_config['extension-sources']['core']['branch'] = 'master'
-end
-
-vvv_config['utilities'] = {} unless vvv_config['utilities'].is_a? Hash
-vvv_config['utility-sources'] = {} unless vvv_config['utility-sources'].is_a? Hash
-vvv_config['extension-sources'] = {} unless vvv_config['extension-sources'].is_a? Hash
-vvv_config['extensions'] = {} unless vvv_config['extensions'].is_a? Hash
-
-vvv_config['vm_config'] = {} unless vvv_config['vm_config'].is_a? Hash
-
-vvv_config['general'] = {} unless vvv_config['general'].is_a? Hash
-
-defaults = {}
-defaults['memory'] = 2048
-defaults['cores'] = 1
-defaults['provider'] = 'virtualbox'
-
-# if Arm default to parallels
-if Etc.uname[:version].include? 'ARM64'
-  defaults['provider'] = 'parallels'
-end
-
-# This should rarely be overridden, so it's not included in the config/default-config.yml file.
-defaults['private_network_ip'] = '192.168.56.4'
-
-vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
-vvv_config['hosts'] = vvv_config['hosts'].uniq
-
-vvv_config['vagrant-plugins'] = {} unless vvv_config['vagrant-plugins']
-
-# Create a global variable to use in functions and classes
-$vvv_config = vvv_config
-
-# Show the second splash screen section
-
-if show_logo
-  platform = [ Vagrant::Util::Platform.platform]
-  if Vagrant::Util::Platform.windows?
-    platform << 'windows '
-    platform << 'wsl ' if Vagrant::Util::Platform.wsl?
-    platform << 'msys ' if Vagrant::Util::Platform.msys?
-    platform << 'cygwin ' if Vagrant::Util::Platform.cygwin?
-    if Vagrant::Util::Platform.windows_hyperv_enabled?
-      platform << 'HyperV-Enabled '
-    end
-    platform << 'HyperV-Admin ' if Vagrant::Util::Platform.windows_hyperv_admin?
-    if Vagrant::Util::Platform.windows_admin?
-      platform << 'HasWinAdminPriv '
-    else
-      platform << 'missingWinAdminPriv ' unless Vagrant::Util::Platform.windows_admin?
-    end
-  else
-    platform << 'shell:' + ENV['SHELL'] if ENV['SHELL']
-    platform << 'systemd ' if Vagrant::Util::Platform.systemd?
-  end
-
-  platform << 'vagrant-hostmanager' if Vagrant.has_plugin?('vagrant-hostmanager')
-  platform << 'vagrant-hostsupdater' if Vagrant.has_plugin?('vagrant-hostsupdater')
-  platform << 'vagrant-goodhosts' if Vagrant.has_plugin?('vagrant-goodhosts')
-  platform << 'vagrant-vbguest' if Vagrant.has_plugin?('vagrant-vbguest')
-  platform << 'vagrant-disksize' if Vagrant.has_plugin?('vagrant-disksize')
-
-  platform << 'CaseSensitiveFS' if Vagrant::Util::Platform.fs_case_sensitive?
-  unless Vagrant::Util::Platform.terminal_supports_colors?
-    platform << 'monochrome-terminal'
-  end
-
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
-      platform << 'contributor_day_box'
-    end
-  end
-
-  if defined? vvv_config['vm_config']['box']
-    unless vvv_config['vm_config']['box'].nil?
-      puts "Custom Box: Box overridden via config/config.yml , this won't take effect until a destroy + reprovision happens"
-      platform << 'box_override:' + vvv_config['vm_config']['box']
-    end
-  end
-
-  if defined? vvv_config['general']['db_share_type']
-    if vvv_config['general']['db_share_type'] != true
-      platform << 'shared_db_folder_disabled'
-    else
-      platform << 'shared_db_folder_enabled'
-    end
-  else
-    platform << 'shared_db_folder_default'
-  end
-
-  provider_version = '??'
-
-  provider_meta = nil
-
-  case vvv_config['vm_config']['provider']
-  when 'virtualbox'
-    provider_meta = VagrantPlugins::ProviderVirtualBox::Driver::Meta.new()
-    provider_version = provider_meta.version
-  when 'parallels'
-    provider_meta = VagrantPlugins::Parallels::Driver::Meta.new()
-    provider_version = provider_meta.version
-  when 'vmware'
-    provider_version = '??'
-  when 'hyperv'
-    provider_version = 'n/a'
-  else
-    provider_version = '??'
-  end
-
-  splashsecond = <<~HEREDOC
-    #{yellow}Platform: #{yellow}#{platform.join(' ')}
-    #{green}Vagrant: #{green}v#{Vagrant::VERSION}, #{blue}#{vvv_config['vm_config']['provider']}: #{blue}v#{provider_version}
-
-    #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
-    #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
-    #{docs}Dashboard:  #{url}http://vvv.test#{creset}
-
-  HEREDOC
-  puts splashsecond
-end
-
-if defined? vvv_config['vm_config']['provider']
-  # Override or set the vagrant provider.
-  ENV['VAGRANT_DEFAULT_PROVIDER'] = vvv_config['vm_config']['provider']
-end
-
-ENV['LC_ALL'] = 'en_US.UTF-8'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # VirtualBox
@@ -377,7 +87,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
       system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
       File.delete(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
-      puts "#{yellow}VVV needed to install the vagrant-goodhosts plugin which is now installed. Please run the requested command again.#{creset}"
+      puts "#{VVV::SplashScreens::C_YELLOW}VVV needed to install the vagrant-goodhosts plugin which is now installed. Please run the requested command again.#{VVV::SplashScreens::C_RESET}"
       exit
     else
       config.vagrant.plugins = ['vagrant-goodhosts']
@@ -706,13 +416,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   long_provision_bear = <<~HTML
-  #{blue}#{creset}
-  #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}
-  #{blue}    █▒▒░░░░░░░░░▒▒█   █   █     #{green}Sit back, relax, and have some tea.#{creset}
-  #{blue}     █░░█░░░░░█░░█   ▀   ▀      #{creset}
-  #{blue}  ▄▄  █░░░▀█▀░░░█   █▀▀▀▀▀▀█    #{green}If you didn't want to provision you can#{creset}
-  #{blue} █░░█ ▀▄░░░░░░░▄▀▄▀▀█      █    #{green}turn VVV on with 'vagrant up'.#{creset}
-  #{blue}───────────────────────────────────────────────────────────────────────#{creset}
+  #{VVV::SplashScreens::C_BLUE}#{VVV::SplashScreens::C_RESET}
+  #{VVV::SplashScreens::C_BLUE}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{VVV::SplashScreens::C_GREEN}A full provision will take a bit.#{VVV::SplashScreens::C_RESET}
+  #{VVV::SplashScreens::C_BLUE}    █▒▒░░░░░░░░░▒▒█   █   █     #{VVV::SplashScreens::C_GREEN}Sit back, relax, and have some tea.#{VVV::SplashScreens::C_RESET}
+  #{VVV::SplashScreens::C_BLUE}     █░░█░░░░░█░░█   ▀   ▀      #{VVV::SplashScreens::C_RESET}
+  #{VVV::SplashScreens::C_BLUE}  ▄▄  █░░░▀█▀░░░█   █▀▀▀▀▀▀█    #{VVV::SplashScreens::C_GREEN}If you didn't want to provision you can#{VVV::SplashScreens::C_RESET}
+  #{VVV::SplashScreens::C_BLUE} █░░█ ▀▄░░░░░░░▄▀▄▀▀█      █    #{VVV::SplashScreens::C_GREEN}turn VVV on with 'vagrant up'.#{VVV::SplashScreens::C_RESET}
+  #{VVV::SplashScreens::C_BLUE}───────────────────────────────────────────────────────────────────────#{VVV::SplashScreens::C_RESET}
   HTML
 
   # Changed the message here because it's going to show the first time you do vagrant up, which might be confusing
