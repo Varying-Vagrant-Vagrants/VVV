@@ -73,7 +73,7 @@ function check_mysql_root_password() {
       plugin='mysql_native_password';
 SQL
 )
-  root_matches=$(mysql -u root --password=root -s -N -e "${sql}")
+  root_matches=$(mysql -u root -proot -s -N -e "${sql}")
   if [[ $? -eq 0 && $root_matches == "1" ]]; then
     # mysql connected and the SQL above matched
     vvv_success " * The database root password is the expected value"
@@ -106,9 +106,17 @@ function mysql_setup() {
   cp -f "/srv/provision/core/mariadb/config/my.cnf" "/etc/mysql/my.cnf"
   vvv_info " * Copied /srv/provision/core/mariadb/config/my.cnf               to /etc/mysql/my.cnf"
 
+  cp -f  "/srv/provision/core/mariadb/config/root-my.cnf" "/root/.my.cnf"
+  chmod 0644 "/root/.my.cnf"
+  vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /root/.my.cnf"
+
   cp -f  "/srv/provision/core/mariadb/config/root-my.cnf" "/home/vagrant/.my.cnf"
   chmod 0644 "/home/vagrant/.my.cnf"
   vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /home/vagrant/.my.cnf"
+
+  # Due to systemd dependencies, in docker, mysql service is not auto started
+  vvv_info " * Ensuring MariaDB service is started"
+  service mariadb restart
 
   if [ "${VVV_DOCKER}" != 1 ]; then
     check_mysql_root_password

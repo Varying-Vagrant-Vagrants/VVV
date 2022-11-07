@@ -6,7 +6,37 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.9 ( 2022 )
+## 3.11.0 ( WIP )
+
+### Enhancements
+
+* ....
+
+### Bug Fixes
+
+* Fixed faulty Vagrant plugin check.
+
+
+## 3.10.1 ( 2022 September 10th )
+
+### Enhancements
+
+* Improved provisioning output
+* VVV will now attempt to test Nginx configs on installation and recover ( #2604 )
+* Switched to new launchpad PPA domains with HTTPS ( #2586 )
+* Improved the verboseness of the DB import scripts ( #2621 ) 
+* PHP version parameter for provisioner and Nginx ( #2583 )
+
+### Bug Fixes
+
+* WP CLI package update failures now fail gracefully instead of stopping a provision ( #2601 )
+* Fixed an edge case updating NVM via git ( #2604 )
+* Disable hardware support for gcrypt to avoid bad VirtualBox implementations ( #2609 )
+* Fix unbound variable in `db_backup` ( #2617 )
+* Ensured npm and nvm are always available in site provisioners
+* Explicitly allow a composer plugin when installing PHPCS to avoid issues in July 2022 ( #2620 )
+
+## 3.9.1 ( 2022 April 13th )
 
 ### Enhancements
 
@@ -22,6 +52,7 @@ permalink: /docs/en-US/changelog/
 * Switched obsolete mirror check for MariaDB to the one already used (#2575)
 * Fixed a broken warning in the network checks
 * Fixed an issue with `/root/.local/share/composer` when provisioning (#2589)
+* Fixed an issue with the new Git release that was crashing the provisioner beucase of wrong user permissions ( #2593 )
 
 ## 3.8.1 ( 2021 November 15th )
 

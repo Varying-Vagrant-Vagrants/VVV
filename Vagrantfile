@@ -90,7 +90,7 @@ if show_logo
 
   splashfirst = <<~HEREDOC
     \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
-    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Path:"#{vagrant_dir}"
+    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Ruby:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
     #{red} \\_/#{green}\\_/#{blue}\\_/  #{creset}#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
 
   HEREDOC
@@ -354,7 +354,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Configuration options for the Parallels provider.
   config.vm.provider :parallels do |v|
-    v.update_guest_tools = true
     v.customize ['set', :id, '--longer-battery-life', 'off']
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']
@@ -399,21 +398,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # This is disabled, we had several contributors who ran into issues.
   # See: https://github.com/Varying-Vagrant-Vagrants/VVV/issues/1551
   config.ssh.insert_key = false
-
-  # Default Ubuntu Box
-  #
-  # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
-  # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
-  # to your host computer, it is cached for future use under the specified box name.
-  config.vm.box = 'bento/ubuntu-20.04'
   config.vm.box_check_update = false
-
-  # If we're at a contributor day, switch the base box to the prebuilt one
-  if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
-    if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
-      config.vm.box = 'vvv/contribute'
-    end
-  end
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
@@ -436,6 +421,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
+  end
+
+  # Virtualbox.
+  config.vm.provider :virtualbox do |_v, override|
+    # Default Ubuntu Box
+    #
+    # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
+    # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
+    # to your host computer, it is cached for future use under the specified box name.
+    override.vm.box = 'bento/ubuntu-20.04'
+
+    # If we're at a contributor day, switch the base box to the prebuilt one
+    if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
+      if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
+        override.vm.box = 'vvv/contribute'
+      end
+    end
   end
 
   if defined? vvv_config['vm_config']['box']
@@ -849,29 +851,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # located in the www/ directory and in config/config.yml.
   #
 
-  if Vagrant.has_plugin?('vagrant-goodhosts')
+  if config.vagrant.plugins.include? 'vagrant-goodhosts'
     config.goodhosts.aliases = vvv_config['hosts']
     config.goodhosts.remove_on_suspend = true
-  elsif Vagrant.has_plugin?('vagrant-hostsmanager')
+  elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'
     config.hostmanager.aliases = vvv_config['hosts']
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
     config.hostmanager.manage_guest = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
-  elsif Vagrant.has_plugin?('vagrant-hostsupdater')
+  elsif config.vagrant.plugins.include? 'vagrant-hostsupdater'
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
-  else
-    show_check = true if %w[up halt resume suspend status provision reload].include? ARGV[0]
-    if show_check
-      puts ""
-      puts " X ! There is no hosts file vagrant plugin installed!"
-      puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
-      puts " X Run 'vagrant plugin install --local' to fix this."
-      puts ""
-    end
+  elsif %w[up halt resume suspend status provision reload].include? ARGV[0]
+    puts ""
+    puts " X ! There is no hosts file vagrant plugin installed!"
+    puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
+    puts " X Run 'vagrant plugin install --local' to fix this."
+    puts ""
   end
 
   # Vagrant Triggers

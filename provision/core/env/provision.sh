@@ -67,23 +67,18 @@ function cleanup_terminal_splash() {
 # @description Sets up the VVV users bash profile, and configuration files
 # @noargs
 function profile_setup() {
-  vvv_info " * Setting ownership of files in /home/vagrant to vagrant"
   chown -R vagrant:vagrant /home/vagrant/
 
   # Copy custom dotfiles and bin file for the vagrant user from local
-  vvv_info " * Copying /srv/provision/core/env/homedir/.bash_profile                      to /home/vagrant/.bash_profile"
   rm -f "/home/vagrant/.bash_profile"
   noroot cp -f "/srv/provision/core/env/homedir/.bash_profile" "/home/vagrant/.bash_profile"
 
-  vvv_info " * Copying /srv/provision/core/env/homedir/.bash_aliases                      to /home/vagrant/.bash_aliases"
   rm -f "/home/vagrant/.bash_aliases"
   noroot cp -f "/srv/provision/core/env/homedir/.bash_aliases" "/home/vagrant/.bash_aliases"
 
-  vvv_info " * Copying /srv/provision/core/env/homedir/.bash_aliases                      to ${HOME}/.bash_aliases"
   rm -f "${HOME}/.bash_aliases"
   cp -f "/srv/provision/core/env/homedir/.bash_aliases" "${HOME}/.bash_aliases"
 
-  vvv_info " * Copying /srv/provision/core/env/homedir/.vimrc                             to /home/vagrant/.vimrc"
   rm -f "/home/vagrant/.vimrc"
   noroot cp -f "/srv/provision/core/env/homedir/.vimrc" "/home/vagrant/.vimrc"
 
@@ -91,28 +86,26 @@ function profile_setup() {
     noroot mkdir -p "/home/vagrant/.subversion"
   fi
 
-  vvv_info " * Copying /srv/provision/core/env/homedir/.subversion/subversion-servers     to /home/vagrant/.subversion/servers"
   rm -f /home/vagrant/.subversion/servers
   noroot cp "/srv/provision/core/env/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
 
-  vvv_info " * Copying /srv/provision/core/env/homedir/.subversion/subversion-config      to /home/vagrant/.subversion/config"
   rm -f /home/vagrant/.subversion/config
   noroot cp "/srv/provision/core/env/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
-    vvv_info " * Copying /srv/config/bash_prompt to /home/vagrant/.bash_prompt"
     rm -f /home/vagrant/.bash_prompt
     noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
 
   if [ -d "/etc/ssh" ]; then
-    vvv_info " * Copying /srv/provision/core/env/ssh/ssh_known_hosts                        to /etc/ssh/ssh_known_hosts"
     cp -f /srv/provision/core/env/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts
-    vvv_info " * Copying /srv/provision/core/env/ssh/sshd_config                            to /etc/ssh/sshd_config"
     cp -f /srv/provision/core/env/ssh/sshd_config /etc/ssh/sshd_config
     vvv_info " * Reloading SSH Daemon"
-    service ssh reload
+    if ! sudo service ssh reload; then
+      vvv_error " ! SSH daemon failed to reload"
+      return 1
+    fi
   fi
 }
 
@@ -125,5 +118,7 @@ function vvv_init_profile() {
   cleanup_terminal_splash
   profile_setup
 }
+
+export -f vvv_init_profile;
 
 vvv_add_hook init vvv_init_profile 0

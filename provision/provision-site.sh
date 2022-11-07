@@ -23,12 +23,63 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 VVV_HOSTS=""
-
 SUCCESS=1
 
 VVV_CONFIG=/vagrant/config.yml
 
 . "/srv/provision/provisioners.sh"
+
+# @description Retrieves a config value for the given site as specified in `config.yml`
+#
+# @arg $1 string the config value to fetch
+# @arg $2 string the default value
+function vvv_get_site_config_value() {
+  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
+  echo "${value}"
+}
+
+function vvv_get_site_php_version() {
+  SITE_PHP=$(vvv_get_site_config_value 'php' "${DEFAULTPHP}")
+
+  # remove whitespace
+  SITE_PHP=$(echo -n "${SITE_PHP}" | xargs | tr -d '\n' | tr -d '\r')
+
+  # Handle when php:8 instead of 8.0 or if it's parsed as a number
+  if [[ "${#SITE_PHP}" -eq "1" ]]; then
+    SITE_PHP="${SITE_PHP}.0"
+  fi
+
+  echo -n "${SITE_PHP}"
+}
+
+vvv_validate_site_php_version() {
+  SITE_PHP=$(vvv_get_site_php_version)
+  if [[ "${#SITE_PHP}" > "3" ]]; then
+    vvv_warn " ! Warning: PHP version defined is using a wrong format: '${SITE_PHP}' with length '${length}'"
+    vvv_warn "            If you are trying to use a more specific version of PHP such as 7.4.1 or 7.4.0 you"
+    vvv_warn "            need to be less specific and use 7.4"
+  fi
+
+  if [[ ! -e "/usr/bin/php${SITE_PHP}" ]]; then
+    vvv_warn " ! Warning: Chosen PHP version doesn't exist in this environment: '${SITE_PHP}' looking for '/usr/bin/php${SITE_PHP}'"
+  fi
+}
+
+# @description sets a sites PHP version as the global version, or to the VVV default if none is specified
+#
+# @internal
+# @noargs
+function vvv_apply_site_php_cli_version() {
+  vvv_validate_site_php_version
+  SITE_PHP=$(vvv_get_site_php_version)
+
+  echo " * Setting the default PHP CLI version ( ${SITE_PHP} ) for this site"
+  update-alternatives --set php "/usr/bin/php${SITE_PHP}" &> /dev/null
+  update-alternatives --set phar "/usr/bin/phar${SITE_PHP}" &> /dev/null
+  update-alternatives --set phar.phar "/usr/bin/phar.phar${SITE_PHP}" &> /dev/null
+  update-alternatives --set phpize "/usr/bin/phpize${SITE_PHP}" &> /dev/null
+  update-alternatives --set php-config "/usr/bin/php-config${SITE_PHP}" &> /dev/null
+}
 
 # @description Takes 2 values, a key to fetch a value for, and an optional default value
 #
@@ -84,6 +135,7 @@ function get_primary_host() {
 function vvv_provision_site_nginx_config() {
   local SITE_NAME=$1
   local SITE_NGINX_FILE=$2
+
   if [ ! -f "$SITE_NGINX_FILE" ]; then
     vvv_warn " * VVV didn't found any Nginx config file, it will use a fallback config file"
     cp -f "/srv/provision/core/nginx/config/sites/fallback.conf" "$SITE_NGINX_FILE"
@@ -92,37 +144,62 @@ function vvv_provision_site_nginx_config() {
   local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
   local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
   local DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
+  
   VVV_HOSTS=$(get_hosts)
+  local TMPFILE=$(mktemp /tmp/vvv-site-XXXXX)
+  cat "${SITE_NGINX_FILE}" >> "${TMPFILE}"
 
   vvv_info " * VVV is adding an Nginx config from ${SITE_NGINX_FILE}"
 
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
   # while still having an Nginx config which works.
-  local DIR="$(dirname "$SITE_NGINX_FILE")"
-  sed "s#{vvv_path_to_folder}#${DIR}#" "$SITE_NGINX_FILE" > "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_path_to_site}#${VM_DIR}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_site_name}#${SITE_NAME}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  local DIR="$(dirname "${SITE_NGINX_FILE}")"
+  sed "s#{vvv_path_to_folder}#${DIR}#" "${SITE_NGINX_FILE}" >  "${TMPFILE}"
+  sed -i "s#{vvv_path_to_site}#${VM_DIR}#"  "${TMPFILE}"
+  sed -i "s#{vvv_site_name}#${SITE_NAME}#"  "${TMPFILE}"
+  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
 
+  # if php: is configured, set the upstream to match
+  if [ "${DEFAULTPHP}" != "${VVV_DEFAULTPHP}" ]; then
+    NGINX_UPSTREAM="php${DEFAULTPHP}"
+    NGINX_UPSTREAM=$(echo "$NGINX_UPSTREAM" | tr --delete .)
+  fi
+
+  # check if the nginx upstream value has been set and is valid
   if [ 'php' != "${NGINX_UPSTREAM}" ] && [ ! -f "/etc/nginx/upstreams/${NGINX_UPSTREAM}.conf" ]; then
     vvv_error " * Upstream value '${NGINX_UPSTREAM}' doesn't match a valid upstream. Defaulting to 'php'.${CRESET}"
     NGINX_UPSTREAM='php'
   fi
-  sed -i "s#{upstream}#${NGINX_UPSTREAM}#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+
+  sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
 
   if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
-    sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#"  "${TMPFILE}"
+    sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "${TMPFILE}"
   else
-    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#" "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#"  "${TMPFILE}"
+    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#"  "${TMPFILE}"
   fi
 
   # Resolve relative paths since not supported in Nginx root.
-  while grep -sqE '/[^/][^/]*/\.\.' "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"; do
-    sed -i 's#/[^/][^/]*/\.\.##g' "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  while grep -sqE '/[^/][^/]*/\.\.'  "${TMPFILE}"; do
+    sed -i 's#/[^/][^/]*/\.\.##g'  "${TMPFILE}"
   done
+
+  # "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
+  local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-provision/} # remove the provision folder name
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-.vvv/} # remove the .vvv folder name
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
+  local DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
+
+  if ! vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"; then
+    vvv_warn " ! This sites nginx config had problems, it may not load. Look at the above errors to diagnose the problem"
+    vvv_info " ! VVV will now continue with provisioning so that other sites have an opportunity to run"
+  fi
+  rm -f "${TMPFILE}"
 }
 
 # @description add hosts from a file to VVVs hosts file (the guest, not the host machine)
@@ -197,7 +274,7 @@ function vvv_provision_site_repo() {
         echo " * Any local changes not present on the server will be discarded in favor of the remote branch"
         cd "${VM_DIR}"
         echo " * Checking that remote origin is ${REPO}"
-        CURRENTORIGIN=$(git remote get-url origin)
+        CURRENTORIGIN=$(noroot git remote get-url origin)
         if [[ "${CURRENTORIGIN}" != "${REPO}" ]]; then
           vvv_error " ! The site config said to use <b>${REPO}</b>"
           vvv_error " ! But the origin remote is actually <b>${CURRENTORIGIN}</b>"
@@ -323,14 +400,6 @@ function vvv_provision_site_nginx() {
   fi
 }
 
-# @description Retrieves a config value for the given site as specified in `config.yml`
-#
-# @arg $1 string the config value to fetch
-# @arg $2 string the default value
-function vvv_get_site_config_value() {
-  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
-  echo "${value}"
-}
 
 # @description Clones a git repository into a sites sub-folder
 #
@@ -476,11 +545,22 @@ function vvv_custom_folders() {
 }
 
 # -------------------------------
+source /srv/config/homebin/vvv_restore_php_default
+VVV_DEFAULTPHP=$DEFAULT_PHP
+vvv_apply_site_php_cli_version
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
   vvv_warn " * Skipping provisioning of <b>${SITE}</b>"
   exit 0
 fi
+
+# Ensure npm is available
+if ! command -v nvm &> /dev/null; then
+  if [ -f /home/vagrant/.nvm/nvm.sh ]; then
+    source /home/vagrant/.nvm/nvm.sh
+  fi
+fi
+nvm use default
 
 vvv_provision_site_repo
 
@@ -500,12 +580,11 @@ vvv_provision_site_script
 vvv_custom_folders
 vvv_provision_site_nginx
 
-vvv_info " * Reloading Nginx"
-service nginx reload
-
 if [ "${SUCCESS}" -ne "0" ]; then
   vvv_error " ! ${SITE} provisioning had some issues, check the log files as the site may not function correctly."
   exit 1
 fi
+
+/srv/config/homebin/vvv_restore_php_default
 
 provisioner_success
