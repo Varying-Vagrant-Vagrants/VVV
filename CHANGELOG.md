@@ -10,12 +10,12 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
-* ....
+* Added a fallback Nginx config for sites that don't specify a site provisioner ( #2279 )
+  * Sites that do not have a provisioner set will have a logs folder created for Nginx logs,and a public_html folder with Nginx rules for WordPress or other PHP applications. The user is responsible for creating a database and installing/placing a site.
 
 ### Bug Fixes
 
 * Fixed faulty Vagrant plugin check.
-
 
 ## 3.10.1 ( 2022 September 10th )
 
