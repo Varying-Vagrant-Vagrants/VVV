@@ -867,6 +867,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if config.vagrant.plugins.include? 'vagrant-goodhosts'
     config.goodhosts.aliases = vvv_config['hosts']
     config.goodhosts.remove_on_suspend = true
+    
+    # goodhosts already disables clean by default, but lets enforce this at both ends
+    config.goodhosts.disable_clean = false
   elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'
     config.hostmanager.aliases = vvv_config['hosts']
     config.hostmanager.enabled = true
