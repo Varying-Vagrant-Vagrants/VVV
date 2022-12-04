@@ -869,7 +869,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.goodhosts.remove_on_suspend = true
     
     # goodhosts already disables clean by default, but lets enforce this at both ends
-    config.goodhosts.disable_clean = false
+    config.goodhosts.disable_clean = true
   elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'
     config.hostmanager.aliases = vvv_config['hosts']
     config.hostmanager.enabled = true
