@@ -547,7 +547,6 @@ function vvv_custom_folders() {
 
 # -------------------------------
 source /srv/config/homebin/vvv_restore_php_default
-VVV_DEFAULTPHP=$DEFAULT_PHP
 vvv_apply_site_php_cli_version
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
