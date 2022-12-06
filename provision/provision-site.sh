@@ -25,6 +25,8 @@ VVV_SITE_NAME=${SITE}
 VVV_HOSTS=""
 SUCCESS=0
 
+DEFAULTPHP="7.4"
+
 VVV_CONFIG=/vagrant/config.yml
 
 . "/srv/provision/provisioners.sh"
@@ -157,8 +159,9 @@ function vvv_provision_site_nginx_config() {
   sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
 
   # if php: is configured, set the upstream to match
-  if [ "${DEFAULTPHP}" != "${VVV_DEFAULTPHP}" ]; then
-    NGINX_UPSTREAM="php${DEFAULTPHP}"
+  SITE_PHP=$(vvv_get_site_php_version)
+  if [ "${DEFAULTPHP}" != "${SITE_PHP}" ]; then
+    NGINX_UPSTREAM="php${SITE_PHP}"
     NGINX_UPSTREAM=$(echo "$NGINX_UPSTREAM" | tr --delete .)
   fi
 
@@ -544,7 +547,6 @@ function vvv_custom_folders() {
 
 # -------------------------------
 source /srv/config/homebin/vvv_restore_php_default
-VVV_DEFAULTPHP=$DEFAULT_PHP
 vvv_apply_site_php_cli_version
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then
