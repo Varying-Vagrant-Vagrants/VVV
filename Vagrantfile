@@ -16,8 +16,9 @@ creset = "\033[0m"
 
 puts "                                              #{boldred}__ #{green}__ #{blue}__ __#{creset}                                     #{creset}"
 puts " The master branch is no longer supported!    #{boldred}\\ V#{green}\\ V#{blue}\\ V /#{creset}"
-puts " Run this command to switch to #{purple}stable#{creset}:        #{boldred} \\_/#{green}\\_/#{blue}\\_/ #{creset}"
+puts " Run these commands to switch to #{purple}stable#{creset}:      #{boldred} \\_/#{green}\\_/#{blue}\\_/ #{creset}"
 puts " "
-puts " #{green}git checkout stable && git pull#{creset}"
+puts " #{green}git checkout stable#{creset}"
+puts " #{green}git pull#{creset}"
 
 exit 1
