@@ -20,6 +20,7 @@
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
-    }
+    },
+    "bin-dir": "bin/"
   }
 }
