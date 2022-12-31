@@ -12,6 +12,7 @@ permalink: /docs/en-US/changelog/
 
 * Added a fallback Nginx config for sites that don't specify a site provisioner ( #2279 )
 * Sites that do not have a provisioner set will have a logs folder created for Nginx logs,and a public_html folder with Nginx rules for WordPress or other PHP applications. The user is responsible for creating a database and installing/placing a site.
+* Simplified PHPCS installation bin dir setting ( #2648 )
 
 ### Bug Fixes
 
