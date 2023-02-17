@@ -441,25 +441,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-22.04'
 
     # Vagrant currently runs under Rosetta on M1 devices. As a result,
     # this seems to be the most reliable way to detect whether or not we're
     # running under ARM64.
     if Etc.uname[:version].include? 'ARM64'
-      override.vm.box = 'mpasternak/focal64-arm'
+      override.vm.box = 'bento/ubuntu-22.04-arm64'
     end
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
   config.vm.provider :vmware_desktop do |v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-22.04'
     v.gui = false
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-22.04'
   end
 
   # Docker use image.
@@ -482,7 +482,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
     # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
     # to your host computer, it is cached for future use under the specified box name.
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-22.04'
 
     # If we're at a contributor day, switch the base box to the prebuilt one
     if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
