@@ -47,7 +47,6 @@ function php_register_apt_packages() {
     "php${VVV_BASE_PHPVERSION}-mbstring"
     "php${VVV_BASE_PHPVERSION}-mysql"
     "php${VVV_BASE_PHPVERSION}-imap"
-    "php${VVV_BASE_PHPVERSION}-json"
     "php${VVV_BASE_PHPVERSION}-soap"
     "php${VVV_BASE_PHPVERSION}-xml"
     "php${VVV_BASE_PHPVERSION}-zip"
