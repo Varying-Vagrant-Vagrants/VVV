@@ -94,6 +94,8 @@ extensions:
     #- php73
     #- php74
     #- php80
+    #- php81
+    #- php82
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
 # increase the memory given to VVV and the number of CPU cores.
