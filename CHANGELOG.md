@@ -15,6 +15,7 @@ permalink: /docs/en-US/changelog/
 * Simplified PHPCS installation bin dir setting ( #2648 )
 * Virtualbox users running `sudo vagrant` commands now get a warning
 * Switched the default PHP to v8.0 ( #2658 )
+* Fixed setting of git rebase config for the vagrant nonroot user ( #2658 )
 
 ### Bug Fixes
 
