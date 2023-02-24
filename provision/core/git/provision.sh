@@ -54,5 +54,9 @@ function git_after_packages() {
     vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
     git config --global pull.rebase false
   fi
+  if ! noroot git config --global pull.rebase; then
+    vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
+    noroot git config --global pull.rebase false
+  fi
 }
 vvv_add_hook after_packages git_after_packages

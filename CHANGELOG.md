@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * Sites that do not have a provisioner set will have a logs folder created for Nginx logs,and a public_html folder with Nginx rules for WordPress or other PHP applications. The user is responsible for creating a database and installing/placing a site.
 * Simplified PHPCS installation bin dir setting ( #2648 )
 * Virtualbox users running `sudo vagrant` commands now get a warning
+* Fixed setting of git rebase config for the vagrant nonroot user ( #2658 )
 * Added composer bin directory to path ( #2588 )
 
 ### Bug Fixes
