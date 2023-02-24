@@ -16,6 +16,7 @@ permalink: /docs/en-US/changelog/
 * Virtualbox users running `sudo vagrant` commands now get a warning
 * Switched the default PHP to v8.0 ( #2658 )
 * Fixed setting of git rebase config for the vagrant nonroot user ( #2658 )
+* Added composer bin directory to path ( #2588 )
 
 ### Bug Fixes
 
