@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.11.0 ( WIP )
+## 3.11.0 ( 2023 March 14th )
 
 ### Enhancements
 
