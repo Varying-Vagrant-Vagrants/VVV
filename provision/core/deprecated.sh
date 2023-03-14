@@ -4,7 +4,6 @@
 # @description Check if we're on Ubuntu 14 and abort provisioning
 # @noargs
 function deprecated_distro() {
-  local command_exist
   if ! command -v lsb_release &> /dev/null; then
     return 0
   fi
