@@ -10,11 +10,12 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
-* 
+* Added Gitlab SSH fingerprints for non-RSA keys ( #2665 )
 
 ### Bug Fixes
 
-* 
+* Updated to the new GitHub RSA fingerprint ( #2665 )
+
 
 ## 3.11.0 ( 2023 March 14th )
 
