@@ -217,9 +217,9 @@ defaults['memory'] = 2048
 defaults['cores'] = 1
 defaults['provider'] = 'virtualbox'
 
-# if Arm default to parallels
+# if Arm default to docker
 if Etc.uname[:version].include? 'ARM64'
-  defaults['provider'] = 'parallels'
+  defaults['provider'] = 'docker'
 end
 
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
