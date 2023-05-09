@@ -9,6 +9,7 @@ Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
 require 'pathname'
+require 'socket'
 
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
@@ -438,17 +439,42 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.box = 'bento/ubuntu-20.04'
   end
 
+  def port_is_open?(*ports)
+    _port = 0
+    ports.each do |port|
+      _port = port
+      begin
+        Socket.tcp('127.0.0.1', port, connect_timeout: 5) {}
+      rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
+        return port
+      end
+    end
+    
+    loop do
+      _port = _port + 1
+      begin
+        Socket.tcp('127.0.0.1', _port, connect_timeout: 5) {}
+      rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
+        return _port
+      end
+    end
+  end
+  
+  http_port = port_is_open?(80, 8080, 8888, 8000)
+  https_port = port_is_open?(443, 8443, 9999, 9000)
+  mysql_port = port_is_open?(3306)
+  mailhog_port = port_is_open?(8025)
+
   # Docker use image.
   config.vm.provider :docker do |d|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
     if Vagrant::Util::Platform.platform == 'darwin19'
       # Docker in mac need explicit ports publish to access
-      d.ports = [ "#{vvv_config['vm_config']['private_network_ip']}:80:80" ]
-      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:443:443" ]
-      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:3306:3306" ]
-      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:8025:8025" ]
-      d.ports += [ "#{vvv_config['vm_config']['private_network_ip']}:1025:1025" ]
+      d.ports =  [ "#{http_port}:80" ]
+      d.ports += [ "#{https_port}:443" ]
+      d.ports += [ "#{mysql_port}:3306" ]
+      d.ports += [ "#{mailhog_port}:8025" ]
     end
   end
 
@@ -922,24 +948,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           sudo_warnings
         end
       end
-    end
-  end
-
-  # specific trigger for mac and docker
-  if Vagrant::Util::Platform.platform == 'darwin19' && vvv_config['vm_config']['provider'] == 'docker'
-    config.trigger.before :up do |trigger|
-      trigger.name = "VVV Setup docker local network before up"
-      trigger.run = {inline: "bash -c 'sudo ifconfig lo0 alias #{vvv_config['vm_config']['private_network_ip']}/24'"}
-    end
-    config.trigger.after :halt do |trigger|
-      trigger.name = 'VVV delete docker local network after halt'
-      trigger.run = {inline: "bash -c 'sudo ifconfig lo0 inet delete #{vvv_config['vm_config']['private_network_ip']}'"}
-      trigger.on_error = :continue
-    end
-    config.trigger.after :destroy do |trigger|
-      trigger.name = 'VVV delete docker local network after destroy'
-      trigger.run = {inline: "bash -c 'sudo ifconfig lo0 inet delete #{vvv_config['vm_config']['private_network_ip']}'"}
-      trigger.on_error = :continue
     end
   end
 
