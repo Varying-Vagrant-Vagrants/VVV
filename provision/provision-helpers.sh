@@ -114,16 +114,16 @@ function network_check() {
   if (( ${#failed_hosts[@]} )); then
     vvv_error "#################################################################"
     vvv_error " "
-    vvv_error "! Network Problem:"
+    vvv_error "! Warning! Network Problems:"
     vvv_error " "
-    vvv_error "VVV tried to check several domains it needs to provision but ${#failed_hosts[@]} of ${#hosts_to_test[@]} failed:"
+    vvv_error "VVV tried to check several domains it needs for provisioning but ${#failed_hosts[@]} of ${#hosts_to_test[@]} failed:"
     vvv_error " "
     for url in "${hosts_to_test[@]}"; do
       echo -e "${CRESET} [${RED}x${CRESET}] ${url}${RED}|"
     done
     vvv_error " "
     vvv_error "Make sure you have a working internet connection, that you "
-    vvv_error "restarted after installing VirtualBox and Vagrant, and that "
+    vvv_error "restarted after installing VirtualBox/Parallels/Vagrant, and that "
     vvv_error "they aren't blocked by a firewall or security software."
     vvv_error "If you can load the address in your browser, then VVV should"
     vvv_error "be able to connect."
@@ -136,19 +136,19 @@ function network_check() {
     vvv_error "provisioning involves downloading things, a full provision may "
     vvv_error "ruin the wifi for everybody else :("
     vvv_error " "
-    if ! command -v ifconfig &> /dev/null; then
+    if command -v ifconfig &> /dev/null; then
       vvv_error "Network ifconfig output:"
       vvv_error " "
       ifconfig
       vvv_error " "
     fi
-    vvv_error "Aborting provision. "
     vvv_error "Try provisioning again once network connectivity is restored."
-    vvv_error "If that doesn't work, and you're sure you have a strong "
+    vvv_error "If that doesn't work, and you're sure you have no VPNs and a strong "
     vvv_error "internet connection, open an issue on GitHub, and include the "
     vvv_error "output above so that the problem can be debugged"
     vvv_error " "
-    vvv_error "vagrant reload --provision"
+    vvv_error "vagrant halt"
+    vvv_error "vagrant up --provision"
     vvv_error " "
     vvv_error "<url>https://github.com/Varying-Vagrant-Vagrants/VVV/issues</url>"
     vvv_error " "

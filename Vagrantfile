@@ -8,6 +8,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
+require 'pathname'
 
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
@@ -329,6 +330,18 @@ ENV['LC_ALL'] = 'en_US.UTF-8'
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # VirtualBox
   config.vm.provider :virtualbox do |v|
+    unless Vagrant::Util::Platform.windows?
+      if Process.uid == 0
+        machine_id_file=Pathname.new(".vagrant/machines/default/virtualbox/id")
+        unless machine_id_file.exist?()
+          puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
+          puts " ! VVV has detected that the VM has not been created yet, and is running as root/sudo."
+          puts " ! Do not use sudo with VVV, do not run VVV as a root user. Aborting."
+          abort( "Aborting Vagrant command to prevent a critical mistake, do not use sudo/root with VVV." )
+        end
+      end
+    end
+
     v.customize ['modifyvm', :id, '--uartmode1', 'file', File.join(vagrant_dir, 'log/ubuntu-cloudimg-console.log')]
     v.customize ['modifyvm', :id, '--memory', vvv_config['vm_config']['memory']]
     v.customize ['modifyvm', :id, '--cpus', vvv_config['vm_config']['cores']]
@@ -865,29 +878,29 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # located in the www/ directory and in config/config.yml.
   #
 
-  if Vagrant.has_plugin?('vagrant-goodhosts')
+  if config.vagrant.plugins.include? 'vagrant-goodhosts'
     config.goodhosts.aliases = vvv_config['hosts']
     config.goodhosts.remove_on_suspend = true
-  elsif Vagrant.has_plugin?('vagrant-hostsmanager')
+    
+    # goodhosts already disables clean by default, but lets enforce this at both ends
+    config.goodhosts.disable_clean = true
+  elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'
     config.hostmanager.aliases = vvv_config['hosts']
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
     config.hostmanager.manage_guest = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
-  elsif Vagrant.has_plugin?('vagrant-hostsupdater')
+  elsif config.vagrant.plugins.include? 'vagrant-hostsupdater'
     # Pass the found host names to the hostsupdater plugin so it can perform magic.
     config.hostsupdater.aliases = vvv_config['hosts']
     config.hostsupdater.remove_on_suspend = true
-  else
-    show_check = true if %w[up halt resume suspend status provision reload].include? ARGV[0]
-    if show_check
-      puts ""
-      puts " X ! There is no hosts file vagrant plugin installed!"
-      puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
-      puts " X Run 'vagrant plugin install --local' to fix this."
-      puts ""
-    end
+  elsif %w[up halt resume suspend status provision reload].include? ARGV[0]
+    puts ""
+    puts " X ! There is no hosts file vagrant plugin installed!"
+    puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
+    puts " X Run 'vagrant plugin install --local' to fix this."
+    puts ""
   end
 
   # Vagrant Triggers

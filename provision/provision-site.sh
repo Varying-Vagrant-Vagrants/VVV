@@ -23,7 +23,9 @@ NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 VVV_HOSTS=""
-SUCCESS=1
+SUCCESS=0
+
+DEFAULTPHP="7.4"
 
 VVV_CONFIG=/vagrant/config.yml
 
@@ -135,6 +137,12 @@ function get_primary_host() {
 function vvv_provision_site_nginx_config() {
   local SITE_NAME=$1
   local SITE_NGINX_FILE=$2
+
+  local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
+  DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
+
   VVV_HOSTS=$(get_hosts)
   local TMPFILE=$(mktemp /tmp/vvv-site-XXXXX)
   cat "${SITE_NGINX_FILE}" >> "${TMPFILE}"
@@ -151,8 +159,9 @@ function vvv_provision_site_nginx_config() {
   sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
 
   # if php: is configured, set the upstream to match
-  if [ "${DEFAULTPHP}" != "${VVV_DEFAULTPHP}" ]; then
-    NGINX_UPSTREAM="php${DEFAULTPHP}"
+  SITE_PHP=$(vvv_get_site_php_version)
+  if [ "${DEFAULTPHP}" != "${SITE_PHP}" ]; then
+    NGINX_UPSTREAM="php${SITE_PHP}"
     NGINX_UPSTREAM=$(echo "$NGINX_UPSTREAM" | tr --delete .)
   fi
 
@@ -180,8 +189,10 @@ function vvv_provision_site_nginx_config() {
   # "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
   local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
   local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-srv-provision-core-nginx-config-/\-}
   local DEST_NGINX_FILE=${DEST_NGINX_FILE//-provision/} # remove the provision folder name
   local DEST_NGINX_FILE=${DEST_NGINX_FILE//-.vvv/} # remove the .vvv folder name
+  #local DEST_NGINX_FILE=${DEST_NGINX_FILE//\-\-/\-}
   local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
   local DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
 
@@ -189,6 +200,7 @@ function vvv_provision_site_nginx_config() {
     vvv_warn " ! This sites nginx config had problems, it may not load. Look at the above errors to diagnose the problem"
     vvv_info " ! VVV will now continue with provisioning so that other sites have an opportunity to run"
   fi
+  vvv_success " * Installed ${DEST_NGINX_FILE}"
   rm -f "${TMPFILE}"
 }
 
@@ -370,20 +382,19 @@ function vvv_provision_site_nginx() {
   elif [[ -f "${VM_DIR}/vvv-nginx.conf" ]]; then
     vvv_provision_site_nginx_config "${SITE}" "${VM_DIR}/vvv-nginx.conf"
   else
-    vvv_warn " ! Warning: An nginx config was not found!! VVV needs an Nginx config for the site or it will not know how to serve it."
-    vvv_warn " * VVV searched for an Nginx config in these locations:"
+    vvv_warn " * VVV searched and did not find an Nginx config in these locations:"
     vvv_warn "   - ${VM_DIR}/.vvv/vvv-nginx.conf"
     vvv_warn "   - ${VM_DIR}/provision/vvv-nginx.conf"
     vvv_warn "   - ${VM_DIR}/vvv-nginx.conf"
     vvv_warn " * VVV will search 3 folders down to find an Nginx config, please be patient..."
     local NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
     if [[ -z $NGINX_CONFIGS ]] ; then
-      vvv_error " ! Error: No nginx config was found, VVV will not know how to serve this site"
-      exit 1
+      vvv_warn " * VVV did not found an Nginx config file, it will use a fallback config file."
+      noroot mkdir -p "${VM_DIR}/log"
+      vvv_provision_site_nginx_config "${SITE}" "/srv/provision/core/nginx/config/site-fallback.conf"
     else
       vvv_warn " * VVV found Nginx config files in subfolders, move these files to the expected locations to avoid these warnings."
       for SITE_CONFIG_FILE in $NGINX_CONFIGS; do
-        vvv_info
         vvv_provision_site_nginx_config "${SITE}" "${SITE_CONFIG_FILE}"
       done
     fi
@@ -536,7 +547,6 @@ function vvv_custom_folders() {
 
 # -------------------------------
 source /srv/config/homebin/vvv_restore_php_default
-VVV_DEFAULTPHP=$DEFAULT_PHP
 vvv_apply_site_php_cli_version
 
 if [[ true == "${SKIP_PROVISIONING}" ]]; then

@@ -39,6 +39,12 @@ if [ -d "$HOME/.gem/bin" ] ; then
 	fi
 fi
 
+if [ -d "$HOME/.config/composer/vendor/bin" ] ; then
+	if [[ $PATH != *"${HOME}/.config/composer/vendor/bin"* ]]; then
+		export PATH="$PATH:${HOME}/.config/composer/vendor/bin"
+	fi
+fi
+
 # Vagrant scripts
 if [[ $PATH != *"/srv/config/homebin"* ]]; then
 	export PATH="$PATH:/srv/config/homebin"
