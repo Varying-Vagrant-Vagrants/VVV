@@ -327,6 +327,8 @@ if show_logo
     provider_version = '??'
   when 'hyperv'
     provider_version = 'n/a'
+  when 'docker'
+    provider_version = VagrantPlugins::DockerProvider::Driver.new.execute("docker", "-v").gsub("Docker version ", "")
   else
     provider_version = '??'
   end
