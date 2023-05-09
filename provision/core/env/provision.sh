@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 # @description Adds the homebin folder to PATH
 # @noargs
 function setup_vvv_env() {
@@ -60,7 +62,7 @@ function cleanup_terminal_splash() {
   if [[ -f /etc/update-motd.d/00-vvv-bash-splash ]]; then
     rm /etc/update-motd.d/00-vvv-bash-splash
   fi
-  cp -f "/srv/provision/core/env/motd/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
+  cp -f "${DIR}/motd/00-vvv-bash-splash" "/etc/update-motd.d/00-vvv-bash-splash"
   chmod +x /etc/update-motd.d/00-vvv-bash-splash
 }
 
@@ -71,26 +73,26 @@ function profile_setup() {
 
   # Copy custom dotfiles and bin file for the vagrant user from local
   rm -f "/home/vagrant/.bash_profile"
-  noroot cp -f "/srv/provision/core/env/homedir/.bash_profile" "/home/vagrant/.bash_profile"
+  noroot cp -f "${DIR}/homedir/.bash_profile" "/home/vagrant/.bash_profile"
 
   rm -f "/home/vagrant/.bash_aliases"
-  noroot cp -f "/srv/provision/core/env/homedir/.bash_aliases" "/home/vagrant/.bash_aliases"
+  noroot cp -f "${DIR}/homedir/.bash_aliases" "/home/vagrant/.bash_aliases"
 
   rm -f "${HOME}/.bash_aliases"
-  cp -f "/srv/provision/core/env/homedir/.bash_aliases" "${HOME}/.bash_aliases"
+  cp -f "${DIR}/homedir/.bash_aliases" "${HOME}/.bash_aliases"
 
   rm -f "/home/vagrant/.vimrc"
-  noroot cp -f "/srv/provision/core/env/homedir/.vimrc" "/home/vagrant/.vimrc"
+  noroot cp -f "${DIR}/homedir/.vimrc" "/home/vagrant/.vimrc"
 
   if [[ ! -d "/home/vagrant/.subversion" ]]; then
     noroot mkdir -p "/home/vagrant/.subversion"
   fi
 
   rm -f /home/vagrant/.subversion/servers
-  noroot cp "/srv/provision/core/env/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
+  noroot cp "${DIR}/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
 
   rm -f /home/vagrant/.subversion/config
-  noroot cp "/srv/provision/core/env/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
+  noroot cp "${DIR}/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
@@ -99,8 +101,8 @@ function profile_setup() {
   fi
 
   if [ -d "/etc/ssh" ]; then
-    cp -f /srv/provision/core/env/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts
-    cp -f /srv/provision/core/env/ssh/sshd_config /etc/ssh/sshd_config
+    cp -f "${DIR}/ssh/ssh_known_hosts" /etc/ssh/ssh_known_hosts
+    cp -f "${DIR}/ssh/sshd_config" /etc/ssh/sshd_config
     vvv_info " * Reloading SSH Daemon"
     if ! sudo service ssh reload; then
       vvv_error " ! SSH daemon failed to reload"

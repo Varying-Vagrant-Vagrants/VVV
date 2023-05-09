@@ -6,11 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.12.0 ( WIP )
+## 3.11.2 ( 2023 May 8th )
 
 ### Enhancements
 
 * Added Gitlab SSH fingerprints for non-RSA keys ( #2665 )
+* Apt sources for Ubuntu 22 LTS
 
 ### Bug Fixes
 
