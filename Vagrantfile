@@ -459,10 +459,44 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.box = 'bento/ubuntu-20.04'
   end
 
+  ## Docker provider will refuse to provision these ports, even if the containers using them are turned off
+  ## Fix provided in some future version of Vagrant. https://github.com/hashicorp/vagrant/issues/13110
+  ## TODO: Review this later
+  def get_docker_used_ports
+    docker_provisioner = VagrantPlugins::DockerProvider::Driver.new
+    used_ports = Hash.new{|hash,key| hash[key] = Set.new}
+    containers = docker_provisioner.execute('docker', 'ps', '-a', '-q', '--no-trunc').to_s.split
+    containers.each do |cid|
+      container_info = JSON.parse(docker_provisioner.execute('docker', 'inspect', cid)).first
+
+      if container_info["HostConfig"]["PortBindings"]
+        port_bindings = container_info["HostConfig"]["PortBindings"]
+        next if port_bindings.empty? # Nothing defined, but not nil either
+
+        port_bindings.each do |guest_port,host_mapping|
+          host_mapping.each do |h|
+            if h["HostIp"] == ""
+              hostip = "*"
+            else
+              hostip = h["HostIp"]
+            end
+            hostport = h["HostPort"]
+            used_ports[hostport].add(hostip)
+          end
+        end
+      end
+    end
+
+    used_ports
+  end
+  
+
   def port_is_open?(*ports)
+    used_ports = get_docker_used_ports()
     _port = 0
     ports.each do |port|
       _port = port
+      next if used_ports.has_key?(_port)
       begin
         Socket.tcp('127.0.0.1', port, connect_timeout: 5) {}
       rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
@@ -472,6 +506,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     
     loop do
       _port = _port + 1
+      next if used_ports.has_key?(_port)
       begin
         Socket.tcp('127.0.0.1', _port, connect_timeout: 5) {}
       rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
