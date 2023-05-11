@@ -486,7 +486,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   mailhog_port = port_is_open?(8025)
 
   # Docker use image.
-  config.vm.provider :docker do |d|
+  config.vm.provider :docker do |d, override|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
     d.ports =  [ "#{http_port}:80" ]
@@ -494,6 +494,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     d.ports += [ "#{mysql_port}:3306" ]
     d.ports += [ "#{mailhog_port}:8025" ]
 
+    ## Fix goodhosts aliases format for docker
+    override.goodhosts.aliases = { '127.0.0.1' => vvv_config['hosts'], '::1' => vvv_config['hosts'] }
   end
 
   # Virtualbox.
