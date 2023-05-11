@@ -489,13 +489,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :docker do |d|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
-    if Vagrant::Util::Platform.platform == 'darwin19'
-      # Docker in mac need explicit ports publish to access
-      d.ports =  [ "#{http_port}:80" ]
-      d.ports += [ "#{https_port}:443" ]
-      d.ports += [ "#{mysql_port}:3306" ]
-      d.ports += [ "#{mailhog_port}:8025" ]
-    end
+    d.ports =  [ "#{http_port}:80" ]
+    d.ports += [ "#{https_port}:443" ]
+    d.ports += [ "#{mysql_port}:3306" ]
+    d.ports += [ "#{mailhog_port}:8025" ]
+
   end
 
   # Virtualbox.
