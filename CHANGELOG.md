@@ -6,6 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.11.3 ( 2023 WIP )
+
+### Bug Fixes
+
+* Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
+
 ## 3.11.2 ( 2023 May 8th )
 
 ### Enhancements
