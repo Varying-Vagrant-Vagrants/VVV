@@ -459,75 +459,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.box = 'bento/ubuntu-20.04'
   end
 
-  ## Docker provider will refuse to provision these ports, even if the containers using them are turned off
-  ## Fix provided in some future version of Vagrant. https://github.com/hashicorp/vagrant/issues/13110
-  ## TODO: Review this later
-  def get_docker_used_ports
-    docker_provisioner = VagrantPlugins::DockerProvider::Driver.new
-    used_ports = Hash.new{|hash,key| hash[key] = Set.new}
-    containers = docker_provisioner.execute('docker', 'ps', '-a', '-q', '--no-trunc').to_s.split
-    containers.each do |cid|
-      container_info = JSON.parse(docker_provisioner.execute('docker', 'inspect', cid)).first
-
-      if container_info["HostConfig"]["PortBindings"]
-        port_bindings = container_info["HostConfig"]["PortBindings"]
-        next if port_bindings.empty? # Nothing defined, but not nil either
-
-        port_bindings.each do |guest_port,host_mapping|
-          host_mapping.each do |h|
-            if h["HostIp"] == ""
-              hostip = "*"
-            else
-              hostip = h["HostIp"]
-            end
-            hostport = h["HostPort"]
-            used_ports[hostport].add(hostip)
-          end
-        end
-      end
-    end
-
-    used_ports
-  end
-  
-
-  def port_is_open?(*ports)
-    used_ports = get_docker_used_ports()
-    _port = 0
-    ports.each do |port|
-      _port = port
-      next if used_ports.has_key?(_port)
-      begin
-        Socket.tcp('127.0.0.1', port, connect_timeout: 5) {}
-      rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
-        return port
-      end
-    end
-    
-    loop do
-      _port = _port + 1
-      next if used_ports.has_key?(_port)
-      begin
-        Socket.tcp('127.0.0.1', _port, connect_timeout: 5) {}
-      rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
-        return _port
-      end
-    end
-  end
-  
-  http_port = port_is_open?(80, 8080, 8888, 8000)
-  https_port = port_is_open?(443, 8443, 9999, 9000)
-  mysql_port = port_is_open?(3306)
-  mailhog_port = port_is_open?(8025)
-
   # Docker use image.
   config.vm.provider :docker do |d, override|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
     d.has_ssh = true
-    d.ports =  [ "#{http_port}:80" ]
-    d.ports += [ "#{https_port}:443" ]
-    d.ports += [ "#{mysql_port}:3306" ]
-    d.ports += [ "#{mailhog_port}:8025" ]
+    d.ports =  [ "80:80" ] # HTTP
+    d.ports += [ "443:443" ] # HTTPS
+    d.ports += [ "3306:3306" ] # MySQL
+    d.ports += [ "8025:8025" ] # Mailhog
 
     ## Fix goodhosts aliases format for docker
     override.goodhosts.aliases = { '127.0.0.1' => vvv_config['hosts'], '::1' => vvv_config['hosts'] }
@@ -956,7 +895,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if config.vagrant.plugins.include? 'vagrant-goodhosts'
     config.goodhosts.aliases = vvv_config['hosts']
     config.goodhosts.remove_on_suspend = true
-    
+
     # goodhosts already disables clean by default, but lets enforce this at both ends
     config.goodhosts.disable_clean = true
   elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'
