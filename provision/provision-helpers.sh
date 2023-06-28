@@ -663,3 +663,14 @@ function vvv_update_guest_hosts() {
 }
 
 export -f vvv_update_guest_hosts
+
+function vvv_safe_sed() {
+  local expression="${1}"
+  local file="${2}"
+  local tempfile
+  tempfile=$(mktemp /tmp/safe-sed.XXXXXX)
+  /usr/bin/sed "${expression}" "${file}" > "${tempfile}"
+  cat "${tempfile}" > "${file}"
+  rm "${tempfile}"
+}
+export -f vvv_safe_sed

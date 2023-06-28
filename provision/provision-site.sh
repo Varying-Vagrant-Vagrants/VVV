@@ -153,10 +153,6 @@ function vvv_provision_site_nginx_config() {
   # whatever you want, allowing flexible placement of the site folder
   # while still having an Nginx config which works.
   local DIR="$(dirname "${SITE_NGINX_FILE}")"
-  sed "s#{vvv_path_to_folder}#${DIR}#" "${SITE_NGINX_FILE}" >  "${TMPFILE}"
-  sed -i "s#{vvv_path_to_site}#${VM_DIR}#"  "${TMPFILE}"
-  sed -i "s#{vvv_site_name}#${SITE_NAME}#"  "${TMPFILE}"
-  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
 
   # if php: is configured, set the upstream to match
   SITE_PHP=$(vvv_get_site_php_version)
@@ -171,19 +167,24 @@ function vvv_provision_site_nginx_config() {
     NGINX_UPSTREAM='php'
   fi
 
-  sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
+  cp -f "${SITE_NGINX_FILE}" "${TMPFILE}"
+  vvv_safe_sed "s#{vvv_path_to_folder}#${DIR}#" "${TMPFILE}"
+  vvv_safe_sed "s#{vvv_path_to_site}#${VM_DIR}#" "${TMPFILE}"
+  vvv_safe_sed "s#{vvv_site_name}#${SITE_NAME}#" "${TMPFILE}"
+  vvv_safe_sed "s#{vvv_hosts}#${VVV_HOSTS}#" "${TMPFILE}"
+  vvv_safe_sed "s#{upstream}#${NGINX_UPSTREAM}#" "${TMPFILE}"
 
   if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
-    sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#"  "${TMPFILE}"
-    sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "${TMPFILE}"
+    vvv_safe_sed "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#" "${TMPFILE}"
+    vvv_safe_sed "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "${TMPFILE}"
   else
-    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#"  "${TMPFILE}"
-    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#"  "${TMPFILE}"
+    vvv_safe_sed "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#" "${TMPFILE}"
+    vvv_safe_sed "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#" "${TMPFILE}"
   fi
 
   # Resolve relative paths since not supported in Nginx root.
-  while grep -sqE '/[^/][^/]*/\.\.'  "${TMPFILE}"; do
-    sed -i 's#/[^/][^/]*/\.\.##g'  "${TMPFILE}"
+  while grep -sqE '/[^/][^/]*/\.\.' "${TMPFILE}"; do
+    vvv_safe_sed 's#/[^/][^/]*/\.\.##g' "${TMPFILE}"
   done
 
   # "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
