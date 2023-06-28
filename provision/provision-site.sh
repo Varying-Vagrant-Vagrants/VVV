@@ -183,11 +183,14 @@ function vvv_provision_site_nginx_config() {
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
   # while still having an Nginx config which works.
-  local DIR="$(dirname "${SITE_NGINX_FILE}")"
-  sed "s#{vvv_path_to_folder}#${DIR}#" "${SITE_NGINX_FILE}" >  "${TMPFILE}"
-  sed -i "s#{vvv_path_to_site}#${VM_DIR}#"  "${TMPFILE}"
-  sed -i "s#{vvv_site_name}#${SITE_NAME}#"  "${TMPFILE}"
-  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
+  local DIR
+  DIR="$(dirname "${SITE_NGINX_FILE}")"
+
+  local NCONFIG
+  NCONFIG=$(vvv_site_template_search_replace_in_file "${SITE_NGINX_FILE}" "{vvv_path_to_folder}" "${DIR}")
+  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_path_to_site}" "${VM_DIR}/")
+  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_site_name}" "${SITE_NAME}")
+  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_hosts}" "${VVV_HOSTS}")
 
   # if php: is configured, set the upstream to match
   SITE_PHP=$(vvv_get_site_php_version)
@@ -202,30 +205,35 @@ function vvv_provision_site_nginx_config() {
     NGINX_UPSTREAM='php'
   fi
 
-  sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
+  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{upstream}" "${NGINX_UPSTREAM}")
 
   if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
-    sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#"  "${TMPFILE}"
-    sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "${TMPFILE}"
+    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_cert}" "ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";")
+    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_key}" "ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";")
+
   else
-    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#"  "${TMPFILE}"
-    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#"  "${TMPFILE}"
+    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_cert}" "# TLS cert not included as the certificate file is not present")
+    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_key}" "# TLS key not included as the certificate file is not present")
+
   fi
 
   # Resolve relative paths since not supported in Nginx root.
-  while grep -sqE '/[^/][^/]*/\.\.'  "${TMPFILE}"; do
-    sed -i 's#/[^/][^/]*/\.\.##g'  "${TMPFILE}"
+  while [[ $NCONFIG =~ /[^/][^/]*/\.\. ]]; do
+    NCONFIG=${NCONFIG//\/[^\/][^\/]*\/\.\./}
   done
 
   # "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-srv-provision-core-nginx-config-/\-}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-provision/} # remove the provision folder name
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-.vvv/} # remove the .vvv folder name
+  local DEST_NGINX_FILE
+  DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//-srv-provision-core-nginx-config-/\-}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//-provision/} # remove the provision folder name
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//-.vvv/} # remove the .vvv folder name
   #local DEST_NGINX_FILE=${DEST_NGINX_FILE//\-\-/\-}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
-  local DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
+  DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
+  DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
+
+  echo "${NCONFIG}" > "${TMPFILE}"
 
   if ! vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"; then
     vvv_warn " ! This sites nginx config had problems, it may not load. Look at the above errors to diagnose the problem"
@@ -241,9 +249,9 @@ function vvv_provision_site_nginx_config() {
 # @internal
 function vvv_provision_hosts_file() {
   local HOSTFILE=$1
-  while read HOSTFILE; do
-    while IFS='' read -r line || [ -n "$line" ]; do
-      if [[ "#" != ${line:0:1} ]]; then
+  while read -r HOSTFILE; do
+    while IFS='' read -r line || [ -n "${line}" ]; do
+      if [[ "#" != "${line:0:1}" ]]; then
         if [[ -z "$(grep -q "^127.0.0.1 ${line}$" /etc/hosts)" ]]; then
           echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
           echo "   - Added ${line} from ${HOSTFILE}"
