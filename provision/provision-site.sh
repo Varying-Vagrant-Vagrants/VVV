@@ -132,31 +132,6 @@ function get_primary_host() {
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
-# @description Takes a string and replaces all instances of a token with a value
-vvv_site_template_search_replace() {
-  local content="$1"
-  local token="$2"
-  local value="$3"
-
-  # Read the file contents and replace the token with the value
-  content=${content//$token/$value}
-  echo "${content}"
-}
-
-# @description Takes a file, and replaces all instances of a token with a value
-vvv_site_template_search_replace_in_file() {
-  local file="$1"
-
-  # Read the file contents and replace the token with the value
-  local content
-  if [[ -f "${file}" ]]; then
-    content=$(<"${file}")
-    vvv_site_template_search_replace "${content}" "${2}" "${3}"
-  else
-    return 1
-  fi
-}
-
 # @description processes and installs an Nginx config for a site.
 # The function performs variable substitutions, and installs the resulting config.
 # This includes inserting SSL key references, host names, and paths.
