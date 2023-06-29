@@ -162,10 +162,10 @@ function vvv_provision_site_nginx_config() {
   DIR="$(dirname "${SITE_NGINX_FILE}")"
 
   local NCONFIG
-  NCONFIG=$(vvv_site_template_search_replace_in_file "${SITE_NGINX_FILE}" "{vvv_path_to_folder}" "${DIR}")
-  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_path_to_site}" "${VM_DIR}/")
-  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_site_name}" "${SITE_NAME}")
-  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_hosts}" "${VVV_HOSTS}")
+  NCONFIG=$(vvv_search_replace_in_file "${SITE_NGINX_FILE}" "{vvv_path_to_folder}" "${DIR}")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_path_to_site}" "${VM_DIR}/")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_site_name}" "${SITE_NAME}")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_hosts}" "${VVV_HOSTS}")
 
   # if php: is configured, set the upstream to match
   SITE_PHP=$(vvv_get_site_php_version)
@@ -180,15 +180,15 @@ function vvv_provision_site_nginx_config() {
     NGINX_UPSTREAM='php'
   fi
 
-  NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{upstream}" "${NGINX_UPSTREAM}")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{upstream}" "${NGINX_UPSTREAM}")
 
   if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
-    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_cert}" "ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";")
-    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_key}" "ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";")
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_cert}" "ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";")
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_key}" "ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";")
 
   else
-    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_cert}" "# TLS cert not included as the certificate file is not present")
-    NCONFIG=$(vvv_site_template_search_replace "${NCONFIG}" "{vvv_tls_key}" "# TLS key not included as the certificate file is not present")
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_cert}" "# TLS cert not included as the certificate file is not present")
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_key}" "# TLS key not included as the certificate file is not present")
 
   fi
 
