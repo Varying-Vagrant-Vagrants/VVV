@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.11.3 ( 2023 WIP )
 
+### Enhancements
+
+* Monolithic docker beta support ( #2632 )
+
 ### Bug Fixes
 
 * Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
