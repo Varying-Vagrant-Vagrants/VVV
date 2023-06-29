@@ -319,8 +319,11 @@ if show_logo
     provider_meta = VagrantPlugins::ProviderVirtualBox::Driver::Meta.new()
     provider_version = provider_meta.version
   when 'parallels'
-    provider_meta = VagrantPlugins::Parallels::Driver::Meta.new()
-    provider_version = provider_meta.version
+    provider_version = '?'
+    if defined? VagrantPlugins::Parallels
+      provider_meta = VagrantPlugins::Parallels::Driver::Meta.new()
+      provider_version = provider_meta.version
+    end
   when 'vmware'
     provider_version = '??'
   when 'hyperv'
