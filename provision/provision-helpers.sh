@@ -661,9 +661,10 @@ function vvv_update_guest_hosts() {
     sudo rm /tmp/site-hosts
   fi
 }
-
 export -f vvv_update_guest_hosts
 
+# @description Performs an in place sed command via a temporary
+# file to avoid permission issues
 function vvv_safe_sed() {
   local expression="${1}"
   local file="${2}"
