@@ -674,3 +674,30 @@ function vvv_safe_sed() {
   rm "${tempfile}"
 }
 export -f vvv_safe_sed
+
+# @description Takes a string and replaces all instances of a token with a value
+function vvv_search_replace() {
+  local content="$1"
+  local token="$2"
+  local value="$3"
+
+  # Read the file contents and replace the token with the value
+  content=${content//$token/$value}
+  echo "${content}"
+}
+export -f vvv_search_replace
+
+# @description Takes a file, and replaces all instances of a token with a value
+function vvv_search_replace_in_file() {
+  local file="$1"
+
+  # Read the file contents and replace the token with the value
+  local content
+  if [[ -f "${file}" ]]; then
+    content=$(<"${file}")
+    vvv_search_replace "${content}" "${2}" "${3}"
+  else
+    return 1
+  fi
+}
+export -f vvv_search_replace_in_file
