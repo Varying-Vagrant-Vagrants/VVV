@@ -11,7 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
-* Miscellanous Shellcheck linter fixes and improvements
+* Miscellanous Shellcheck linter fixes and improvements ( #2675 )
 
 ## 3.11.2 ( 2023 May 8th )
 
