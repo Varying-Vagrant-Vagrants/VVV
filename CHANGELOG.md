@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.11.3 ( 2023 WIP )
 
+### Enhancements
+
+* Added the GMP PHP extension to the default PHP installation ( #2676 )
+
 ### Bug Fixes
 
 * Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
