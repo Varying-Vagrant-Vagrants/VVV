@@ -15,7 +15,7 @@ jobs:
   on-docker:
     name: Docker Provisioner
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -113,7 +113,7 @@ jobs:
   on-stable:
     name: Stable Reprovision
     # The type of runner that the job will run on
-    runs-on: macos-10.15
+    runs-on: macos-11
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -147,7 +147,7 @@ jobs:
   on-develop:
     name: Develop Reprovision
     # The type of runner that the job will run on
-    runs-on: macos-10.15
+    runs-on: macos-11
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -181,7 +181,7 @@ jobs:
   on-clean:
     name: Clean Provision
     # The type of runner that the job will run on
-    runs-on: macos-10.15
+    runs-on: macos-11
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
