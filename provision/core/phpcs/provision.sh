@@ -6,6 +6,7 @@ set -eo pipefail
 function php_codesniff_setup() {
   export COMPOSER_ALLOW_SUPERUSER=1
   export COMPOSER_NO_INTERACTION=1
+  export COMPOSER_RUNTIME_ENV="vagrant"
 
   if [[ -f "/srv/www/phpcs/CodeSniffer.conf" ]]; then
     vvv_info " * [PHPCS]: Removing the old PHPCS setup"
