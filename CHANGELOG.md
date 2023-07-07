@@ -12,6 +12,10 @@ permalink: /docs/en-US/changelog/
 
 * Added the GMP PHP extension to the default PHP installation ( #2676 )
 
+### Maintenance
+
+* Updated bitbucket SSH fingerprints ( #2679 )
+
 ### Bug Fixes
 
 * Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
