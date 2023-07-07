@@ -14,7 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   on-docker:
-    name: Docker Provisioner
+    name: Ubuntu 20 Docker Provisioner
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
 
@@ -112,7 +112,7 @@ jobs:
 
   # This workflow contains a single job called "build"
   on-stable:
-    name: Stable Reprovision
+    name: MacOS 10.15 Stable Reprovision
     # The type of runner that the job will run on
     runs-on: macos-10.15
 
@@ -154,7 +154,7 @@ jobs:
           path: "${{ github.workspace }}/log"
 
   on-develop:
-    name: Develop Reprovision
+    name: MacOS 10.15 Develop Reprovision
     # The type of runner that the job will run on
     runs-on: macos-10.15
 
@@ -197,7 +197,7 @@ jobs:
           path: "${{ github.workspace }}/log"
 
   on-clean:
-    name: Clean Provision
+    name: MacOS 10.15 Clean Provision
     # The type of runner that the job will run on
     runs-on: macos-10.15
 
