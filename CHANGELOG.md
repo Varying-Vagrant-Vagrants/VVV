@@ -19,6 +19,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
+* Github action fixes for composer and an upgrade to Ubuntu 20 ( #2677 )
 
 ## 3.11.2 ( 2023 May 8th )
 
