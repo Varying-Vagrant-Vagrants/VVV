@@ -20,7 +20,7 @@ function php_codesniff_setup() {
   noroot mkdir -p /srv/www/phpcs
   noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
   cd /srv/www/phpcs
-  noroot composer update --no-ansi --no-progress --no-dev
+  noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
