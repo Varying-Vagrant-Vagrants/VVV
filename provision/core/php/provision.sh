@@ -51,6 +51,7 @@ function php_register_apt_packages() {
     "php${VVV_BASE_PHPVERSION}-soap"
     "php${VVV_BASE_PHPVERSION}-xml"
     "php${VVV_BASE_PHPVERSION}-zip"
+    "php${VVV_BASE_PHPVERSION}-gmp"
   )
 
   # ImageMagick

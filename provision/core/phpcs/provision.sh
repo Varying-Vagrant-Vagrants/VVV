@@ -6,6 +6,7 @@ set -eo pipefail
 function php_codesniff_setup() {
   export COMPOSER_ALLOW_SUPERUSER=1
   export COMPOSER_NO_INTERACTION=1
+  export COMPOSER_RUNTIME_ENV="vagrant"
 
   if [[ -f "/srv/www/phpcs/CodeSniffer.conf" ]]; then
     vvv_info " * [PHPCS]: Removing the old PHPCS setup"
@@ -19,7 +20,7 @@ function php_codesniff_setup() {
   noroot mkdir -p /srv/www/phpcs
   noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
   cd /srv/www/phpcs
-  noroot composer update --no-ansi --no-progress --no-dev
+  noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
