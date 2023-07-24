@@ -229,6 +229,26 @@ vvv_config['hosts'] = vvv_config['hosts'].uniq
 
 vvv_config['vagrant-plugins'] = {} unless vvv_config['vagrant-plugins']
 
+# Early mapping of the hosts to be added.
+vvv_config['utilities'].each do |name, extensions|
+  extensions = {} unless extensions.is_a? Array
+  extensions.each do |extension|
+    if extension == 'tideways'
+      vvv_config['hosts'] += ['tideways.vvv.test']
+      vvv_config['hosts'] += ['xhgui.vvv.test']
+    end
+  end
+end
+vvv_config['extensions'].each do |name, extensions|
+  extensions = {} unless extensions.is_a? Array
+  extensions.each do |extension|
+    if extension == 'tideways'
+      vvv_config['hosts'] += ['tideways.vvv.test']
+      vvv_config['hosts'] += ['xhgui.vvv.test']
+    end
+  end
+end
+
 # Create a global variable to use in functions and classes
 $vvv_config = vvv_config
 
@@ -307,6 +327,8 @@ if show_logo
     provider_version = '??'
   when 'hyperv'
     provider_version = 'n/a'
+  when 'docker'
+    provider_version = VagrantPlugins::DockerProvider::Driver.new.execute("docker", "-v").gsub("Docker version ", "")
   else
     provider_version = '??'
   end
@@ -794,10 +816,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   vvv_config['utilities'].each do |name, extensions|
     extensions = {} unless extensions.is_a? Array
     extensions.each do |extension|
-      if extension == 'tideways'
-        vvv_config['hosts'] += ['tideways.vvv.test']
-        vvv_config['hosts'] += ['xhgui.vvv.test']
-      end
       config.vm.provision "extension-#{name}-#{extension}",
                           type: 'shell',
                           keep_color: true,
@@ -812,10 +830,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   vvv_config['extensions'].each do |name, extensions|
     extensions = {} unless extensions.is_a? Array
     extensions.each do |extension|
-      if extension == 'tideways'
-        vvv_config['hosts'] += ['tideways.vvv.test']
-        vvv_config['hosts'] += ['xhgui.vvv.test']
-      end
       config.vm.provision "extension-#{name}-#{extension}",
                           type: 'shell',
                           keep_color: true,
