@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
 * Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
 * Miscellanous Shellcheck linter fixes and improvements ( #2675 )
 * Github action fixes for composer and an upgrade to Ubuntu 20 ( #2677 )
+* Fixed an issue with git safe directories ( #2681 )
 
 ## 3.11.2 ( 2023 May 8th )
 
