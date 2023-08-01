@@ -18,7 +18,7 @@ VVV_PROVISIONER_RUNNING=""
 # @arg $1 string Name of the provisioner
 function provisioner_begin() {
   VVV_PROVISIONER_RUNNING="${1:-${FUNCNAME[1]}}"
-  touch "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
+  touch "/srv/vvv/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   log_to_file "provisioner-${VVV_PROVISIONER_RUNNING}"
   vvv_success " ▷ Running the <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner...</success>"
   start_seconds="$(date +%s)"
@@ -33,7 +33,7 @@ function provisioner_end() {
   local elapsed="$(( end_seconds - start_seconds ))"
   if [[ $PROVISION_SUCCESS -eq "0" ]]; then
     vvv_success " ✔ The <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner completed in </success><b>${elapsed}</b><success> seconds.</success>"
-    rm -f "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
+    rm -f "/srv/vvv/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   else
     vvv_error " ! The <b>'${VVV_PROVISIONER_RUNNING}'</b><error> provisioner ran into problems, the full log is available at <b>'${VVV_CURRENT_LOG_FILE}'</b><error>. It completed in <b>${elapsed}</b><error> seconds."
   fi

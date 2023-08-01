@@ -19,11 +19,18 @@ export BLUE="\033[0;38;5;4m" # 33m"
 export PURPLE="\033[0;38;5;5m" # 129m"
 export CRESET="\033[0m"
 
-
-VVV_CONFIG=/vagrant/vvv-custom.yml
-if [[ -f /vagrant/config.yml ]]; then
-	VVV_CONFIG=/vagrant/config.yml
-fi
+configs=(
+  /srv/vvv/config.yml
+  /vagrant/config.yml
+  /vagrant/vvv-config.yml
+)
+VVV_CONFIG=/srv/vvv/config.yml
+for item in ${configs[*]}; do
+  if [[ -f $item ]]; then
+    VVV_CONFIG=$item
+    break
+  fi
+done
 
 export VVV_CONFIG
 export VVV_CURRENT_LOG_FILE=""
@@ -164,7 +171,7 @@ export -f network_check
 #
 # @arg $1 string name of the provisioner
 function log_to_file() {
-	local date_time=$(cat /vagrant/provisioned_at)
+	local date_time=$(cat /srv/vvv/provisioned_at)
 	local logfolder="/var/log/provisioners/${date_time}"
 	local logfile="${logfolder}/${1}.log"
 	mkdir -p "${logfolder}"

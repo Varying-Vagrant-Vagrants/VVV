@@ -27,8 +27,6 @@ SUCCESS=0
 
 DEFAULTPHP="7.4"
 
-VVV_CONFIG=/vagrant/config.yml
-
 . "/srv/provision/provisioners.sh"
 
 # @description Retrieves a config value for the given site as specified in `config.yml`

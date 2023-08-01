@@ -197,6 +197,7 @@ Finally, check that your custom modifications haven't been added in the official
 * Minor refactors and colours added to the main provisioner
 * Improved output of backup and import scripts
 * SHDocs added to core provisioners
+* A new `/srv/vvv` folder for files created inside the VM related to provisioning ( #2328 )
 * Improved PHP configuration file installation
 * Sites can now define composer create-project/install/update commands to run in their folders section in addition to the git options added in v3.5.1
 * Adds a `vagrant` command inside the virtual machine to tell users they are still inside the VM and need to exit
