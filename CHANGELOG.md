@@ -6,6 +6,26 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.12 ( 2023 August 3rd )
+
+### Enhancements
+
+* Added the GMP PHP extension to the default PHP installation ( #2676 )
+
+### Maintenance
+
+* Updated bitbucket SSH fingerprints ( #2679 )
+
+### Bug Fixes
+
+* Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
+* Miscellanous Shellcheck linter fixes and improvements ( #2675 )
+* Github action fixes for composer and an upgrade to Ubuntu 20 ( #2677 )
+* Fixed an issue with git safe directories ( #2681 )
+* Git safe directory fixes
+* Fixed docker version detection
+* PHPCS install improvements
+
 ## 3.11.2 ( 2023 May 8th )
 
 ### Enhancements

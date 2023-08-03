@@ -37,7 +37,7 @@ function composer_setup() {
       return 1
     fi
   else
-    vvv_info " * [Composer]: Already installed"
+    vvv_info " * [Composer]: Already installed: $(composer --version)"
   fi
 
   vvv_info " * [Composer]: Making sure the Composer cache is not owned by root"
@@ -46,6 +46,11 @@ function composer_setup() {
   mkdir -p /root/.local/share/composer
   chown -R vagrant:www-data "${COMPOSER_DATA_DIR}"
   chown -R vagrant:www-data /root/.local/share/composer
+
+  # Github runner fixes
+  if [ -d "/home/runner/.config/composer/" ]; then
+    chown -R vagrant:www-data /home/runner/.config/composer/
+  fi
 
   vvv_info " * [Composer]: Checking for GitHub tokens"
   if github_token=$(shyaml get-value -q "general.github_token" < "${VVV_CONFIG}"); then
