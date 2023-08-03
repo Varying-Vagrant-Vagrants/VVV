@@ -122,6 +122,7 @@ vm_config:
   # provider: hyperv
   # provider: parallels
   # provider: vmware_desktop
+  # provider: docker
 
 # General VVV options
 general:

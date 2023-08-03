@@ -8,7 +8,7 @@ _VVV stands for Varying Vagrant Vagrants._
 
 ## How To Use
 
-To use it, download and install [Vagrant](https://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/). Then, clone this repository and run:
+To use it, download and install [Vagrant](https://www.vagrantup.com) and a provider such as [VirtualBox](https://www.virtualbox.org/), Docker, or Parallels Pro. Then, clone this repository and run:
 
 ```shell
 vagrant plugin install --local

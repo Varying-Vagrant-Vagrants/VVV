@@ -50,6 +50,7 @@ function php_register_apt_packages() {
     "php${VVV_BASE_PHPVERSION}-soap"
     "php${VVV_BASE_PHPVERSION}-xml"
     "php${VVV_BASE_PHPVERSION}-zip"
+    "php${VVV_BASE_PHPVERSION}-gmp"
   )
 
   # ImageMagick
@@ -107,6 +108,11 @@ function phpfpm_setup() {
       fi
     fi
   done
+
+  if [[ ! -d "/run/php" ]]; then
+    mkdir -p "/run/php"
+    chown -R www-data:www-data "/run/php"
+  fi
 }
 export -f phpfpm_setup
 

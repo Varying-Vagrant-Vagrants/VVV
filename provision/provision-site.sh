@@ -36,7 +36,8 @@ VVV_CONFIG=/vagrant/config.yml
 # @arg $1 string the config value to fetch
 # @arg $2 string the default value
 function vvv_get_site_config_value() {
-  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
+  local value
+  value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.${1}" "${2}" < ${VVV_CONFIG})
   echo "${value}"
 }
 
@@ -47,7 +48,7 @@ function vvv_get_site_php_version() {
   SITE_PHP=$(echo -n "${SITE_PHP}" | xargs | tr -d '\n' | tr -d '\r')
 
   # Handle when php:8 instead of 8.0 or if it's parsed as a number
-  if [[ "${#SITE_PHP}" -eq "1" ]]; then
+  if [[ ${#SITE_PHP} -eq 1 ]]; then
     SITE_PHP="${SITE_PHP}.0"
   fi
 
@@ -55,9 +56,10 @@ function vvv_get_site_php_version() {
 }
 
 vvv_validate_site_php_version() {
+  local SITE_PHP
   SITE_PHP=$(vvv_get_site_php_version)
-  if [[ "${#SITE_PHP}" > "3" ]]; then
-    vvv_warn " ! Warning: PHP version defined is using a wrong format: '${SITE_PHP}' with length '${length}'"
+  if [[ ${#SITE_PHP} -gt 3 ]]; then
+    vvv_warn " ! Warning: PHP version defined is using a wrong format: '${SITE_PHP}' with length '${#SITE_PHP}'"
     vvv_warn "            If you are trying to use a more specific version of PHP such as 7.4.1 or 7.4.0 you"
     vvv_warn "            need to be less specific and use 7.4"
   fi
@@ -102,7 +104,8 @@ function get_config_value() {
 # @see get_hosts_list
 # @stdout a space separated string of domains, defaulting to `sitename.test` if none are specified
 function get_hosts() {
-  local value=$(shyaml -q get-values-0 "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
+  local value
+  value=$(shyaml -q get-values-0 "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG} | tr '\0' ' ' | sed 's/ *$//')
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
@@ -112,7 +115,8 @@ function get_hosts() {
 # @see get_hosts
 # @stdout a space separated string of domains, defaulting to `sitename.test` if none are specified
 function get_hosts_list() {
-  local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG})
+  local value
+  value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" < ${VVV_CONFIG})
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
@@ -123,7 +127,8 @@ function get_hosts_list() {
 # @see get_hosts_list
 # @stdout the first host listed in the config file for this site, defaulting to `sitename.test` if none are specified
 function get_primary_host() {
-  local value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.hosts.0" "${1}" < ${VVV_CONFIG})
+  local value
+  value=$(shyaml -q get-value "sites.${SITE_ESCAPED}.hosts.0" "${1}" < ${VVV_CONFIG})
   echo "${value:-"${VVV_SITE_NAME}.test"}"
 }
 
@@ -144,7 +149,8 @@ function vvv_provision_site_nginx_config() {
   DEST_NGINX_FILE="vvv-auto-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-32).conf"
 
   VVV_HOSTS=$(get_hosts)
-  local TMPFILE=$(mktemp /tmp/vvv-site-XXXXX)
+  local TMPFILE
+  TMPFILE=$(mktemp /tmp/vvv-site-XXXXX)
   cat "${SITE_NGINX_FILE}" >> "${TMPFILE}"
 
   vvv_info " * VVV is adding an Nginx config from ${SITE_NGINX_FILE}"
@@ -152,11 +158,14 @@ function vvv_provision_site_nginx_config() {
   # We allow the replacement of the {vvv_path_to_folder} token with
   # whatever you want, allowing flexible placement of the site folder
   # while still having an Nginx config which works.
-  local DIR="$(dirname "${SITE_NGINX_FILE}")"
-  sed "s#{vvv_path_to_folder}#${DIR}#" "${SITE_NGINX_FILE}" >  "${TMPFILE}"
-  sed -i "s#{vvv_path_to_site}#${VM_DIR}#"  "${TMPFILE}"
-  sed -i "s#{vvv_site_name}#${SITE_NAME}#"  "${TMPFILE}"
-  sed -i "s#{vvv_hosts}#${VVV_HOSTS}#"  "${TMPFILE}"
+  local DIR
+  DIR="$(dirname "${SITE_NGINX_FILE}")"
+
+  local NCONFIG
+  NCONFIG=$(vvv_search_replace_in_file "${SITE_NGINX_FILE}" "{vvv_path_to_folder}" "${DIR}")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_path_to_site}" "${VM_DIR}/")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_site_name}" "${SITE_NAME}")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_hosts}" "${VVV_HOSTS}")
 
   # if php: is configured, set the upstream to match
   SITE_PHP=$(vvv_get_site_php_version)
@@ -171,30 +180,35 @@ function vvv_provision_site_nginx_config() {
     NGINX_UPSTREAM='php'
   fi
 
-  sed -i "s#{upstream}#${NGINX_UPSTREAM}#"  "${TMPFILE}"
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{upstream}" "${NGINX_UPSTREAM}")
 
   if [ -f "/srv/certificates/${SITE_NAME}/dev.crt" ]; then
-    sed -i "s#{vvv_tls_cert}#ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";#"  "${TMPFILE}"
-    sed -i "s#{vvv_tls_key}#ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";#" "${TMPFILE}"
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_cert}" "ssl_certificate \"/srv/certificates/${SITE_NAME}/dev.crt\";")
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_key}" "ssl_certificate_key \"/srv/certificates/${SITE_NAME}/dev.key\";")
+
   else
-    sed -i "s#{vvv_tls_cert}#\# TLS cert not included as the certificate file is not present#"  "${TMPFILE}"
-    sed -i "s#{vvv_tls_key}#\# TLS key not included as the certificate file is not present#"  "${TMPFILE}"
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_cert}" "# TLS cert not included as the certificate file is not present")
+    NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_tls_key}" "# TLS key not included as the certificate file is not present")
+
   fi
 
   # Resolve relative paths since not supported in Nginx root.
-  while grep -sqE '/[^/][^/]*/\.\.'  "${TMPFILE}"; do
-    sed -i 's#/[^/][^/]*/\.\.##g'  "${TMPFILE}"
+  while [[ $NCONFIG =~ /[^/][^/]*/\.\. ]]; do
+    NCONFIG=${NCONFIG//\/[^\/][^\/]*\/\.\./}
   done
 
   # "/etc/nginx/custom-sites/${DEST_NGINX_FILE}"
-  local DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-srv-provision-core-nginx-config-/\-}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-provision/} # remove the provision folder name
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE//-.vvv/} # remove the .vvv folder name
+  local DEST_NGINX_FILE
+  DEST_NGINX_FILE=${SITE_NGINX_FILE//\/srv\/www\//}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//\//\-}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//-srv-provision-core-nginx-config-/\-}
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//-provision/} # remove the provision folder name
+  DEST_NGINX_FILE=${DEST_NGINX_FILE//-.vvv/} # remove the .vvv folder name
   #local DEST_NGINX_FILE=${DEST_NGINX_FILE//\-\-/\-}
-  local DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
-  local DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
+  DEST_NGINX_FILE=${DEST_NGINX_FILE/%-vvv-nginx.conf/}
+  DEST_NGINX_FILE="vvv-${DEST_NGINX_FILE}-$(md5sum <<< "${SITE_NGINX_FILE}" | cut -c1-8).conf"
+
+  echo "${NCONFIG}" > "${TMPFILE}"
 
   if ! vvv_maybe_install_nginx_config "${TMPFILE}" "${DEST_NGINX_FILE}" "sites"; then
     vvv_warn " ! This sites nginx config had problems, it may not load. Look at the above errors to diagnose the problem"
@@ -210,15 +224,15 @@ function vvv_provision_site_nginx_config() {
 # @internal
 function vvv_provision_hosts_file() {
   local HOSTFILE=$1
-  while read HOSTFILE; do
-    while IFS='' read -r line || [ -n "$line" ]; do
-      if [[ "#" != ${line:0:1} ]]; then
+  while read -r HOSTFILE; do
+    while IFS='' read -r line || [ -n "${line}" ]; do
+      if [[ "#" != "${line:0:1}" ]]; then
         if [[ -z "$(grep -q "^127.0.0.1 ${line}$" /etc/hosts)" ]]; then
           echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
           echo "   - Added ${line} from ${HOSTFILE}"
         fi
       fi
-    done < "$HOSTFILE"
+    done < "${HOSTFILE}"
   done
 }
 
@@ -229,7 +243,8 @@ function vvv_provision_hosts_file() {
 # @noargs
 function vvv_process_site_hosts() {
   echo " * Adding domains to the virtual machine's /etc/hosts file..."
-  local hosts=$(get_hosts_list)
+  local hosts
+  hosts=$(get_hosts_list)
   if [ ${#hosts[@]} -eq 0 ]; then
     echo " * No hosts were found in the VVV config, falling back to vvv-hosts"
     if [[ -f "${VM_DIR}/.vvv/vvv-hosts" ]]; then
@@ -243,7 +258,8 @@ function vvv_process_site_hosts() {
       vvv_provision_hosts_file "${SITE}" "${VM_DIR}/vvv-hosts"
     else
       echo " * Searching subfolders 4 levels down for a vvv-hosts file ( this can be skipped by using ./vvv-hosts, .vvv/vvv-hosts, or provision/vvv-hosts"
-      local HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
+      local HOST_FILES
+      HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
       if [[ -z $HOST_FILES ]] ; then
         vvv_error " ! Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible"
       else
@@ -255,7 +271,7 @@ function vvv_process_site_hosts() {
   else
     echo " * Adding hosts for the site to the VM hosts file"
     for line in $hosts; do
-      if [[ -z "$(grep -q "^127.0.0.1 $line$" /etc/hosts)" ]]; then
+      if [[ -z "$(grep -q "^127.0.0.1 ${line}$" /etc/hosts)" ]]; then
         echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
         echo "   - Added ${line} from ${VVV_CONFIG}"
       fi
@@ -276,6 +292,7 @@ function vvv_provision_site_repo() {
         echo " * Any local changes not present on the server will be discarded in favor of the remote branch"
         cd "${VM_DIR}"
         echo " * Checking that remote origin is ${REPO}"
+        local CURRENTORIGIN
         CURRENTORIGIN=$(noroot git remote get-url origin)
         if [[ "${CURRENTORIGIN}" != "${REPO}" ]]; then
           vvv_error " ! The site config said to use <b>${REPO}</b>"
@@ -357,12 +374,14 @@ function vvv_provision_site_script() {
     SUCCESS=$?
   else
     vvv_warn " * Warning: A site provisioner was not found at .vvv/vvv-init.sh provision/vvv-init.sh or vvv-init.sh, searching 3 folders down, please be patient..."
-    local SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.sh');
+    local SITE_INIT_SCRIPTS
+    SITE_INIT_SCRIPTS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-init.sh');
     if [[ -z $SITE_INIT_SCRIPTS ]] ; then
       vvv_warn " * Warning: No site provisioner was found, VVV could not perform any scripted setup that might install software for this site"
     else
       for SITE_INIT_SCRIPT in $SITE_INIT_SCRIPTS; do
-        local DIR="$(dirname "$SITE_INIT_SCRIPT")"
+        local DIR
+        DIR="$(dirname "${SITE_INIT_SCRIPT}")"
         vvv_run_site_template_script "vvv-init.sh" "${DIR}"
       done
     fi
@@ -387,7 +406,8 @@ function vvv_provision_site_nginx() {
     vvv_warn "   - ${VM_DIR}/provision/vvv-nginx.conf"
     vvv_warn "   - ${VM_DIR}/vvv-nginx.conf"
     vvv_warn " * VVV will search 3 folders down to find an Nginx config, please be patient..."
-    local NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
+    local NGINX_CONFIGS
+    NGINX_CONFIGS=$(find "${VM_DIR}" -maxdepth 3 -name 'vvv-nginx.conf');
     if [[ -z $NGINX_CONFIGS ]] ; then
       vvv_warn " * VVV did not found an Nginx config file, it will use a fallback config file."
       noroot mkdir -p "${VM_DIR}/log"
@@ -424,7 +444,8 @@ function vvv_custom_folder_composer() {
   if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.composer" < "${VVV_CONFIG}"); then
       for key in $keys; do
         cd "${folder}"
-        local value=$(vvv_get_site_config_value "folders.${folder}.composer.${key}" "")
+        local value
+        value=$(vvv_get_site_config_value "folders.${folder}.composer.${key}" "")
         if [[ "install" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
             vvv_info " * Running composer install in ${folder}"
@@ -455,7 +476,8 @@ function vvv_custom_folder_npm() {
   if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.npm" < "${VVV_CONFIG}"); then
       for key in $keys; do
         cd "${folder}"
-        local value=$(vvv_get_site_config_value "folders.${folder}.npm.${key}" "")
+        local value
+        value=$(vvv_get_site_config_value "folders.${folder}.npm.${key}" "")
         if [[ "install" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
             vvv_info " * Running npm install in ${folder}"
@@ -483,11 +505,17 @@ function vvv_custom_folder_npm() {
 # @internal
 # @see vvv_clone_site_git_folder
 function vvv_custom_folder_git() {
-  local folder="${1}"
-  local repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
-  local overwrite_on_clone=$(vvv_get_site_config_value "folders.${folder}.git.overwrite_on_clone" "False")
-  local hard_reset=$(vvv_get_site_config_value "folders.${folder}.git.hard_reset" "False")
-  local pull=$(vvv_get_site_config_value "folders.${folder}.git.pull" "False")
+  local folder
+  local repo
+  local overwrite_on_clone
+  local hard_reset
+  local pull
+
+  folder="${1}"
+  repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
+  overwrite_on_clone=$(vvv_get_site_config_value "folders.${folder}.git.overwrite_on_clone" "False")
+  hard_reset=$(vvv_get_site_config_value "folders.${folder}.git.hard_reset" "False")
+  pull=$(vvv_get_site_config_value "folders.${folder}.git.pull" "False")
 
   if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
     vvv_clone_site_git_folder "${repo}" "${folder}"
@@ -496,7 +524,7 @@ function vvv_custom_folder_git() {
       if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
         vvv_info " - VVV was asked to clone into a folder that already exists (${folder}), but does not contain a git repo"
         vvv_info " - overwrite_on_clone is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
-        rm -rf "${VVV_PATH_TO_SITE}/${folder}"
+        rm -rf "${VVV_PATH_TO_SITE:?}/${folder}"
         vvv_clone_site_git_folder "${repo}" "${folder}"
       fi
     else

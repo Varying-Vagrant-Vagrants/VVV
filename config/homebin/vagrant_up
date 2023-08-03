@@ -27,11 +27,24 @@ if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
 	/srv/config/homebin/vagrant_up_custom
 fi
 
+# /etc/host doesn't survive restart on docker
+vvv_info " * Reinit /etc/hosts"
+vvv_update_guest_hosts
+
 vvv_info " * Restarting Nginx"
 sudo service nginx restart
 
 vvv_info " * Restarting MariaDB"
 sudo service mariadb restart
+
+vvv_info " * Restarting PHP-FPM"
+find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+
+vvv_info " * Restarting Memcache"
+sudo service memcached restart
+
+vvv_info " * Restarting Mailhog"
+/usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
 
 if [ -x "$(command -v ntpdate)" ]; then
 	vvv_info " * Syncing clocks"

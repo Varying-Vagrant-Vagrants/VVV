@@ -1,21 +1,22 @@
-# This is a basic workflow to help you get started with Actions
-
 name: VVV Provisioning
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the develop branch
 on:
   push:
-    branches: [ develop ]
+    branches:
+      - develop
   pull_request:
-    branches: [ develop, stable ]
+    branches:
+      - develop
+      - stable
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   on-docker:
-    name: Docker Provisioner
+    name: Ubuntu 20 Docker Provisioner
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -111,7 +112,7 @@ jobs:
 
   # This workflow contains a single job called "build"
   on-stable:
-    name: Stable Reprovision
+    name: MacOS 10.15 Stable Reprovision
     # The type of runner that the job will run on
     runs-on: macos-10.15
 
@@ -121,6 +122,14 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: stable
+
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v2
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
 
       - name: install goodhosts
         run: vagrant plugin install --local
@@ -145,7 +154,7 @@ jobs:
           path: "${{ github.workspace }}/log"
 
   on-develop:
-    name: Develop Reprovision
+    name: MacOS 10.15 Develop Reprovision
     # The type of runner that the job will run on
     runs-on: macos-10.15
 
@@ -155,6 +164,15 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: develop
+
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v2
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
+
 
       - name: install goodhosts
         run: vagrant plugin install --local
@@ -179,7 +197,7 @@ jobs:
           path: "${{ github.workspace }}/log"
 
   on-clean:
-    name: Clean Provision
+    name: MacOS 10.15 Clean Provision
     # The type of runner that the job will run on
     runs-on: macos-10.15
 
@@ -187,6 +205,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v2
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
 
       - name: install goodhosts
         run: vagrant plugin install --local

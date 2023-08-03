@@ -6,7 +6,47 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.11.0 ( WIP )
+## 3.13 ( 2023 )
+
+### Enhancements
+
+* Switched the default PHP to v8.0 ( #2658 )
+* Experimental docker support ( #2632 )
+
+## 3.12 ( 2023 August 3rd )
+
+### Enhancements
+
+* Monolithic docker beta support ( #2632 )
+* Added the GMP PHP extension to the default PHP installation ( #2676 )
+
+### Maintenance
+
+* Updated bitbucket SSH fingerprints ( #2679 )
+
+### Bug Fixes
+
+* Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
+* Miscellanous Shellcheck linter fixes and improvements ( #2675 )
+* Github action fixes for composer and an upgrade to Ubuntu 20 ( #2677 )
+* Fixed an issue with git safe directories ( #2681 )
+* Git safe directory fixes
+* Fixed docker version detection
+* PHPCS install improvements
+
+## 3.11.2 ( 2023 May 8th )
+
+### Enhancements
+
+* Added Gitlab SSH fingerprints for non-RSA keys ( #2665 )
+* Apt sources for Ubuntu 22 LTS
+
+### Bug Fixes
+
+* Updated to the new GitHub RSA fingerprint ( #2665 )
+
+
+## 3.11.0 ( 2023 March 14th )
 
 ### Enhancements
 
@@ -14,7 +54,6 @@ permalink: /docs/en-US/changelog/
 * Sites that do not have a provisioner set will have a logs folder created for Nginx logs,and a public_html folder with Nginx rules for WordPress or other PHP applications. The user is responsible for creating a database and installing/placing a site.
 * Simplified PHPCS installation bin dir setting ( #2648 )
 * Virtualbox users running `sudo vagrant` commands now get a warning
-* Switched the default PHP to v8.0 ( #2658 )
 * Fixed setting of git rebase config for the vagrant nonroot user ( #2658 )
 * Added composer bin directory to path ( #2588 )
 
