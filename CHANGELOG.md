@@ -22,6 +22,9 @@ permalink: /docs/en-US/changelog/
 * Miscellanous Shellcheck linter fixes and improvements ( #2675 )
 * Github action fixes for composer and an upgrade to Ubuntu 20 ( #2677 )
 * Fixed an issue with git safe directories ( #2681 )
+* Git safe directory fixes
+* Fixed docker version detection
+* PHPCS install improvements
 
 ## 3.11.2 ( 2023 May 8th )
 
