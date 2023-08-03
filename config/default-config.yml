@@ -36,7 +36,7 @@ sites:
     skip_provisioning: false
     description: "A standard WP install, useful for building plugins, testing things, etc"
     repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git
-    php: 7.4 # change the PHP version to use for the provision and nginx
+    php: 8.0 # change the PHP version to use for the provision and nginx
     custom:
       # locale: it_IT
       delete_default_plugins: true
@@ -87,13 +87,10 @@ extensions:
     #- mongodb # needed for Tideways/XHGui
     #- tideways # PHP profiling tool, also installs xhgui check https://varyingvagrantvagrants.org/docs/en-US/references/tideways-xhgui/
     #- nvm # Node Version Manager
-    #- php56
-    #- php70
-    #- php71
-    #- php72
-    #- php73
     #- php74
     #- php80
+    #- php81
+    #- php82
 
 # vm_config controls how Vagrant provisions the virtual machine, and can be used to
 # increase the memory given to VVV and the number of CPU cores.

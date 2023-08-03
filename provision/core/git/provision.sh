@@ -58,7 +58,8 @@ function git_after_packages() {
     vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
     noroot git config --global pull.rebase false
   fi
-  git config --global --add safe.directory '*' # Allow git to work well under docker provider
-  noroot git config --global --add safe.directory '*' # Allow git to work well under docker provider
+
+  git config --global --add safe.directory '*'
+  noroot git config --global --add safe.directory '*'
 }
 vvv_add_hook after_packages git_after_packages

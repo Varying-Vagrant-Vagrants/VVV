@@ -8,7 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.13 ( 2023 )
 
-WIP
+### Enhancements
+
+* Switched the default PHP to v8.0 ( #2658 )
+* Experimental docker support ( #2632 )
 
 ## 3.12 ( 2023 August 3rd )
 
