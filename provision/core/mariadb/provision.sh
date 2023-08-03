@@ -114,6 +114,10 @@ function mysql_setup() {
   chmod 0644 "/home/vagrant/.my.cnf"
   vvv_info " * Copied /srv/provision/core/mariadb/config/root-my.cnf          to /home/vagrant/.my.cnf"
 
+  # this file should been obsolete, but somehow mariadb init.d script use it
+  cp -f  "/srv/provision/core/mariadb/config/debian.cnf" "/etc/mysql/debian.cnf"
+  vvv_info " * Copied /srv/provision/core/mariadb/config/debian.cnf          to /etc/mysql/debian.cnf"
+
   # Due to systemd dependencies, in docker, mysql service is not auto started
   vvv_info " * Ensuring MariaDB service is started"
   service mariadb restart
@@ -125,7 +129,7 @@ function mysql_setup() {
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if [ $(service mariadb status|grep 'mysql start/running' | wc -l) -ne 1 ]; then
+  if [ $(service mariadb status|grep 'Uptime' | wc -l) -ne 1 ]; then
     vvv_info " * Starting the mariadb service"
     service mariadb start
   else

@@ -14,6 +14,7 @@ WIP
 
 ### Enhancements
 
+* Monolithic docker beta support ( #2632 )
 * Added the GMP PHP extension to the default PHP installation ( #2676 )
 
 ### Maintenance

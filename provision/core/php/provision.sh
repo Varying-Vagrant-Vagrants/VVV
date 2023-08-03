@@ -109,6 +109,11 @@ function phpfpm_setup() {
       fi
     fi
   done
+
+  if [[ ! -d "/run/php" ]]; then
+    mkdir -p "/run/php"
+    chown -R www-data:www-data "/run/php"
+  fi
 }
 export -f phpfpm_setup
 
