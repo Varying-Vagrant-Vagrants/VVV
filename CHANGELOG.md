@@ -11,7 +11,8 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Switched the default PHP to v8.0 ( #2658 )
-* Experimental docker support ( #2632 )
+* WP Coding standards v3 ( #2688 )
+* VIP Coding standards v3 ( #2688 )
 
 ## 3.12 ( 2023 August 3rd )
 
