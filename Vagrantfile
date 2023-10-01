@@ -464,7 +464,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Docker use image.
   config.vm.provider :docker do |d, override|
-    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
+    d.build_dir = "."
+    #d.image = 'vvvlocal/vvv-ubuntu-base:20.04'
     d.has_ssh = true
     d.ports =  [ "80:80" ] # HTTP
     d.ports += [ "443:443" ] # HTTPS
