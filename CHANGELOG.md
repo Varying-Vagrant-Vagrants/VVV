@@ -13,6 +13,11 @@ permalink: /docs/en-US/changelog/
 * Switched the default PHP to v8.0 ( #2658 )
 * WP Coding standards v3 ( #2688 )
 * VIP Coding standards v3 ( #2688 )
+* Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
+
+### Bug Fixes
+
+* The host file inside the VM was only adding sites with `127.0.0.1` addresses, now it adds the IPVv6 `::1` too ( #2689 )
 
 ## 3.12 ( 2023 August 3rd )
 
