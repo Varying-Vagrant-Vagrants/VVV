@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * WP Coding standards v3 ( #2688 )
 * VIP Coding standards v3 ( #2688 )
 * Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
+* Opted out of Dotnet package telemetry ( #2689 )
 
 ### Bug Fixes
 
