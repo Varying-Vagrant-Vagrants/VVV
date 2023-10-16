@@ -14,6 +14,9 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
+# Telemetry opt outs
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
 export PATH="$PATH:/srv/www/phpcs/bin"
 
 # set variable identifying the chroot you work in (used in the prompt below)

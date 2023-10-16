@@ -62,10 +62,14 @@ vvv_validate_site_php_version() {
     vvv_warn " ! Warning: PHP version defined is using a wrong format: '${SITE_PHP}' with length '${#SITE_PHP}'"
     vvv_warn "            If you are trying to use a more specific version of PHP such as 7.4.1 or 7.4.0 you"
     vvv_warn "            need to be less specific and use 7.4"
+    vvv_warn " !          https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/changing-php-version/"
   fi
 
   if [[ ! -e "/usr/bin/php${SITE_PHP}" ]]; then
-    vvv_warn " ! Warning: Chosen PHP version doesn't exist in this environment: '${SITE_PHP}' looking for '/usr/bin/php${SITE_PHP}'"
+    vvv_warn " ! Warning: The chosen PHP version doesn't exist in this environment: '${SITE_PHP}' looking for '/usr/bin/php${SITE_PHP}'"
+    vvv_warn " !          Did you forget to install it via config/config.yml? Add it to the extensions section as documented in the"
+    vvv_warn " !          changing PHP versions age on the VVV site, and re-provision:"
+    vvv_warn " !          https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/changing-php-version/"
   fi
 }
 
@@ -228,7 +232,8 @@ function vvv_provision_hosts_file() {
     while IFS='' read -r line || [ -n "${line}" ]; do
       if [[ "#" != "${line:0:1}" ]]; then
         if [[ -z "$(grep -q "^127.0.0.1 ${line}$" /etc/hosts)" ]]; then
-          echo "127.0.0.1 $line # vvv-auto" >> "/etc/hosts"
+          echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
+          echo "::1 ${line} # vvv-auto" >> "/etc/hosts"
           echo "   - Added ${line} from ${HOSTFILE}"
         fi
       fi
@@ -273,6 +278,7 @@ function vvv_process_site_hosts() {
     for line in $hosts; do
       if [[ -z "$(grep -q "^127.0.0.1 ${line}$" /etc/hosts)" ]]; then
         echo "127.0.0.1 ${line} # vvv-auto" >> "/etc/hosts"
+        echo "::1 ${line} # vvv-auto" >> "/etc/hosts"
         echo "   - Added ${line} from ${VVV_CONFIG}"
       fi
     done
