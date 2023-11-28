@@ -2,7 +2,7 @@
 # @description Installs the default version of PHP
 set -eo pipefail
 
-VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"8.0"}
+VVV_BASE_PHPVERSION=${VVV_BASE_PHPVERSION:-"8.2"}
 
 function php_before_packages() {
   cp -f "/srv/provision/core/php/ondrej-ppa-pin" "/etc/apt/preferences.d/ondrej-ppa-pin"
