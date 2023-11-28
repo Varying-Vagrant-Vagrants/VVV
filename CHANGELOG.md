@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.13 ( 2023 )
+## 3.13 ( 2023 December TBA )
 
 ### Enhancements
 
