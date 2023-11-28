@@ -21,7 +21,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # Make Symlinks
       - name: Create Vagrant Like Environment
@@ -104,7 +104,7 @@ jobs:
           MYGID=$(id -g -n)
           sudo chown -R $MYUID:$MYGID "$GITHUB_WORKSPACE/log"
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: logs-on-docker
@@ -119,12 +119,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: stable
 
       - name: Cache Vagrant boxes
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.vagrant.d/boxes
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
@@ -137,7 +137,7 @@ jobs:
       - name: vagrant up (stable)
         run: vagrant up
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           clean: false
 
@@ -147,7 +147,7 @@ jobs:
       - name: tests
         run: provision/tests/macos-tests.sh
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: logs-on-stable
@@ -161,12 +161,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: develop
 
       - name: Cache Vagrant boxes
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.vagrant.d/boxes
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
@@ -180,7 +180,7 @@ jobs:
       - name: vagrant up (develop)
         run: vagrant up
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           clean: false
 
@@ -190,7 +190,7 @@ jobs:
       - name: tests
         run: provision/tests/macos-tests.sh
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: logs-on-develop
@@ -204,10 +204,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cache Vagrant boxes
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.vagrant.d/boxes
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
@@ -223,7 +223,7 @@ jobs:
       - name: tests
         run: provision/tests/macos-tests.sh
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: logs-on-clean
