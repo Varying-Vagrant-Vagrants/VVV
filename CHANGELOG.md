@@ -10,7 +10,7 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
-* Switched the default PHP to v8.0 ( #2658 )
+* Switched the default PHP to v8.2 ( #2690 )
 * WP Coding standards v3 ( #2688 )
 * VIP Coding standards v3 ( #2688 )
 * Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
