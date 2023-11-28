@@ -94,6 +94,7 @@ body:
              - 'VirtualBox 5'
              - 'Parallels (Intel)'
              - 'Parallels (Apple Silicon/Arm)'
+             - 'Docker'
              - 'Hyper-V'
              - 'VMWare'
              - 'Other'
