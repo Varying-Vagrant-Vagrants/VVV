@@ -6,11 +6,11 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.13 ( 2023 )
+## 3.13 ( 2023 December TBA )
 
 ### Enhancements
 
-* Switched the default PHP to v8.0 ( #2658 )
+* Switched the default PHP from v7.4 to v8.2 and default Node from v14 to v16 ( #2690 )
 * WP Coding standards v3 ( #2688 )
 * VIP Coding standards v3 ( #2688 )
 * Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
