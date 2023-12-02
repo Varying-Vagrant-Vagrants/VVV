@@ -28,6 +28,7 @@ function php_codesniff_setup() {
   noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
   local standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
   vvv_success " * [PHPCS]: Completed with the following PHPCS standards set up: ${standards}"
+  vvv_info " * [PHPCS]: Help maintain PHPCS by sponsoring via Github Sponsors at https://github.com/sponsors/phpcsstandards or OpenCollective at https://opencollective.com/php_codesniffer"
 }
 export -f php_codesniff_setup
 
