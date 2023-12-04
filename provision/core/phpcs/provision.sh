@@ -15,7 +15,7 @@ function php_codesniff_setup() {
 
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
   # Sniffs WordPress Coding Standards
-  vvv_info " * [PHPCS]: Provisioning PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
+  vvv_info " * [PHPCS]: Provisioning PHP_CodeSniffer (phpcs), see https://github.com/PHPCSStandards/PHP_CodeSniffer"
 
   noroot mkdir -p /srv/www/phpcs
   noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
@@ -28,6 +28,7 @@ function php_codesniff_setup() {
   noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
   local standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
   vvv_success " * [PHPCS]: Completed with the following PHPCS standards set up: ${standards}"
+  vvv_info " * [PHPCS]: Help maintain PHPCS by sponsoring via Github Sponsors at https://github.com/sponsors/phpcsstandards or OpenCollective at https://opencollective.com/php_codesniffer"
 }
 export -f php_codesniff_setup
 

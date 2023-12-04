@@ -15,6 +15,7 @@ permalink: /docs/en-US/changelog/
 * VIP Coding standards v3 ( #2688 )
 * Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
 * Opted out of Dotnet package telemetry ( #2689 )
+* Replace references to the Squizlab PHPCS with that from the PHPCS Standards org ( #2692 )
 
 ### Bug Fixes
 
