@@ -447,7 +447,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # this seems to be the most reliable way to detect whether or not we're
     # running under ARM64.
     if Etc.uname[:version].include? 'ARM64'
-      override.vm.box = 'mpasternak/focal64-arm'
+      override.vm.box = 'bento/ubuntu-20.04-arm64'
     end
   end
 
