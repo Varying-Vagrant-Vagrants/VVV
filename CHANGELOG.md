@@ -10,7 +10,8 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
-* Switched the default PHP from v7.4 to v8.2 and default Node from v14 to v16 ( #2690 )
+* Switched the default PHP from v7.4 to v8.2 and ~default Node from v14 to v16~ ( #2690 )
+* Use Node 20 as the default version to match WP and Gutenberg ( #2696 )
 * WP Coding standards v3 ( #2688 )
 * VIP Coding standards v3 ( #2688 )
 * Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
