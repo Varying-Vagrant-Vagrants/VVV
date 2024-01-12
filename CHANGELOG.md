@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.13 ( 2023 December TBA )
+## 3.13 ( 2024 TBA )
 
 ### Enhancements
 
@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * The host file inside the VM was only adding sites with `127.0.0.1` addresses, now it adds the IPVv6 `::1` too ( #2689 )
+* Removed old MacOS PR workflows, no runners available ( #2698 )
 
 ## 3.12 ( 2023 August 3rd )
 
