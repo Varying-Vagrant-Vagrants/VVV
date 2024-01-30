@@ -109,3 +109,122 @@ jobs:
         with:
           name: logs-on-docker
           path: "${{ github.workspace }}/log"
+
+  # This workflow contains a single job called "build"
+  on-stable:
+    name: MacOS 10.15 Stable Reprovision
+    # The type of runner that the job will run on
+    runs-on: macos-12
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+        with:
+          ref: stable
+
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v3
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
+
+      - name: install goodhosts
+        run: vagrant plugin install --local
+
+      - name: vagrant up (stable)
+        run: vagrant up
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: vagrant up (current branch)
+        run: vagrant up --provision
+
+      - name: tests
+        run: provision/tests/macos-tests.sh
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: logs-on-stable
+          path: "${{ github.workspace }}/log"
+
+  on-develop:
+    name: MacOS 10.15 Develop Reprovision
+    # The type of runner that the job will run on
+    runs-on: macos-12
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v3
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
+
+
+      - name: install goodhosts
+        run: vagrant plugin install --local
+
+      - name: vagrant up (develop)
+        run: vagrant up
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: vagrant up (current branch)
+        run: vagrant up --provision
+
+      - name: tests
+        run: provision/tests/macos-tests.sh
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: logs-on-develop
+          path: "${{ github.workspace }}/log"
+
+  on-clean:
+    name: MacOS 10.15 Clean Provision
+    # The type of runner that the job will run on
+    runs-on: macos-12
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v3
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
+
+      - name: install goodhosts
+        run: vagrant plugin install --local
+
+      - name: vagrant up (current branch)
+        run: vagrant up
+
+      - name: tests
+        run: provision/tests/macos-tests.sh
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: logs-on-clean
+          path: "${{ github.workspace }}/log"
