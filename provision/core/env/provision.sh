@@ -2,6 +2,19 @@
 set -eo pipefail
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DNS_SERVERS=(
+  # Quad9
+  "9.9.9.9"
+  "149.112.112.112"
+  "2620:fe::fe"
+  "2620:fe::9"
+
+  # Cloudflare
+  "1.1.1.1"
+  "1.0.0.2"
+  "2606:4700:4700::1112"
+  "2606:4700:4700::1002"
+)
 
 # @description Adds the homebin folder to PATH
 # @noargs
@@ -22,6 +35,57 @@ function setup_vvv_env() {
     -e "s|/srv/config/homebin:||" \
     -e "s|(.*PATH.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
     /etc/environment
+}
+
+# Function to test DNS resolution for a specified domain
+function vvv_check_domain_dns() {
+    local domain="${1}"
+
+    if [ -z "${domain}" ]; then
+        vvv_Error "Error: No domain provided."
+        return 1
+    fi
+
+    if command -v nslookup &> /dev/null; then
+        nslookup "${domain}" >/dev/null 2>&1
+    elif command -v dig &> /dev/null; then
+        dig +short "${domain}" >/dev/null 2>&1
+    else
+        vvv_error "Error: Neither nslookup nor dig is available."
+        return 1
+    fi
+}
+
+# @description Tests for working DNS and re-configures on failure
+function setup_dns() {
+  if vvv_check_domain_dns "github.com" && vvv_check_domain_dns "ppa.launchpadcontent.net"; then
+    return
+  fi
+
+  vvv_warn "Could not resolve github.com or ppa.launchpadcontent.net domains via DNS, configuring 3rd party DNS resolvers."
+
+  DNS_SERVERS_TO_ADD=()
+
+  # Test reachability of DNS servers
+  for dns_server in "${DNS_SERVERS[@]}"; do
+      if ping -c 1 -W 2 "${dns_server}" >/dev/null 2>&1; then
+          echo "DNS server ${dns_server} is reachable"
+          DNS_SERVERS_TO_ADD+=("${dns_server}")
+      fi
+  done
+
+  vvv_info "Adding DNS Servers: ${DNS_SERVERS_TO_ADD[*]}"
+
+  for file in /etc/netplan/*.yaml; do
+      for dns_server in "${DNS_SERVERS_TO_ADD[@]}"; do
+          if ! grep -qF "${dns_server}" "${file}"; then
+              sed -i "/nameservers:/a \ \ \ \ addresses: [${dns_server}]" "${file}"
+              echo "DNS updated to ${dns_server} in ${file}"
+          fi
+      done
+  done
+
+  netplan apply
 }
 
 # @description Remove MOTD output from Ubuntu and add our own
@@ -116,6 +180,7 @@ function profile_setup() {
 function vvv_init_profile() {
   # Profile_setup
   vvv_info " * Bash profile setup and directories."
+  setup_dns
   setup_vvv_env
   cleanup_terminal_splash
   profile_setup
