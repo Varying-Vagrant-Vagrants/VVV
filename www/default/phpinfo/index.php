@@ -4,10 +4,10 @@
  */
 ?>
 <nav class="center">
-	<a href="//vvv.test/phpinfo/">PHP Info</a>
+	<a href="//vvv.test/phpinfo/">PHP Info (v<?php echo phpversion(); ?>)</a>
 	<?php
 	if ( function_exists( 'xdebug_info' ) ) {
-		?>&middot; <a href="//vvv.test/xdebuginfo/">Xdebug Info</a><?php
+		?>&middot; <a href="//vvv.test/xdebuginfo/">Xdebug Info (v<?php echo phpversion('xdebug'); ?>)</a><?php
 	}
 	?>
 </nav>

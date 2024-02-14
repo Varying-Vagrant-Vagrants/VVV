@@ -17,6 +17,8 @@ permalink: /docs/en-US/changelog/
 * Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
 * Opted out of Dotnet package telemetry ( #2689 )
 * Replace references to the Squizlab PHPCS with that from the PHPCS Standards org ( #2692 )
+* Better PHP Debug mod switching outputs and checks ( #2702 )
+* PHP Info and Xdebug info pages now state their versions ( #2702 )
 
 ### Bug Fixes
 
