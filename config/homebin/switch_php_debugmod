@@ -28,9 +28,21 @@ disable_phpmods() {
 		for phpv in $(phpquery -V)
 		do
 			if is_module_enabled_fpm "${phpv}" "${i}"; then
-				vvv_info " ✘ Disabling active PHP <b>v${phpv}</b><info> debug mod: </info><b>'${i}'</b>"
-				sudo phpdismod -q -s fpm -v "${phpv}" "${i}"
-        sudo phpdismod -q -s cli -v "${phpv}" "${i}"
+				#vvv_info " ✘ Disabling active PHP <b>v${phpv}</b><info> debug mod: </info><b>'${i}'</b>"
+				#sudo phpdismod -q -s fpm -v "${phpv}" "${i}"
+        #sudo phpdismod -q -s cli -v "${phpv}" "${i}"
+
+        if sudo phpdismod -q -v "${phpv}" -s fpm "${i}"; then
+          vvv_success " - ✔ Disabled ${i} for PHP <b>v${phpv} FPM</b>"
+        else
+          vvv_error " - x Could not disable ${i} for PHP <b>v${phpv} FPM</b>"
+        fi
+
+        if sudo phpdismod -q -v "${phpv}" -s cli "${i}"; then
+          vvv_success " - ✔ Disabled ${i} for PHP <b>v${phpv} CLI</b>"
+        else
+          vvv_error " - x Could not disable ${i} for PHP <b>v${phpv} CLI</b>"
+        fi
 			fi
 		done
 	done
@@ -40,11 +52,19 @@ enable_phpmod() {
 	for phpv in $(phpquery -V)
 	do
 		if is_module_installed_fpm "${phpv}" "${1}"; then
-			vvv_info " * Enabling <b>'${1}'</b><info> for PHP <b>v${phpv}</b>"
-			sudo phpenmod -q -v "${phpv}" -s fpm "${1}"
-			sudo phpenmod -q -v "${phpv}" -s cli "${1}"
+			if sudo phpenmod -q -v "${phpv}" -s fpm "${1}"; then
+        vvv_success " - ✔ Enabled ${1} for PHP <b>v${phpv} FPM</b>"
+      else
+        vvv_error " - x Could not enable ${1} for PHP <b>v${phpv} FPM</b>"
+      fi
+
+      if sudo phpenmod -q -v "${phpv}" -s cli "${1}"; then
+        vvv_success " - ✔ Enabled ${1} for PHP <b>v${phpv} CLI</b>"
+      else
+        vvv_error " - x Could not enable ${1} for PHP <b>v${phpv} CLI</b>"
+      fi
 		else
-			vvv_info " * Skipped enabling ${1} in PHP <b>v${phpv}</b><info>, module isn't installed for this version"
+			vvv_info " - ? Skipped enabling ${1} in PHP <b>v${phpv}</b><info>, module isn't installed for this version"
 		fi
 	done
 }
@@ -65,8 +85,18 @@ is_module_installed_fpm() {
 
 restart_phpfpm() {
 	vvv_info " * Restarting PHP FPM services so that the change takes effect"
-	find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+	if find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;; then
+    vvv_success " ✔ Completed restart sequence"
+  else
+    vvv_error " x One of the PHP services failed to restart, changes may not take effect."
+  fi
 }
+
+
+vvv_info "Attempting to disable PHP debug mods and switch to <b>${mod}</b><info>:"
+if [[ "${mod}" == "pcov" ]]; then
+	vvv_info " * pcov supports PHP 7.1 and above, it is not available for 5.6 and 7.0"
+fi
 
 disable_phpmods phpmods[@]
 
@@ -74,10 +104,6 @@ if [[ "${mod}" == "none" ]]; then
 	restart_phpfpm
 	vvv_success " ✔ All PHP Debug mods are now turned off."
 	exit 0
-fi
-
-if [[ "${mod}" == "pcov" ]]; then
-	vvv_info " * pcov supports PHP 7.1 and above, it is not available for 5.6 and 7.0"
 fi
 
 # Tideways needs 2 mods enabling
@@ -91,11 +117,11 @@ fi
 
 if [[ "${mod}" == "xdebug" ]]; then
 	# Ensure the log file for xdebug is group writeable.
-	vvv_info " * Making sure log/php/xdebug-remote.log is readable and present"
+	vvv_info " * Making sure <b>log/php/xdebug-remote.log</b><info> is readable and present"
 	sudo touch /var/log/php/xdebug-remote.log
 	sudo chmod 664 /var/log/php/xdebug-remote.log
 fi
 
 enable_phpmod "${mod}"
 restart_phpfpm
-vvv_success " ✔ PHP Debug mod switch to <b>${mod}</b><success> on all available PHP versions complete.</success>"
+vvv_info " ✔ PHP Debug mod switch to <b>${mod}</b><success> on all available PHP versions complete.</success>"
