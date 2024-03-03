@@ -20,6 +20,10 @@ permalink: /docs/en-US/changelog/
 * Better PHP Debug mod switching outputs and checks ( #2702 )
 * PHP Info and Xdebug info pages now state their versions ( #2702 )
 
+### Maintenance
+
+* Switch the Parallels Arm64 box from `mpasternak/focal64-arm` to `bento/ubuntu-22.04-arm64` to match x86 boxes ( #2695 )
+
 ### Bug Fixes
 
 * The host file inside the VM was only adding sites with `127.0.0.1` addresses, now it adds the IPVv6 `::1` too ( #2689 )
