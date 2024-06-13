@@ -665,7 +665,10 @@ function vvv_update_guest_hosts() {
     local value
     value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" <${VVV_CONFIG})
     for v in $value; do
-      echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}" >> /tmp/site-hosts
+      if [[ -z "$(grep -q "^127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}$" /etc/hosts)" ]]; then
+        echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/etc/hosts"
+        echo "::1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/etc/hosts"
+      fi
     done
   done
 
