@@ -28,6 +28,7 @@ permalink: /docs/en-US/changelog/
 
 * The host file inside the VM was only adding sites with `127.0.0.1` addresses, now it adds the IPVv6 `::1` too ( #2689 )
 * Removed old MacOS PR workflows, no runners available ( #2698 )
+* Replace an outdated Nginx signing key ( #2710 )
 
 ## 3.12 ( 2023 August 3rd )
 
