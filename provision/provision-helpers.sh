@@ -657,6 +657,8 @@ function vvv_update_guest_hosts() {
   local SITES
   SITES=$(vvv_get_sites)
   cp -f /etc/hosts /tmp/hosts
+
+  # Add each site.
   for SITE in $SITES; do
     SITE_ESCAPED="${SITE//./\\.}"
     VVV_SITE_NAME=${SITE}
@@ -670,6 +672,10 @@ function vvv_update_guest_hosts() {
       fi
     done
   done
+
+  # Remove duplicate lines then replace hosts file.
+  awk -i inplace '!seen[$0]++' /tmp/hosts
+
   cp -f /tmp/hosts /etc/hosts
   rm /tmp/hosts
 }
