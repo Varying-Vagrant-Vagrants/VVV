@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.13 ( 2024 TBA )
+## 3.13.1 ( 2024 June 16th )
 
 ### Enhancements
 
@@ -32,7 +32,7 @@ permalink: /docs/en-US/changelog/
 * Replace an outdated Nginx signing key ( #2710 )
 * Don't sync clocks when using the docker provider ( #2711 )
 
-## 3.12 ( 2023 August 3rd )
+## 3.12.1 ( 2023 August 3rd )
 
 ### Enhancements
 
