@@ -27,6 +27,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * The host file inside the VM was only adding sites with `127.0.0.1` addresses, now it adds the IPVv6 `::1` too ( #2689 )
+* Fixes for hosts file cleanup ( #2708 )
 * Removed old MacOS PR workflows, no runners available ( #2698 )
 * Replace an outdated Nginx signing key ( #2710 )
 

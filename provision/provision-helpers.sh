@@ -654,27 +654,30 @@ export -f vvv_get_sites
 # @description Updates the guest environments hosts file.
 # @noargs
 function vvv_update_guest_hosts() {
-  if test -f "/tmp/site-hosts"; then
-    sudo rm /tmp/site-hosts
-  fi
   local SITES
   SITES=$(vvv_get_sites)
+  cp -f /etc/hosts /tmp/hosts
+
+  # Add each site.
   for SITE in $SITES; do
     SITE_ESCAPED="${SITE//./\\.}"
     VVV_SITE_NAME=${SITE}
     local value
     value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" <${VVV_CONFIG})
     for v in $value; do
-      echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}" >> /tmp/site-hosts
+      sed -i "/127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}/d" /tmp/hosts
+      if [[ -z "$(grep -q "^127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}$" /tmp/hosts)" ]]; then
+        echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/tmp/hosts"
+        echo "::1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/tmp/hosts"
+      fi
     done
   done
 
-  echo "$(</tmp/site-hosts)" | sudo tee -a /etc/hosts > /dev/null
+  # Remove duplicate lines then replace hosts file.
+  awk -i inplace '!seen[$0]++' /tmp/hosts
 
-  # cleanup
-  if test -f "/tmp/site-hosts"; then
-    sudo rm /tmp/site-hosts
-  fi
+  cp -f /tmp/hosts /etc/hosts
+  rm /tmp/hosts
 }
 export -f vvv_update_guest_hosts
 
