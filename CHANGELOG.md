@@ -22,7 +22,7 @@ permalink: /docs/en-US/changelog/
 
 ### Maintenance
 
-* Switch the Parallels Arm64 box from `mpasternak/focal64-arm` to `bento/ubuntu-22.04-arm64` to match x86 boxes ( #2695 )
+* Switch the Parallels Arm64 box from `mpasternak/focal64-arm` to `bento/ubuntu-20.04-arm64` to match x86 boxes ( #2695 )
 
 ### Bug Fixes
 
@@ -30,6 +30,7 @@ permalink: /docs/en-US/changelog/
 * Fixes for hosts file cleanup ( #2708 )
 * Removed old MacOS PR workflows, no runners available ( #2698 )
 * Replace an outdated Nginx signing key ( #2710 )
+* Don't sync clocks when using the docker provider ( #2711 )
 
 ## 3.12 ( 2023 August 3rd )
 
