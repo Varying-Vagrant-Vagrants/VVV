@@ -9,6 +9,7 @@ Vagrant.require_version '>= 2.2.4'
 require 'yaml'
 require 'fileutils'
 require 'pathname'
+require 'socket'
 
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
@@ -216,9 +217,9 @@ defaults['memory'] = 2048
 defaults['cores'] = 1
 defaults['provider'] = 'virtualbox'
 
-# if Arm default to parallels
+# if Arm default to docker
 if Etc.uname[:version].include? 'ARM64'
-  defaults['provider'] = 'parallels'
+  defaults['provider'] = 'docker'
 end
 
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
@@ -446,7 +447,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # this seems to be the most reliable way to detect whether or not we're
     # running under ARM64.
     if Etc.uname[:version].include? 'ARM64'
-      override.vm.box = 'mpasternak/focal64-arm'
+      override.vm.box = 'bento/ubuntu-20.04-arm64'
     end
   end
 
@@ -459,6 +460,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
+  end
+
+  # Docker use image.
+  config.vm.provider :docker do |d, override|
+    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
+    d.has_ssh = true
+    d.ports =  [ "80:80" ] # HTTP
+    d.ports += [ "443:443" ] # HTTPS
+    d.ports += [ "3306:3306" ] # MySQL
+    d.ports += [ "8025:8025" ] # Mailhog
+
+    ## Fix goodhosts aliases format for docker
+    override.goodhosts.aliases = { '127.0.0.1' => vvv_config['hosts'], '::1' => vvv_config['hosts'] }
   end
 
   # Virtualbox.
@@ -514,7 +528,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Access to the guest machine is only available to your local host. To provide access to
   # other devices, a public network should be configured or port forwarding enabled.
   #
-  # Note: If your existing network is using the 192.168.50.x subnet, this default IP address
+  # Note: If your existing network is using the 192.168.56.x subnet, this default IP address
   # should be changed. If more than one VM is running through VirtualBox, including other
   # Vagrant machines, different subnets should be used for each.
   #
@@ -884,7 +898,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if config.vagrant.plugins.include? 'vagrant-goodhosts'
     config.goodhosts.aliases = vvv_config['hosts']
     config.goodhosts.remove_on_suspend = true
-    
+
     # goodhosts already disables clean by default, but lets enforce this at both ends
     config.goodhosts.disable_clean = true
   elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'

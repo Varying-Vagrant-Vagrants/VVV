@@ -6,10 +6,37 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.12 ( 2023 August 3rd )
+## 3.13.1 ( 2024 June 16th )
 
 ### Enhancements
 
+* Switched the default PHP from v7.4 to v8.2 and ~default Node from v14 to v16~ ( #2690 )
+* Use Node 20 as the default version to match WP and Gutenberg ( #2696 )
+* WP Coding standards v3 ( #2688 )
+* VIP Coding standards v3 ( #2688 )
+* Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
+* Opted out of Dotnet package telemetry ( #2689 )
+* Replace references to the Squizlab PHPCS with that from the PHPCS Standards org ( #2692 )
+* Better PHP Debug mod switching outputs and checks ( #2702 )
+* PHP Info and Xdebug info pages now state their versions ( #2702 )
+
+### Maintenance
+
+* Switch the Parallels Arm64 box from `mpasternak/focal64-arm` to `bento/ubuntu-20.04-arm64` to match x86 boxes ( #2695 )
+
+### Bug Fixes
+
+* The host file inside the VM was only adding sites with `127.0.0.1` addresses, now it adds the IPVv6 `::1` too ( #2689 )
+* Fixes for hosts file cleanup ( #2708 )
+* Removed old MacOS PR workflows, no runners available ( #2698 )
+* Replace an outdated Nginx signing key ( #2710 )
+* Don't sync clocks when using the docker provider ( #2711 )
+
+## 3.12.1 ( 2023 August 3rd )
+
+### Enhancements
+
+* Monolithic docker beta support ( #2632 )
 * Added the GMP PHP extension to the default PHP installation ( #2676 )
 
 ### Maintenance

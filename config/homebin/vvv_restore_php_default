@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-DEFAULTPHP="7.4"
+DEFAULTPHP="8.2"
 php_version=$(readlink -f /usr/bin/php)
 if [[ $php_version != *"${DEFAULTPHP}"* ]]; then
   echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"

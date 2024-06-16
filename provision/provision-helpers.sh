@@ -164,7 +164,8 @@ export -f network_check
 #
 # @arg $1 string name of the provisioner
 function log_to_file() {
-	local date_time=$(cat /vagrant/provisioned_at)
+	local date_time
+  date_time=$(cat /vagrant/provisioned_at)
 	local logfolder="/var/log/provisioners/${date_time}"
 	local logfile="${logfolder}/${1}.log"
 	mkdir -p "${logfolder}"
@@ -237,10 +238,12 @@ function vvv_format_output() {
     ['</>']="${CRESET}"
   )
 
-  local MSG="${1}</>"
+  local MSG
+  MSG="${1}</>"
   for TAG in "${!TAGS[@]}"; do
-    local VAL="${TAGS[$TAG]}"
-    MSG=$(echo "${MSG//"${TAG}"/"${VAL}"}" )
+    local VAL
+    VAL="${TAGS[$TAG]}"
+    MSG="${MSG//"${TAG}"/"${VAL}"}"
   done
   echo -e "${MSG}"
 }
@@ -250,7 +253,8 @@ export -f vvv_format_output
 #
 # @arg $1 string The message to print
 function vvv_output() {
-  local MSG=$(vvv_format_output "${1}")
+  local MSG
+  MSG=$(vvv_format_output "${1}")
 	echo -e "${MSG}"
   if [[ ! -z "${VVV_LOG}" ]]; then
     if [ "${VVV_LOG}" != "main" ]; then
@@ -272,7 +276,8 @@ export -f vvv_info
 #
 # @arg $1 string The message to print
 function vvv_error() {
-  local MSG=$(vvv_format_output )
+  local MSG
+  MSG=$(vvv_format_output )
   vvv_output "<error>${1}</error>"
 }
 export -f vvv_error
@@ -299,7 +304,8 @@ export -f vvv_success
 # @arg $1 string the path/key to read from, e.g. sites.wordpress-one.repo
 # @arg $2 string a default value to fall back upon
 function get_config_value() {
-  local value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  local value
+  value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-${2:-}}"
 }
 export -f get_config_value
@@ -310,7 +316,8 @@ export -f get_config_value
 # @arg $1 string the path/key to read from, e.g. sites.wordpress-one.hosts
 # @arg $2 string a default value to fall back upon
 function get_config_values() {
-  local value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  local value
+  value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-${2:-}}"
 }
 export -f get_config_values
@@ -320,7 +327,8 @@ export -f get_config_values
 #
 # @arg $1 string the path/key to read from, e.g. sites.wordpress-one.repo
 function get_config_type() {
-  local value=$(shyaml get-type "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  local value
+  value=$(shyaml get-type "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value}"
 }
 export -f get_config_type
@@ -331,7 +339,8 @@ export -f get_config_type
 # @arg $1 string the path/key to read from, e.g. sites.wordpress-one.repo
 # @arg $2 string a default value to fall back upon
 function get_config_keys() {
-  local value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
+  local value
+  value=$(shyaml keys "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-${2:-}}"
 }
 export -f get_config_keys
@@ -385,28 +394,30 @@ vvv_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
-  local start=`date +%s`
+  local start
+  start=$(date +%s)
   vvv_info " ▷ Running <b>${1}</b><info> hook"
   eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
   local sorted
   eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
-  for i in ${!sorted[@]}; do
+  for i in "${!sorted[@]}"; do
     local prio="${sorted[$i]}"
     hooks_on_prio="${hook_var_prios}_${prio}[@]"
     for f in ${!hooks_on_prio}; do
       $f
     done
   done
-  local end=`date +%s`
-  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
+  local end
+  end=$(date +%s)
+  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>$((end - start))s</b>"
 }
 export -f vvv_hook
 
 # @description Necessary for vvv_parallel_hook, do not use.
 # @internal
 function vvv_run_parallel_hook_function() {
-  eval $1
+  eval "${1}"
 
   # kill all sub-processes
   pkill -P $$
@@ -427,13 +438,14 @@ function vvv_parallel_hook() {
   fi
 
   local hook_var_prios="VVV_HOOKS_${1}"
-  local start=`date +%s`
+  local start
+  start=$(date +%s)
   eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
   vvv_info " ▷ Running <b>${1}</b><info> hook"
   local sorted
   eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
-  for i in ${!sorted[@]}; do
+  for i in "${!sorted[@]}"; do
     local prio="${sorted[$i]}"
     hooks_on_prio="${hook_var_prios}_${prio}[@]"
     for f in ${!hooks_on_prio}; do
@@ -444,8 +456,9 @@ function vvv_parallel_hook() {
     vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
 
   done
-  local end=`date +%s`
-  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>`expr $end - $start`s</b>"
+  local end
+  end=$(date +%s)
+  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>$((end - start))s</b>"
 }
 export -f vvv_parallel_hook
 
@@ -529,7 +542,7 @@ export -f vvv_package_install;
 # @arg $1 string the package to check for
 vvv_is_apt_pkg_installed() {
     # Get the number of packages installed that match $1
-    num=$(dpkg --dry-run -l "${1}" 2>/dev/null | egrep '^ii' | wc -l)
+    num=$(dpkg --dry-run -l "${1}" 2>/dev/null | grep -E '^ii' | wc -l)
 
     if [[ $num -eq 1 ]]; then
         # it is installed
@@ -572,7 +585,7 @@ vvv_apt_package_remove() {
     return 0
   fi
 
-  vvv_info " * Removing ${#packages[@]} apt packages: '${packages[@]}'."
+  vvv_info " * Removing ${#packages[@]} apt packages: '${packages[*]}'."
 
   vvv_cleanup_dpkg_locks
 
@@ -614,7 +627,6 @@ function vvv_maybe_install_nginx_config() {
   fi
 
   sudo mkdir -p "${TARGET_DIR}"
-
   sudo cp -f "${SOURCE_FILE}" "${TARGET_FILE}"
 
   if ! sudo nginx -t; then
@@ -628,38 +640,83 @@ function vvv_maybe_install_nginx_config() {
 
   return 0
 }
-
 export -f vvv_maybe_install_nginx_config;
 
 # @description Retrieves a list of sites.
 # @noargs
 function vvv_get_sites() {
-  local sites=$(shyaml -q keys "sites" <${VVV_CONFIG})
+  local sites
+  sites=$(shyaml -q keys "sites" <${VVV_CONFIG})
   echo "${sites}"
 }
+export -f vvv_get_sites
 
 # @description Updates the guest environments hosts file.
 # @noargs
 function vvv_update_guest_hosts() {
-  if test -f "/tmp/site-hosts"; then
-    sudo rm /tmp/site-hosts
-  fi
-  local SITES=$(vvv_get_sites)
+  local SITES
+  SITES=$(vvv_get_sites)
+  cp -f /etc/hosts /tmp/hosts
+
+  # Add each site.
   for SITE in $SITES; do
     SITE_ESCAPED="${SITE//./\\.}"
     VVV_SITE_NAME=${SITE}
-    local value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" <${VVV_CONFIG})
+    local value
+    value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" <${VVV_CONFIG})
     for v in $value; do
-      echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}" >> /tmp/site-hosts
+      sed -i "/127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}/d" /tmp/hosts
+      if [[ -z "$(grep -q "^127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}$" /tmp/hosts)" ]]; then
+        echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/tmp/hosts"
+        echo "::1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/tmp/hosts"
+      fi
     done
   done
 
-  echo "$(</tmp/site-hosts)" | sudo tee -a /etc/hosts > /dev/null
+  # Remove duplicate lines then replace hosts file.
+  awk -i inplace '!seen[$0]++' /tmp/hosts
 
-  # cleanup
-  if test -f "/tmp/site-hosts"; then
-    sudo rm /tmp/site-hosts
+  cp -f /tmp/hosts /etc/hosts
+  rm /tmp/hosts
+}
+export -f vvv_update_guest_hosts
+
+# @description Performs an in place sed command via a temporary
+# file to avoid permission issues
+function vvv_safe_sed() {
+  local expression="${1}"
+  local file="${2}"
+  local tempfile
+  tempfile=$(mktemp /tmp/safe-sed.XXXXXX)
+  /usr/bin/sed "${expression}" "${file}" > "${tempfile}"
+  cat "${tempfile}" > "${file}"
+  rm "${tempfile}"
+}
+export -f vvv_safe_sed
+
+# @description Takes a string and replaces all instances of a token with a value
+function vvv_search_replace() {
+  local content="$1"
+  local token="$2"
+  local value="$3"
+
+  # Read the file contents and replace the token with the value
+  content=${content//$token/$value}
+  echo "${content}"
+}
+export -f vvv_search_replace
+
+# @description Takes a file, and replaces all instances of a token with a value
+function vvv_search_replace_in_file() {
+  local file="$1"
+
+  # Read the file contents and replace the token with the value
+  local content
+  if [[ -f "${file}" ]]; then
+    content=$(<"${file}")
+    vvv_search_replace "${content}" "${2}" "${3}"
+  else
+    return 1
   fi
 }
-
-export -f vvv_update_guest_hosts
+export -f vvv_search_replace_in_file
