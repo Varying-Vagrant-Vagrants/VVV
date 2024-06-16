@@ -32,7 +32,7 @@ if [ ! -f /.dockerenv ]; then
 fi
 
 touch /vagrant/provisioned_at
-echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
+date "+%Y.%m.%d_%H-%M-%S" > /vagrant/provisioned_at
 
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
