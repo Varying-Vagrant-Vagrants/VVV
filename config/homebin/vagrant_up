@@ -46,15 +46,17 @@ sudo service memcached restart
 vvv_info " * Restarting Mailhog"
 /usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
 
-if [ -x "$(command -v ntpdate)" ]; then
-	vvv_info " * Syncing clocks"
-	if sudo ntpdate -u ntp.ubuntu.com; then
-		vvv_info " * clocks synced"
-	else
-		vvv_warn " - clock synchronisation failed"
-	fi
-else
-	vvv_info " - skipping ntpdate clock sync, not installed yet"
+if [ ! -f /.dockerenv ]; then
+  if [ -x "$(command -v ntpdate)" ]; then
+    vvv_info " * Syncing clocks"
+    if sudo ntpdate -u ntp.ubuntu.com; then
+      vvv_info " * clocks synced"
+    else
+      vvv_warn " - clock synchronisation failed"
+    fi
+  else
+    vvv_info " - skipping ntpdate clock sync, not installed yet"
+  fi
 fi
 
 mkdir -p /vagrant/failed_provisioners
