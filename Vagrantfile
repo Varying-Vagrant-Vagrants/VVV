@@ -236,7 +236,7 @@ defaults['provider'] = 'virtualbox'
 if Etc.uname[:version].include? 'ARM64'
   if vvv_is_docker_present()
     defaults['provider'] = 'docker'
-  elsif vvv_is_parallels_present
+  else
     defaults['provider'] = 'parallels'
   end
 end
