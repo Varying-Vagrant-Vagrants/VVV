@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.14 ( 2024 TBA )
 
+### Enhancements
+
+* VVV now shows a missing dashboard page with help when `www/default/index.php` is accidentally deleted instead of a HTTP forbidden error ( #2714 )
+
 ## 3.13.1 ( 2024 June 16th )
 
 ### Enhancements
