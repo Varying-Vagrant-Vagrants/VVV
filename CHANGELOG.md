@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.14 ( 2024 TBA )
 
+### Enhancements
+
+* VVV now shows a missing dashboard page with help when `www/default/index.php` is accidentally deleted instead of a HTTP forbidden error ( #2714 )
+
 ### Bug Fixes
 
 * VVV will check if Docker is installed before defaulting to it on Arm64/Apple Silicon ( #2715 )
