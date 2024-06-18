@@ -40,6 +40,21 @@ def sudo_warnings
   # exit
 end
 
+
+def vvv_is_docker_present()
+  VagrantPlugins::DockerProvider::Driver.new.execute("docker", "version")
+  return true
+rescue Vagrant::Errors::CommandUnavailable
+  return false
+end
+
+def vvv_is_parallels_present()
+  VagrantPlugins::DockerProvider::Driver.new.execute("prctl", "version")
+  return true
+rescue Vagrant::Errors::CommandUnavailable
+  return false
+end
+
 vagrant_dir = __dir__
 show_logo = false
 branch_c = "\033[38;5;6m" # 111m"
@@ -214,12 +229,16 @@ vvv_config['general'] = {} unless vvv_config['general'].is_a? Hash
 
 defaults = {}
 defaults['memory'] = 2048
-defaults['cores'] = 1
+defaults['cores'] = 2
 defaults['provider'] = 'virtualbox'
 
-# if Arm default to docker
+# if Arm default to docker then parallels
 if Etc.uname[:version].include? 'ARM64'
-  defaults['provider'] = 'docker'
+  if vvv_is_docker_present()
+    defaults['provider'] = 'docker'
+  elsif vvv_is_parallels_present
+    defaults['provider'] = 'parallels'
+  end
 end
 
 # This should rarely be overridden, so it's not included in the config/default-config.yml file.
