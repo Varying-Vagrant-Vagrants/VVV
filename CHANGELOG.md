@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.14 ( 2024 TBA )
 
+### Bug Fixes
+
+* VVV will check if Docker is installed before defaulting to it on Arm64/Apple Silicon ( #2715 )
+
 ## 3.13.1 ( 2024 June 16th )
 
 ### Enhancements
