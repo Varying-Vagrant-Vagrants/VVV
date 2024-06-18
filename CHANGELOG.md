@@ -15,6 +15,7 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * VVV will check if Docker is installed before defaulting to it on Arm64/Apple Silicon ( #2715 )
+* Fixed MySQL issues in GitHub Actions ( #2716 )
 
 ## 3.13.1 ( 2024 June 16th )
 
