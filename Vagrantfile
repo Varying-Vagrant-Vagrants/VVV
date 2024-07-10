@@ -42,17 +42,13 @@ end
 
 
 def vvv_is_docker_present()
-  VagrantPlugins::DockerProvider::Driver.new.execute("docker", "version")
-  return true
-rescue Vagrant::Errors::CommandUnavailable
-  return false
+  if system("docker version")
+    return true
+  end
 end
 
 def vvv_is_parallels_present()
-  VagrantPlugins::DockerProvider::Driver.new.execute("prctl", "version")
-  return true
-rescue Vagrant::Errors::CommandUnavailable
-  return false
+  return Vagrant.has_plugin?("vagrant-parallels")
 end
 
 vagrant_dir = __dir__
