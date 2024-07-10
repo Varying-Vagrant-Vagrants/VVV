@@ -42,7 +42,7 @@ end
 
 
 def vvv_is_docker_present()
-  if system("docker version")
+  if `docker version`
     return true
   end
 end
@@ -344,7 +344,7 @@ if show_logo
   when 'hyperv'
     provider_version = 'n/a'
   when 'docker'
-    provider_version = VagrantPlugins::DockerProvider::Driver.new.execute("docker", "-v").gsub("Docker version ", "")
+    provider_version = `docker -v`.gsub("Docker version ", "")
   else
     provider_version = '??'
   end
