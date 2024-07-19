@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Dashboard file missings</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				width: 90%;
+				margin: 0 auto;
+				font-family: Tahoma, Verdana, Arial, sans-serif;
+				background-color: #2b303b;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				align-content : center;
+				color: #c0c5ce;
+				height:100%;
+			}
+			pre, code {
+				background: #2b303b;
+				border-radius: 4px;
+				border: 1px solid #4f5b66;
+			}
+			code {
+				color: #a3be8c;
+				padding: .1em .2em;
+			}
+			main {
+				display: flex;
+				border-radius: 4px;
+				padding: 1.5em;
+				box-sizing: border-box;
+				margin: 1em 20px;
+				max-width: 800px;
+			}
+			.right {
+				align-self: center;
+				font-size:120px;
+				padding-left:60px;
+			}
+			h1 {
+				color:white;
+			}
+			a {
+				color: #ebcb8b;
+				background: #ebcb8b11;
+			}
+			a:hover {
+				background: #ebcb8b;
+				color: #ebcb8b11;
+			}
+			a:focus, a:active {
+				color: magenta;
+			}
+			@media only screen and (max-width: 601px) {
+				main {
+					flex-direction: column;
+					margin: 1em 0;
+					padding: 0;
+				}
+				.right {
+					order: 0;
+					padding-left: 0;
+				}
+				.left {
+					order: 1;
+				}
+			}
+		</style>
+	</head>
+<body>
+	<main>
+		<div class="left">
+			<h1>The Dashboard Loader file is missing!</h1>
+			<p>It looks like <code>www/default/index.php</code> is missing!</p>
+      <p>This file and the <code>www/default</code> folder are needed for dashboard and other parts of VVV to function. This includes tools such as xdebug info/phpmyadmin/etc.</p>
+      <p><strong>You can fix this and restore the <code>www/default</code> folder with <code>git checkout www/default</code>.</strong></p>
+		</div>
+		<div class="right">
+			🚩
+		</div>
+	</main>
+</body>
+</html>
