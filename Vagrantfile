@@ -45,6 +45,7 @@ def vvv_is_docker_present()
   if `docker version`
     return true
   end
+  return false
 end
 
 def vvv_is_parallels_present()
@@ -230,10 +231,10 @@ defaults['provider'] = 'virtualbox'
 
 # if Arm default to docker then parallels
 if Etc.uname[:version].include? 'ARM64'
-  if vvv_is_docker_present()
-    defaults['provider'] = 'docker'
-  else
+  if vvv_is_parallels_present()
     defaults['provider'] = 'parallels'
+  else
+    defaults['provider'] = 'docker'
   end
 end
 
