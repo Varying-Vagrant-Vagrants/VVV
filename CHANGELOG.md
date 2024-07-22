@@ -8,6 +8,9 @@ permalink: /docs/en-US/changelog/
 
 ## 3.14 ( 2024 ETA )
 
+### Bug Fixes
+
+* VVV will check if Parallels is installed before defaulting to docker on Arm64/Apple Silicon due to issues with Docker detection ( #2722 )
 
 ## 3.13.2 ( 2024 July 19th )
 
