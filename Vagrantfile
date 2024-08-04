@@ -279,6 +279,7 @@ if show_logo
     platform << 'cygwin ' if Vagrant::Util::Platform.cygwin?
     if Vagrant::Util::Platform.windows_hyperv_enabled?
       platform << 'HyperV-Enabled '
+      vvv_config['vm_config']['provider'] = 'hyperv'
     end
     platform << 'HyperV-Admin ' if Vagrant::Util::Platform.windows_hyperv_admin?
     if Vagrant::Util::Platform.windows_admin?
