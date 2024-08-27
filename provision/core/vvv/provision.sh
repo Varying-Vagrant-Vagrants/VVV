@@ -16,6 +16,7 @@ function vvv_register_packages() {
     software-properties-common
     ca-certificates
     libgnutls30
+    apt-transport-https
 
     # Daily automatic security package upgrades
     unattended-upgrades
