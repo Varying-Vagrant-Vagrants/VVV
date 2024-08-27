@@ -8,8 +8,8 @@ function mariadb_before_packages() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.5 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.5 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.11 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.11 mysql-server/root_password_again password "root" | debconf-set-selections
 
   vvv_info " * Setting up MySQL configuration file links..."
 
