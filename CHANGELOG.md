@@ -8,9 +8,14 @@ permalink: /docs/en-US/changelog/
 
 ## 3.14 ( 2024 ETA )
 
+### Enhancements
+
+* Upgraded MariaDB from 10.5 to 10.11 ( #2728 )
+
 ### Bug Fixes
 
 * VVV will check if Parallels is installed before defaulting to docker on Arm64/Apple Silicon due to issues with Docker detection ( #2722 )
+* Switched from Rackspace to Starburst services for MariaDB mirrors ( #2728 )
 
 ## 3.13.2 ( 2024 July 19th )
 

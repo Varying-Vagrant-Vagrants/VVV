@@ -1,4 +1,6 @@
-# MariaDB 10.5 repository list - created  UTC
+# MariaDB 10.11 repository list - created 2024-08-27 19:47 UTC
 # https://mariadb.org/download/
-deb [arch=amd64,arm64,ppc64el,s390x] https://mirror.rackspace.com/mariadb/repo/10.5/ubuntu bionic main
-deb-src https://mirror.rackspace.com/mariadb/repo/10.5/ubuntu bionic main
+# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+# deb [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://deb.mariadb.org/10.11/ubuntu bionic main
+deb [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://mariadb.gb.ssimn.org/repo/10.11/ubuntu bionic main
+# deb-src [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://mariadb.gb.ssimn.org/repo/10.11/ubuntu bionic main

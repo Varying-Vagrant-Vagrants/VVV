@@ -8,8 +8,8 @@ function mariadb_before_packages() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.5 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.5 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.11 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.11 mysql-server/root_password_again password "root" | debconf-set-selections
 
   vvv_info " * Setting up MySQL configuration file links..."
 
@@ -38,18 +38,24 @@ vvv_add_hook before_packages mariadb_before_packages
 
 function mariadb_register_apt_keys() {
   if ! vvv_apt_keys_has 'MariaDB'; then
-    # Apply the MariaDB signing keyg
+    # Apply the MariaDB signing key
     vvv_info " * Applying the MariaDB signing key..."
     apt-key add /srv/provision/core/mariadb/apt-keys/mariadb.key
   fi
+  mkdir -p /etc/apt/keyrings
+  cp -f "/srv/provision/core/mariadb/apt-keys/mariadb_release_signing_key.pgp" /etc/apt/keyrings/mariadb-keyring.pgp
 }
 vvv_add_hook register_apt_keys mariadb_register_apt_keys
 
 function mariadb_register_apt_sources() {
   vvv_info " * installing MariaDB apt sources"
-  local OSID=$(lsb_release --id --short)
-  local OSCODENAME=$(lsb_release --codename --short)
-  local APTSOURCE="/srv/provision/core/mariadb/sources-${OSID,,}-${OSCODENAME,,}.list"
+  local OSID
+  local OSCODENAME
+  local APTSOURCE
+
+  OSID=$(lsb_release --id --short)
+  OSCODENAME=$(lsb_release --codename --short)
+  APTSOURCE="/srv/provision/core/mariadb/sources-${OSID,,}-${OSCODENAME,,}.list"
   if [ -f "${APTSOURCE}" ]; then
     cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-mariadb-sources.list"
   else
