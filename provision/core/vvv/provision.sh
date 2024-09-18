@@ -105,7 +105,7 @@ export -f shyaml_setup
 vvv_add_hook after_packages shyaml_setup 0
 
 function vvv_ntp_restart() {
-  if [ "${VVV_DOCKER}" != 1 ]; then
+  if [ ! -f /.dockerenv ]; then
     service ntp restart
   fi
 }
