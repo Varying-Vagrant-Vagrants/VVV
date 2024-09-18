@@ -126,7 +126,7 @@ function mysql_setup() {
 
   # Due to systemd dependencies, in docker, mysql service is not auto started
   vvv_info " * Ensuring MariaDB service is started"
-  service mariadb restart
+  service mariadb status > /dev/null || service mariadb start
 
   if [ "${VVV_DOCKER}" != 1 ]; then
     check_mysql_root_password
