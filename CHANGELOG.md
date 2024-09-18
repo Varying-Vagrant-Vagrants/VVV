@@ -11,11 +11,13 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Upgraded MariaDB from 10.5 to 10.11 ( #2728 )
+* Only start services that aren't running in post-up scripts ( #2732 )
 
 ### Bug Fixes
 
 * VVV will check if Parallels is installed before defaulting to docker on Arm64/Apple Silicon due to issues with Docker detection ( #2722 )
 * Switched from Rackspace to Starburst services for MariaDB mirrors ( #2728 )
+* Fixes for service starts under some situations in Docker ( #2732 )
 
 ### Maintenance
 
