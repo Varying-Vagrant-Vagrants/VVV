@@ -128,19 +128,19 @@ function mysql_setup() {
   vvv_info " * Ensuring MariaDB service is started"
   service mariadb status > /dev/null || service mariadb start
 
-  if [ "${VVV_DOCKER}" != 1 ]; then
+  if [ ! -f /.dockerenv ]; then
     check_mysql_root_password
   fi
 
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if [ $(service mariadb status|grep 'Uptime' | wc -l) -ne 1 ]; then
+  if service mariadb status > /dev/null; then
     vvv_info " * Starting the mariadb service"
-    service mariadb start
+    service mariadb restart
   else
     vvv_info " * Restarting mariadb service"
-    service mariadb restart
+    service mariadb start
   fi
 
   # IMPORT SQL
