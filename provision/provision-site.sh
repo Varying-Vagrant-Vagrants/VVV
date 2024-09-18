@@ -17,7 +17,7 @@ SITE=$1
 SITE_ESCAPED="${SITE//./\\.}"
 REPO=$2
 BRANCH=$3
-VM_DIR=$4
+VM_DIR="${4%/}" # No trailing strings
 SKIP_PROVISIONING=$5
 NGINX_UPSTREAM=$6
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
@@ -167,7 +167,7 @@ function vvv_provision_site_nginx_config() {
 
   local NCONFIG
   NCONFIG=$(vvv_search_replace_in_file "${SITE_NGINX_FILE}" "{vvv_path_to_folder}" "${DIR}")
-  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_path_to_site}" "${VM_DIR}/")
+  NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_path_to_site}" "${VM_DIR}")
   NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_site_name}" "${SITE_NAME}")
   NCONFIG=$(vvv_search_replace "${NCONFIG}" "{vvv_hosts}" "${VVV_HOSTS}")
 

@@ -18,6 +18,7 @@ permalink: /docs/en-US/changelog/
 * VVV will check if Parallels is installed before defaulting to docker on Arm64/Apple Silicon due to issues with Docker detection ( #2722 )
 * Switched from Rackspace to Starburst services for MariaDB mirrors ( #2728 )
 * Fixes for service starts under some situations in Docker ( #2732 )
+* Fixed an issue with trailing slashes and site provisioners introduced in an earlier version (#2731)
 
 ### Maintenance
 
