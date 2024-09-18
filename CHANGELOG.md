@@ -12,6 +12,10 @@ permalink: /docs/en-US/changelog/
 
 * VVV will check if Parallels is installed before defaulting to docker on Arm64/Apple Silicon due to issues with Docker detection ( #2722 )
 
+### Maintenance
+
+* Removed commented out subversion config lines that were flagged as a false positive security issue ( #2725 )
+
 ## 3.13.2 ( 2024 July 19th )
 
 ### Enhancements
