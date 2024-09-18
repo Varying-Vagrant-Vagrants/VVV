@@ -23,7 +23,7 @@ vvv_add_hook after_packages vvv_memcached_setup 60
 
 function vvv_memcached_restart() {
   if service memcached status > /dev/null; then
-    service memcached reload
+    service memcached restart
   else
     service memcached start
   fi
