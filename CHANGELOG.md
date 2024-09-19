@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
 ### Maintenance
 
 * Removed commented out subversion config lines that were flagged as a false positive security issue ( #2725 )
+* Adjusted the domains used in the network check to remove unused domains and add some that are used ( #2734 )
 
 ## 3.13.2 ( 2024 July 19th )
 
