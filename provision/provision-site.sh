@@ -285,6 +285,65 @@ function vvv_process_site_hosts() {
   fi
 }
 
+# @description Clones the site template and creates the initial folder.
+#
+# @internal
+# @noargs
+function vvv_provision_fresh_site_template_git_repo() {
+  vvv_info " * Downloading ${SITE} provisioner, git cloning from ${REPO} into ${VM_DIR}"
+  if noroot git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}"; then
+    vvv_success " * ${SITE} provisioner clone successful"
+  else
+    vvv_error " ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
+    vvv_error " ! VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"
+    exit 1
+  fi
+}
+
+# @description Fetches remote git updates for a site template and does a hard reset.
+#
+# @internal
+# @noargs
+function vvv_provision_fetch_reset_site_template_git_repo() {
+  cd "${VM_DIR}"
+  echo " * Checking that site provisioner remote origin is still: ${REPO}"
+  local CURRENTORIGIN
+  CURRENTORIGIN=$(noroot git remote get-url origin)
+  if [[ "${CURRENTORIGIN}" != "${REPO}" ]]; then
+    vvv_error " ! The site config said to use <b>${REPO}</b>"
+    vvv_error " ! But the origin remote is actually <b>${CURRENTORIGIN}</b>"
+    vvv_error " ! Remove the unknown origin remote and re-add it."
+    vvv_error ""
+    vvv_error " ! You can do this by running these commands inside the VM:"
+    vvv_error " "
+    vvv_error " cd ${VM_DIR}"
+    vvv_error " git remote remove origin"
+    vvv_error " git remote add origin ${REPO}"
+    vvv_error " exit"
+    vvv_error " "
+    vvv_error " ! You can get inside the VM using <b>vagrant ssh</b>"
+    vvv_error " "
+    SUCCESS=1
+    return 1
+  fi
+
+  echo " * Updating ${SITE} provisioner repo in ${VM_DIR} (${REPO}, ${BRANCH})"
+  echo " * Any local changes not present on the server will be discarded in favor of the remote branch"
+
+  local SKIP_GIT_UPDATE
+  SKIP_GIT_UPDATE=$(vvv_get_site_config_value "skip_site_provisioner_update" "test")
+  if [[ $SKIP_GIT_UPDATE == "True" ]]; then
+    vvv_warn " ! Did not pull down latest site provisioner, config file indicates it should be skipped."
+    return
+  fi
+
+  echo " * Fetching origin ${BRANCH}"
+  noroot git fetch origin "${BRANCH}"
+  echo " * performing a hard reset on origin/${BRANCH}"
+  noroot git reset "origin/${BRANCH}" --hard
+  echo " * Updating provisioner repo complete"
+}
+
 # @description Clones a site provisioner repository or git repo as specified in the repo: field of a site
 #
 # @internal
@@ -294,47 +353,13 @@ function vvv_provision_site_repo() {
     vvv_info " * Pulling down the ${BRANCH} branch of ${REPO}"
     if [[ -d "${VM_DIR}" ]] && [[ ! -z "$(ls -A "${VM_DIR}")" ]]; then
       if [[ -d "${VM_DIR}/.git" ]]; then
-        echo " * Updating ${SITE} provisioner repo in ${VM_DIR} (${REPO}, ${BRANCH})"
-        echo " * Any local changes not present on the server will be discarded in favor of the remote branch"
-        cd "${VM_DIR}"
-        echo " * Checking that remote origin is ${REPO}"
-        local CURRENTORIGIN
-        CURRENTORIGIN=$(noroot git remote get-url origin)
-        if [[ "${CURRENTORIGIN}" != "${REPO}" ]]; then
-          vvv_error " ! The site config said to use <b>${REPO}</b>"
-          vvv_error " ! But the origin remote is actually <b>${CURRENTORIGIN}</b>"
-          vvv_error " ! Remove the unknown origin remote and re-add it."
-          vvv_error ""
-          vvv_error " ! You can do this by running these commands inside the VM:"
-          vvv_error " "
-          vvv_error " cd ${VM_DIR}"
-          vvv_error " git remote remove origin"
-          vvv_error " git remote add origin ${REPO}"
-          vvv_error " exit"
-          vvv_error " "
-          vvv_error " ! You can get inside the VM using <b>vagrant ssh</b>"
-          vvv_error " "
-          SUCCESS=1
-          return 1
-        fi
-        echo " * Fetching origin ${BRANCH}"
-        noroot git fetch origin "${BRANCH}"
-        echo " * performing a hard reset on origin/${BRANCH}"
-        noroot git reset "origin/${BRANCH}" --hard
-        echo " * Updating provisioner repo complete"
+        vvv_provision_fetch_reset_site_template_git_repo
       else
         vvv_error " ! Problem! A site folder for ${SITE} was found at ${VM_DIR} that doesn't use a site template, but a site template is defined in the config file. Either the config file is mistaken, or a previous attempt to provision has failed, VVV will not try to git clone the site template to avoid data destruction, either remove the folder, or fix the config/config.yml entry${CRESET}"
       fi
     else
       # Clone or pull the site repository
-      vvv_info " * Downloading ${SITE} provisioner, git cloning from ${REPO} into ${VM_DIR}"
-      if noroot git clone --recursive --branch "${BRANCH}" "${REPO}" "${VM_DIR}"; then
-        vvv_success " * ${SITE} provisioner clone successful"
-      else
-        vvv_error " ! Git failed to clone the site template for ${SITE}. It tried to clone the ${BRANCH} of ${REPO} into ${VM_DIR}${CRESET}"
-        vvv_error " ! VVV won't be able to provision ${SITE} without the template. Check that you have permission to access the repo, and that the filesystem is writable${CRESET}"
-        exit 1
-      fi
+      vvv_provision_fresh_site_template_git_repo
     fi
   else
     vvv_info " * The site: '${SITE}' does not have a site template, assuming custom provision/vvv-init.sh and provision/vvv-nginx.conf"
