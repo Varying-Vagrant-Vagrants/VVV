@@ -102,6 +102,8 @@ function network_check() {
     "https://getcomposer.org" # composer is used for lots of sites and provisioners
     "https://packagist.org" # Composer Packages
     "https://mariadb.gb.ssimn.org" # MariaDB mirror
+    "http://ports.ubuntu.com/"
+    "https://nginx.org/packages/mainline/"
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
