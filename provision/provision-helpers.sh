@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # @description This file is for common helper functions that
 # get called in other provisioners
 
@@ -18,7 +18,6 @@ export RED="\033[0;38;5;9m"
 export BLUE="\033[0;38;5;4m" # 33m"
 export PURPLE="\033[0;38;5;5m" # 129m"
 export CRESET="\033[0m"
-
 
 VVV_CONFIG=/vagrant/vvv-custom.yml
 if [[ -f /vagrant/config.yml ]]; then
@@ -101,8 +100,8 @@ function network_check() {
     "https://github.com" # needed for dashboard, extensions, etc
     "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
     "https://getcomposer.org" # composer is used for lots of sites and provisioners
-    "https://deb.nodesource.com" # Node JS installation
-    "https://mirror.rackspace.com" # MariaDB mirror
+    "https://packagist.org" # Composer Packages
+    "https://mariadb.gb.ssimn.org" # MariaDB mirror
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
