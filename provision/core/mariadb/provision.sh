@@ -136,11 +136,20 @@ function mysql_setup() {
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
   if service mariadb status > /dev/null; then
-    vvv_info " * Starting the mariadb service"
-    service mariadb restart
+    vvv_info " * Restarting the mariadb service"
+    if ! service mariadb restart; then
+      vvv_error " * Restarting the MariaDB failed! Fetching service status."
+      service mariadb status
+      exit 1
+    fi
   else
     vvv_info " * Restarting mariadb service"
     service mariadb start
+    if ! service mariadb start; then
+      vvv_error " * Starting MariaDB failed! Fetching service status."
+      service mariadb status
+      exit 1
+    fi
   fi
 
   # IMPORT SQL
