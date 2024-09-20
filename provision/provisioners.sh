@@ -13,6 +13,7 @@ exec 7>&2
 source /srv/provision/provision-helpers.sh
 
 VVV_PROVISIONER_RUNNING=""
+VVV_PROVISIONER_START_TIMESTAMP=0
 
 # @description Signal that a provisioner has begun, and setup timings, failed provisioner flags, etc
 # @arg $1 string Name of the provisioner
@@ -21,7 +22,7 @@ function provisioner_begin() {
   touch "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   log_to_file "provisioner-${VVV_PROVISIONER_RUNNING}"
   vvv_success " ▷ Running the <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner...</success>"
-  start_seconds="$(date +%s)"
+  VVV_PROVISIONER_START_TIMESTAMP="$(date -u +"%s.%2N")"
   trap "provisioner_end" EXIT
 }
 
@@ -29,10 +30,13 @@ function provisioner_begin() {
 # @arg $1 string Name of the provisioner
 function provisioner_end() {
   local PROVISION_SUCCESS="${1:-"1"}"
-  local end_seconds="$(date +%s)"
-  local elapsed="$(( end_seconds - start_seconds ))"
+  local end_timestamp
+  local elapsed
+
+  end_timestamp="$(date -u +"%s.%2N")"
+  elapsed=$(date -u -d "0 ${end_timestamp} seconds - ${VVV_PROVISIONER_START_TIMESTAMP} seconds" +"%-Mm %-Ss %-3Nms")
   if [[ $PROVISION_SUCCESS -eq "0" ]]; then
-    vvv_success " ✔ The <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner completed in </success><b>${elapsed}</b><success> seconds.</success>"
+    vvv_success " ✔ The <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner completed in </success><b>${elapsed}</b><success>.</success>"
     rm -f "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   else
     vvv_error " ! The <b>'${VVV_PROVISIONER_RUNNING}'</b><error> provisioner ran into problems, the full log is available at <b>'${VVV_CURRENT_LOG_FILE}'</b><error>. It completed in <b>${elapsed}</b><error> seconds."
@@ -41,13 +45,13 @@ function provisioner_end() {
   trap - EXIT
 }
 
-if [[ ! -z $VVV_LOG ]]; then
+if [[ -n $VVV_LOG ]]; then
   provisioner_begin "${VVV_LOG}"
 fi
 
 # @description Signal that a provisioner has finished with success
 function provisioner_success() {
-  if [[ ! -z $VVV_LOG ]]; then
+  if [[ -n $VVV_LOG ]]; then
     provisioner_end 0
   fi
 }
