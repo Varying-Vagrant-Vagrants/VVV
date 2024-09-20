@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Upgraded MariaDB from 10.5 to 10.11 ( #2728 )
+* Added a `skip_site_provisioner_update` option to prevent site provisioners being overwritten by updates ( #2733 )
 * Only start services that aren't running in post-up scripts ( #2732 )
 
 ### Bug Fixes
