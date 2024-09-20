@@ -13,15 +13,20 @@ function nginx_register_apt_sources() {
   fi
 }
 vvv_add_hook register_apt_sources nginx_register_apt_sources
-
 function nginx_register_apt_keys() {
   # Before running `apt-get update`, we should add the public keys for
   # the packages that we are installing from non standard sources via
   # our appended apt source.list
+  if vvv_apt_keys_has '573B FD6B 3D8F BC64 1079  A6AB ABF5 BD82 7BD9 BF62'; then
+    # Retrieve the Nginx signing key from nginx.org
+    vvv_info " * Replacing expired Nginx signing key..."
+    apt-key add /srv/provision/core/nginx/apt-keys/nginx-archive-keyring.gpg
+  fi
+
   if ! vvv_apt_keys_has 'nginx'; then
     # Retrieve the Nginx signing key from nginx.org
-    vvv_info " * Applying Nginx signing key..."
-    apt-key add /srv/provision/core/nginx/apt-keys/nginx_signing.key
+    vvv_info " * Adding Nginx signing key..."
+    apt-key add /srv/provision/core/nginx/apt-keys/nginx-archive-keyring.gpg
   fi
 }
 vvv_add_hook register_apt_keys nginx_register_apt_keys
@@ -100,8 +105,10 @@ export -f nginx_setup
 vvv_add_hook after_packages nginx_setup 40
 
 function vvv_nginx_restart() {
-  if [ "${VVV_DOCKER}" != 1 ]; then
+  if service nginx status > /dev/null; then
     service nginx restart
+  else
+    service nginx start
   fi
 }
 

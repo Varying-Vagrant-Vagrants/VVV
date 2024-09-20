@@ -16,6 +16,7 @@ function vvv_register_packages() {
     software-properties-common
     ca-certificates
     libgnutls30
+    apt-transport-https
 
     # Daily automatic security package upgrades
     unattended-upgrades
@@ -104,7 +105,7 @@ export -f shyaml_setup
 vvv_add_hook after_packages shyaml_setup 0
 
 function vvv_ntp_restart() {
-  if [ "${VVV_DOCKER}" != 1 ]; then
+  if [ ! -f /.dockerenv ]; then
     service ntp restart
   fi
 }
@@ -112,6 +113,10 @@ function vvv_ntp_restart() {
 vvv_add_hook services_restart vvv_ntp_restart
 
 function cleanup_vvv(){
+  if test -f "/tmp/hosts"; then
+    sudo rm /tmp/hosts
+  fi
+
   # Cleanup the hosts file
   vvv_info " * Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
@@ -121,13 +126,16 @@ function cleanup_vvv(){
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
     echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
-  echo "$(</tmp/hosts)" | sudo tee -a /etc/hosts > /dev/null
+  sudo cp -rf /tmp/hosts /etc/hosts
+
+  # cleanup
+  if test -f "/tmp/hosts"; then
+    sudo rm /tmp/hosts
+  fi
 }
 export -f cleanup_vvv
 
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook finalize cleanup_vvv 15
-fi
+vvv_add_hook finalize cleanup_vvv 15
 
 function apt_hash_missmatch_fix() {
   if [ ! -f "/etc/apt/apt.conf.d/99hashmismatch" ]; then

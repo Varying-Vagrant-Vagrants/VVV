@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # This script is run after a provision. To customize this behavior,
 # include a file in your local VVV/config/homebin
@@ -22,20 +22,30 @@ if [[ -f /srv/config/homebin/vagrant_provision_custom ]]; then
 fi
 
 vvv_info " * Restarting Nginx service"
-sudo service nginx restart
+if sudo service nginx status > /dev/null; then
+  sudo service nginx restart
+else
+  sudo service nginx start
+fi
 
 vvv_info " * Restarting MariaDB service"
-sudo service mariadb restart
-
-if [ -x "$(command -v ntpdate)" ]; then
-	vvv_info " * Syncing clocks"
-	if sudo ntpdate -u ntp.ubuntu.com; then
-		vvv_info " * clocks synced"
-	else
-		vvv_warn " - clock synchronisation failed"
-	fi
+if sudo service mariadb status > /dev/null; then
+  sudo service mariadb restart
 else
-	vvv_info " - skipping ntpdate clock sync, not installed yet"
+  sudo service mariadb start
+fi
+
+if [ ! -f /.dockerenv ]; then
+  if [ -x "$(command -v ntpdate)" ]; then
+    vvv_info " * Syncing clocks"
+    if sudo ntpdate -u ntp.ubuntu.com; then
+      vvv_info " * clocks synced"
+    else
+      vvv_warn " - clock synchronisation failed"
+    fi
+  else
+    vvv_info " - skipping ntpdate clock sync, not installed yet"
+  fi
 fi
 
 RED="\033[38;5;9m"

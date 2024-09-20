@@ -6,6 +6,11 @@ REPO=$1
 BRANCH=${2:-master}
 DIR="/srv/www/default/dashboard"
 
+if [[ ! -f /srv/www/default/index.php ]]; then
+  vvv_warn " ! The dashboard loader index.hp file is missing!"
+  vvv_warn " Without this neither the default or custom dashboard will load, and you will get a HTTP 401 forbidden message. If you deleted your www folder, restore the www/default folder to fix this, 'git checkout www/default' might fix this for you."
+fi
+
 if [[ false != "dashboard" && false != "${REPO}" ]]; then
   noroot mkdir -p "${DIR}"
   # Clone or pull the resources repository

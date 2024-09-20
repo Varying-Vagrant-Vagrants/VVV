@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # This script is run whenever `vagrant up` is used to power on
 # the virtual machine. To customize this behavior, include a file
@@ -25,36 +25,45 @@ URL="\033[4;38;5;3m"
 if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
 	vvv_info " * Custom vagrant up script found, executing vagrant_up_custom"
 	/srv/config/homebin/vagrant_up_custom
+  vvv_info " * Custom vagrant up script finished"
 fi
 
 # /etc/host doesn't survive restart on docker
-vvv_info " * Reinit /etc/hosts"
+vvv_info " * Updatin Guest VM /etc/hosts"
 vvv_update_guest_hosts
 
-vvv_info " * Restarting Nginx"
-sudo service nginx restart
+if ! sudo service nginx status > /dev/null; then
+  vvv_info " * Starting Nginx service"
+  sudo service nginx start
+fi
 
-vvv_info " * Restarting MariaDB"
-sudo service mariadb restart
+if ! sudo service mariadb status > /dev/null; then
+  vvv_info " * Starting MariaDB service"
+  sudo service mariadb start
+fi
 
-vvv_info " * Restarting PHP-FPM"
-find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
+vvv_info " * Checking PHP-FPM Services"
+find /etc/init.d/ -name "php*-fpm" -exec bash -c 'if ! sudo service "$(basename "$0")" status > /dev/null; then sudo service "$(basename "$0")" start; fi' {} \;
 
-vvv_info " * Restarting Memcache"
-sudo service memcached restart
+if ! sudo service memcached status > /dev/null; then
+  vvv_info " * Starting memcached service"
+  sudo service memcached start
+fi
 
 vvv_info " * Restarting Mailhog"
 /usr/bin/env /usr/local/bin/mailhog > /dev/null 2>&1 &
 
-if [ -x "$(command -v ntpdate)" ]; then
-	vvv_info " * Syncing clocks"
-	if sudo ntpdate -u ntp.ubuntu.com; then
-		vvv_info " * clocks synced"
-	else
-		vvv_warn " - clock synchronisation failed"
-	fi
-else
-	vvv_info " - skipping ntpdate clock sync, not installed yet"
+if [ ! -f /.dockerenv ]; then
+  if [ -x "$(command -v ntpdate)" ]; then
+    vvv_info " * Syncing clocks"
+    if sudo ntpdate -u ntp.ubuntu.com; then
+      vvv_succss " * clocks synced"
+    else
+      vvv_warn " - clock synchronisation failed"
+    fi
+  else
+    vvv_info " - skipping ntpdate clock sync, not installed yet"
+  fi
 fi
 
 mkdir -p /vagrant/failed_provisioners

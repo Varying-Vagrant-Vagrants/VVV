@@ -18,19 +18,21 @@ rm -f /vagrant/version
 rm -f /vagrant/vvv-custom.yml
 rm -f /vagrant/config.yml
 
-if [ -x "$(command -v ntpdate)" ]; then
-	echo " * Syncing clocks"
-	if sudo ntpdate -u ntp.ubuntu.com; then
-		echo " * clocks synced"
-	else
-		vvv_warn " - clock synchronisation failed"
-	fi
-else
-	echo " - skipping ntpdate clock sync, not installed yet"
+if [ ! -f /.dockerenv ]; then
+  if [ -x "$(command -v ntpdate)" ]; then
+    echo " * Syncing clocks"
+    if sudo ntpdate -u ntp.ubuntu.com; then
+      echo " * clocks synced"
+    else
+      echo " - clock synchronisation failed"
+    fi
+  else
+    echo " - skipping ntpdate clock sync, not installed yet"
+  fi
 fi
 
 touch /vagrant/provisioned_at
-echo $(date "+%Y.%m.%d_%H-%M-%S") > /vagrant/provisioned_at
+date "+%Y.%m.%d_%H-%M-%S" > /vagrant/provisioned_at
 
 # copy over version and config files
 cp -f /home/vagrant/version /vagrant
