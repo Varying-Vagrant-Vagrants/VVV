@@ -78,6 +78,7 @@ function check_network_connection_to_host() {
     return 0
   fi
   vvv_error " ! Network connection issues found. Unable to reach <url>${url}</url>"
+  wget --spider --timeout=5 --tries=3 "${url}"
   return 1
 }
 export -f check_network_connection_to_host
@@ -119,7 +120,7 @@ function network_check() {
     vvv_error " "
     vvv_error "VVV tried to check several domains it needs for provisioning but ${#failed_hosts[@]} of ${#hosts_to_test[@]} failed:"
     vvv_error " "
-    for url in "${hosts_to_test[@]}"; do
+    for url in "${failed_hosts[@]}"; do
       echo -e "${CRESET} [${RED}x${CRESET}] ${url}${RED}|"
     done
     vvv_error " "
