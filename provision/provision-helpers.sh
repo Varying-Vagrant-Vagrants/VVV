@@ -66,7 +66,7 @@ export -f network_detection
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
   local url=${1:-"http://ppa.launchpadcontent.net"}
-  vvv_info " * Testing network connection to <url>${url}</url> with wget -q --spider --timeout=5 --tries=3 ${url}"
+  vvv_info " * Testing network connection to <url>${url}</url><info> with wget -q --spider --timeout=5 --tries=3 ${url}"
 
   # Network Detection
   #
