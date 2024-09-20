@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # @description This file is for common helper functions that
 # get called in other provisioners
 
@@ -18,7 +18,6 @@ export RED="\033[0;38;5;9m"
 export BLUE="\033[0;38;5;4m" # 33m"
 export PURPLE="\033[0;38;5;5m" # 129m"
 export CRESET="\033[0m"
-
 
 VVV_CONFIG=/vagrant/vvv-custom.yml
 if [[ -f /vagrant/config.yml ]]; then
@@ -67,7 +66,7 @@ export -f network_detection
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
   local url=${1:-"http://ppa.launchpadcontent.net"}
-  vvv_info " * Testing network connection to <url>${url}</url> with wget -q --spider --timeout=5 --tries=3 ${url}"
+  vvv_info " * Testing network connection to <url>${url}</url><info> with wget -q --spider --timeout=5 --tries=3 ${url}"
 
   # Network Detection
   #
@@ -101,8 +100,10 @@ function network_check() {
     "https://github.com" # needed for dashboard, extensions, etc
     "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
     "https://getcomposer.org" # composer is used for lots of sites and provisioners
-    "https://deb.nodesource.com" # Node JS installation
-    "https://mirror.rackspace.com" # MariaDB mirror
+    "https://packagist.org" # Composer Packages
+    "https://mariadb.gb.ssimn.org" # MariaDB mirror
+    "http://ports.ubuntu.com/"
+    "https://nginx.org/packages/mainline/"
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
@@ -641,7 +642,11 @@ function vvv_maybe_install_nginx_config() {
     return 1
   fi
 
-  sudo service nginx reload
+  if sudo service nginx status > /dev/null; then
+    sudo service nginx reload
+  else
+    sudo service nginx start
+  fi
 
   return 0
 }
