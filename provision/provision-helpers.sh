@@ -637,7 +637,11 @@ function vvv_maybe_install_nginx_config() {
     return 1
   fi
 
-  sudo service nginx reload
+  if sudo service nginx status > /dev/null; then
+    sudo service nginx reload
+  else
+    sudo service nginx start
+  fi
 
   return 0
 }

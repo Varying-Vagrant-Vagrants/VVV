@@ -105,8 +105,10 @@ export -f nginx_setup
 vvv_add_hook after_packages nginx_setup 40
 
 function vvv_nginx_restart() {
-  if [ "${VVV_DOCKER}" != 1 ]; then
+  if service nginx status > /dev/null; then
     service nginx restart
+  else
+    service nginx start
   fi
 }
 
