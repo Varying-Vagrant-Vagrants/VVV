@@ -9,10 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: YAML Lint
-        uses: ibiqlik/action-yamllint@v0.0.1
+        uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: .
-      - name: PHP Syntax Checker (Lint) PHP 7.3
-        uses: StephaneBour/actions-php-lint@7.3
+      - name: PHP Syntax Checker (Lint) PHP 8.2
+        uses: StephaneBour/actions-php-lint@8.2
         with:
           dir: '.'
+      - name: Shell Script Syntax Checks
+        uses: Klintrup/simple-shell-syntax-check@v2
