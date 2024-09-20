@@ -6,7 +6,7 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.14 ( 2024 September 23rd )
+## 3.14.1 ( 2024 September 23rd )
 
 ### Enhancements
 
