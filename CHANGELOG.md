@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Upgraded MariaDB from 10.5 to 10.11 ( #2728 )
+* Provisioner/Hook timings now show milliseconds ( #2735 )
 
 ### Bug Fixes
 
