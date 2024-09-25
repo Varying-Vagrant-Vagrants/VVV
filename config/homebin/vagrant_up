@@ -57,7 +57,7 @@ if [ ! -f /.dockerenv ]; then
   if [ -x "$(command -v ntpdate)" ]; then
     vvv_info " * Syncing clocks"
     if sudo ntpdate -u ntp.ubuntu.com; then
-      vvv_succss " * clocks synced"
+      vvv_success " * clocks synced"
     else
       vvv_warn " - clock synchronisation failed"
     fi
