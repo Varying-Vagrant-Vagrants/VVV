@@ -87,17 +87,22 @@ SQL
   fi
   # Do reset password in safemode
   vvv_warn " * The root password is not root, fixing"
+  systemctl stop mariadb
+  mysqld_safe --skip-grant-tables --skip-networking &
   sql=$( cat <<-SQL
-      ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
+      ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
       FLUSH PRIVILEGES;
 SQL
 )
-  mysql -u root -proot -e "${sql}"
+  mysql -u root -e "${sql}"
   if [[ $? -eq 0 ]]; then
     vvv_success "   - root user password should now be root"
   else
     vvv_warn "   - could not reset root password"
   fi
+  sudo kill '/var/run/mariadb/mariadb.pid'
+  vvv_info " - restarting mariadb"
+  sudo systemctl start mariadb
 }
 
 function mysql_setup() {
