@@ -29,10 +29,18 @@ else
 fi
 
 vvv_info " * Restarting MariaDB service"
-if sudo service mariadb status > /dev/null; then
-  sudo service mariadb restart
+if [ ! -f /.dockerenv ]; then
+  if sudo service mariadb status > /dev/null; then
+    sudo service mariadb restart
+  else
+    sudo service mariadb start
+  fi
 else
-  sudo service mariadb start
+  if sudo service mysql status > /dev/null; then
+    sudo service mysql restart
+  else
+    sudo service mysql start
+  fi
 fi
 
 if [ ! -f /.dockerenv ]; then
