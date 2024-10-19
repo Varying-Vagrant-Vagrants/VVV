@@ -103,6 +103,7 @@ function network_check() {
     "https://getcomposer.org" # composer is used for lots of sites and provisioners
     "https://packagist.org" # Composer Packages
     "https://mariadb.gb.ssimn.org" # MariaDB mirror
+    "http://mariadb.mirrors.ovh.net" # MariaDB mirror[ovh]
     "http://ports.ubuntu.com/"
     "https://nginx.org/packages/mainline/"
   )
