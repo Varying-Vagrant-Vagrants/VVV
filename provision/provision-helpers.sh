@@ -732,3 +732,12 @@ function vvv_search_replace_in_file() {
   fi
 }
 export -f vvv_search_replace_in_file
+
+# @description Uses service
+function vvv_get_mysql_service_name() {
+  if [ ! -f /etc/init.d/mariadb ]; then
+    echo "mariadb"
+  fi
+  echo "mysql"
+}
+export -f vvv_get_mysql_service_name

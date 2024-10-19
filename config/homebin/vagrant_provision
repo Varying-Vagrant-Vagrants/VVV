@@ -16,6 +16,8 @@ source /srv/provision/provision-helpers.sh
 
 vvv_success " ▷ Post provision script"
 
+mysql_service_name=$(vvv_get_mysql_service_name)
+
 if [[ -f /srv/config/homebin/vagrant_provision_custom ]]; then
 	vvv_info " * Custom vagrant provision script found, executing vagrant_provision_custom"
 	/srv/config/homebin/vagrant_provision_custom
@@ -29,19 +31,11 @@ else
 fi
 
 vvv_info " * Restarting MariaDB service"
-if [ ! -f /.dockerenv ]; then
-  if sudo service mariadb status > /dev/null; then
-    sudo service mariadb restart
+if sudo service "${mysql_service_name[@]}" status > /dev/null; then
+    sudo service "${mysql_service_name[@]}" restart
   else
-    sudo service mariadb start
+    sudo service "${mysql_service_name[@]}" start
   fi
-else
-  if sudo service mysql status > /dev/null; then
-    sudo service mysql restart
-  else
-    sudo service mysql start
-  fi
-fi
 
 if [ ! -f /.dockerenv ]; then
   if [ -x "$(command -v ntpdate)" ]; then

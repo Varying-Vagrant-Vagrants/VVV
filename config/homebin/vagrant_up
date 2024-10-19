@@ -22,6 +22,8 @@ TEARS="${CYAN}░${RED}"
 EYE="${CYAN}█${RED}"
 URL="\033[4;38;5;3m"
 
+mysql_service_name=$(vvv_get_mysql_service_name)
+
 if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
 	vvv_info " * Custom vagrant up script found, executing vagrant_up_custom"
 	/srv/config/homebin/vagrant_up_custom
@@ -39,13 +41,8 @@ fi
 
 
 vvv_info " * Starting MariaDB service"
-if [ ! -f /.dockerenv ]; then
-  if ! sudo service mariadb status > /dev/null; then
-    sudo service mariadb start
-  fi
-else
-  if ! sudo service mysql status > /dev/null; then
-    sudo service mysql start
+ if ! sudo service "${mysql_service_name[@]}" status > /dev/null; then
+    sudo service "${mysql_service_name[@]}" start
   fi
 fi
 
