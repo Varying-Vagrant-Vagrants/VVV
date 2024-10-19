@@ -6,20 +6,21 @@ body:
     - type: dropdown
       id: version
       attributes:
-          label: Are you using the latest stable or develop branch version of VVV?
-          description: Newer versions of VVV may have fixed your problem already.
+          label: "Are you using the latest stable or develop branch version of VVV?"
+          description: "Newer versions of VVV may have fixed your problem already. The `master` branch is unsupported."
           multiple: false
           options:
              - 'Yes (develop)'
              - 'Yes (stable)'
              - 'No'
+             - 'No (unsupported master branch)'
              - "Don't know"
       validations:
           required: true
     - type: dropdown
       id: new_or_existng
       attributes:
-          label: Is it a new VVV or an existing VVV that used to work?
+          label: Is it a new VVV, or an existing VVV that used to work?
           multiple: false
           options:
              - 'Existing, worked but now broken'
@@ -27,11 +28,23 @@ body:
              - "Don't know"
       validations:
           required: true
+    - type: dropdown
+      id: customfiles
+      attributes:
+          label: "Did you use a CustomFile?"
+          description: "Some people add a `CustomFile` to make unsupported vagrant modifications. If you did this you must share what you changed in the issue."
+          multiple: false
+          options:
+             - 'No (default)'
+             - 'Yes'
+             - "Don't know"
+      validations:
+          required: true
     - type: textarea
       attributes:
           label: Whats the problem?
           description: |
-              Be as descriptive as possible!!!
+              Be as descriptive as possible!!! Include the output log, including lines above and below it. Most of the waiting time is us waiting for issue reporters to share the full log.
       validations:
           required: true
     - type: textarea
@@ -43,10 +56,10 @@ body:
           required: false
     - type: textarea
       attributes:
-          label: VVV Status screen
+          label: "What is the output of `vagrant status`"
           render: shell
           description: |
-              Run `vagrant status` and copy paste the result here
+              Run `vagrant status` and copy paste the result here, this has a lot of important debug data, if you do not include it we will still ask for it regardless.
           placeholder: |
             __ __ __ __
             \ V\ V\ V / v1.2.3 Path:"/Users/janedoe/vvv-local"
@@ -64,7 +77,7 @@ body:
           multiple: false
           options:
              - 'Apple MacOS (Intel)'
-             - 'Apple MacOS (Arm/Apple Silicon)'
+             - 'Apple MacOS (Arm64/Apple Silicon)'
              - 'Microsoft Windows'
              - 'Linux'
              - 'Other'
@@ -76,9 +89,12 @@ body:
           label: Which provider are you using?
           multiple: false
           options:
-             - 'VirtualBox'
+             - 'VirtualBox 7'
+             - 'VirtualBox 6'
+             - 'VirtualBox 5'
              - 'Parallels (Intel)'
              - 'Parallels (Apple Silicon/Arm)'
+             - 'Docker'
              - 'Hyper-V'
              - 'VMWare'
              - 'Other'

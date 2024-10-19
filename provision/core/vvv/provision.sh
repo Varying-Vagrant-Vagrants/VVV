@@ -36,6 +36,7 @@ function vvv_register_packages() {
     less
     iputils-ping
     net-tools
+    nano
 
     # ntp service to keep clock current
     ntp
@@ -52,12 +53,6 @@ function vvv_register_packages() {
     # webp support
     libwebp-dev
     webp
-
-    # not included in docker images by default, lets add
-    iputils-ping
-    net-tools
-    nano
-    less
   )
 }
 vvv_add_hook register_apt_packages vvv_register_packages 0
@@ -117,6 +112,10 @@ function vvv_ntp_restart() {
 vvv_add_hook services_restart vvv_ntp_restart
 
 function cleanup_vvv(){
+  if test -f "/tmp/hosts"; then
+    sudo rm /tmp/hosts
+  fi
+
   # Cleanup the hosts file
   vvv_info " * Cleaning the virtual machine's /etc/hosts file..."
   sed -n '/# vvv-auto$/!p' /etc/hosts > /tmp/hosts
@@ -126,13 +125,16 @@ function cleanup_vvv(){
     echo "127.0.0.1 tideways.vvv.test # vvv-auto" >> "/etc/hosts"
     echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
   fi
-  echo "$(</tmp/hosts)" | sudo tee -a /etc/hosts > /dev/null
+  sudo cp -rf /tmp/hosts /etc/hosts
+
+  # cleanup
+  if test -f "/tmp/hosts"; then
+    sudo rm /tmp/hosts
+  fi
 }
 export -f cleanup_vvv
 
-if [ "${VVV_DOCKER}" != 1 ]; then
-  vvv_add_hook finalize cleanup_vvv 15
-fi
+vvv_add_hook finalize cleanup_vvv 15
 
 function apt_hash_missmatch_fix() {
   if [ ! -f "/etc/apt/apt.conf.d/99hashmismatch" ]; then

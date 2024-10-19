@@ -1,36 +1,26 @@
 # VVV
 
-## with Docker as default provider
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/206b06167aaf48aab24422cd417e8afa)](https://www.codacy.com/gh/Varying-Vagrant-Vagrants/VVV?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Varying-Vagrant-Vagrants/VVV&amp;utm_campaign=Badge_Grade) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/varying-vagrant-vagrants/vvv.svg)](http://isitmaintained.com/project/varying-vagrant-vagrants/vvv "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/varying-vagrant-vagrants/vvv.svg)](http://isitmaintained.com/project/varying-vagrant-vagrants/vvv "Percentage of issues still open")
 
-VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It
-uses [Vagrant](https://www.vagrantup.com) and Docker, and can be used to build sites, and contribute to WordPress.
+VVV is a local developer environment, mainly aimed at [WordPress](https://wordpress.org) developers. It uses [Vagrant](https://www.vagrantup.com) and Docker/VirtualBox/Parallels/HyperV to create a linux server environment for building sites, and contributing to WordPress itself.
 
-## Which branch of VVV it's using as upstream ?
-
-[develop](https://github.com/Varying-Vagrant-Vagrants/VVV). Although `develop` sometimes get new features that has issues, but this branch actively developed, and critical issue more than often get fixed in this branch fairly quick 
-This is nature of VVV :
-> normally `develop` is more stable, but, `develop` can sometimes be unstable if something has just been merged and we didn't spot it in time
+_VVV stands for Varying Vagrant Vagrants._
 
 ## How To Use
 
-To use it, download and install [Vagrant](https://www.vagrantup.com)
-and [Docker](https://docs.docker.com/engine/install/). Then, clone this repository and run:
+To use it, download and install [Vagrant](https://www.vagrantup.com) and a provider such as [VirtualBox](https://www.virtualbox.org/), Docker, or Parallels Pro. Then, clone this repository and run:
 
 ```shell
-git clone -b docker-provider https://github.com/pentatonicfunk/VVV-Docker.git ~/vvv-local
-cd ~/vvv-local
 vagrant plugin install --local
 vagrant up --provision
 ```
 
 When it's done, visit [http://vvv.test](http://vvv.test).
 
-The online documentation contains more
-detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
+The online documentation contains more detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 
 * **Web**: [https://varyingvagrantvagrants.org/](https://varyingvagrantvagrants.org/)
-* **Contributing**: Contributions are more than welcome. Please see our
-  current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
+* **Contributing**: Contributions are more than welcome. Please see our current [contributing guidelines](https://varyingvagrantvagrants.org/docs/en-US/contributing/). Thanks!
 
 ## Minimum System requirements
 
@@ -38,5 +28,4 @@ detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-
 
 ## Software included
 
-For a comprehensive list, please see
-the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).
+For a comprehensive list, please see the [list of installed packages](https://varyingvagrantvagrants.org/docs/en-US/installed-packages/).

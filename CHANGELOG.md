@@ -6,7 +6,93 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.10 ( 2022 TBD )
+## 3.13.2 ( 2024 July 19th )
+
+### Enhancements
+
+* VVV now shows a missing dashboard page with help when `www/default/index.php` is accidentally deleted instead of a HTTP forbidden error ( #2714 )
+
+### Bug Fixes
+
+* VVV will check if Docker is installed before defaulting to it on Arm64/Apple Silicon ( #2715 )
+* Fixed MySQL issues in GitHub Actions ( #2716 )
+
+## 3.13.1 ( 2024 June 16th )
+
+### Enhancements
+
+* Switched the default PHP from v7.4 to v8.2 and ~default Node from v14 to v16~ ( #2690 )
+* Use Node 20 as the default version to match WP and Gutenberg ( #2696 )
+* WP Coding standards v3 ( #2688 )
+* VIP Coding standards v3 ( #2688 )
+* Better error messages with links to docs when trying to use a PHP version that isn't installed ( #2689 )
+* Opted out of Dotnet package telemetry ( #2689 )
+* Replace references to the Squizlab PHPCS with that from the PHPCS Standards org ( #2692 )
+* Better PHP Debug mod switching outputs and checks ( #2702 )
+* PHP Info and Xdebug info pages now state their versions ( #2702 )
+
+### Maintenance
+
+* Switch the Parallels Arm64 box from `mpasternak/focal64-arm` to `bento/ubuntu-20.04-arm64` to match x86 boxes ( #2695 )
+
+### Bug Fixes
+
+* The host file inside the VM was only adding sites with `127.0.0.1` addresses, now it adds the IPVv6 `::1` too ( #2689 )
+* Fixes for hosts file cleanup ( #2708 )
+* Removed old MacOS PR workflows, no runners available ( #2698 )
+* Replace an outdated Nginx signing key ( #2710 )
+* Don't sync clocks when using the docker provider ( #2711 )
+
+## 3.12.1 ( 2023 August 3rd )
+
+### Enhancements
+
+* Monolithic docker beta support ( #2632 )
+* Added the GMP PHP extension to the default PHP installation ( #2676 )
+
+### Maintenance
+
+* Updated bitbucket SSH fingerprints ( #2679 )
+
+### Bug Fixes
+
+* Fixed a vagrantfile error on Arm when the vagrant-parallels plugin is missing ( #2670 )
+* Miscellanous Shellcheck linter fixes and improvements ( #2675 )
+* Github action fixes for composer and an upgrade to Ubuntu 20 ( #2677 )
+* Fixed an issue with git safe directories ( #2681 )
+* Git safe directory fixes
+* Fixed docker version detection
+* PHPCS install improvements
+
+## 3.11.2 ( 2023 May 8th )
+
+### Enhancements
+
+* Added Gitlab SSH fingerprints for non-RSA keys ( #2665 )
+* Apt sources for Ubuntu 22 LTS
+
+### Bug Fixes
+
+* Updated to the new GitHub RSA fingerprint ( #2665 )
+
+
+## 3.11.0 ( 2023 March 14th )
+
+### Enhancements
+
+* Added a fallback Nginx config for sites that don't specify a site provisioner ( #2279 )
+* Sites that do not have a provisioner set will have a logs folder created for Nginx logs,and a public_html folder with Nginx rules for WordPress or other PHP applications. The user is responsible for creating a database and installing/placing a site.
+* Simplified PHPCS installation bin dir setting ( #2648 )
+* Virtualbox users running `sudo vagrant` commands now get a warning
+* Fixed setting of git rebase config for the vagrant nonroot user ( #2658 )
+* Added composer bin directory to path ( #2588 )
+
+### Bug Fixes
+
+* Fixed faulty Vagrant plugin check.
+* A fix for setting the PHP version parameter ( #2644 )
+
+## 3.10.1 ( 2022 September 10th )
 
 ### Enhancements
 
@@ -14,6 +100,7 @@ permalink: /docs/en-US/changelog/
 * VVV will now attempt to test Nginx configs on installation and recover ( #2604 )
 * Switched to new launchpad PPA domains with HTTPS ( #2586 )
 * Improved the verboseness of the DB import scripts ( #2621 )
+* PHP version parameter for provisioner and Nginx ( #2583 )
 
 ### Bug Fixes
 

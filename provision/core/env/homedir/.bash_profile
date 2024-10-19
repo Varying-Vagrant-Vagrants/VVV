@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # bash_profile
 #
 # Symlinked to the vagrant user's home directory. This loads
@@ -12,6 +13,9 @@ if [ -n "$BASH_VERSION" ]; then
         . "$HOME/.bashrc"
     fi
 fi
+
+# Telemetry opt outs
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 export PATH="$PATH:/srv/www/phpcs/bin"
 
@@ -29,8 +33,8 @@ PS1="${debian_chroot:+($debian_chroot)}${red}\u${green}@${blue}\h${white}:${yell
 # setup bash prompt
 if [ -n "$BASH_VERSION" ]; then
     # include .bash_prompt if it exists
-    if [ -f "$HOME/.bash_prompt" ]; then
-        . "$HOME/.bash_prompt"
+    if [ -f "${HOME}/.bash_prompt" ]; then
+        . "${HOME}/.bash_prompt"
     fi
 fi
 

@@ -12,14 +12,16 @@
     "issues": "https://github.com/Varying-Vagrant-Vagrants/VVV/issues/"
   },
   "require": {
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
-    "automattic/vipwpcs": "^2.3.3",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
+    "automattic/vipwpcs": "^3",
     "phpcompatibility/php-compatibility": "^9.3.5",
-    "phpcompatibility/phpcompatibility-wp": "^2.1.3"
+    "phpcompatibility/phpcompatibility-wp": "^2.1.4",
+    "wp-coding-standards/wpcs": "^3.0.1"
   },
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
-    }
+    },
+    "bin-dir": "bin/"
   }
 }

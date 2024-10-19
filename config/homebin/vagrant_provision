@@ -27,15 +27,17 @@ sudo service nginx restart
 vvv_info " * Restarting MariaDB service"
 sudo service mariadb restart
 
-if [ -x "$(command -v ntpdate)" ]; then
-	vvv_info " * Syncing clocks"
-	if sudo ntpdate -u ntp.ubuntu.com; then
-		vvv_info " * clocks synced"
-	else
-		vvv_warn " - clock synchronisation failed"
-	fi
-else
-	vvv_info " - skipping ntpdate clock sync, not installed yet"
+if [ ! -f /.dockerenv ]; then
+  if [ -x "$(command -v ntpdate)" ]; then
+    vvv_info " * Syncing clocks"
+    if sudo ntpdate -u ntp.ubuntu.com; then
+      vvv_info " * clocks synced"
+    else
+      vvv_warn " - clock synchronisation failed"
+    fi
+  else
+    vvv_info " - skipping ntpdate clock sync, not installed yet"
+  fi
 fi
 
 RED="\033[38;5;9m"

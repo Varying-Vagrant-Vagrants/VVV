@@ -53,9 +53,9 @@ function vvv_nvm_setup() {
 
   fi
 
-  vvv_info " - Installing Node 14 via nvm"
-  nvm install 14
-  nvm use 14
+  vvv_info " - Installing Node 20 via nvm"
+  nvm install 20
+  nvm use 20
 
   vvv_info " - Ensuring vagrant user owns its own nvm folder"
   chown -R vagrant:vagrant /home/vagrant/.nvm/

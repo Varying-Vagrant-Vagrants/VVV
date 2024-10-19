@@ -6,6 +6,7 @@ set -eo pipefail
 function php_codesniff_setup() {
   export COMPOSER_ALLOW_SUPERUSER=1
   export COMPOSER_NO_INTERACTION=1
+  export COMPOSER_RUNTIME_ENV="vagrant"
 
   if [[ -f "/srv/www/phpcs/CodeSniffer.conf" ]]; then
     vvv_info " * [PHPCS]: Removing the old PHPCS setup"
@@ -14,12 +15,12 @@ function php_codesniff_setup() {
 
   # PHP_CodeSniffer (for running WordPress-Coding-Standards)
   # Sniffs WordPress Coding Standards
-  vvv_info " * [PHPCS]: Provisioning PHP_CodeSniffer (phpcs), see https://github.com/squizlabs/PHP_CodeSniffer"
+  vvv_info " * [PHPCS]: Provisioning PHP_CodeSniffer (phpcs), see https://github.com/PHPCSStandards/PHP_CodeSniffer"
 
   noroot mkdir -p /srv/www/phpcs
   noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
   cd /srv/www/phpcs
-  COMPOSER_BIN_DIR="bin" noroot composer update --no-ansi --no-progress
+  noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
@@ -27,6 +28,7 @@ function php_codesniff_setup() {
   noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
   local standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
   vvv_success " * [PHPCS]: Completed with the following PHPCS standards set up: ${standards}"
+  vvv_info " * [PHPCS]: Help maintain PHPCS by sponsoring via Github Sponsors at https://github.com/sponsors/phpcsstandards or OpenCollective at https://opencollective.com/php_codesniffer"
 }
 export -f php_codesniff_setup
 

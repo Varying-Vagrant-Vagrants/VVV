@@ -1,10 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-DEFAULTPHP="7.4"
-echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"
-update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
-update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
-update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
-update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
-update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
-echo " * Restoration complete"
+DEFAULTPHP="8.2"
+php_version=$(readlink -f /usr/bin/php)
+if [[ $php_version != *"${DEFAULTPHP}"* ]]; then
+  echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"
+  update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
+  update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
+  update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
+  update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
+  update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
+  echo " * Restoration complete"
+fi

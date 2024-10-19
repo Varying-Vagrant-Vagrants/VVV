@@ -1,32 +1,33 @@
-# This is a basic workflow to help you get started with Actions
-
 name: VVV Provisioning
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the develop branch
 on:
   push:
-    branches: [ develop ]
+    branches:
+      - develop
   pull_request:
-    branches: [ develop, stable ]
+    branches:
+      - develop
+      - stable
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   on-docker:
-    name: Docker Provisioner
+    name: Ubuntu 20 Docker Provisioner
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # Make Symlinks
       - name: Create Vagrant Like Environment
         run: |
           # uninstall pre installed packages (to test if extensions work)
-          sudo apt-get -q --autoremove --purge remove php*
+          sudo apt-get -q --autoremove --purge remove php* mysql*
           sudo apt-get -q autoclean
 
           # remove pre-installed composer
@@ -103,102 +104,8 @@ jobs:
           MYGID=$(id -g -n)
           sudo chown -R $MYUID:$MYGID "$GITHUB_WORKSPACE/log"
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: logs-on-docker
-          path: "${{ github.workspace }}/log"
-
-  # This workflow contains a single job called "build"
-  on-stable:
-    name: Stable Reprovision
-    # The type of runner that the job will run on
-    runs-on: macos-10.15
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          ref: stable
-
-      - name: install goodhosts
-        run: vagrant plugin install --local
-
-      - name: vagrant up (stable)
-        run: vagrant up
-
-      - uses: actions/checkout@v2
-        with:
-          clean: false
-
-      - name: vagrant up (current branch)
-        run: vagrant up --provision
-
-      - name: tests
-        run: provision/tests/macos-tests.sh
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: logs-on-stable
-          path: "${{ github.workspace }}/log"
-
-  on-develop:
-    name: Develop Reprovision
-    # The type of runner that the job will run on
-    runs-on: macos-10.15
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          ref: develop
-
-      - name: install goodhosts
-        run: vagrant plugin install --local
-
-      - name: vagrant up (develop)
-        run: vagrant up
-
-      - uses: actions/checkout@v2
-        with:
-          clean: false
-
-      - name: vagrant up (current branch)
-        run: vagrant up --provision
-
-      - name: tests
-        run: provision/tests/macos-tests.sh
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: logs-on-develop
-          path: "${{ github.workspace }}/log"
-
-  on-clean:
-    name: Clean Provision
-    # The type of runner that the job will run on
-    runs-on: macos-10.15
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      - name: install goodhosts
-        run: vagrant plugin install --local
-
-      - name: vagrant up (current branch)
-        run: vagrant up
-
-      - name: tests
-        run: provision/tests/macos-tests.sh
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: logs-on-clean
           path: "${{ github.workspace }}/log"
