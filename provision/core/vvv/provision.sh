@@ -101,7 +101,7 @@ function shyaml_setup() {
 
     # Ubuntu 24 making it hard to install pip packages, throwing externally-managed-environment error
     # https://stackoverflow.com/a/75722775
-    if dpkg --compare-versions "${OSVERSION_NUMBER[@]}" gte "24.04"
+    if dpkg --compare-versions "${OSVERSION_NUMBER[@]}" ge "24.04"
     then
       # to make it available globally this is the last workaround, hopefully it doesn't break the system
       # TODO: try to find a better alternative way to install
