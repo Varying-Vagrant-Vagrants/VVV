@@ -31,7 +31,7 @@ if [[ -f /srv/config/homebin/vagrant_up_custom ]]; then
 fi
 
 # /etc/host doesn't survive restart on docker
-vvv_info " * Updatin Guest VM /etc/hosts"
+vvv_info " * Updating Guest VM /etc/hosts"
 vvv_update_guest_hosts
 
 if ! sudo service nginx status > /dev/null; then
