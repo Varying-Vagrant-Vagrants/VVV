@@ -37,9 +37,16 @@ if ! sudo service nginx status > /dev/null; then
   sudo service nginx start
 fi
 
-if ! sudo service mariadb status > /dev/null; then
-  vvv_info " * Starting MariaDB service"
-  sudo service mariadb start
+
+vvv_info " * Starting MariaDB service"
+if [ ! -f /.dockerenv ]; then
+  if ! sudo service mariadb status > /dev/null; then
+    sudo service mariadb start
+  fi
+else
+  if ! sudo service mysql status > /dev/null; then
+    sudo service mysql start
+  fi
 fi
 
 vvv_info " * Checking PHP-FPM Services"
