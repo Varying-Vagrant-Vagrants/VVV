@@ -145,7 +145,7 @@ function mysql_setup() {
       exit 1
     fi
   else
-    vvv_info " * Restarting mariadb service"
+    vvv_info " * Starting mariadb service"
     service "${mysql_service_name[@]}" start
     if ! service "${mysql_service_name[@]}" start; then
       vvv_error " * Starting MariaDB failed! Fetching service status."

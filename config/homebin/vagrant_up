@@ -41,9 +41,8 @@ fi
 
 
 vvv_info " * Starting MariaDB service"
- if ! sudo service "${mysql_service_name[@]}" status > /dev/null; then
-    sudo service "${mysql_service_name[@]}" start
-  fi
+if ! sudo service "${mysql_service_name[@]}" status > /dev/null; then
+  sudo service "${mysql_service_name[@]}" start
 fi
 
 vvv_info " * Checking PHP-FPM Services"
