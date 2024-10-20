@@ -177,11 +177,11 @@ function log_to_file() {
 	exec 2>&7
 	# pipe to file
 	if [[ "${1}" == "provisioner-main" ]]; then
-		exec > >( tee -a "${logfile}" ) # main provisioner outputs everything
+		exec > >( tee -a "${logfile}" | sed -r "s/\x1B\[[0-9;]*[mK]//g" ) # main provisioner outputs everything
 	else
-		exec > >( tee -a "${logfile}" >/dev/null ) # others, only stderr
+		exec > >( tee -a "${logfile}"  | sed -r "s/\x1B\[[0-9;]*[mK]//g" >/dev/null ) # others, only stderr
 	fi
-	exec 2> >( tee -a "${logfile}" >&2 )
+	exec 2> >( tee -a "${logfile}" | sed -r "s/\x1B\[[0-9;]*[mK]//g" >&2 )
 	VVV_CURRENT_LOG_FILE="${logfile}"
 }
 export -f log_to_file
