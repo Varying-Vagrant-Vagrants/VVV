@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-DEFAULTPHP="8.2"
+# Load config.yml
+VVV_CONFIG=/srv/config/default-config.yml
+if [[ -f /srv/config/config.yml ]]; then
+    VVV_CONFIG=/srv/config/config.yml
+fi
+
+DEFAULTPHP=$(cat ${VVV_CONFIG} | shyaml -q get-value general.php_cli_version "8.2")
 php_version=$(readlink -f /usr/bin/php)
 if [[ $php_version != *"${DEFAULTPHP}"* ]]; then
   echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"

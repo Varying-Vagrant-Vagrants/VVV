@@ -146,6 +146,9 @@ general:
   # GitHub token to use from composer
   #github_token: xxxxxx
 
+  # Set the default version of PHP CLI
+  # php_cli_version: 8.2
+
 # Settings for the vagrant plugins supported by VVV
 vagrant-plugins:
   disksize: 10GB # requires the disk size vagrant plugin
