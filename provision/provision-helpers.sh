@@ -96,16 +96,15 @@ function network_check() {
   #
   # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
-    "https://ppa.launchpadcontent.net" # needed for core ubuntu packages
-    "https://wordpress.org" # WordPress!!
-    "https://github.com" # needed for dashboard, extensions, etc
-    "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
-    "https://getcomposer.org" # composer is used for lots of sites and provisioners
-    "https://packagist.org" # Composer Packages
-    "https://mariadb.gb.ssimn.org" # MariaDB mirror
-    "http://mariadb.mirrors.ovh.net" # MariaDB mirror[ovh]
+    "https://ppa.launchpadcontent.net"     # Needed for core ubuntu packages
+    "https://wordpress.org"                # WordPress!!
+    "https://github.com"                   # Needed for dashboard, extensions, etc
+    "https://raw.githubusercontent.com"    # Some scripts and provisioners rely on this
+    "https://getcomposer.org"              # Composer is used for lots of sites and provisioners
+    "https://packagist.org"                # Composer Packages
+    "http://mariadb.mirrors.ovh.net"       # MariaDB mirror[ovh]
     "http://ports.ubuntu.com/"
-    "https://nginx.org/packages/mainline/"
+    "https://nginx.org/packages/mainline/" # Nginx
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
