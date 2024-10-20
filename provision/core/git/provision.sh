@@ -48,28 +48,18 @@ function git_register_apt_keys() {
 vvv_add_hook register_apt_keys git_register_apt_keys
 
 # @noargs
-function git_maybe_wildcard_safe_directory() {
-  # Extensions unable to clone without this
-  # Notably on Mac Silicon + Docker. Probably related to arm64 thing rather than global issue
-  # TODO: verify the issue on other setup, conditionally execute if it's not global
-  vvv_info "* Attempt to add * wildcard to vagrant git safe.directory"
-  (
-  set -f # noglob / avoid wildcard expansion
-  local safe_directories=($(noroot git config --get-all safe.directory))
-  local wildcard_symbol="*"
-  [[ " ${safe_directories[*]} " =~ " ${wildcard_symbol} " ]] && echo "* already added in git safe.directory" || ( echo "adding * wildcard to git safe directory" && noroot git config --global --add safe.directory * )
-  )
-}
-
-# @noargs
 function git_after_packages() {
   # if this setting isn't set, git will exit and provisioning will fail
   if ! git config --global pull.rebase; then
     vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
     git config --global pull.rebase false
   fi
+  if ! noroot git config --global pull.rebase; then
+    vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
+    noroot git config --global pull.rebase false
+  fi
 
-  git_maybe_wildcard_safe_directory
+  git config --global --add safe.directory '*'
+  noroot git config --global --add safe.directory '*'
 }
-
 vvv_add_hook after_packages git_after_packages
