@@ -96,8 +96,21 @@ function shyaml_setup() {
   # Used for passing custom parameters to the bash provisioning scripts
   if [ ! -f /usr/local/bin/shyaml ]; then
     vvv_info " * Installing Shyaml for bash provisioning.."
-    sudo pip3 install wheel
-    sudo pip3 install shyaml
+
+    local OSVERSION_NUMBER=$(lsb_release lsb_release -sr)
+
+    # Ubuntu 24 making it hard to install pip packages, throwing externally-managed-environment error
+    # https://stackoverflow.com/a/75722775
+    if dpkg --compare-versions "${OSVERSION_NUMBER[@]}" ge "24.04"
+    then
+      # to make it available globally this is the last workaround, hopefully it doesn't break the system
+      # TODO: try to find a better alternative way to install
+      sudo pip3 install wheel --break-system-packages
+      sudo pip3 install shyaml --break-system-packages
+    else
+      sudo pip3 install wheel
+      sudo pip3 install shyaml
+    fi
   fi
 }
 export -f shyaml_setup
