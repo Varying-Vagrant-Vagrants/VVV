@@ -125,8 +125,10 @@ function mysql_setup() {
   vvv_info " * Copied /srv/provision/core/mariadb/config/debian.cnf          to /etc/mysql/debian.cnf"
 
   # Due to systemd dependencies, in docker, mysql service is not auto started
+  # also docker isn't systemd based, so the service name is different: see: https://mariadb.com/kb/en/systemd/ vs https://mariadb.com/kb/en/sysvinit/
+  mysql_service_name=$(vvv_get_mysql_service_name)
   vvv_info " * Ensuring MariaDB service is started"
-  service mariadb status > /dev/null || service mariadb start
+  service "${mysql_service_name[@]}" status > /dev/null || service "${mysql_service_name[@]}" start
 
   if [ ! -f /.dockerenv ]; then
     check_mysql_root_password
@@ -135,19 +137,19 @@ function mysql_setup() {
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if service mariadb status > /dev/null; then
+  if service "${mysql_service_name[@]}" status > /dev/null; then
     vvv_info " * Restarting the mariadb service"
-    if ! service mariadb restart; then
+    if ! service "${mysql_service_name[@]}" restart; then
       vvv_error " * Restarting the MariaDB failed! Fetching service status."
-      service mariadb status
+      service "${mysql_service_name[@]}" status
       exit 1
     fi
   else
-    vvv_info " * Restarting mariadb service"
-    service mariadb start
-    if ! service mariadb start; then
+    vvv_info " * Starting mariadb service"
+    service "${mysql_service_name[@]}" start
+    if ! service "${mysql_service_name[@]}" start; then
       vvv_error " * Starting MariaDB failed! Fetching service status."
-      service mariadb status
+      service "${mysql_service_name[@]}" status
       exit 1
     fi
   fi

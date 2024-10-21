@@ -103,6 +103,7 @@ function network_check() {
     "https://getcomposer.org" # composer is used for lots of sites and provisioners
     "https://packagist.org" # Composer Packages
     "https://mariadb.gb.ssimn.org" # MariaDB mirror
+    "http://mariadb.mirrors.ovh.net" # MariaDB mirror[ovh]
     "http://ports.ubuntu.com/"
     "https://nginx.org/packages/mainline/"
   )
@@ -731,3 +732,13 @@ function vvv_search_replace_in_file() {
   fi
 }
 export -f vvv_search_replace_in_file
+
+# @description Identify the service name for the MySQL service via /etc/init.d/ contents
+# TODO: test on virtualbox
+function vvv_get_mysql_service_name() {
+  if [ ! -f /etc/init.d/mariadb ]; then
+    echo "mysql"
+  fi
+  echo "mariadb"
+}
+export -f vvv_get_mysql_service_name
