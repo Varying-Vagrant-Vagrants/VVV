@@ -89,6 +89,8 @@ SQL
   vvv_warn " * The root password is not root, fixing"
   systemctl stop mariadb
   mysqld_safe --skip-grant-tables --skip-networking &
+  # give the safemode server a chance to start,
+  sleep 1
   sql=$( cat <<-SQL
       ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
       FLUSH PRIVILEGES;
