@@ -92,8 +92,9 @@ SQL
   # give the safemode server a chance to start,
   sleep 1
   sql=$( cat <<-SQL
-      ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
-      FLUSH PRIVILEGES;
+    FLUSH PRIVILEGES;
+    ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+    FLUSH PRIVILEGES;
 SQL
 )
   mysql -u root -e "${sql}"
