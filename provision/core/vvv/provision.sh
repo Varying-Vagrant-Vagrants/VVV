@@ -97,7 +97,8 @@ function shyaml_setup() {
   if [ ! -f /usr/local/bin/shyaml ]; then
     vvv_info " * Installing Shyaml for bash provisioning.."
 
-    local OSVERSION_NUMBER=$(lsb_release lsb_release -sr)
+    local OSVERSION_NUMBER
+    OSVERSION_NUMBER=$(lsb_release lsb_release -sr)
 
     # Ubuntu 24 making it hard to install pip packages, throwing externally-managed-environment error
     # https://stackoverflow.com/a/75722775
