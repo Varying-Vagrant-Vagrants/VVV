@@ -733,12 +733,11 @@ function vvv_search_replace_in_file() {
 }
 export -f vvv_search_replace_in_file
 
-# @description Identify the service name for the MySQL service via /etc/init.d/ contents
-# TODO: test on virtualbox
+# @description Uses service
 function vvv_get_mysql_service_name() {
   if [ ! -f /etc/init.d/mariadb ]; then
-    echo "mysql"
+    echo "mariadb"
   fi
-  echo "mariadb"
+  echo "mysql"
 }
 export -f vvv_get_mysql_service_name
