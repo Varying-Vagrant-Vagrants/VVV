@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * Provisioner/Hook timings now show milliseconds ( #2735 )
 * Added a `skip_site_provisioner_update` option to prevent site provisioners being overwritten by updates ( #2733 )
 * Only start services that aren't running in post-up scripts ( #2732 )
+* Upgraded Ubuntu from 20.04 to 24.04 for docker provider ( #2739 )
 
 ### Bug Fixes
 
