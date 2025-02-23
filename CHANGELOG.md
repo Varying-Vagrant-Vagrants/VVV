@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * Provisioner/Hook timings now show milliseconds ( #2735 )
 * Added a `skip_site_provisioner_update` option to prevent site provisioners being overwritten by updates ( #2733 )
 * Only start services that aren't running in post-up scripts ( #2732 )
+* Added a warning for Virtualbox Arm64 users ( #2749 )
 
 ### Bug Fixes
 

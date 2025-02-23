@@ -498,6 +498,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # to your host computer, it is cached for future use under the specified box name.
     override.vm.box = 'bento/ubuntu-20.04'
 
+    if Etc.uname[:version].include? 'ARM64'
+      puts "WARNING: VirtualBox under Arm/Apple Silicon is unsupported, proceed at own risk."
+    end
+
     # If we're at a contributor day, switch the base box to the prebuilt one
     if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
       if vvv_config['vm_config']['wordcamp_contributor_day_box'] == true
