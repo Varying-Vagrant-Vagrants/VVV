@@ -137,7 +137,7 @@ vvv_add_hook finalize phpfpm_finalize
 
 function phpfpm_services_restart() {
   # Restart all php-fpm versions
-  if [ "${VVV_DOCKER}" != 1 ]; then
+  if [ ! -f /.dockerenv ]; then
     find /etc/init.d/ -name "php*-fpm" -exec bash -c 'sudo service "$(basename "$0")" restart' {} \;
   fi
 }

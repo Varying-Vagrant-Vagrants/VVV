@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # This script is run whenever `vagrant suspend` is used to suspend
 # the virtual machine. To customize this behavior, include a file
@@ -18,13 +18,13 @@ else
     fi
 
     # Check if backups are turned on or off
-    run_backups=`cat ${VVV_CONFIG} | shyaml -q get-value general.db_backup.enable`
+    run_backups=$(cat ${VVV_CONFIG} | shyaml -q get-value general.db_backup.enable)
     if [[ -z "$run_backups" ]]; then
-      run_backups=`cat ${VVV_CONFIG} | shyaml -q get-value general.db_backup`
+      run_backups=$(cat ${VVV_CONFIG} | shyaml -q get-value general.db_backup)
     fi
 
     if [[ $run_backups != "False" ]]; then
-	    /srv/config/homebin/db_backup
+      /srv/config/homebin/db_backup
     fi
 
     RED="\033[38;5;9m"

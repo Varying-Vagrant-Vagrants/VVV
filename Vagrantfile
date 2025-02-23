@@ -45,6 +45,7 @@ def vvv_is_docker_present()
   if `docker version`
     return true
   end
+  return false
 end
 
 def vvv_is_parallels_present()
@@ -230,10 +231,10 @@ defaults['provider'] = 'virtualbox'
 
 # if Arm default to docker then parallels
 if Etc.uname[:version].include? 'ARM64'
-  if vvv_is_docker_present()
-    defaults['provider'] = 'docker'
-  else
+  if vvv_is_parallels_present()
     defaults['provider'] = 'parallels'
+  else
+    defaults['provider'] = 'docker'
   end
 end
 
@@ -458,11 +459,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
 
-    # Vagrant currently runs under Rosetta on M1 devices. As a result,
-    # this seems to be the most reliable way to detect whether or not we're
-    # running under ARM64.
+    # Pin the arm64 version of the box to a specific version we know has an arm build.
     if Etc.uname[:version].include? 'ARM64'
-      override.vm.box = 'bento/ubuntu-20.04-arm64'
+      config.vm.box_version = "202404.23.0"
     end
   end
 
@@ -510,6 +509,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if defined? vvv_config['vm_config']['box']
     unless vvv_config['vm_config']['box'].nil?
       config.vm.box = vvv_config['vm_config']['box']
+    end
+  end
+
+  if defined? vvv_config['vm_config']['box_version']
+    unless vvv_config['vm_config']['box_version'].nil?
+      config.vm.box_version = vvv_config['vm_config']['box_version']
     end
   end
 

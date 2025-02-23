@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Create individual SQL files for each database. These files
 # are imported automatically during an initial provision if
@@ -10,7 +10,7 @@ if [ -z "${VVV_LOG+x}" ]; then
   export VVV_LOG=""
 fi
 
-trap 'rm -rf $TMPFIFODIR' EXIT; TMPFIFODIR=$(mktemp -d); mkfifo $TMPFIFODIR/dbnames
+trap 'rm -rf $TMPFIFODIR' EXIT; TMPFIFODIR=$(mktemp -d); mkfifo "${TMPFIFODIR}/dbnames"
 
 source /srv/provision/provision-helpers.sh
 
@@ -21,7 +21,7 @@ gzip=$(get_config_value "general.db_backup.gzip")
 exclude_list=$(get_config_values "general.db_backup.exclude")
 
 vvv_info " * Fetching Database names"
-mysql -e 'show databases' | grep -v -F "Database" > $TMPFIFODIR/dbnames &
+mysql -e 'show databases' | grep -v -F "Database" > "${TMPFIFODIR}/dbnames" &
 while read db_name; do
     # skip these databases
     [ "${db_name}" == "mysql" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
@@ -32,7 +32,7 @@ while read db_name; do
     [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
 
     skip="false"
-    for exclude in ${exclude_list[@]}; do
+    for exclude in "${exclude_list[@]}"; do
       if [ "${exclude}" == "${db_name}" ]; then
         skip="true"
       fi
@@ -51,7 +51,7 @@ while read db_name; do
         fi
     fi
     databases+=( "${db_name}" )
-done < $TMPFIFODIR/dbnames
+done < "${TMPFIFODIR}/dbnames"
 
 ext=".sql"
 if [[ "${gzip}" == "True" ]]; then
@@ -67,7 +67,7 @@ do
     else
       mysqldump "${db}" > "/srv/database/backups/${db}.sql";
     fi
-    let "count=count+1"
+    count=$((count+1))
 done
 
 vvv_success " * Finished backing up databases to the <b>database/sql/backups</b><success> folder</success>"

@@ -8,8 +8,8 @@ function mariadb_before_packages() {
   # Use debconf-set-selections to specify the default password for the root MariaDB
   # account. This runs on every provision, even if MariaDB has been installed. If
   # MariaDB is already installed, it will not affect anything.
-  echo mariadb-server-10.5 mysql-server/root_password password "root" | debconf-set-selections
-  echo mariadb-server-10.5 mysql-server/root_password_again password "root" | debconf-set-selections
+  echo mariadb-server-10.11 mysql-server/root_password password "root" | debconf-set-selections
+  echo mariadb-server-10.11 mysql-server/root_password_again password "root" | debconf-set-selections
 
   vvv_info " * Setting up MySQL configuration file links..."
 
@@ -38,18 +38,24 @@ vvv_add_hook before_packages mariadb_before_packages
 
 function mariadb_register_apt_keys() {
   if ! vvv_apt_keys_has 'MariaDB'; then
-    # Apply the MariaDB signing keyg
+    # Apply the MariaDB signing key
     vvv_info " * Applying the MariaDB signing key..."
     apt-key add /srv/provision/core/mariadb/apt-keys/mariadb.key
   fi
+  mkdir -p /etc/apt/keyrings
+  cp -f "/srv/provision/core/mariadb/apt-keys/mariadb_release_signing_key.pgp" /etc/apt/keyrings/mariadb-keyring.pgp
 }
 vvv_add_hook register_apt_keys mariadb_register_apt_keys
 
 function mariadb_register_apt_sources() {
   vvv_info " * installing MariaDB apt sources"
-  local OSID=$(lsb_release --id --short)
-  local OSCODENAME=$(lsb_release --codename --short)
-  local APTSOURCE="/srv/provision/core/mariadb/sources-${OSID,,}-${OSCODENAME,,}.list"
+  local OSID
+  local OSCODENAME
+  local APTSOURCE
+
+  OSID=$(lsb_release --id --short)
+  OSCODENAME=$(lsb_release --codename --short)
+  APTSOURCE="/srv/provision/core/mariadb/sources-${OSID,,}-${OSCODENAME,,}.list"
   if [ -f "${APTSOURCE}" ]; then
     cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-mariadb-sources.list"
   else
@@ -120,21 +126,30 @@ function mysql_setup() {
 
   # Due to systemd dependencies, in docker, mysql service is not auto started
   vvv_info " * Ensuring MariaDB service is started"
-  service mariadb restart
+  service mariadb status > /dev/null || service mariadb start
 
-  if [ "${VVV_DOCKER}" != 1 ]; then
+  if [ ! -f /.dockerenv ]; then
     check_mysql_root_password
   fi
 
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if [ $(service mariadb status|grep 'Uptime' | wc -l) -ne 1 ]; then
-    vvv_info " * Starting the mariadb service"
-    service mariadb start
+  if service mariadb status > /dev/null; then
+    vvv_info " * Restarting the mariadb service"
+    if ! service mariadb restart; then
+      vvv_error " * Restarting the MariaDB failed! Fetching service status."
+      service mariadb status
+      exit 1
+    fi
   else
     vvv_info " * Restarting mariadb service"
-    service mariadb restart
+    service mariadb start
+    if ! service mariadb start; then
+      vvv_error " * Starting MariaDB failed! Fetching service status."
+      service mariadb status
+      exit 1
+    fi
   fi
 
   # IMPORT SQL
