@@ -14,6 +14,7 @@ permalink: /docs/en-US/changelog/
 * Provisioner/Hook timings now show milliseconds ( #2735 )
 * Added a `skip_site_provisioner_update` option to prevent site provisioners being overwritten by updates ( #2733 )
 * Only start services that aren't running in post-up scripts ( #2732 )
+* Added a new `box_version` parameter for `config.yml` ( #2749 )
 
 ### Bug Fixes
 
@@ -22,6 +23,7 @@ permalink: /docs/en-US/changelog/
 * Switched from Starburst to OVH for MariaDB mirrors ( #2741 )
 * Fixes for service starts under some situations in Docker ( #2732 )
 * Fixed an issue with trailing slashes and site provisioners introduced in an earlier version (#2731)
+* Switched Parallels box to non-arm64 and pinned to a specific version for Arm devices ( #2749 )
 
 ### Maintenance
 
