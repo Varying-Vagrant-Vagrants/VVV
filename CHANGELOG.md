@@ -22,6 +22,7 @@ permalink: /docs/en-US/changelog/
 * Switched from Starburst to OVH for MariaDB mirrors ( #2741 )
 * Fixes for service starts under some situations in Docker ( #2732 )
 * Fixed an issue with trailing slashes and site provisioners introduced in an earlier version (#2731)
+* Switched Parallels box to non-arm64 and pinned to a specific version for Arm devices ( #2749 )
 
 ### Maintenance
 
