@@ -458,6 +458,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-20.04'
+
+    # Pin the arm64 version of the box to a specific version we know has an arm build.
+    if Etc.uname[:version].include? 'ARM64'
+      config.vm.box_version = "202404.23.0"
+    end
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
