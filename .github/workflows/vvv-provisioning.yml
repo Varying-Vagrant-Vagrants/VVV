@@ -14,9 +14,8 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   on-docker:
-    name: Ubuntu 20 Docker Provisioner
-    # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
+    name: Ubuntu Docker Provision
+    runs-on: [ ubuntu-20.04, ubuntu-24.04-arm ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
