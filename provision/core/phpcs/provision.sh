@@ -32,6 +32,7 @@ function php_codesniff_setup() {
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
   # Install the standards in PHPCS
+  chmod +x /srv/www/phpcs/bin/phpcs
   noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
   local standards
   standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
