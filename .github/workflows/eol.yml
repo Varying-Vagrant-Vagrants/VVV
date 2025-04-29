@@ -20,6 +20,6 @@ jobs:
         uses: sindrel/endoflife-github-action@v1.0.0
         with:
           product: ubuntu
-          version: 20.04 # Update once transitioned to 24
+          version: 24.04
           fail_on_eol: true
           fail_days_left: 90
