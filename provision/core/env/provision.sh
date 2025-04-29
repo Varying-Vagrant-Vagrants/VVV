@@ -73,32 +73,35 @@ function profile_setup() {
 
   # Copy custom dotfiles and bin file for the vagrant user from local
   rm -f "/home/vagrant/.bash_profile"
-  noroot cp -f "${DIR}/homedir/.bash_profile" "/home/vagrant/.bash_profile"
+  cp -f "${DIR}/homedir/.bash_profile" "/home/vagrant/.bash_profile"
 
   rm -f "/home/vagrant/.bash_aliases"
-  noroot cp -f "${DIR}/homedir/.bash_aliases" "/home/vagrant/.bash_aliases"
+  cp -f "${DIR}/homedir/.bash_aliases" "/home/vagrant/.bash_aliases"
 
   rm -f "${HOME}/.bash_aliases"
   cp -f "${DIR}/homedir/.bash_aliases" "${HOME}/.bash_aliases"
 
   rm -f "/home/vagrant/.vimrc"
-  noroot cp -f "${DIR}/homedir/.vimrc" "/home/vagrant/.vimrc"
+  cp -f "${DIR}/homedir/.vimrc" "/home/vagrant/.vimrc"
 
   if [[ ! -d "/home/vagrant/.subversion" ]]; then
-    noroot mkdir -p "/home/vagrant/.subversion"
+    mkdir -p "/home/vagrant/.subversion"
   fi
 
   rm -f /home/vagrant/.subversion/servers
-  noroot cp "${DIR}/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
+  cp "${DIR}/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
 
   rm -f /home/vagrant/.subversion/config
-  noroot cp "${DIR}/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
+  cp "${DIR}/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
     rm -f /home/vagrant/.bash_prompt
-    noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
+    cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
+
+  # Change ownership back to vagrant.
+  chown -R vagrant:vagrant /home/vagrant/
 
   if [ -d "/etc/ssh" ]; then
     cp -f "${DIR}/ssh/ssh_known_hosts" /etc/ssh/ssh_known_hosts
