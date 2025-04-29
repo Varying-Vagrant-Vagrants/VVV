@@ -17,10 +17,11 @@ function php_codesniff_setup() {
   # Sniffs WordPress Coding Standards
   vvv_info " * [PHPCS]: Provisioning PHP_CodeSniffer (phpcs), see https://github.com/PHPCSStandards/PHP_CodeSniffer"
 
-  noroot mkdir -p /srv/www/phpcs
-  noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
+  mkdir -p /srv/www/phpcs
+  cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
   cd /srv/www/phpcs
-  noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
+  COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
+  chown vagrant:vagrant /srv/www/phpcs
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
