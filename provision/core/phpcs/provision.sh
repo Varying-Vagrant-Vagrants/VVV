@@ -17,8 +17,13 @@ function php_codesniff_setup() {
   # Sniffs WordPress Coding Standards
   vvv_info " * [PHPCS]: Provisioning PHP_CodeSniffer (phpcs), see https://github.com/PHPCSStandards/PHP_CodeSniffer"
 
-  mkdir -p /srv/www/phpcs
-  chown -R vagrant:vagrant /srv/www/phpcs
+  if [ ! -d "/srv/www/phpcs" ]; then
+    vvv_info " * Setting up /srv/www/phpcs"
+    mkdir -p /srv/www/phpcs
+    chown -R vagrant:vagrant /srv/www/phpcs
+    chmod 755 /srv/www/phpcs
+  fi
+
   noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
   cd /srv/www/phpcs
   noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
