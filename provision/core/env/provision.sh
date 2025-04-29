@@ -106,10 +106,10 @@ function profile_setup() {
   if [ -d "/etc/ssh" ]; then
     cp -f "${DIR}/ssh/ssh_known_hosts" /etc/ssh/ssh_known_hosts
     cp -f "${DIR}/ssh/sshd_config" /etc/ssh/sshd_config
-    vvv_info " * Reloading SSH Daemon"
-    if ! sudo service ssh reload; then
-      vvv_error " ! SSH daemon failed to reload"
-      return 1
+
+    if service ssh status > /dev/null; then
+      vvv_info " * Reloading SSH Daemon"
+      service ssh reload
     fi
   fi
 }
