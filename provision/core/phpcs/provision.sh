@@ -27,7 +27,6 @@ function php_codesniff_setup() {
   COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
 
   chown -R vagrant:vagrant /srv/www/phpcs
-  chmod -R 755 /srv/www/phpcs
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
