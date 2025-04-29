@@ -39,11 +39,8 @@ vvv_add_hook register_apt_packages git_register_apt_packages
 
 # @noargs
 function git_register_apt_keys() {
-  if ! vvv_apt_keys_has 'git-lfs'; then
-    # Apply the PackageCloud signing key which signs git lfs
-    vvv_info " * Applying the PackageCloud Git-LFS signing key..."
-    apt-key add /srv/provision/core/git/apt-keys/git-lfs.key
-  fi
+  cp -f /srv/provision/core/git/apt-keys/github_git-lfs-archive-keyring.gpg /etc/apt/keyrings/github_git-lfs-archive-keyring.gpg
+  chmod 0644 /etc/apt/keyrings/github_git-lfs-archive-keyring.gpg
 }
 vvv_add_hook register_apt_keys git_register_apt_keys
 
