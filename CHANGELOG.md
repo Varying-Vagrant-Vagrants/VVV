@@ -6,7 +6,13 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.14 ( 2024 ETA )
+## 3.15 ( 2025 TBD )
+
+### Enhacnements
+
+* Upgraded Ubuntu from 20.04 to 24.04 for docker provider ( #2739 )
+
+## 3.14.1 ( 2025 February 23rd )
 
 ### Enhancements
 
@@ -14,7 +20,7 @@ permalink: /docs/en-US/changelog/
 * Provisioner/Hook timings now show milliseconds ( #2735 )
 * Added a `skip_site_provisioner_update` option to prevent site provisioners being overwritten by updates ( #2733 )
 * Only start services that aren't running in post-up scripts ( #2732 )
-* Upgraded Ubuntu from 20.04 to 24.04 for docker provider ( #2739 )
+* Added a new `box_version` parameter for `config.yml` ( #2749 )
 
 ### Bug Fixes
 
@@ -23,6 +29,7 @@ permalink: /docs/en-US/changelog/
 * Switched from Starburst to OVH for MariaDB mirrors ( #2741 )
 * Fixes for service starts under some situations in Docker ( #2732 )
 * Fixed an issue with trailing slashes and site provisioners introduced in an earlier version (#2731)
+* Switched Parallels box to non-arm64 and pinned to a specific version for Arm devices ( #2749 )
 
 ### Maintenance
 
