@@ -20,21 +20,21 @@ function php_codesniff_setup() {
   if [ ! -d "/srv/www/phpcs" ]; then
     vvv_info " * Setting up /srv/www/phpcs"
     mkdir -p /srv/www/phpcs
-    chown -R vagrant:vagrant /srv/www/phpcs
-    chmod -R 755 /srv/www/phpcs
   fi
 
   cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
-  chown vagrant:vagrant /srv/www/phpcs/composer.json
-  chmod 644 /srv/www/phpcs/composer.json
   cd /srv/www/phpcs
-  noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
+  COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
+
+  chown -R vagrant:vagrant /srv/www/phpcs
+  chmod -R 755 /srv/www/phpcs
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
   # Install the standards in PHPCS
   noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core
-  local standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
+  local standards
+  standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
   vvv_success " * [PHPCS]: Completed with the following PHPCS standards set up: ${standards}"
   vvv_info " * [PHPCS]: Help maintain PHPCS by sponsoring via Github Sponsors at https://github.com/sponsors/phpcsstandards or OpenCollective at https://opencollective.com/php_codesniffer"
 }
