@@ -51,15 +51,15 @@ vvv_add_hook register_apt_keys git_register_apt_keys
 function git_after_packages() {
   # if this setting isn't set, git will exit and provisioning will fail
   if ! git config --global pull.rebase; then
-    vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
-    git config --global pull.rebase false
+    vvv_info " * Git global config hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
+    git config --global pull.rebase false || vvv_warn "Failed ot update git config pull.rebase to false"
   fi
   if ! noroot git config --global pull.rebase; then
-    vvv_info " * Git hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
-    noroot git config --global pull.rebase false
+    vvv_info " * Git noroot global config hasn't been told how to merge branches, setting pull.rebase false for the merge strategy"
+    noroot git config --global pull.rebase false || vvv_warn "Failed to update noroot git config pull.rebase to false"
   fi
 
-  git config --global --add safe.directory '*'
-  noroot git config --global --add safe.directory '*'
+  git config --global --add safe.directory '*' || vvv_warn "Failed to update git config safe.directory"
+  noroot git config --global --add safe.directory '*'|| vvv_warn "Failed to update noroot git config safe.directory"
 }
 vvv_add_hook after_packages git_after_packages
