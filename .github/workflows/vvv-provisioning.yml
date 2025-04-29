@@ -32,8 +32,8 @@ jobs:
       - name: Create Vagrant Like Environment
         run: |
           # uninstall pre installed packages (to test if extensions work)
-          sudo apt-get -q --autoremove --purge remove php* mysql*
-          sudo apt-get -q autoclean
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -yq --autoremove --purge remove php* mysql*
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -yq autoclean
 
           # remove pre-installed composer
           if [ -f /usr/bin/composer ]; then
