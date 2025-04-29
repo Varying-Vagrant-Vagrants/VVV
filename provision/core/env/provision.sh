@@ -22,6 +22,13 @@ function setup_vvv_env() {
     -e "s|/srv/config/homebin:||" \
     -e "s|(.*PATH.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
     /etc/environment
+
+  if [ ! -d "/srv/www" ]; then
+    vvv_info " * Setting up /srv/www"
+    mkdir -p /srv/www
+    chown -R vagrant:vagrant /srv/www
+    chmod 755 /srv/www
+  fi
 }
 
 # @description Remove MOTD output from Ubuntu and add our own
