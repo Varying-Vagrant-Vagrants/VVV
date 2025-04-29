@@ -19,9 +19,9 @@ function php_codesniff_setup() {
 
   mkdir -p /srv/www/phpcs
   cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
+  chown -R vagrant:vagrant /srv/www/phpcs
   cd /srv/www/phpcs
-  COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
-  chown vagrant:vagrant /srv/www/phpcs
+  noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
