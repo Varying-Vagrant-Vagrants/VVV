@@ -21,10 +21,12 @@ function php_codesniff_setup() {
     vvv_info " * Setting up /srv/www/phpcs"
     mkdir -p /srv/www/phpcs
     chown -R vagrant:vagrant /srv/www/phpcs
-    chmod 755 /srv/www/phpcs
+    chmod -R 755 /srv/www/phpcs
   fi
 
-  noroot cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
+  cp -f "/srv/provision/core/phpcs/composer.json" "/srv/www/phpcs/composer.json"
+  chown vagrant:vagrant /srv/www/phpcs/composer.json
+  chmod 644 /srv/www/phpcs/composer.json
   cd /srv/www/phpcs
   noroot COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
 
