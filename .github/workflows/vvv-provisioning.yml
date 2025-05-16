@@ -30,9 +30,8 @@ jobs:
 
       - name: Check mount options
         run: |
-          mount | grep /srv
-          df -hT /srv
-
+          sudo mount
+          ls -al /
       - name: Check AppArmor / seccomp
         run: |
           aa-status || echo "No AppArmor"
