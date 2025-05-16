@@ -457,28 +457,32 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-24.04'
 
     # Pin the arm64 version of the box to a specific version we know has an arm build.
     if Etc.uname[:version].include? 'ARM64'
-      config.vm.box_version = "202404.23.0"
+      config.vm.box_version = "202502.21.0"
     end
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
   config.vm.provider :vmware_desktop do |v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-24.04'
     v.gui = false
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    # override.vm.box = 'bento/ubuntu-24.04'
+    # At the time of writing no Bento box existed for Ubuntu 2024 with the Hyper-V provider,
+    # so we're using the most popular box available in the box catalog as a temporary measure.
+    config.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
+    config.vm.box_version = "2404.0.2503"
   end
 
   # Docker use image.
   config.vm.provider :docker do |d, override|
-    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
+    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:24.04'
     d.has_ssh = true
     d.ports =  [ "80:80" ] # HTTP
     d.ports += [ "443:443" ] # HTTPS
@@ -494,9 +498,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Default Ubuntu Box
     #
     # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
-    # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
+    # box containing the Ubuntu LTS release. Once this box is downloaded
     # to your host computer, it is cached for future use under the specified box name.
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-24.04'
 
     # If we're at a contributor day, switch the base box to the prebuilt one
     if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
@@ -534,7 +538,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       override.disksize.size = vvv_config['vagrant-plugins']['disksize']
     end
     if Etc.uname[:version].include? 'ARM64'
-      puts "WARNING: Vagrant disksize requires VirtualBox and is incompatible with Arm devices, uninstall immediatley"
+      puts "WARNING: Vagrant disksize requires VirtualBox, if you are not using VirtualBox please remove this plugin immediatley"
     end
   end
 
