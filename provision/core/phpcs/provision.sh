@@ -33,14 +33,14 @@ function php_codesniff_setup() {
 
   # Install the standards in PHPCS
   chmod +x /srv/www/phpcs/bin/phpcs
-  if noroot /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core; then
+  if noroot php /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core; then
     vvv_success " * [PHPCS]: Succesfully set the default standard to WordPress-Core."
   else
     vvv_error " ! [PHPCS]: Failed to set the default standard to WordPress-Core."
     vvv_error " ! [PHPCS]: Permissions and owners of /src/www/phpcs/bin are as follows:\n$(ls -al /srv/www/phpcs/bin)"
   fi
   local standards
-  standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
+  standards=$(noroot php /srv/www/phpcs/bin/phpcs -i)
   vvv_success " * [PHPCS]: Completed with the following PHPCS standards set up: ${standards}"
   vvv_info " * [PHPCS]: Help maintain PHPCS by sponsoring via Github Sponsors at https://github.com/sponsors/phpcsstandards or OpenCollective at https://opencollective.com/php_codesniffer"
 }
