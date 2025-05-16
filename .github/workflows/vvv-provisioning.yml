@@ -24,11 +24,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - uses: nodef/git-config.action@v1.0.0
-        with:
-          entries: |-
-            pull.rebase=false
-
 
       # Make Symlinks
       - name: Create Vagrant Like Environment
