@@ -37,7 +37,7 @@ function php_codesniff_setup() {
     vvv_success " * [PHPCS]: Succesfully set the default standard to WordPress-Core."
   else
     vvv_error " ! [PHPCS]: Failed to set the default standard to WordPress-Core."
-    vvv_error " ! [PHPCS]: Permissions and owners of /src/www/phpcs/bin are as follows:\n ${ls -al /srv/www/phpcs/bin}"
+    vvv_error " ! [PHPCS]: Permissions and owners of /src/www/phpcs/bin are as follows:\n$(ls -al /srv/www/phpcs/bin)"
   fi
   local standards
   standards=$(noroot /srv/www/phpcs/bin/phpcs -i)
