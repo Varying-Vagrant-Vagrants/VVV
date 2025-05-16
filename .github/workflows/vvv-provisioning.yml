@@ -28,6 +28,16 @@ jobs:
           entries: |-
             pull.rebase=false
 
+      - name: Check mount options
+        run: |
+          mount | grep /srv
+          df -hT /srv
+
+      - name: Check AppArmor / seccomp
+        run: |
+          aa-status || echo "No AppArmor"
+          grep '^Seccomp:' /proc/$$/status || echo "No seccomp"
+
       # Make Symlinks
       - name: Create Vagrant Like Environment
         run: |
