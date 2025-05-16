@@ -6,11 +6,25 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.15 ( 2025 TBD )
+## 3.15 ( 2025 May )
 
-### Enhacnements
+### Enhancements
 
-* Upgraded Ubuntu from 20.04 to 24.04 for docker provider ( #2739 )
+* Upgraded Ubuntu boxes from 20.04 to 24.04 for docker provider ( #2739 )
+* Github action improvements ( #2739 )
+* Improved noroot to check for vagrant users and fallback if not present ( #2739 )
+
+### Bug Fixes
+
+* Fixed docker test provisioning by replacing symlinks with copies ( #2739 )
+* Improved PHPCS permissions handling ( #2739 )
+* Fixed a typo in `config/homebin/vagrant_up` ( #2739 )
+* Explicitly create `/srv/www` if it doesn't exist, and set ownership ( #2739 )
+* Added failure safeguards to git safe directory setting ( #2739 )
+
+### Maintenance
+
+* Refactored git-lfs signing key to the newer GPG key ( #2739 )
 
 ## 3.14.1 ( 2025 February 23rd )
 
