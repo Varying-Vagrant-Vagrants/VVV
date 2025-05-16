@@ -27,12 +27,14 @@ function php_codesniff_setup() {
   COMPOSER_RUNTIME_ENV="vagrant" composer update --no-ansi --no-progress --no-dev --prefer-dist
 
   chown -R vagrant:vagrant /srv/www/phpcs
+  chmod -R u+rwX /srv/www/phpcs
+  find /srv/www/phpcs -type f -exec chmod 644 {} \;
+  find /srv/www/phpcs -type d -exec chmod 755 {} \;
   chmod +x /srv/www/phpcs/bin/*
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
   # Install the standards in PHPCS
-  chmod +x /srv/www/phpcs/bin/phpcs
   if noroot php /srv/www/phpcs/bin/phpcs --config-set default_standard WordPress-Core; then
     vvv_success " * [PHPCS]: Succesfully set the default standard to WordPress-Core."
   else
