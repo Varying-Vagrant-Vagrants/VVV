@@ -10,7 +10,7 @@ on:
       - stable
   schedule:
    - cron: '0 10 * * *'
-    
+
 jobs:
   build:
     name: Ubuntu EOL check
