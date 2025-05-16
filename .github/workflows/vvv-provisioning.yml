@@ -37,9 +37,15 @@ jobs:
             sudo rm -f /usr/bin/composer
           fi
 
-          # create vagrant user
-          sudo groupadd -g 2000 vagrant
-          sudo useradd -u 2000 -g vagrant -m vagrant
+          # Create vagrant group if it doesn't exist
+          if ! getent group vagrant >/dev/null; then
+            sudo groupadd -g 2000 vagrant
+          fi
+
+          # Create vagrant user if it doesn't exist
+          if ! id -u vagrant >/dev/null 2>&1; then
+            sudo useradd -u 2000 -g vagrant -m vagrant
+          fi
 
           # vvv_symlink function to sumulate synced folders
           function vvv_symlink() {
@@ -50,8 +56,11 @@ jobs:
             sudo ln -sf "${1}" "${2}"
           }
 
-          # create srv folder
-          sudo -u "vagrant" mkdir -p "/srv"
+          # Create /srv if it doesn't exist
+          if [ ! -d "/srv" ]; then
+            sudo mkdir -p /srv
+            sudo chown vagrant:vagrant /srv
+          fi
 
           # copy files provided by vagrant
           sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
@@ -61,12 +70,19 @@ jobs:
           vvv_symlink "$GITHUB_WORKSPACE/database/sql" "/srv/database"
           vvv_symlink "$GITHUB_WORKSPACE/config" "/srv/config"
           vvv_symlink "$GITHUB_WORKSPACE/provision" "/srv/provision"
-          vvv_symlink "$GITHUB_WORKSPACE/certificates" "/srv/certificates"
-          vvv_symlink "$GITHUB_WORKSPACE/www" "/srv/www"
-          vvv_symlink "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
-          vvv_symlink "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
-          vvv_symlink "$GITHUB_WORKSPACE/log/php" "/var/log/php"
-          vvv_symlink "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
+
+          sudo mkdir -p /srv/certificates
+          sudo cp -rT "$GITHUB_WORKSPACE/www" /srv/certificates
+          sudo chown -R vagrant:vagrant /srv/certificates
+
+          sudo mkdir -p /srv/www
+          sudo cp -rT "$GITHUB_WORKSPACE/www" /srv/www
+          sudo chown -R vagrant:vagrant /srv/www
+
+          # vvv_symlink "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
+          # vvv_symlink "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
+          # vvv_symlink "$GITHUB_WORKSPACE/log/php" "/var/log/php"
+          # vvv_symlink "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
 
       # Runs the provisioners in the expected order
       - name: Run provison-pre.sh
