@@ -17,6 +17,7 @@ jobs:
     name: Ubuntu 24 Docker Provisioner
     # The type of runner that the job will run on
     runs-on: ubuntu-24.04
+    container: pentatonicfunk/vagrant-ubuntu-base-images:24.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -28,13 +29,6 @@ jobs:
           entries: |-
             pull.rebase=false
 
-      - name: Check Environment options
-        run: |
-          sudo mount
-          ls -al /srv
-          sudo aa-status || echo "No AppArmor"
-          grep '^Seccomp:' /proc/$$/status || echo "No seccomp"
-          sudo sestatus || echo "SELinux not installed or disabled"
 
       # Make Symlinks
       - name: Create Vagrant Like Environment
