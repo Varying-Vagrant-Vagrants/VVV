@@ -31,6 +31,7 @@ function php_codesniff_setup() {
   find /srv/www/phpcs -type f -exec chmod 644 {} \;
   find /srv/www/phpcs -type d -exec chmod 755 {} \;
   chmod +x /srv/www/phpcs/bin/*
+  chmod +x /srv/www/phpcs/vendor/squizlabs/php_codesniffer/bin/*
 
   vvv_info " * [PHPCS]: Setting WordPress-Core as the default PHPCodesniffer standard"
 
@@ -41,8 +42,6 @@ function php_codesniff_setup() {
     vvv_error " ! [PHPCS]: Failed to set the default standard to WordPress-Core."
     vvv_error " ! [PHPCS]: Permissions and owners of /src/www/phpcs/bin are as follows:\n$(ls -al /srv/www/phpcs/bin)"
     vvv_error " ! [PHPCS]: getfacl /srv/www/phpcs/bin/phpcs\n$(getfacl /srv/www/phpcs/bin/phpcs)"
-    vvv_error " ! [PHPCS]: php --version\n$(php --version)"
-    vvv_error " ! [PHPCS]: whoami --version\n$(whoami)"
   fi
   local standards
   standards=$(noroot php /srv/www/phpcs/bin/phpcs -i)
