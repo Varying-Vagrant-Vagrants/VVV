@@ -28,14 +28,13 @@ jobs:
           entries: |-
             pull.rebase=false
 
-      - name: Check mount options
+      - name: Check Environment options
         run: |
           sudo mount
-          ls -al /
-      - name: Check AppArmor / seccomp
-        run: |
-          aa-status || echo "No AppArmor"
+          ls -al /srv
+          sudo aa-status || echo "No AppArmor"
           grep '^Seccomp:' /proc/$$/status || echo "No seccomp"
+          sudo sestatus || echo "SELinux not installed or disabled"
 
       # Make Symlinks
       - name: Create Vagrant Like Environment
