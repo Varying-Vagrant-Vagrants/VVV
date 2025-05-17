@@ -21,6 +21,7 @@ permalink: /docs/en-US/changelog/
 * Fixed a typo in `config/homebin/vagrant_up` ( #2739 )
 * Explicitly create `/srv/www` if it doesn't exist, and set ownership ( #2739 )
 * Added failure safeguards to git safe directory setting ( #2739 )
+* Fixed uses of config.vm instead of override.vm in the Vagrantfile ( #2754 )
 
 ### Maintenance
 
