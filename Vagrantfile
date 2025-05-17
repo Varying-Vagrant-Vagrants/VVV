@@ -458,10 +458,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
     override.vm.box = 'bento/ubuntu-24.04'
+    override.vm.box_version = ">= 0"
 
     # Pin the arm64 version of the box to a specific version we know has an arm build.
     if Etc.uname[:version].include? 'ARM64'
-      config.vm.box_version = "202502.21.0"
+      override.vm.box_version = "202502.21.0"
     end
   end
 
@@ -476,8 +477,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # override.vm.box = 'bento/ubuntu-24.04'
     # At the time of writing no Bento box existed for Ubuntu 2024 with the Hyper-V provider,
     # so we're using the most popular box available in the box catalog as a temporary measure.
-    config.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
-    config.vm.box_version = "2404.0.2503"
+    override.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
+    override.vm.box_version = ">=2404.0.2503"
   end
 
   # Docker use image.
