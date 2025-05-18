@@ -16,7 +16,6 @@ function vvv_nvm_setup() {
   if [[ -d "${NVM_DIR}" && -f "${NVM_DIR}/nvm.sh" ]]
   then
     vvv_success " ✓ NVM is already installed, checking for updates"
-    cd "${NVM_DIR}"
     pushd "${NVM_DIR}" > /dev/null
     noroot git fetch --tags origin
     noroot git checkout $(noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(noroot git rev-list --tags --max-count=1))
