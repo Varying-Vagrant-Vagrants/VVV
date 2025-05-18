@@ -13,6 +13,7 @@ permalink: /docs/en-US/changelog/
 * Upgraded Ubuntu boxes from 20.04 to 24.04 for docker provider ( #2739 )
 * Github action improvements ( #2739 )
 * Improved noroot to check for vagrant users and fallback if not present ( #2739 )
+* Greatly improved database backup and import script checks and output ( #2759 )
 
 ### Bug Fixes
 
