@@ -115,16 +115,15 @@ if [ "$sql_count" != 0 ]; then
         vvv_warning " ! ${file} has a gzip extension but gunzip reports it is not a compressed gzip, proceed with caution."
       fi
     elif [[ "$file" == *.sql ]]; then
+      head -n 1 "${file}" | grep -qE '^(--|CREATE|INSERT|DROP|USE|SET)' || {
+        vvv_warning " * Skipping suspicious file: ${file}"
+        continue
+      }
       db_name=$(basename "$file" .sql)
     else
       vvv_info " * Skipping unrecognized file format: ${file}"
       continue
     fi
-
-    head -n 1 "${file}" | grep -qE '^(--|CREATE|INSERT|DROP|USE|SET)' || {
-      vvv_warning " * Skipping suspicious file: ${file}"
-      continue
-    }
 
     # Skip if db is in skip list
     if should_skip_db "${db_name}"; then
