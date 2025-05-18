@@ -23,6 +23,7 @@ permalink: /docs/en-US/changelog/
 * Added failure safeguards to git safe directory setting ( #2739 )
 * Fixed uses of config.vm instead of override.vm in the Vagrantfile ( #2754 )
 * Added nonempty to mount_options for Parallels, and added mount_options to all synced folders ( #2757 )
+* Added Xdebug port mapping for the docker provider ( #2748 )
 
 ### Maintenance
 

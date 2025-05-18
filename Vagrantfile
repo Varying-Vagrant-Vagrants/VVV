@@ -505,6 +505,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     d.ports += [ "443:443" ] # HTTPS
     d.ports += [ "3306:3306" ] # MySQL
     d.ports += [ "8025:8025" ] # Mailhog
+    d.ports += [ "9003:9003" ] # Xdebug
 
     ## Fix goodhosts aliases format for docker
     override.goodhosts.aliases = { '127.0.0.1' => vvv_config['hosts'], '::1' => vvv_config['hosts'] }
