@@ -24,6 +24,7 @@ permalink: /docs/en-US/changelog/
 * Fixed uses of config.vm instead of override.vm in the Vagrantfile ( #2754 )
 * Added nonempty to mount_options for Parallels, and added mount_options to all synced folders ( #2757 )
 * Added Xdebug port mapping for the docker provider ( #2748 )
+* Provisioner logs no longer log escape codes ( #2742 )
 
 ### Maintenance
 
