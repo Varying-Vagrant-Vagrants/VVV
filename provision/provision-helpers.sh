@@ -166,23 +166,57 @@ export -f network_check
 #
 # @arg $1 string name of the provisioner
 function log_to_file() {
+	local provisioner="$1"
 	local date_time
+
+	if [[ ! -s /vagrant/provisioned_at ]]; then
+		echo "Error: /vagrant/provisioned_at is missing or empty" >&2
+		return 1
+	fi
+
   date_time=$(cat /vagrant/provisioned_at)
 	local logfolder="/var/log/provisioners/${date_time}"
-	local logfile="${logfolder}/${1}.log"
-	mkdir -p "${logfolder}"
-	touch "${logfile}"
+  local logfile="${logfolder}/${provisioner}.log"
+
+
+  mkdir -p "${logfolder}" || return 1
+	touch "${logfile}" || return 1
+
 	# reset output otherwise it will log to previous files. from backup made in provisioners.sh
 	exec 1>&6
 	exec 2>&7
+
+  local SED_STRIP_ANSI='s/\x1B\[[0-9;]*[a-zA-Z]//g'
+
 	# pipe to file
-	if [[ "${1}" == "provisioner-main" ]]; then
-		exec > >( tee -a "${logfile}" | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" ) # main provisioner outputs everything
+	if [[ "${provisioner}" == "provisioner-main" ]]; then
+		# Preserve color in terminal, strip in log
+		exec > >(
+			while IFS= read -r line; do
+				printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+				printf '%s\n' "$line"
+			done
+		)
 	else
-		exec > >( tee -a "${logfile}"  | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" >/dev/null ) # others, only stderr
+    # Suppress stdout to terminal but log stripped version
+		exec > >(
+			while IFS= read -r line; do
+				printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+			done
+		)
 	fi
-	exec 2> >( tee -a "${logfile}" | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" >&2 )
+
+  # stderr: preserve color in terminal, strip in log
+	exec 2> >(
+		while IFS= read -r line; do
+			printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+			printf '%s\n' "$line" >&2
+		done
+	)
+
 	VVV_CURRENT_LOG_FILE="${logfile}"
+
+  return 0
 }
 export -f log_to_file
 
