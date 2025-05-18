@@ -1,0 +1,25 @@
+name: EOL Checks
+on:
+  push:
+    branches:
+      - stable
+      - develop
+  pull_request:
+    branches:
+      - develop
+      - stable
+  schedule:
+   - cron: '0 10 * * *'
+
+jobs:
+  build:
+    name: Ubuntu EOL check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ubuntu and Ondrej PHP packages End-of-Life
+        uses: sindrel/endoflife-github-action@v1.0.0
+        with:
+          product: ubuntu
+          version: 24.04
+          fail_on_eol: true
+          fail_days_left: 90

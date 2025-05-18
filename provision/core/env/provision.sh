@@ -22,6 +22,13 @@ function setup_vvv_env() {
     -e "s|/srv/config/homebin:||" \
     -e "s|(.*PATH.*?\".*?)(\")|\1:/srv/config/homebin\2|" \
     /etc/environment
+
+  if [ ! -d "/srv/www" ]; then
+    vvv_info " * Setting up /srv/www"
+    mkdir -p /srv/www
+    chown -R vagrant:vagrant /srv/www
+    chmod 755 /srv/www
+  fi
 }
 
 # @description Remove MOTD output from Ubuntu and add our own
@@ -73,40 +80,43 @@ function profile_setup() {
 
   # Copy custom dotfiles and bin file for the vagrant user from local
   rm -f "/home/vagrant/.bash_profile"
-  noroot cp -f "${DIR}/homedir/.bash_profile" "/home/vagrant/.bash_profile"
+  cp -f "${DIR}/homedir/.bash_profile" "/home/vagrant/.bash_profile"
 
   rm -f "/home/vagrant/.bash_aliases"
-  noroot cp -f "${DIR}/homedir/.bash_aliases" "/home/vagrant/.bash_aliases"
+  cp -f "${DIR}/homedir/.bash_aliases" "/home/vagrant/.bash_aliases"
 
   rm -f "${HOME}/.bash_aliases"
   cp -f "${DIR}/homedir/.bash_aliases" "${HOME}/.bash_aliases"
 
   rm -f "/home/vagrant/.vimrc"
-  noroot cp -f "${DIR}/homedir/.vimrc" "/home/vagrant/.vimrc"
+  cp -f "${DIR}/homedir/.vimrc" "/home/vagrant/.vimrc"
 
   if [[ ! -d "/home/vagrant/.subversion" ]]; then
-    noroot mkdir -p "/home/vagrant/.subversion"
+    mkdir -p "/home/vagrant/.subversion"
   fi
 
   rm -f /home/vagrant/.subversion/servers
-  noroot cp "${DIR}/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
+  cp "${DIR}/homedir/.subversion/subversion-servers" "/home/vagrant/.subversion/servers"
 
   rm -f /home/vagrant/.subversion/config
-  noroot cp "${DIR}/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
+  cp "${DIR}/homedir/.subversion/subversion-config" "/home/vagrant/.subversion/config"
 
   # If a bash_prompt file exists in the VVV config/ directory, copy to the VM.
   if [[ -f "/srv/config/bash_prompt" ]]; then
     rm -f /home/vagrant/.bash_prompt
-    noroot cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
+    cp "/srv/config/bash_prompt" "/home/vagrant/.bash_prompt"
   fi
+
+  # Change ownership back to vagrant.
+  chown -R vagrant:vagrant /home/vagrant/
 
   if [ -d "/etc/ssh" ]; then
     cp -f "${DIR}/ssh/ssh_known_hosts" /etc/ssh/ssh_known_hosts
     cp -f "${DIR}/ssh/sshd_config" /etc/ssh/sshd_config
-    vvv_info " * Reloading SSH Daemon"
-    if ! sudo service ssh reload; then
-      vvv_error " ! SSH daemon failed to reload"
-      return 1
+
+    if service ssh status > /dev/null; then
+      vvv_info " * Reloading SSH Daemon"
+      service ssh reload
     fi
   fi
 }

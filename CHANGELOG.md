@@ -6,7 +6,29 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
-## 3.14 ( 2024 ETA )
+## 3.15 ( 2025 May )
+
+### Enhancements
+
+* Upgraded Ubuntu boxes from 20.04 to 24.04 for docker provider ( #2739 )
+* Github action improvements ( #2739 )
+* Improved noroot to check for vagrant users and fallback if not present ( #2739 )
+
+### Bug Fixes
+
+* Fixed docker test provisioning by replacing symlinks with copies ( #2739 )
+* Improved PHPCS permissions handling ( #2739 )
+* Fixed a typo in `config/homebin/vagrant_up` ( #2739 )
+* Explicitly create `/srv/www` if it doesn't exist, and set ownership ( #2739 )
+* Added failure safeguards to git safe directory setting ( #2739 )
+* Fixed uses of config.vm instead of override.vm in the Vagrantfile ( #2754 )
+* Added nonempty to mount_options for Parallels, and added mount_options to all synced folders ( #2757 )
+
+### Maintenance
+
+* Refactored git-lfs signing key to the newer GPG key ( #2739 )
+
+## 3.14.1 ( 2025 February 23rd )
 
 ### Enhancements
 
@@ -14,6 +36,7 @@ permalink: /docs/en-US/changelog/
 * Provisioner/Hook timings now show milliseconds ( #2735 )
 * Added a `skip_site_provisioner_update` option to prevent site provisioners being overwritten by updates ( #2733 )
 * Only start services that aren't running in post-up scripts ( #2732 )
+* Added a new `box_version` parameter for `config.yml` ( #2749 )
 
 ### Bug Fixes
 
@@ -22,6 +45,7 @@ permalink: /docs/en-US/changelog/
 * Switched from Starburst to OVH for MariaDB mirrors ( #2741 )
 * Fixes for service starts under some situations in Docker ( #2732 )
 * Fixed an issue with trailing slashes and site provisioners introduced in an earlier version (#2731)
+* Switched Parallels box to non-arm64 and pinned to a specific version for Arm devices ( #2749 )
 
 ### Maintenance
 

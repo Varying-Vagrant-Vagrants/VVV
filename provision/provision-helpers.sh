@@ -186,9 +186,14 @@ function log_to_file() {
 }
 export -f log_to_file
 
-# @description Run a command that cannot be ran as root
+# @description Run a command that cannot be ran as root, falling back to the current user if not vagrant user is found.
 function noroot() {
-  sudo -EH -u "vagrant" "$@";
+  if id "vagrant" &>/dev/null; then
+    sudo -EH -u "vagrant" "$@"
+  else
+    vvv_error " ! [noroot] no vagrant user detected, falling back to $(whoami)"
+    "$@"  # fallback to running as current user
+  fi
 }
 export -f noroot
 
