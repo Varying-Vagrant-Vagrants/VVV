@@ -166,55 +166,55 @@ export -f network_check
 #
 # @arg $1 string name of the provisioner
 function log_to_file() {
-	local provisioner="$1"
-	local date_time
+  local provisioner="$1"
+  local date_time
 
-	if [[ ! -s /vagrant/provisioned_at ]]; then
-		echo "Error: /vagrant/provisioned_at is missing or empty" >&2
-		return 1
-	fi
+  if [[ ! -s /vagrant/provisioned_at ]]; then
+    echo "Error: /vagrant/provisioned_at is missing or empty" >&2
+    return 1
+  fi
 
   date_time=$(cat /vagrant/provisioned_at)
-	local logfolder="/var/log/provisioners/${date_time}"
+  local logfolder="/var/log/provisioners/${date_time}"
   local logfile="${logfolder}/${provisioner}.log"
 
 
   mkdir -p "${logfolder}" || return 1
-	touch "${logfile}" || return 1
+  touch "${logfile}" || return 1
 
-	# reset output otherwise it will log to previous files. from backup made in provisioners.sh
-	exec 1>&6
-	exec 2>&7
+  # reset output otherwise it will log to previous files. from backup made in provisioners.sh
+  exec 1>&6
+  exec 2>&7
 
   local SED_STRIP_ANSI='s/\x1B\[[0-9;]*[a-zA-Z]//g'
 
-	# pipe to file
-	if [[ "${provisioner}" == "provisioner-main" ]]; then
-		# Preserve color in terminal, strip in log
-		exec > >(
-			while IFS= read -r line; do
-				printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
-				printf '%s\n' "$line"
-			done
-		)
-	else
+  # pipe to file
+  if [[ "${provisioner}" == "provisioner-main" ]]; then
+    # Preserve color in terminal, strip in log
+    exec > >(
+      while IFS= read -r line; do
+        printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+        printf '%s\n' "$line"
+      done
+    )
+  else
     # Suppress stdout to terminal but log stripped version
-		exec > >(
-			while IFS= read -r line; do
-				printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
-			done
-		)
-	fi
+    exec > >(
+      while IFS= read -r line; do
+        printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+      done
+    )
+  fi
 
   # stderr: preserve color in terminal, strip in log
-	exec 2> >(
-		while IFS= read -r line; do
-			printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
-			printf '%s\n' "$line" >&2
-		done
-	)
+  exec 2> >(
+    while IFS= read -r line; do
+      printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+      printf '%s\n' "$line" >&2
+    done
+  )
 
-	VVV_CURRENT_LOG_FILE="${logfile}"
+  VVV_CURRENT_LOG_FILE="${logfile}"
 
   return 0
 }
