@@ -128,10 +128,10 @@ if [ "$sql_count" != 0 ]; then
     # Skip if db is in skip list
     if should_skip_db "${db_name}"; then
       skipped+=("${db_name}")
-      vvv_info "   - skipped <b>${db_name}</b>" && continue;
+      vvv_info " * skipped <b>${db_name}</b>" && continue;
     fi
 
-    vvv_info " * Processing ${db_name} dump"
+    vvv_info " * Processing <b>${db_name}</b><info>:"
 
 		# if we specified databases, only restore specified ones
 		if [[ "${#@}" -gt 0 ]]; then
@@ -149,52 +149,52 @@ if [ "$sql_count" != 0 ]; then
 		fi
 
 		if [ "1" == "${FORCE_RESTORE}" ]; then
-			vvv_info " * Forcing restore of <b>${db_name}</b><info> database, and granting the wp user access"
+			vvv_info "   - Forcing restore of <b>${db_name}</b><info> database, and granting the wp user access"
 			mysql -e "DROP DATABASE IF EXISTS \`${db_name}\`"
 		else
-			vvv_info " * Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
+			vvv_info "   - Creating the <b>${db_name}</b><info> database if it doesn't already exist, and granting the wp user access"
 		fi
 
 		mysql -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`"
 		mysql -e "GRANT ALL PRIVILEGES ON \`${db_name}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 
 		mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
-		db_exist=$(mysql --skip-column-names -e "${mysql_cmd}")
-		if [ $? -eq 0 ]; then
+		db_has_tables=$(mysql --skip-column-names -e "${mysql_cmd}")
+		if [ $? -gt 0 ]; then
       failed+=("${db_name}")
-			vvv_error " * Error - Create the <b>${db_name}</b><error> database via init-custom.sql before attempting import"
+      vvv_info "${db_has_tables}"
+			vvv_error "   ! Error - Checking if the <b>${db_name}</b><error> database already contains tables failed!"
 		else
-			if [ "" == "${db_exist}" ]; then
-				vvv_info " * Importing <b>${db_name}</b><info> from <b>${file}</b>"
+			if [ "" == "${db_has_tables}" ]; then
+				vvv_info "   - Importing <b>${db_name}</b><info> from <b>${file}</b>"
 				if [ "${file: -3}" == ".gz" ]; then
           if ! gunzip < "${file}" | mysql "${db_name}"; then
             failed+=("${db_name}")
-            vvv_error " * Import failed for ${db_name} from ${file}"
+            vvv_error "   ! Import failed for ${db_name} from ${file}"
             continue
           fi
 				else
           if ! mysql "${db_name}" < "${file}"; then
             failed+=("${db_name}")
-            vvv_error " * Import failed for ${db_name} from ${file}"
+            vvv_error "   ! Import failed for ${db_name} from ${file}"
             continue
           fi
 				fi
-				vvv_success " * Import of <b>'${db_name}'</b><success> successful</success>"
+				vvv_success "   - Import of <b>'${db_name}'</b><success> successful</success>"
         imported+=("${db_name}")
 			else
-				vvv_info " * Skipped import of <b>\`${db_name}\`</b><info> - tables already exist"
+				vvv_info "   - Skipped import of <b>\`${db_name}\`</b><info> - tables already exist"
         skipped+=("${db_name}")
 			fi
 		fi
 	done
-	vvv_success " * Databases imported"
 else
 	vvv_success " * No custom databases to import"
 fi
 
 vvv_success " * Database import script finished"
 
-IFS=', '
+IFS=","
 if [ ${#imported[@]} -gt 0 ]; then
   vvv_success " * Imported databases: <b>${imported[*]}</>"
 fi
