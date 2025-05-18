@@ -19,6 +19,10 @@ mount_options_virtualbox_mysql = ['dmode=775', 'fmode=664']
 mount_options_virtualbox_log = ['dmode=777', 'fmode=666']
 mount_options_virtualbox_www = ['dmode=775', 'fmode=774']
 
+mount_options_docker_mysql = ['dmode=775', 'fmode=664']
+mount_options_docker_log = ['dmode=777', 'fmode=666']
+mount_options_docker_www = []
+
 mount_options_hyperv_mysql = ['dir_mode=0775', 'file_mode=0664']
 mount_options_hyperv_log = ['dir_mode=0777', 'file_mode=0666']
 mount_options_hyperv_www = ['dir_mode=0775', 'file_mode=0774']
@@ -672,6 +676,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     next if args['skip_provisioning']
     if args['local_dir'] != File.join(vagrant_dir, 'www', site)
       config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_virtualbox_www
+    end
+  end
+
+  config.vm.provider :docker do |_v, override|
+    override.vm.synced_folder 'www/', '/srv/www', mount_options: mount_options_docker_www
+
+    vvv_config['sites'].each do |site, args|
+      next if args['skip_provisioning']
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site)
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: mount_options_docker_www
+      end
     end
   end
 
