@@ -22,6 +22,7 @@ permalink: /docs/en-US/changelog/
 * Explicitly create `/srv/www` if it doesn't exist, and set ownership ( #2739 )
 * Added failure safeguards to git safe directory setting ( #2739 )
 * Fixed uses of config.vm instead of override.vm in the Vagrantfile ( #2754 )
+* Added nonempty to mount_options for Parallels, and added mount_options to all synced folders ( #2757 )
 
 ### Maintenance
 
