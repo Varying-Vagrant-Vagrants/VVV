@@ -96,15 +96,15 @@ function network_check() {
   #
   # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
-    "https://ppa.launchpadcontent.net" # needed for core ubuntu packages
-    "https://wordpress.org" # WordPress!!
-    "https://github.com" # needed for dashboard, extensions, etc
-    "https://raw.githubusercontent.com" # some scripts and provisioners rely on this
-    "https://getcomposer.org" # composer is used for lots of sites and provisioners
-    "https://packagist.org" # Composer Packages
-    "https://mariadb.gb.ssimn.org" # MariaDB mirror
+    "https://ppa.launchpadcontent.net"     # Needed for core ubuntu packages
+    "https://wordpress.org"                # WordPress!!
+    "https://github.com"                   # Needed for dashboard, extensions, etc
+    "https://raw.githubusercontent.com"    # Some scripts and provisioners rely on this
+    "https://getcomposer.org"              # Composer is used for lots of sites and provisioners
+    "https://packagist.org"                # Composer Packages
+    "http://mariadb.mirrors.ovh.net"       # MariaDB mirror[ovh]
     "http://ports.ubuntu.com/"
-    "https://nginx.org/packages/mainline/"
+    "https://nginx.org/packages/mainline/" # Nginx
   )
   declare -a failed_hosts=()
   for url in "${hosts_to_test[@]}"; do
@@ -186,9 +186,14 @@ function log_to_file() {
 }
 export -f log_to_file
 
-# @description Run a command that cannot be ran as root
+# @description Run a command that cannot be ran as root, falling back to the current user if not vagrant user is found.
 function noroot() {
-  sudo -EH -u "vagrant" "$@";
+  if id "vagrant" &>/dev/null; then
+    sudo -EH -u "vagrant" "$@"
+  else
+    vvv_error " ! [noroot] no vagrant user detected, falling back to $(whoami)"
+    "$@"  # fallback to running as current user
+  fi
 }
 export -f noroot
 

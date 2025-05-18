@@ -2,5 +2,5 @@
 # https://mariadb.org/download/
 # deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
 # deb [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://deb.mariadb.org/10.11/ubuntu noble main
-deb [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://mariadb.gb.ssimn.org/repo/10.11/ubuntu noble main
-# deb-src [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://mariadb.gb.ssimn.org/repo/10.11/ubuntu noble main
+deb [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] http://mariadb.mirrors.ovh.net/MariaDB/repo/10.11/ubuntu noble main
+# deb-src [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] http://mariadb.mirrors.ovh.net/MariaDB/repo/10.11/ubuntu noble main
