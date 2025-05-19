@@ -246,7 +246,7 @@ function vvv_format_output() {
   )
 
   local MSG
-  MSG="${1}</>"
+  MSG="${1:-}</>"
   for TAG in "${!TAGS[@]}"; do
     local VAL
     VAL="${TAGS[$TAG]}"
