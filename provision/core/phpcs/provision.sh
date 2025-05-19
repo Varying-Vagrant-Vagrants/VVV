@@ -28,10 +28,14 @@ function php_codesniff_setup() {
 
   if ! stat /srv/www/phpcs | grep -q 'Uid:.*(vagrant)'; then
     vvv_info " * [PHPCS]: Setting up ownership and permissions of /srv/www/phpcs"
-    chown -R vagrant:vagrant /srv/www/phpcs || vvv_error " ! [PHPCS] chown -R failed"
-    chmod -R u+rwX /srv/www/phpcs || vvv_error " ! [PHPCS] chmod -R failed"
-    find /srv/www/phpcs -type f -exec chmod 644 {} \;
-    find /srv/www/phpcs -type d -exec chmod 755 {} \;
+    # Change ownership recursively, excluding .git folders
+    find /srv/www/phpcs ! -path "*/.git*" -exec chown vagrant:vagrant {} +
+
+    # Change permissions recursively, excluding .git folders
+    find /srv/www/phpcs ! -path "*/.git*" -exec chmod u+rwX {} +
+
+    find /srv/www/phpcs ! -path "*/.git*" -type f -exec chmod 644 {} \;
+    find /srv/www/phpcs ! -path "*/.git*" -type d -exec chmod 755 {} \;
     chmod +x /srv/www/phpcs/bin/* || vvv_error " ! [PHPCS] chmod -x /srv/www/phpcs/bin/* failed"
     chmod +x /srv/www/phpcs/vendor/squizlabs/php_codesniffer/bin/* || vvv_error " ! [PHPCS] chmod -x /srv/www/phpcs/vendor/squizlabs/php_codesniffer/bin/* failed"
   fi

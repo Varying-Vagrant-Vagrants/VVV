@@ -474,7 +474,7 @@ function vvv_custom_folder_composer() {
   local folder="${1}"
   if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.composer" < "${VVV_CONFIG}"); then
       for key in $keys; do
-        cd "${folder}"
+        pushd "${folder}" > /dev/null
         local value
         value=$(vvv_get_site_config_value "folders.${folder}.composer.${key}" "")
         if [[ "install" == "${key}" ]]; then
@@ -493,7 +493,7 @@ function vvv_custom_folder_composer() {
         else
           vvv_warn " * Unknown key in Composer section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
-        cd -
+        popd
       done
   fi
 }
@@ -506,7 +506,7 @@ function vvv_custom_folder_npm() {
   local folder="${1}"
   if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.npm" < "${VVV_CONFIG}"); then
       for key in $keys; do
-        cd "${folder}"
+        pushd "${folder}" > /dev/null
         local value
         value=$(vvv_get_site_config_value "folders.${folder}.npm.${key}" "")
         if [[ "install" == "${key}" ]]; then
@@ -525,7 +525,7 @@ function vvv_custom_folder_npm() {
         else
           vvv_warn " * Unknown key in NPM section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
-        cd -
+        popd
       done
   fi
 }
@@ -565,16 +565,16 @@ function vvv_custom_folder_git() {
 
   if [[ $hard_reset == "True" ]]; then
     vvv_info " - resetting git checkout and discarding changes in ${folder}"
-    cd "${VVV_PATH_TO_SITE}/${folder}"
+    pushd "${VVV_PATH_TO_SITE}/${folder}" > /dev/null
     noroot git reset --hard -q
     noroot git checkout -q
-    cd -
+    popd
   fi
   if [[ $pull == "True" ]]; then
     vvv_info " - runnning git pull in ${folder}"
-    cd "${VVV_PATH_TO_SITE}/${folder}"
+    pushd "${VVV_PATH_TO_SITE}/${folder}" > /dev/null
     noroot git pull -q
-    cd -
+    popd
   fi
 }
 

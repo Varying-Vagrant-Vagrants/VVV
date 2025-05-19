@@ -83,7 +83,7 @@ function nginx_setup() {
     mkdir -p "/etc/nginx/custom-sites/"
   fi
   vvv_info " * Rsync'ing /srv/provision/core/nginx/config/sites/             to /etc/nginx/custom-sites"
-  rsync -rvzh --delete "/srv/provision/core/nginx/config/sites/" "/etc/nginx/custom-sites/"
+  rsync -rzh --delete "/srv/provision/core/nginx/config/sites/" "/etc/nginx/custom-sites/"
 
   if [[ ! -d "/etc/nginx/custom-utilities" ]]; then
     mkdir -p "/etc/nginx/custom-utilities/"
