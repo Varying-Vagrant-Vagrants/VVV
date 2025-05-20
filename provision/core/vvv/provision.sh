@@ -82,7 +82,7 @@ vvv_add_hook register_apt_sources vvv_register_keys 0
 function vvv_before_packages() {
   # this package and another are necessary to ensure certificate trust store is up to date
   # without this, some mirrors will faill due to changing letsencrypt intermediate root certificates
-  if [ $(dpkg-query -W -f='${Status}' ca-certificates 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+  if ! vvv_is_apt_pkg_installed "ca-certificates"; then
     vvv_info " * Installing updated certificate stores before proceeding"
     apt-get --yes install ca-certificates libgnutls30
     vvv_info " * Installing updated certificate stores completed with code ${?}"

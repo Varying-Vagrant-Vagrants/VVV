@@ -27,25 +27,32 @@ fi
 export VVV_CONFIG
 export VVV_CURRENT_LOG_FILE=""
 
-# @description Does a bash array contain a value?
+# @description Checks whether a Bash array contains a specific value.
 #
 # @arg $1 string The value to search for
-# @arg $2 string The list/array to search in
+# @arg $2 string The name of the array variable to search
 #
-# @exitcode 0 If the list contains the element
-# @exitcode 1 If the list does not containn the element
-function containsElement () {
-  declare -a array=(${2})
-  local i
-  for i in "${array[@]}"
-  do
-      if [ "${i}" == "${1}" ] ; then
-          return 0
-      fi
+# @exitcode 0 If the array contains the element
+# @exitcode 1 If the array does not contain the element
+function vvv_array_contains() {
+  local needle="$1"
+  local array_name="$2"
+
+  # Sanity check
+  if [[ -z "$needle" || -z "$array_name" || ! "$(declare -p "$array_name" 2>/dev/null)" =~ "declare -a" ]]; then
+    return 1
+  fi
+
+  # Create nameref to the array
+  declare -n arr="$array_name"
+  for item in "${arr[@]}"; do
+    if [[ "$item" == "$needle" ]]; then
+      return 0
+    fi
   done
   return 1
 }
-export -f containsElement
+export -f vvv_array_contains
 
 # @description Test that we have network connectivity with a URL.
 # Deprecated, use check_network_connection_to_host instead
@@ -584,20 +591,35 @@ vvv_package_install() {
 }
 export -f vvv_package_install;
 
-# @description checks if an apt package is installed, returns 0 if installed, 1 if not
-# @arg $1 string the package to check for
+# @description Checks if an APT package or virtual package is installed. Returns 0 if installed or provided, 1 if not.
+# @arg $1 string The package or virtual package name to check
 vvv_is_apt_pkg_installed() {
-    # Get the number of packages installed that match $1
-    num=$(dpkg --dry-run -l "${1}" 2>/dev/null | grep -E '^ii' | wc -l)
+  local pkg="$1"
 
-    if [[ $num -eq 1 ]]; then
-        # it is installed
-        return 0
-    elif [[ $num -gt 1 ]]; then
-        # there is more than one package matching $1
-        return 0
-    fi
+  # Reject empty or invalid input
+  if [[ -z "$pkg" || "$pkg" =~ [^a-zA-Z0-9+.-] ]]; then
+    vvv_warn "Invalid or missing package name passed to vvv_is_apt_pkg_installed: '$pkg'"
     return 1
+  fi
+
+  # Check if package is installed directly
+  if dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
+    return 0
+  fi
+
+  # Check if it's a virtual package
+  if apt-cache show "$pkg" 2>/dev/null | grep -q "^Provides:"; then
+    local providers
+    providers=$(apt-cache show "$pkg" | awk '/^Provides:/ {for(i=2;i<=NF;++i) print $i}')
+
+    for prov in $providers; do
+      if dpkg-query -W -f='${Status}' "$prov" 2>/dev/null | grep -q "install ok installed"; then
+        return 0
+      fi
+    done
+  fi
+
+  return 1
 }
 
 # @description cleans up dpkg lock files to avoid provisioning issues
