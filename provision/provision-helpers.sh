@@ -279,6 +279,22 @@ function vvv_src_list_has() {
 }
 export -f vvv_src_list_has
 
+declare -A VVV_FORMATTING_TAGS=(
+  ['<b>']="${CRESET}${BOLD}${PURPLE}"
+  ['</b>']="${UNBOLD}"
+  ['<info>']="${CRESET}${DEFAULT_TEXT}${DIM}"
+  ['</info>']="${UNDIM}"
+  ['<success>']="${GREEN}"
+  ['</success>']="${CRESET}"
+  ['<warn>']="${YELLOW}"
+  ['</warn>']="${CRESET}"
+  ['<error>']="${RED}"
+  ['</error>']="${CRESET}"
+  ['<url>']="${CRESET}${YELLOW_UNDERLINE}"
+  ['</url>']="${CRESET}"
+  ['</>']="${CRESET}"
+)
+
 # @description Takes an input string and attempts to apply terminal formatting for various colours
 #
 # @example
@@ -286,28 +302,12 @@ export -f vvv_src_list_has
 #
 # @arg $1 string Text to format
 function vvv_format_output() {
-  declare -A TAGS=(
-    ['<b>']="${CRESET}${BOLD}${PURPLE}"
-    ['</b>']="${UNBOLD}"
-    ['<info>']="${CRESET}${DEFAULT_TEXT}${DIM}"
-    ['</info>']="${UNDIM}"
-    ['<success>']="${GREEN}"
-    ['</success>']="${CRESET}"
-    ['<warn>']="${YELLOW}"
-    ['</warn>']="${CRESET}"
-    ['<error>']="${RED}"
-    ['</error>']="${CRESET}"
-    ['<url>']="${CRESET}${YELLOW_UNDERLINE}"
-    ['</url>']="${CRESET}"
-    ['</>']="${CRESET}"
-  )
-
   local MSG
   MSG="${1:-}</>"
-  for TAG in "${!TAGS[@]}"; do
-    local VAL
-    VAL="${TAGS[$TAG]}"
-    MSG="${MSG//"${TAG}"/"${VAL}"}"
+  local ordered_tags=( '<b>' '</b>' '<info>' '</info>' '<success>' '</success>' '<warn>' '</warn>' '<error>' '</error>' '<url>' '</url>' '</>' )
+  for TAG in "${ordered_tags[@]}"; do
+    local VAL="${VVV_FORMATTING_TAGS[$TAG]}"
+    MSG="${MSG//${TAG}/${VAL}}"
   done
   echo -e "${MSG}"
 }
@@ -318,12 +318,11 @@ export -f vvv_format_output
 # @arg $1 string The message to print
 function vvv_output() {
   local MSG
-  MSG=$(vvv_format_output "${1}")
-	echo -e "${MSG}"
-  if [[ ! -z "${VVV_LOG}" ]]; then
-    if [ "${VVV_LOG}" != "main" ]; then
-      test -e /proc/$$/fd/6 && >&6 echo -e "${MSG}"
-    fi
+  MSG=$(vvv_format_output "${1:-}")
+  echo -e "${MSG}"
+
+  if [[ -n "${VVV_LOG}" && "${VVV_LOG}" != "main" && -e /proc/$$/fd/6 ]]; then
+    >&6 echo -e "${MSG}"
   fi
 }
 export -f vvv_output
@@ -332,7 +331,7 @@ export -f vvv_output
 #
 # @arg $1 string The message to print
 function vvv_info() {
-  vvv_output "<info>${1}</info>"
+  vvv_output "<info>${1:-}</info>"
 }
 export -f vvv_info
 
@@ -340,9 +339,7 @@ export -f vvv_info
 #
 # @arg $1 string The message to print
 function vvv_error() {
-  local MSG
-  MSG=$(vvv_format_output )
-  vvv_output "<error>${1}</error>"
+  vvv_output "<error>${1:-}</error>"
 }
 export -f vvv_error
 
@@ -350,7 +347,7 @@ export -f vvv_error
 #
 # @arg $1 string The message to print
 function vvv_warn() {
-  vvv_output "<warn>${1}</warn>"
+  vvv_output "<warn>${1:-}</warn>"
 }
 export -f vvv_warn
 
@@ -358,7 +355,7 @@ export -f vvv_warn
 #
 # @arg $1 string The message to print
 function vvv_success() {
-  vvv_output "<success>${1}</success>"
+  vvv_output "<success>${1:-}</success>"
 }
 export -f vvv_success
 
