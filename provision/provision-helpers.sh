@@ -962,9 +962,10 @@ vvv_check_ubuntu_eol() {
     {
       # Trim spaces from $1
       gsub(/^ +| +$/, "", $1);
+      v = $1;
       # Remove " LTS" suffix for comparison
-      v=gensub(/ LTS$/, "", "g", $1);
-      if(v == ver) print $7
+      sub(/ LTS$/, "", v);
+      if (v == ver) print $7
     }
   ' "$CSV_FILE")
 
