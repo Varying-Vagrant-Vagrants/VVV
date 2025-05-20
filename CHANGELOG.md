@@ -15,6 +15,7 @@ permalink: /docs/en-US/changelog/
 * Improved noroot to check for vagrant users and fallback if not present ( #2739 )
 * Greatly improved database backup and import script checks and output ( #2759 )
 * Faster checks for when packages are installed
+* Use curl for network checks first, falling back to wget
 
 ### Bug Fixes
 

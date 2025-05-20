@@ -72,20 +72,36 @@ export -f network_detection
 # @exitcode 0 If the address is reachable
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
-  local url=${1:-"http://ppa.launchpadcontent.net"}
-  vvv_info " * Testing network connection to <url>${url}</url><info> with wget -q --spider --timeout=5 --tries=3 ${url}"
+  local url="${1:-http://ppa.launchpadcontent.net}"
 
-  # Network Detection
-  #
-  # If 3 attempts with a timeout of 5 seconds are not successful,
-  # then we'll skip a few things further in provisioning rather
-  # than create a bunch of errors.
-  if wget -q --spider --timeout=5 --tries=3 "${url}"; then
-    vvv_success " * Successful Network connection to <url>${url}</url><success> detected"
-    return 0
+  if [[ -z "${url}" ]]; then
+    vvv_error " ! No URL provided to check_network_connection_to_host"
+    return 1
   fi
-  vvv_error " ! Network connection issues found. Unable to reach <url>${url}</url>"
-  wget --spider --timeout=5 --tries=3 "${url}"
+
+  vvv_info " * Checking network connectivity to <url>${url}</url><info>..."
+
+  if command -v curl >/dev/null 2>&1; then
+    if curl -s --connect-timeout 5 --max-time 10 --head "${url}" >/dev/null; then
+      vvv_success " ✔ curl connected successfully to <url>${url}</url>"
+      return 0
+    else
+      if command -v wget >/dev/null 2>&1; then
+        vvv_warn " - curl failed to connect to <url>${url}</url><warn>, trying wget..."
+      else
+        vvv_warn " - curl failed to connect to <url>${url}</url>"
+      fi
+    fi
+  fi
+
+  if command -v wget >/dev/null 2>&1; then
+    if wget -q --spider --timeout=5 --tries=2 "${url}"; then
+      vvv_success " ✔ wget connected successfully to <url>${url}</url>"
+      return 0
+    fi
+  fi
+
+  vvv_error " ✘ Network connection to <url>${url}</url><error> failed via wget and curl"
   return 1
 }
 export -f check_network_connection_to_host
