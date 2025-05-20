@@ -501,7 +501,7 @@ vvv_hook() {
   }')
 
   vvv_success " ✔ Finished <b>${hook_name}</b><success> hook in </success><b>${elapsed_str}</b>"
-  vvv_log_timing_event "hook" "${hook_name}" "${start_time}" "${end_time}" "${elapsed_str}>" "success"
+  vvv_log_timing_event "hook" "${hook_name}" "${start_time}" "${end_time}" "${elapsed_str}" "success"
 }
 export -f vvv_hook
 
