@@ -7,8 +7,11 @@ if ( type provisioner_begin &>/dev/null ); then
 fi
 
 # backup original file descriptors
-exec 6>&1
-exec 7>&2
+if [[ -z "$VVV_FD_BACKUP_DONE" ]]; then
+  exec 6>&1
+  exec 7>&2
+  export VVV_FD_BACKUP_DONE=1
+fi
 
 source /srv/provision/provision-helpers.sh
 
@@ -19,6 +22,12 @@ VVV_PROVISIONER_START_TIMESTAMP=0
 # @arg $1 string Name of the provisioner
 function provisioner_begin() {
   VVV_PROVISIONER_RUNNING="${1:-${FUNCNAME[1]}}"
+
+  if [[ -z "$VVV_PROVISIONER_RUNNING" ]]; then
+    vvv_error "Provisioner name not provided or detected"
+    return 1
+  fi
+
   touch "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   log_to_file "provisioner-${VVV_PROVISIONER_RUNNING}"
   vvv_success " ▷ Running the <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner...</success>"
@@ -41,7 +50,13 @@ function provisioner_end() {
   else
     vvv_error " ! The <b>'${VVV_PROVISIONER_RUNNING}'</b><error> provisioner ran into problems, the full log is available at <b>'${VVV_CURRENT_LOG_FILE}'</b><error>. It completed in <b>${elapsed}</b><error> seconds."
   fi
-  /srv/config/homebin/vvv_restore_php_default
+
+  if [[ -x /srv/config/homebin/vvv_restore_php_default ]]; then
+    /srv/config/homebin/vvv_restore_php_default
+  else
+    vvv_warn "Restore script not found or not executable"
+  fi
+
   trap - EXIT
 }
 
