@@ -419,26 +419,28 @@ export -f get_config_keys
 # @arg $2 string the name of the bash function to call
 # @arg $3 number the priority of the function when the hook executes, determines order, lower values execute earlier
 vvv_add_hook() {
-  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    vvv_warn "Invalid hookname '${1}', hooks must only contain the characters A-Z and a-z"
+  # Validate hook name: must start with a letter/underscore, and contain only alphanumeric + underscore
+  if [[ ! "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+    vvv_warn "Invalid hook name '${1}', hooks must match: ^[a-zA-Z_][a-zA-Z0-9_]*$"
     return 1
   fi
 
-  local hook_prio=10
-  if [[ ! -z "${3}" && "${3}" =~ [0-9]+ ]]; then
+  local hook_name="$1"
+  local function_name="$2"
+  local hook_prio="${3:-10}"
 
-    hook_prio=$((${3} + 0))
-    if [[ -z "$hook_prio" ]]; then
-      hook_prio=0
-    fi
+  # Validate priority is a number
+  if ! [[ "$hook_prio" =~ ^[0-9]+$ ]]; then
+    hook_prio=10
   fi
 
-  local hook_var_prios="VVV_HOOKS_${1}"
-  eval "if [ -z \"\${${hook_var_prios}}\" ]; then ${hook_var_prios}=(); fi"
-
+  local hook_var_prios="VVV_HOOKS_${hook_name}"
   local hook_var="${hook_var_prios}_${hook_prio}"
-  eval "if [ -z \"\${${hook_var}}\" ]; then ${hook_var_prios}+=(${hook_prio}); ${hook_var}=(); fi"
-  eval "${hook_var}+=(\"${2}\")"
+
+  # Create arrays if not already defined
+  eval "declare -g -a ${hook_var_prios} ${hook_var}"
+  eval "if [[ ! \" \${${hook_var_prios}[*]} \" =~ \" ${hook_prio} \" ]]; then ${hook_var_prios}+=(\"${hook_prio}\"); fi"
+  eval "${hook_var}+=(\"${function_name}\")"
 }
 export -f vvv_add_hook
 
