@@ -73,10 +73,10 @@ function provisioner_end() {
   if [[ $PROVISION_SUCCESS -eq "0" ]]; then
     vvv_success " ✔ The <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner completed in </success><b>${elapsed}</b><success>.</success>"
     rm -f "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
-    vvv_log_timing_event "provisioner" "${VVV_PROVISIONER_RUNNING}" "${start_s}" "${end_s}" "${elapsed}" "success"
+    vvv_log_timing_event "provisioner" "${VVV_PROVISIONER_RUNNING}" "${VVV_PROVISIONER_START_TIMESTAMP}" "${end_timestamp}" "${elapsed}" "success"
   else
     vvv_error " ! The <b>'${VVV_PROVISIONER_RUNNING}'</b><error> provisioner ran into problems, the full log is available at <b>'${VVV_CURRENT_LOG_FILE}'</b><error>. It completed in <b>${elapsed}</b><error> seconds."
-    vvv_log_timing_event "provisioner" "${VVV_PROVISIONER_RUNNING}" "${start_s}" "${end_s}" "${elapsed}" "failure"
+    vvv_log_timing_event "provisioner" "${VVV_PROVISIONER_RUNNING}" "${VVV_PROVISIONER_START_TIMESTAMP}" "${end_timestamp}" "${elapsed}" "failure"
   fi
 
   if [[ -x /srv/config/homebin/vvv_restore_php_default ]]; then
