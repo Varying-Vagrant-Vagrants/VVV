@@ -59,8 +59,12 @@ function vvv_register_packages() {
 vvv_add_hook register_apt_packages vvv_register_packages 0
 
 function vvv_register_apt_sources() {
-  local OSID=$(lsb_release --id --short)
-  local OSCODENAME=$(lsb_release --codename --short)
+  local OSCODENAME
+  local OSID
+
+  OSID=$(lsb_release --id --short)
+  OSCODENAME=$(lsb_release --codename --short)
+
   local APTSOURCE="/srv/provision/core/vvv/sources-${OSID,,}-${OSCODENAME,,}.list"
   if [ -f "${APTSOURCE}" ]; then
     cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-sources.list"
