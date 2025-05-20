@@ -808,3 +808,103 @@ function vvv_search_replace_in_file() {
   fi
 }
 export -f vvv_search_replace_in_file
+
+# @description Cleans up provisioner logs older than 1 year.
+vvv_cleanup_old_provision_logs() {
+  local base_dir="/var/log/provisioners"
+  local cutoff_date
+  local folder
+
+  # Compute the cutoff timestamp (1 year ago)
+  cutoff_date=$(date -d "1 year ago" +%s)
+
+  # Sanity check
+  [[ -d "$base_dir" ]] || return 0
+
+  vvv_info " - Cleaning up provisioner logs older than 1 year in '${base_dir}'"
+
+  shopt -s nullglob
+  for folder in "$base_dir"/20??.??.??_*; do
+    if [[ -d "$folder" ]]; then
+      local basename
+      basename=$(basename "$folder")
+
+      # Match pattern like 2022.05.18_12-17-36
+      if [[ $basename =~ ^([0-9]{4})\.([0-9]{2})\.([0-9]{2})_ ]]; then
+        local year="${BASH_REMATCH[1]}"
+        local month="${BASH_REMATCH[2]}"
+        local day="${BASH_REMATCH[3]}"
+
+        # Convert to epoch
+        local folder_date
+        folder_date=$(date -d "${year}-${month}-${day}" +%s 2>/dev/null || echo 0)
+
+        if (( folder_date < cutoff_date )); then
+          vvv_warn " - Removing old provisioner log: <b>${folder}</b>"
+          rm -rf "$folder"
+        fi
+      else
+        vvv_info " - Skipping folder with unrecognized name format: ${basename}"
+      fi
+    fi
+  done
+  shopt -u nullglob
+}
+export -f vvv_cleanup_old_provision_logs
+
+# @description Check if this Ubuntu is near EOL and warn the user.
+vvv_check_ubuntu_eol() {
+  # Confirm we are running Ubuntu
+  if ! grep -qi '^ID=ubuntu' /etc/os-release 2>/dev/null; then
+    vvv_info " - Not running Ubuntu; skipping EOL check."
+    return 0
+  fi
+
+  local UBUNTU_VERSION
+  UBUNTU_VERSION=$(lsb_release -rs 2>/dev/null)
+  if [[ -z "$UBUNTU_VERSION" ]]; then
+    vvv_error " x Could not determine Ubuntu version."
+    return 1
+  fi
+
+  local CSV_FILE="/usr/share/distro-info/ubuntu.csv"
+  if [[ ! -f "$CSV_FILE" ]]; then
+    vvv_error " x EOL data file '$CSV_FILE' not found. Please install 'distro-info' package."
+    return 1
+  fi
+
+  local EOL_DATE
+  EOL_DATE=$(awk -F, -v ver="$UBUNTU_VERSION" '
+    {
+      # Trim spaces from $1
+      gsub(/^ +| +$/, "", $1);
+      # Remove " LTS" suffix for comparison
+      v=gensub(/ LTS$/, "", "g", $1);
+      if(v == ver) print $7
+    }
+  ' "$CSV_FILE")
+
+  if [[ -z "$EOL_DATE" ]]; then
+    vvv_warn " ! Could not find EOL date for Ubuntu version $UBUNTU_VERSION."
+    return 1
+  fi
+
+  local NOW EOL DIFF
+  NOW=$(date +%s)
+  EOL=$(date -d "$EOL_DATE" +%s 2>/dev/null)
+  if [[ -z "$EOL" ]]; then
+    vvv_error " x Failed to parse EOL date '$EOL_DATE'."
+    return 1
+  fi
+
+  DIFF=$(( (EOL - NOW) / 86400 ))
+
+  if (( DIFF < 0 )); then
+    vvv_error " x Ubuntu $UBUNTU_VERSION reached EOL on $EOL_DATE."
+  elif (( DIFF <= 90 )); then
+    vvv_warn "Ubuntu $UBUNTU_VERSION will reach EOL within $DIFF days (on $EOL_DATE)."
+  else
+    vvv_success "Ubuntu $UBUNTU_VERSION is supported until $EOL_DATE."
+  fi
+}
+export -f vvv_check_ubuntu_eol
