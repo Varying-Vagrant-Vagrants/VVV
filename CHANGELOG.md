@@ -18,6 +18,8 @@ permalink: /docs/en-US/changelog/
 * Use curl for network checks first, falling back to wget
 * New automated Ubuntu EOL checks
 * Optional script to remove provisioner logs older than 1 year
+* New timing logs for provisioners to track hook/provisioner performance
+* Timings no longer show empty leading values
 
 ### Bug Fixes
 

@@ -451,34 +451,57 @@ export -f vvv_add_hook
 #
 # @arg $1 string the hook to execute
 vvv_hook() {
-  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    vvv_error " x Disallowed hookname '${1}'"
+  if [[ ! "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+    vvv_error " x Disallowed hook name '${1}'"
     return 1
   fi
 
-  local hook_var_prios
-  local hook_elapsed
-  local hook_end_timestamp
-  local hook_start_timestamp
+  local hook_name="$1"
+  local hook_var_prios="VVV_HOOKS_${hook_name}"
+  local start_time end_time elapsed_str=""
 
-  hook_var_prios="VVV_HOOKS_${1}"
-  hook_start_timestamp="$(date -u +"%s.%2N")"
-  vvv_info " ▷ Running <b>${1}</b><info> hook"
-  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
-  local sorted
-  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+  start_time="$(date +%s.%N)"
+  vvv_info " ▷ Running <b>${hook_name}</b><info> hook"
 
-  for i in "${!sorted[@]}"; do
-    local prio="${sorted[$i]}"
-    hooks_on_prio="${hook_var_prios}_${prio}[@]"
-    for f in ${!hooks_on_prio}; do
-      $f
+  # Check if any hooks registered
+  eval "local prios=(\"\${${hook_var_prios}[@]}\")"
+  if [[ ${#prios[@]} -eq 0 ]]; then
+    return 0
+  fi
+
+  # Sort priorities
+  IFS=$'\n' read -r -d '' -a sorted < <(printf "%s\n" "${prios[@]}" | sort -n && printf '\0')
+  unset IFS
+
+  for prio in "${sorted[@]}"; do
+    local hook_var="${hook_var_prios}_${prio}"
+    eval "local funcs=(\"\${${hook_var}[@]}\")"
+
+    for f in "${funcs[@]}"; do
+      if declare -f "$f" >/dev/null; then
+        "$f"
+      else
+        vvv_warn "Function '${f}' not defined, skipping"
+      fi
     done
   done
-  hook_end_timestamp="$(date -u +"%s.%2N")"
-  hook_elapsed=$(date -u -d "0 ${hook_end_timestamp} seconds - ${hook_start_timestamp} seconds" +"%-Mm %-Ss %-3Nms")
 
-  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>${hook_elapsed}</b>"
+  end_time="$(date +%s.%N)"
+  elapsed_str=$(awk -v start="$start_time" -v end="$end_time" 'BEGIN {
+    diff = end - start
+    m = int(diff / 60)
+    s = int(diff % 60)
+    ms = int((diff - int(diff)) * 1000)
+
+    str = ""
+    if (m > 0) str = str m "m "
+    if (s > 0 || m > 0) str = str s "s "
+    str = str ms "ms"
+    print str
+  }')
+
+  vvv_success " ✔ Finished <b>${hook_name}</b><success> hook in </success><b>${elapsed_str}</b>"
+  vvv_log_timing_event "hook" "${hook_name}" "${start_time}" "${end_time}" "${elapsed_str}>" "success"
 }
 export -f vvv_hook
 
@@ -807,6 +830,68 @@ function vvv_search_replace_in_file() {
   fi
 }
 export -f vvv_search_replace_in_file
+
+# @description log a time duration for a hook or provisioner for performance tracking to a csv file.
+vvv_log_timing_event() {
+  local type="$1"
+  local name="$2"
+  local start="$3"
+  local end="$4"
+  local duration="$5"
+  local status="$6"
+
+  if [[ "$type" != "hook" && "$type" != "provisioner" ]]; then
+    vvv_error " ! Invalid timing event type: '$type'"
+    return 1
+  fi
+
+  if [[ "$status" != "success" && "$status" != "failure" ]]; then
+    vvv_error " ! Invalid timing event status: '$status'"
+    return 1
+  fi
+
+  if [[ ! -f /vagrant/provisioned_at ]]; then
+    vvv_warn " ! /vagrant/provisioned_at is missing, cannot log timing event"
+    return 1
+  fi
+
+  local date_time
+  date_time="$(cat /vagrant/provisioned_at)"
+  local log_dir="/var/log/provisioners/timing"
+  mkdir -p "$log_dir"
+
+  local csv_log="${log_dir}/timing-${date_time}.csv"
+  local json_log="${log_dir}/timing-${date_time}.jsonl"
+
+  # Escape and quote name and duration for CSV
+  local quoted_name="\"${name//\"/\"\"}\""
+  local quoted_duration="\"${duration//\"/\"\"}\""
+
+  # CSV logging
+  if [[ ! -f "$csv_log" ]]; then
+    echo "type,name,start,end,duration,status" > "$csv_log"
+  fi
+  echo "${type},${quoted_name},${start},${end},${quoted_duration},${status}" >> "$csv_log"
+
+  # JSONL logging
+  printf '{"type":"%s","name":"%s","start":%s,"end":%s,"duration":"%s","status":"%s"}\n' \
+    "$type" "$name" "$start" "$end" "$duration" "$status" >> "$json_log"
+}
+export -f vvv_log_timing_event
+
+vvv_cleanup_old_timing_logs() {
+  local log_dir="/var/log/provisioners/timing"
+  local max_age_days=180
+
+  if [[ ! -d "$log_dir" ]]; then
+    return 0
+  fi
+
+  vvv_info " - Cleaning up timing logs older than ${max_age_days} days in ${log_dir}"
+
+  find "$log_dir" -type f \( -name "timing-*.csv" -o -name "timing-*.jsonl" \) -mtime +$max_age_days -print -delete
+}
+export -f vvv_cleanup_old_timing_logs
 
 # @description Cleans up provisioner logs older than 1 year.
 vvv_cleanup_old_provision_logs() {

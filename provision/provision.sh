@@ -71,6 +71,7 @@ export VVV_PACKAGE_REMOVAL_LIST=()
 #set -xv
 
 vvv_check_ubuntu_eol
+vvv_cleanup_old_timing_logs
 
 vvv_hook init
 

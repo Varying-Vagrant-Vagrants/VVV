@@ -31,7 +31,7 @@ function provisioner_begin() {
   touch "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
   log_to_file "provisioner-${VVV_PROVISIONER_RUNNING}"
   vvv_success " ▷ Running the <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner...</success>"
-  VVV_PROVISIONER_START_TIMESTAMP="$(date -u +"%s.%2N")"
+  VVV_PROVISIONER_START_TIMESTAMP="$(date -u +%s.%N)"
   trap "provisioner_end" EXIT
 }
 
@@ -42,13 +42,41 @@ function provisioner_end() {
   local end_timestamp
   local elapsed
 
-  end_timestamp="$(date -u +"%s.%2N")"
-  elapsed=$(date -u -d "0 ${end_timestamp} seconds - ${VVV_PROVISIONER_START_TIMESTAMP} seconds" +"%-Mm %-Ss %-3Nms")
+  end_timestamp="$(date -u +%s.%N)"
+
+  local start_s=${VVV_PROVISIONER_START_TIMESTAMP%.*}
+  local start_ns=${VVV_PROVISIONER_START_TIMESTAMP#*.}
+  local end_s=${end_timestamp%.*}
+  local end_ns=${end_timestamp#*.}
+
+  local elapsed_s=$((end_s - start_s))
+  local elapsed_ns=$((10#${end_ns} - 10#${start_ns}))
+  if (( elapsed_ns < 0 )); then
+    elapsed_s=$((elapsed_s - 1))
+    elapsed_ns=$((elapsed_ns + 1000000000))
+  fi
+
+  local elapsed_min=$((elapsed_s / 60))
+  local elapsed_sec=$((elapsed_s % 60))
+  local elapsed_ms
+  elapsed_ms=$(printf "%d" $((elapsed_ns / 1000000)))
+  elapsed=""
+  if [[ "${elapsed_min}" -gt 0 ]]; then
+    elapsed+="${elapsed_min}m "
+  fi
+  if [[ "${elapsed_sec}" -gt 0 || "${elapsed_min}" -gt 0 ]]; then
+    elapsed+="${elapsed_sec}s "
+  fi
+  elapsed+="${elapsed_ms}ms"
+  elapsed="${elapsed%" "}"
+
   if [[ $PROVISION_SUCCESS -eq "0" ]]; then
     vvv_success " ✔ The <b>'${VVV_PROVISIONER_RUNNING}'</b><success> provisioner completed in </success><b>${elapsed}</b><success>.</success>"
     rm -f "/vagrant/failed_provisioners/provisioner-${VVV_PROVISIONER_RUNNING}"
+    vvv_log_timing_event "provisioner" "${VVV_PROVISIONER_RUNNING}" "${start_s}" "${end_s}" "${elapsed}>" "success"
   else
     vvv_error " ! The <b>'${VVV_PROVISIONER_RUNNING}'</b><error> provisioner ran into problems, the full log is available at <b>'${VVV_CURRENT_LOG_FILE}'</b><error>. It completed in <b>${elapsed}</b><error> seconds."
+    vvv_log_timing_event "provisioner" "${VVV_PROVISIONER_RUNNING}" "${start_s}" "${end_s}" "${elapsed}>" "failure"
   fi
 
   if [[ -x /srv/config/homebin/vvv_restore_php_default ]]; then
