@@ -14,6 +14,12 @@ permalink: /docs/en-US/changelog/
 * Github action improvements ( #2739 )
 * Improved noroot to check for vagrant users and fallback if not present ( #2739 )
 * Greatly improved database backup and import script checks and output ( #2759 )
+* Faster checks for when packages are installed
+* Use curl for network checks first, falling back to wget
+* New automated Ubuntu EOL checks
+* Optional script to remove provisioner logs older than 1 year
+* New timing logs for provisioners to track hook/provisioner performance
+* Timings no longer show empty leading values
 
 ### Bug Fixes
 
@@ -30,6 +36,7 @@ permalink: /docs/en-US/changelog/
 ### Maintenance
 
 * Refactored git-lfs signing key to the newer GPG key ( #2739 )
+* Various provisioner resilience improvements
 
 ## 3.14.1 ( 2025 February 23rd )
 

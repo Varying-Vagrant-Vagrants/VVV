@@ -66,7 +66,7 @@ function provision_extension_sources() {
     extensions=()
   fi
 
-  containsElement "core" "${extensions}"
+  vvv_array_contains "core" "extensions"
   if [[ $? -ne 0 ]]; then
     name+=("core")
     repo+=("https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git")

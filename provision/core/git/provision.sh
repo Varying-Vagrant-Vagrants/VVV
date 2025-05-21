@@ -4,8 +4,11 @@ set -eo pipefail
 
 # @noargs
 function git_register_apt_sources() {
-  local OSID=$(lsb_release --id --short)
-  local OSCODENAME=$(lsb_release --codename --short)
+  local OSCODENAME
+  local OSID
+
+  OSCODENAME=$(lsb_release --codename --short)
+  OSID=$(lsb_release --id --short)
 
   if [ "${OSID}" == "Ubuntu" ]; then
     if ! vvv_src_list_has "git-core/ppa"; then
