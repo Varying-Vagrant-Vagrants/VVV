@@ -6,13 +6,37 @@
 set -eo pipefail
 set -u
 
+SAVEIFS=$IFS
+
 if [ -z "${VVV_LOG+x}" ]; then
   export VVV_LOG=""
 fi
 
-trap 'rm -rf $TMPFIFODIR' EXIT; TMPFIFODIR=$(mktemp -d); mkfifo "${TMPFIFODIR}/dbnames"
+trap 'rm -rf $TMPFIFODIR' EXIT
+TMPFIFODIR=$(mktemp -d) || { echo "Failed to create temp dir"; exit 1; }
+mkfifo "${TMPFIFODIR}/dbnames" || { echo "Failed to create FIFO"; exit 1; }
 
+if [ ! -f /srv/provision/provision-helpers.sh ]; then
+  echo "Missing provision-helpers.sh"
+  exit 1
+fi
 source /srv/provision/provision-helpers.sh
+
+DEFAULT_SKIP_DBS=(
+  "mysql"
+  "information_schema"
+  "performance_schema"
+  "sys"
+  "test"
+  "wordpress_unit_tests"
+  "phpmyadmin"
+  "innodb"
+  "mysql_innodb_cluster_metadata"
+)
+
+skipped=()
+backedup=()
+failed=()
 
 mkdir -p /srv/database/backups
 vvv_info " * Performing Database Backups"
@@ -20,54 +44,75 @@ databases=()
 gzip=$(get_config_value "general.db_backup.gzip")
 exclude_list=$(get_config_values "general.db_backup.exclude")
 
+ALL_EXCLUDES=("${DEFAULT_SKIP_DBS[@]}" "${exclude_list[@]}")
+
+should_skip_db() {
+  local db="${1}"
+  if [[ " ${ALL_EXCLUDES[*]} " =~ $db ]]; then
+    return 0
+  fi
+  return 1
+}
+
 vvv_info " * Fetching Database names"
 mysql -e 'show databases' | grep -v -F "Database" > "${TMPFIFODIR}/dbnames" &
-while read db_name; do
-    # skip these databases
-    [ "${db_name}" == "mysql" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
-    [ "${db_name}" == "information_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
-    [ "${db_name}" == "performance_schema" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
-    [ "${db_name}" == "sys" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
-    [ "${db_name}" == "test" ] && vvv_info "   - skipped ${db_name}" && continue;
-    [ "${db_name}" == "wordpress_unit_tests" ] && vvv_info "   - skipped <b>${db_name}</b>" && continue;
-
-    skip="false"
-    for exclude in "${exclude_list[@]}"; do
-      if [ "${exclude}" == "${db_name}" ]; then
-        skip="true"
+while read -r db_name; do
+  if should_skip_db "${db_name}"; then
+    skipped+=("${db_name}")
+    vvv_info "   - skipped <b>${db_name}</b>" && continue;
+  fi
+  # don't back up databases with no tables
+  mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
+  db_exist=$(mysql --skip-column-names -e "${mysql_cmd}")
+  if [ $? -eq 0 ]; then
+      if [ "" == "${db_exist}" ]; then
+          vvv_info "   - skipped <b>${db_name}</b><info>, no tables in database to back up</info>" && continue;
       fi
-    done
-
-    if [ ${skip} == "true" ]; then
-        vvv_info "   - excluded <b>${db_name}</b>" && continue;
-    fi
-
-    # don't back up databases with no tables
-    mysql_cmd="SHOW TABLES FROM \`${db_name}\`" # Required to support hyphens in database names
-    db_exist=$(mysql --skip-column-names -e "${mysql_cmd}")
-    if [ "$?" == "0" ]; then
-        if [ "" == "${db_exist}" ]; then
-            vvv_info "   - skipped <b>${db_name}</b><info>, no tables in database to back up</info>" && continue;
-        fi
-    fi
-    databases+=( "${db_name}" )
+  fi
+  databases+=( "${db_name}" )
 done < "${TMPFIFODIR}/dbnames"
 
 ext=".sql"
 if [[ "${gzip}" == "True" ]]; then
     ext=".sql.gz"
 fi
-count=1
-for db in "${databases[@]}"
-do
-    OUTPUT=$(printf "<info>   - %2s/%s Backing up </info><b>%-23s</b><info> to </info><b>'database/backups/%s${ext}'</b>" "${count}" "${#databases[@]}" "'${db}'" "${db}")
-    vvv_output "${OUTPUT}"
-    if [[ "${gzip}" == "True" ]]; then
-      mysqldump "${db}" | gzip > "/srv/database/backups/${db}.sql.gz"
-    else
-      mysqldump "${db}" > "/srv/database/backups/${db}.sql";
+count=0
+for db in "${databases[@]}"; do
+  count=$((count+1))
+  OUTPUT=$(printf "<info>   - %2s/%s Backing up </info><b>%-23s</b><info> to </info><b>'database/backups/%s${ext}'</b>" "${count}" "${#databases[@]}" "'${db}'" "${db}")
+  vvv_output "${OUTPUT}"
+  if [[ "${gzip}" == "True" ]]; then
+    if ! mysqldump --databases "${db}" | gzip > "/srv/database/backups/${db}.sql.gz"; then
+      failed+=("${db}")
+      vvv_error "   - Error backing up ${db} to /srv/database/backups/${db}.sql.gz"
+      continue
     fi
-    count=$((count+1))
+    backedup+=("${db}")
+    sha256sum "/srv/database/backups/${db}.sql.gz" > "/srv/database/backups/${db}.sql.gz.sha256"
+  else
+    if ! mysqldump --databases "${db}" > "/srv/database/backups/${db}.sql"; then
+      failed+=("${db}")
+      vvv_error "   - Error backing up ${db} to /srv/database/backups/${db}.sql"
+      continue
+    fi
+    backedup+=("${db}")
+    sha256sum "/srv/database/backups/${db}.sql" > "/srv/database/backups/${db}.sql.sha256"
+  fi
 done
 
-vvv_success " * Finished backing up databases to the <b>database/sql/backups</b><success> folder</success>"
+vvv_success " * Finished backing up ${count} databases to the <b>database/sql/backups</b><success> folder</success>"
+
+IFS=', '
+if [ ${#backedup[@]} -gt 0 ]; then
+  vvv_success " * Backed up databases: <b>${backedup[*]}</>"
+fi
+
+if [ ${#skipped[@]} -gt 0 ]; then
+  vvv_info " * Skipped databases: <b>${skipped[*]}</>"
+fi
+
+if [ ${#failed[@]} -gt 0 ]; then
+  vvv_error " * Failed databases: <b>${failed[*]}</>"
+fi
+
+IFS=$SAVEIFS

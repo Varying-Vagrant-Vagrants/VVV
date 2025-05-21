@@ -6,6 +6,40 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## 3.15.1 ( 2025 May 21st )
+
+This release brings with it an update to Ubuntu 24, it's recommended to upgrade for continued support. To do this backup your database, destroy your VM, reprovision, and restore the database. A `vagrant ssh -c db_restore` script is available inside the VM to perform these backups, and will place SQL dumps in the `database/sql/backups` folder if backups and restores are enabled in your `config/config.yml`. There is also a `vagrant ssh -c db_restore` command for importing those backups.
+
+### Enhancements
+
+* Upgraded Ubuntu boxes from 20.04 to 24.04 for docker provider ( #2739 )
+* Github action improvements ( #2739 )
+* Improved noroot to check for vagrant users and fallback if not present ( #2739 )
+* Greatly improved database backup and import script checks and output ( #2759 )
+* Faster checks for when packages are installed
+* Use curl for network checks first, falling back to wget
+* New automated Ubuntu EOL checks
+* Optional script to remove provisioner logs older than 1 year
+* New timing logs for provisioners to track hook/provisioner performance
+* Timings no longer show empty leading values
+
+### Bug Fixes
+
+* Fixed docker test provisioning by replacing symlinks with copies ( #2739 )
+* Improved PHPCS permissions handling ( #2739 )
+* Fixed a typo in `config/homebin/vagrant_up` ( #2739 )
+* Explicitly create `/srv/www` if it doesn't exist, and set ownership ( #2739 )
+* Added failure safeguards to git safe directory setting ( #2739 )
+* Fixed uses of config.vm instead of override.vm in the Vagrantfile ( #2754 )
+* Added nonempty to mount_options for Parallels, and added mount_options to all synced folders ( #2757 )
+* Added Xdebug port mapping for the docker provider ( #2748 )
+* Provisioner logs no longer log escape codes ( #2742 )
+
+### Maintenance
+
+* Refactored git-lfs signing key to the newer GPG key ( #2739 )
+* Various provisioner resilience improvements
+
 ## 3.14.1 ( 2025 February 23rd )
 
 ### Enhancements

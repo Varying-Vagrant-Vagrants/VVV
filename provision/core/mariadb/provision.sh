@@ -72,15 +72,8 @@ vvv_add_hook register_apt_packages mariadb_register_apt_packages
 function check_mysql_root_password() {
   vvv_info " * Checking the root user password is root"
   # Get if root has correct password and mysql_native_password as plugin
-  sql=$( cat <<-SQL
-      SELECT count(*) from mysql.user WHERE
-      User='root' AND
-      authentication_string=PASSWORD('root') AND
-      plugin='mysql_native_password';
-SQL
-)
-  root_matches=$(mysql -u root -proot -s -N -e "${sql}")
-  if [[ $? -eq 0 && $root_matches == "1" ]]; then
+  # we use noroot here because by default sudo is needed and we don't want that.
+  if noroot mysql -u root -proot -s -N -e "SHOW DATABASES"; then
     # mysql connected and the SQL above matched
     vvv_success " * The database root password is the expected value"
     return 0
@@ -88,15 +81,20 @@ SQL
   # Do reset password in safemode
   vvv_warn " * The root password is not root, fixing"
   sql=$( cat <<-SQL
-      ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
-      FLUSH PRIVILEGES;
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password USING PASSWORD('root');
+    FLUSH PRIVILEGES;
 SQL
 )
-  mysql -u root -proot -e "${sql}"
+  sudo mysql -u root -e "${sql}"
   if [[ $? -eq 0 ]]; then
     vvv_success "   - root user password should now be root"
   else
     vvv_warn "   - could not reset root password"
+  fi
+  if noroot mysql -u root -proot -s -N -e "SHOW DATABASES"; then
+    vvv_success " * Root access set correctly"
+  else
+    vvv_error " ! Root access to MariaDB was not fixed"
   fi
 }
 
@@ -128,9 +126,7 @@ function mysql_setup() {
   vvv_info " * Ensuring MariaDB service is started"
   service mariadb status > /dev/null || service mariadb start
 
-  if [ ! -f /.dockerenv ]; then
-    check_mysql_root_password
-  fi
+  check_mysql_root_password
 
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before

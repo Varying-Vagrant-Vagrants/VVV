@@ -8,10 +8,12 @@ function mailhog_setup() {
     rm -f /etc/init/mailcatcher.conf
   fi
 
+  arch=$(uname -m)
+
   if [[ ! -e /usr/local/bin/mailhog ]]; then
     vvv_info " * Installing MailHog"
     mailhog_bin="https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64"
-    if [[ "aarch64" == $(uname -m) ]]; then
+    if [[ "aarch64" == "${arch}" ]]; then
       mailhog_bin="https://github.com/evertiro/MailHog/releases/download/v1.0.1-M1/MailHog_linux_arm64"
     fi
     if curl --retry 3 --retry-delay 1 --show-error --silent -L -o /usr/local/bin/mailhog "${mailhog_bin}"; then
@@ -25,7 +27,7 @@ function mailhog_setup() {
   if [[ ! -e /usr/local/bin/mhsendmail ]]; then
     vvv_info " * Installing MHSendmail"
     mhsendmail_bin="https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64"
-    if [[ "aarch64" == $(uname -m) ]]; then
+    if [[ "aarch64" == "${arch}" ]]; then
       mhsendmail_bin="https://github.com/evertiro/mhsendmail/releases/download/v0.2.0-M1/mhsendmail_linux_arm64"
     fi
     if curl --retry 3 --retry-delay 1 --show-error --silent -L -o /usr/local/bin/mhsendmail "${mhsendmail_bin}"; then

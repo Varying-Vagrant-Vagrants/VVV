@@ -11,6 +11,26 @@ require 'fileutils'
 require 'pathname'
 require 'socket'
 
+mount_options_parallels_mysql = ['nonempty']
+mount_options_parallels_log = ['nonempty']
+mount_options_parallels_www = ['nonempty']
+
+mount_options_virtualbox_mysql = ['dmode=775', 'fmode=664']
+mount_options_virtualbox_log = ['dmode=777', 'fmode=666']
+mount_options_virtualbox_www = ['dmode=775', 'fmode=774']
+
+mount_options_docker_mysql = ['dmode=775', 'fmode=664']
+mount_options_docker_log = ['dmode=777', 'fmode=666']
+mount_options_docker_www = []
+
+mount_options_hyperv_mysql = ['dir_mode=0775', 'file_mode=0664']
+mount_options_hyperv_log = ['dir_mode=0777', 'file_mode=0666']
+mount_options_hyperv_www = ['dir_mode=0775', 'file_mode=0774']
+
+mount_options_vmware_mysql = ['umask=000']
+mount_options_vmware_log = ['umask=000']
+mount_options_vmware_www = ['umask=002']
+
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
   creset = "\033[0m"
@@ -454,36 +474,42 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # See: https://github.com/Varying-Vagrant-Vagrants/VVV/issues/1551
   config.ssh.insert_key = false
   config.vm.box_check_update = false
+  config.vm.box_version = '>= 0'
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-24.04'
 
     # Pin the arm64 version of the box to a specific version we know has an arm build.
     if Etc.uname[:version].include? 'ARM64'
-      config.vm.box_version = "202404.23.0"
+      override.vm.box_version = "202502.21.0"
     end
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
   config.vm.provider :vmware_desktop do |v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-24.04'
     v.gui = false
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
-    override.vm.box = 'bento/ubuntu-20.04'
+    # override.vm.box = 'bento/ubuntu-24.04'
+    # At the time of writing no Bento box existed for Ubuntu 2024 with the Hyper-V provider,
+    # so we're using the most popular box available in the box catalog as a temporary measure.
+    override.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
+    override.vm.box_version = ">=2404.0.2503"
   end
 
   # Docker use image.
   config.vm.provider :docker do |d, override|
-    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:20.04'
+    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:24.04'
     d.has_ssh = true
     d.ports =  [ "80:80" ] # HTTP
     d.ports += [ "443:443" ] # HTTPS
     d.ports += [ "3306:3306" ] # MySQL
     d.ports += [ "8025:8025" ] # Mailhog
+    d.ports += [ "9003:9003" ] # Xdebug
 
     ## Fix goodhosts aliases format for docker
     override.goodhosts.aliases = { '127.0.0.1' => vvv_config['hosts'], '::1' => vvv_config['hosts'] }
@@ -494,9 +520,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Default Ubuntu Box
     #
     # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
-    # box containing the Ubuntu 20.04 Focal 64 bit release. Once this box is downloaded
+    # box containing the Ubuntu LTS release. Once this box is downloaded
     # to your host computer, it is cached for future use under the specified box name.
-    override.vm.box = 'bento/ubuntu-20.04'
+    override.vm.box = 'bento/ubuntu-24.04'
 
     # If we're at a contributor day, switch the base box to the prebuilt one
     if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
@@ -534,7 +560,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       override.disksize.size = vvv_config['vagrant-plugins']['disksize']
     end
     if Etc.uname[:version].include? 'ARM64'
-      puts "WARNING: Vagrant disksize requires VirtualBox and is incompatible with Arm devices, uninstall immediatley"
+      puts "WARNING: Vagrant disksize requires VirtualBox, if you are not using VirtualBox please remove this plugin immediatley"
     end
   end
 
@@ -609,18 +635,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
   if use_db_share == true
     # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-    config.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: ['dmode=775', 'fmode=664']
-
-    # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
-    # those are specific to Virtualbox. The folder is therefore overridden with one that
-    # uses corresponding Parallels mount options.
-    config.vm.provider :parallels do |_v, override|
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: [ 'share' ]
-    end
-    # Neither does the HyperV provider
-    config.vm.provider :hyperv do |_v, override|
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: ['dir_mode=0775', 'file_mode=0664']
-    end
+    config.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: mount_options_virtualbox_mysql
   end
 
   # /srv/config/
@@ -645,96 +660,101 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: ['dmode=777', 'fmode=666']
-  config.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: ['dmode=777', 'fmode=666']
-  config.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: ['dmode=777', 'fmode=666']
-  config.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: ['dmode=777', 'fmode=666']
+  config.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_virtualbox_log
+  config.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_virtualbox_log
+  config.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_virtualbox_log
+  config.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_virtualbox_log
 
   # /srv/www/
   #
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
-  config.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: ['dmode=775', 'fmode=774']
+  config.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_virtualbox_www
 
   vvv_config['sites'].each do |site, args|
     next if args['skip_provisioning']
     if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-      config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: ['dmode=775', 'fmode=774']
+      config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_virtualbox_www
     end
   end
 
-  # The Parallels Provider does not understand "dmode"/"fmode" in the "mount_options" as
-  # those are specific to Virtualbox. The folder is therefore overridden with one that
-  # uses corresponding Parallels mount options.
-  config.vm.provider :parallels do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: [ 'share' ]
+  config.vm.provider :docker do |_v, override|
+    override.vm.synced_folder 'www/', '/srv/www', mount_options: mount_options_docker_www
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: [ 'share' ]
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: [ 'share' ]
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: [ 'share' ]
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: [ 'share' ]
+    vvv_config['sites'].each do |site, args|
+      next if args['skip_provisioning']
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site)
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: mount_options_docker_www
+      end
+    end
+  end
+
+  config.vm.provider :parallels do |_v, override|
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_parallels_www
+
+    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_parallels_log
+    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_parallels_log
+    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_parallels_log
+    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_parallels_log
 
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: [ 'share' ]
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: mount_options_parallels_mysql
     end
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: [ 'share' ]
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_parallels_www
       end
     end
   end
 
-  # The Hyper-V Provider does not understand "dmode"/"fmode" in the "mount_options" as
-  # those are specific to Virtualbox. Furthermore, the normal shared folders need to be
-  # replaced with SMB shares. Here we switch all the shared folders to us SMB and then
-  # override the www folder with options that make it Hyper-V compatible.
+  # Under Hyper-V the normal shared folders need to be replaced with SMB shares.
+  # Here we switch all the shared folders to use SMB and then override the www
+  # folder with options that make it Hyper-V compatible.
   config.vm.provider :hyperv do |v, override|
     v.vmname = File.basename(vagrant_dir) + '_' + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
 
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: ['dir_mode=0775', 'file_mode=0774']
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_hyperv_www
 
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: ['dir_mode=0775', 'file_mode=0664']
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: mount_options_hyperv_mysql
     end
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: ['dir_mode=0777', 'file_mode=0666']
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: ['dir_mode=0777', 'file_mode=0666']
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: ['dir_mode=0777', 'file_mode=0666']
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: ['dir_mode=0777', 'file_mode=0666']
+    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_hyperv_log
+    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_hyperv_log
+    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_hyperv_log
+    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_hyperv_log
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: ['dir_mode=0775', 'file_mode=0774']
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_hyperv_www
       end
     end
   end
 
-  # The VMware Provider does not understand "dmode"/"fmode" in the "mount_options" as
-  # those are specific to Virtualbox. The folder is therefore overridden with one that
-  # uses corresponding VMware mount options.
+  # Specify the VMware Provider mount options for synced folders.
   config.vm.provider :vmware_desktop do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: ['umask=002']
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_vmware_www
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: ['umask=000']
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: ['umask=000']
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: ['umask=000']
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: ['umask=000']
+    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_vmware_log
+    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_vmware_log
+    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_vmware_log
+    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_vmware_log
 
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: ['umask=000']
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: mount_options_vmware_mysql
     end
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: ['umask=002']
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_vmware_www
       end
     end
   end

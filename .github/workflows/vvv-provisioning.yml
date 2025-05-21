@@ -14,33 +14,59 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   on-docker:
-    name: Ubuntu 20 Docker Provisioner
+    name: Ubuntu 24 Docker Provisioner
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    container: pentatonicfunk/vagrant-ubuntu-base-images:24.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+
       # Make Symlinks
       - name: Create Vagrant Like Environment
         run: |
-          # uninstall pre installed packages (to test if extensions work)
-          sudo apt-get -q --autoremove --purge remove php* mysql*
-          sudo apt-get -q autoclean
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -yq autoclean
 
-          # remove pre-installed composer
-          if [ -f /usr/bin/composer ]; then
-            sudo rm -f /usr/bin/composer
+          # Create vagrant group if it doesn't exist
+          if ! getent group vagrant >/dev/null; then
+            echo "Creating vagrant group"
+            sudo groupadd -g 2000 vagrant
           fi
 
-          # create vagrant user
-          sudo groupadd -g 2000 vagrant
-          sudo useradd -u 2000 -g vagrant -m vagrant
+          # Create vagrant user if it doesn't exist
+          if ! id -u vagrant >/dev/null 2>&1; then
+            echo "Creating vagrant user"
+            sudo useradd -u 2000 -g vagrant -m vagrant
+          fi
+
+          # Create /srv if it doesn't exist
+          if [ ! -d "/srv" ]; then
+            echo "Preparing /srv"
+            sudo mkdir -p /srv
+            sudo chown vagrant:vagrant /srv
+          fi
+
+          echo "Copying files.."
+
+          # copy files provided by vagrant
+          sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
+          sudo cp -f "$GITHUB_WORKSPACE/version" "/home/vagrant/version"
+
+          sudo mkdir -p /srv/certificates
+          sudo cp -rT "$GITHUB_WORKSPACE/www" /srv/certificates
+          sudo chown -R vagrant:vagrant /srv/certificates
+
+          sudo mkdir -p /srv/www
+          sudo cp -rT "$GITHUB_WORKSPACE/www" /srv/www
+          sudo chown -R vagrant:vagrant /srv/www
+
+          echo "Preparing Symlinks..."
 
           # vvv_symlink function to sumulate synced folders
-          function vvv_symlink() {
+          vvv_symlink() {
             if [ ! -d "${1}" ]; then
               sudo mkdir -p "${1}"
             fi
@@ -48,23 +74,10 @@ jobs:
             sudo ln -sf "${1}" "${2}"
           }
 
-          # create srv folder
-          sudo -u "vagrant" mkdir -p "/srv"
-
-          # copy files provided by vagrant
-          sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
-          sudo cp -f "$GITHUB_WORKSPACE/version" "/home/vagrant/version"
-
           # make folders available
           vvv_symlink "$GITHUB_WORKSPACE/database/sql" "/srv/database"
           vvv_symlink "$GITHUB_WORKSPACE/config" "/srv/config"
           vvv_symlink "$GITHUB_WORKSPACE/provision" "/srv/provision"
-          vvv_symlink "$GITHUB_WORKSPACE/certificates" "/srv/certificates"
-          vvv_symlink "$GITHUB_WORKSPACE/www" "/srv/www"
-          vvv_symlink "$GITHUB_WORKSPACE/log/memcached" "/var/log/memcached"
-          vvv_symlink "$GITHUB_WORKSPACE/log/nginx" "/var/log/nginx"
-          vvv_symlink "$GITHUB_WORKSPACE/log/php" "/var/log/php"
-          vvv_symlink "$GITHUB_WORKSPACE/log/provisioners" "/var/log/provisioners"
 
       # Runs the provisioners in the expected order
       - name: Run provison-pre.sh

@@ -27,25 +27,32 @@ fi
 export VVV_CONFIG
 export VVV_CURRENT_LOG_FILE=""
 
-# @description Does a bash array contain a value?
+# @description Checks whether a Bash array contains a specific value.
 #
 # @arg $1 string The value to search for
-# @arg $2 string The list/array to search in
+# @arg $2 string The name of the array variable to search
 #
-# @exitcode 0 If the list contains the element
-# @exitcode 1 If the list does not containn the element
-function containsElement () {
-  declare -a array=(${2})
-  local i
-  for i in "${array[@]}"
-  do
-      if [ "${i}" == "${1}" ] ; then
-          return 0
-      fi
+# @exitcode 0 If the array contains the element
+# @exitcode 1 If the array does not contain the element
+function vvv_array_contains() {
+  local needle="$1"
+  local array_name="$2"
+
+  # Sanity check
+  if [[ -z "$needle" || -z "$array_name" || ! "$(declare -p "$array_name" 2>/dev/null)" =~ "declare -a" ]]; then
+    return 1
+  fi
+
+  # Create nameref to the array
+  declare -n arr="$array_name"
+  for item in "${arr[@]}"; do
+    if [[ "$item" == "$needle" ]]; then
+      return 0
+    fi
   done
   return 1
 }
-export -f containsElement
+export -f vvv_array_contains
 
 # @description Test that we have network connectivity with a URL.
 # Deprecated, use check_network_connection_to_host instead
@@ -65,20 +72,36 @@ export -f network_detection
 # @exitcode 0 If the address is reachable
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
-  local url=${1:-"http://ppa.launchpadcontent.net"}
-  vvv_info " * Testing network connection to <url>${url}</url><info> with wget -q --spider --timeout=5 --tries=3 ${url}"
+  local url="${1:-http://ppa.launchpadcontent.net}"
 
-  # Network Detection
-  #
-  # If 3 attempts with a timeout of 5 seconds are not successful,
-  # then we'll skip a few things further in provisioning rather
-  # than create a bunch of errors.
-  if wget -q --spider --timeout=5 --tries=3 "${url}"; then
-    vvv_success " * Successful Network connection to <url>${url}</url><success> detected"
-    return 0
+  if [[ -z "${url}" ]]; then
+    vvv_error " ! No URL provided to check_network_connection_to_host"
+    return 1
   fi
-  vvv_error " ! Network connection issues found. Unable to reach <url>${url}</url>"
-  wget --spider --timeout=5 --tries=3 "${url}"
+
+  vvv_info " * Checking network connectivity to <url>${url}</url><info>..."
+
+  if command -v curl >/dev/null 2>&1; then
+    if curl -s --connect-timeout 5 --max-time 10 --head "${url}" >/dev/null; then
+      vvv_success " ✔ curl connected successfully to <url>${url}</url>"
+      return 0
+    else
+      if command -v wget >/dev/null 2>&1; then
+        vvv_warn " - curl failed to connect to <url>${url}</url><warn>, trying wget..."
+      else
+        vvv_warn " - curl failed to connect to <url>${url}</url>"
+      fi
+    fi
+  fi
+
+  if command -v wget >/dev/null 2>&1; then
+    if wget -q --spider --timeout=5 --tries=2 "${url}"; then
+      vvv_success " ✔ wget connected successfully to <url>${url}</url>"
+      return 0
+    fi
+  fi
+
+  vvv_error " ✘ Network connection to <url>${url}</url><error> failed via wget and curl"
   return 1
 }
 export -f check_network_connection_to_host
@@ -166,29 +189,68 @@ export -f network_check
 #
 # @arg $1 string name of the provisioner
 function log_to_file() {
-	local date_time
+  local provisioner="$1"
+  local date_time
+
+  if [[ ! -s /vagrant/provisioned_at ]]; then
+    echo "Error: /vagrant/provisioned_at is missing or empty" >&2
+    return 1
+  fi
+
   date_time=$(cat /vagrant/provisioned_at)
-	local logfolder="/var/log/provisioners/${date_time}"
-	local logfile="${logfolder}/${1}.log"
-	mkdir -p "${logfolder}"
-	touch "${logfile}"
-	# reset output otherwise it will log to previous files. from backup made in provisioners.sh
-	exec 1>&6
-	exec 2>&7
-	# pipe to file
-	if [[ "${1}" == "provisioner-main" ]]; then
-		exec > >( tee -a "${logfile}" ) # main provisioner outputs everything
-	else
-		exec > >( tee -a "${logfile}" >/dev/null ) # others, only stderr
-	fi
-	exec 2> >( tee -a "${logfile}" >&2 )
-	VVV_CURRENT_LOG_FILE="${logfile}"
+  local logfolder="/var/log/provisioners/${date_time}"
+  local logfile="${logfolder}/${provisioner}.log"
+
+
+  mkdir -p "${logfolder}" || return 1
+  touch "${logfile}" || return 1
+
+  # reset output otherwise it will log to previous files. from backup made in provisioners.sh
+  exec 1>&6
+  exec 2>&7
+
+  local SED_STRIP_ANSI='s/\x1B\[[0-9;]*[a-zA-Z]//g'
+
+  # pipe to file
+  if [[ "${provisioner}" == "provisioner-main" ]]; then
+    # Preserve color in terminal, strip in log
+    exec > >(
+      while IFS= read -r line; do
+        printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+        printf '%s\n' "$line"
+      done
+    )
+  else
+    # Suppress stdout to terminal but log stripped version
+    exec > >(
+      while IFS= read -r line; do
+        printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+      done
+    )
+  fi
+
+  # stderr: preserve color in terminal, strip in log
+  exec 2> >(
+    while IFS= read -r line; do
+      printf '%s\n' "$line" | sed -r "${SED_STRIP_ANSI}" >> "${logfile}"
+      printf '%s\n' "$line" >&2
+    done
+  )
+
+  VVV_CURRENT_LOG_FILE="${logfile}"
+
+  return 0
 }
 export -f log_to_file
 
-# @description Run a command that cannot be ran as root
+# @description Run a command that cannot be ran as root, falling back to the current user if not vagrant user is found.
 function noroot() {
-  sudo -EH -u "vagrant" "$@";
+  if id "vagrant" &>/dev/null; then
+    sudo -EH -u "vagrant" "$@"
+  else
+    vvv_error " ! [noroot] no vagrant user detected, falling back to $(whoami)"
+    "$@"  # fallback to running as current user
+  fi
 }
 export -f noroot
 
@@ -217,6 +279,22 @@ function vvv_src_list_has() {
 }
 export -f vvv_src_list_has
 
+declare -A VVV_FORMATTING_TAGS=(
+  ['<b>']="${CRESET}${BOLD}${PURPLE}"
+  ['</b>']="${UNBOLD}"
+  ['<info>']="${CRESET}${DEFAULT_TEXT}${DIM}"
+  ['</info>']="${UNDIM}"
+  ['<success>']="${GREEN}"
+  ['</success>']="${CRESET}"
+  ['<warn>']="${YELLOW}"
+  ['</warn>']="${CRESET}"
+  ['<error>']="${RED}"
+  ['</error>']="${CRESET}"
+  ['<url>']="${CRESET}${YELLOW_UNDERLINE}"
+  ['</url>']="${CRESET}"
+  ['</>']="${CRESET}"
+)
+
 # @description Takes an input string and attempts to apply terminal formatting for various colours
 #
 # @example
@@ -224,28 +302,12 @@ export -f vvv_src_list_has
 #
 # @arg $1 string Text to format
 function vvv_format_output() {
-  declare -A TAGS=(
-    ['<b>']="${CRESET}${BOLD}${PURPLE}"
-    ['</b>']="${UNBOLD}"
-    ['<info>']="${CRESET}${DEFAULT_TEXT}${DIM}"
-    ['</info>']="${UNDIM}"
-    ['<success>']="${GREEN}"
-    ['</success>']="${CRESET}"
-    ['<warn>']="${YELLOW}"
-    ['</warn>']="${CRESET}"
-    ['<error>']="${RED}"
-    ['</error>']="${CRESET}"
-    ['<url>']="${CRESET}${YELLOW_UNDERLINE}"
-    ['</url>']="${CRESET}"
-    ['</>']="${CRESET}"
-  )
-
   local MSG
-  MSG="${1}</>"
-  for TAG in "${!TAGS[@]}"; do
-    local VAL
-    VAL="${TAGS[$TAG]}"
-    MSG="${MSG//"${TAG}"/"${VAL}"}"
+  MSG="${1:-}</>"
+  local ordered_tags=( '<b>' '</b>' '<info>' '</info>' '<success>' '</success>' '<warn>' '</warn>' '<error>' '</error>' '<url>' '</url>' '</>' )
+  for TAG in "${ordered_tags[@]}"; do
+    local VAL="${VVV_FORMATTING_TAGS[$TAG]}"
+    MSG="${MSG//${TAG}/${VAL}}"
   done
   echo -e "${MSG}"
 }
@@ -256,12 +318,11 @@ export -f vvv_format_output
 # @arg $1 string The message to print
 function vvv_output() {
   local MSG
-  MSG=$(vvv_format_output "${1}")
-	echo -e "${MSG}"
-  if [[ ! -z "${VVV_LOG}" ]]; then
-    if [ "${VVV_LOG}" != "main" ]; then
-      test -e /proc/$$/fd/6 && >&6 echo -e "${MSG}"
-    fi
+  MSG=$(vvv_format_output "${1:-}")
+  echo -e "${MSG}"
+
+  if [[ -n "${VVV_LOG}" && "${VVV_LOG}" != "main" && -e /proc/$$/fd/6 ]]; then
+    >&6 echo -e "${MSG}"
   fi
 }
 export -f vvv_output
@@ -270,7 +331,7 @@ export -f vvv_output
 #
 # @arg $1 string The message to print
 function vvv_info() {
-  vvv_output "<info>${1}</info>"
+  vvv_output "<info>${1:-}</info>"
 }
 export -f vvv_info
 
@@ -278,9 +339,7 @@ export -f vvv_info
 #
 # @arg $1 string The message to print
 function vvv_error() {
-  local MSG
-  MSG=$(vvv_format_output )
-  vvv_output "<error>${1}</error>"
+  vvv_output "<error>${1:-}</error>"
 }
 export -f vvv_error
 
@@ -288,7 +347,7 @@ export -f vvv_error
 #
 # @arg $1 string The message to print
 function vvv_warn() {
-  vvv_output "<warn>${1}</warn>"
+  vvv_output "<warn>${1:-}</warn>"
 }
 export -f vvv_warn
 
@@ -296,7 +355,7 @@ export -f vvv_warn
 #
 # @arg $1 string The message to print
 function vvv_success() {
-  vvv_output "<success>${1}</success>"
+  vvv_output "<success>${1:-}</success>"
 }
 export -f vvv_success
 
@@ -360,26 +419,28 @@ export -f get_config_keys
 # @arg $2 string the name of the bash function to call
 # @arg $3 number the priority of the function when the hook executes, determines order, lower values execute earlier
 vvv_add_hook() {
-  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    vvv_warn "Invalid hookname '${1}', hooks must only contain the characters A-Z and a-z"
+  # Validate hook name: must start with a letter/underscore, and contain only alphanumeric + underscore
+  if [[ ! "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+    vvv_warn "Invalid hook name '${1}', hooks must match: ^[a-zA-Z_][a-zA-Z0-9_]*$"
     return 1
   fi
 
-  local hook_prio=10
-  if [[ ! -z "${3}" && "${3}" =~ [0-9]+ ]]; then
+  local hook_name="$1"
+  local function_name="$2"
+  local hook_prio="${3:-10}"
 
-    hook_prio=$((${3} + 0))
-    if [[ -z "$hook_prio" ]]; then
-      hook_prio=0
-    fi
+  # Validate priority is a number
+  if ! [[ "$hook_prio" =~ ^[0-9]+$ ]]; then
+    hook_prio=10
   fi
 
-  local hook_var_prios="VVV_HOOKS_${1}"
-  eval "if [ -z \"\${${hook_var_prios}}\" ]; then ${hook_var_prios}=(); fi"
-
+  local hook_var_prios="VVV_HOOKS_${hook_name}"
   local hook_var="${hook_var_prios}_${hook_prio}"
-  eval "if [ -z \"\${${hook_var}}\" ]; then ${hook_var_prios}+=(${hook_prio}); ${hook_var}=(); fi"
-  eval "${hook_var}+=(\"${2}\")"
+
+  # Create arrays if not already defined
+  eval "declare -g -a ${hook_var_prios} ${hook_var}"
+  eval "if [[ ! \" \${${hook_var_prios}[*]} \" =~ \" ${hook_prio} \" ]]; then ${hook_var_prios}+=(\"${hook_prio}\"); fi"
+  eval "${hook_var}+=(\"${function_name}\")"
 }
 export -f vvv_add_hook
 
@@ -390,34 +451,57 @@ export -f vvv_add_hook
 #
 # @arg $1 string the hook to execute
 vvv_hook() {
-  if [[ "${1}" =~ [^a-zA-Z_] ]]; then
-    vvv_error " x Disallowed hookname '${1}'"
+  if [[ ! "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+    vvv_error " x Disallowed hook name '${1}'"
     return 1
   fi
 
-  local hook_var_prios
-  local hook_elapsed
-  local hook_end_timestamp
-  local hook_start_timestamp
+  local hook_name="$1"
+  local hook_var_prios="VVV_HOOKS_${hook_name}"
+  local start_time end_time elapsed_str=""
 
-  hook_var_prios="VVV_HOOKS_${1}"
-  hook_start_timestamp="$(date -u +"%s.%2N")"
-  vvv_info " ▷ Running <b>${1}</b><info> hook"
-  eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
-  local sorted
-  eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
+  start_time="$(date +%s.%N)"
+  vvv_info " ▷ Running <b>${hook_name}</b><info> hook"
 
-  for i in "${!sorted[@]}"; do
-    local prio="${sorted[$i]}"
-    hooks_on_prio="${hook_var_prios}_${prio}[@]"
-    for f in ${!hooks_on_prio}; do
-      $f
+  # Check if any hooks registered
+  eval "local prios=(\"\${${hook_var_prios}[@]}\")"
+  if [[ ${#prios[@]} -eq 0 ]]; then
+    return 0
+  fi
+
+  # Sort priorities
+  IFS=$'\n' read -r -d '' -a sorted < <(printf "%s\n" "${prios[@]}" | sort -n && printf '\0')
+  unset IFS
+
+  for prio in "${sorted[@]}"; do
+    local hook_var="${hook_var_prios}_${prio}"
+    eval "local funcs=(\"\${${hook_var}[@]}\")"
+
+    for f in "${funcs[@]}"; do
+      if declare -f "$f" >/dev/null; then
+        "$f"
+      else
+        vvv_warn "Function '${f}' not defined, skipping"
+      fi
     done
   done
-  hook_end_timestamp="$(date -u +"%s.%2N")"
-  hook_elapsed=$(date -u -d "0 ${hook_end_timestamp} seconds - ${hook_start_timestamp} seconds" +"%-Mm %-Ss %-3Nms")
 
-  vvv_success " ✔ Finished <b>${1}</b><success> hook in </success><b>${hook_elapsed}</b>"
+  end_time="$(date +%s.%N)"
+  elapsed_str=$(awk -v start="$start_time" -v end="$end_time" 'BEGIN {
+    diff = end - start
+    m = int(diff / 60)
+    s = int(diff % 60)
+    ms = int((diff - int(diff)) * 1000)
+
+    str = ""
+    if (m > 0) str = str m "m "
+    if (s > 0 || m > 0) str = str s "s "
+    str = str ms "ms"
+    print str
+  }')
+
+  vvv_success " ✔ Finished <b>${hook_name}</b><success> hook in </success><b>${elapsed_str}</b>"
+  vvv_log_timing_event "hook" "${hook_name}" "${start_time}" "${end_time}" "${elapsed_str}" "success"
 }
 export -f vvv_hook
 
@@ -545,20 +629,35 @@ vvv_package_install() {
 }
 export -f vvv_package_install;
 
-# @description checks if an apt package is installed, returns 0 if installed, 1 if not
-# @arg $1 string the package to check for
+# @description Checks if an APT package or virtual package is installed. Returns 0 if installed or provided, 1 if not.
+# @arg $1 string The package or virtual package name to check
 vvv_is_apt_pkg_installed() {
-    # Get the number of packages installed that match $1
-    num=$(dpkg --dry-run -l "${1}" 2>/dev/null | grep -E '^ii' | wc -l)
+  local pkg="$1"
 
-    if [[ $num -eq 1 ]]; then
-        # it is installed
-        return 0
-    elif [[ $num -gt 1 ]]; then
-        # there is more than one package matching $1
-        return 0
-    fi
+  # Reject empty or invalid input
+  if [[ -z "$pkg" || "$pkg" =~ [^a-zA-Z0-9+.-] ]]; then
+    vvv_warn "Invalid or missing package name passed to vvv_is_apt_pkg_installed: '$pkg'"
     return 1
+  fi
+
+  # Check if package is installed directly
+  if dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
+    return 0
+  fi
+
+  # Check if it's a virtual package
+  if apt-cache show "$pkg" 2>/dev/null | grep -q "^Provides:"; then
+    local providers
+    providers=$(apt-cache show "$pkg" | awk '/^Provides:/ {for(i=2;i<=NF;++i) print $i}')
+
+    for prov in $providers; do
+      if dpkg-query -W -f='${Status}' "$prov" 2>/dev/null | grep -q "install ok installed"; then
+        return 0
+      fi
+    done
+  fi
+
+  return 1
 }
 
 # @description cleans up dpkg lock files to avoid provisioning issues
@@ -731,3 +830,166 @@ function vvv_search_replace_in_file() {
   fi
 }
 export -f vvv_search_replace_in_file
+
+# @description log a time duration for a hook or provisioner for performance tracking to a csv file.
+vvv_log_timing_event() {
+  local type="$1"
+  local name="$2"
+  local start="$3"
+  local end="$4"
+  local duration="$5"
+  local status="$6"
+
+  if [[ "$type" != "hook" && "$type" != "provisioner" ]]; then
+    vvv_error " ! Invalid timing event type: '$type'"
+    return 1
+  fi
+
+  if [[ "$status" != "success" && "$status" != "failure" ]]; then
+    vvv_error " ! Invalid timing event status: '$status'"
+    return 1
+  fi
+
+  if [[ ! -f /vagrant/provisioned_at ]]; then
+    vvv_warn " ! /vagrant/provisioned_at is missing, cannot log timing event"
+    return 1
+  fi
+
+  local date_time
+  date_time="$(cat /vagrant/provisioned_at)"
+  local log_dir="/var/log/provisioners/timing"
+  mkdir -p "$log_dir"
+
+  local csv_log="${log_dir}/timing-${date_time}.csv"
+  local json_log="${log_dir}/timing-${date_time}.jsonl"
+
+  # Escape and quote name and duration for CSV
+  local quoted_name="\"${name//\"/\"\"}\""
+  local quoted_duration="\"${duration//\"/\"\"}\""
+
+  # CSV logging
+  if [[ ! -f "$csv_log" ]]; then
+    echo "type,name,start,end,duration,status" > "$csv_log"
+  fi
+  echo "${type},${quoted_name},${start},${end},${quoted_duration},${status}" >> "$csv_log"
+
+  # JSONL logging
+  printf '{"type":"%s","name":"%s","start":%s,"end":%s,"duration":"%s","status":"%s"}\n' \
+    "$type" "$name" "$start" "$end" "$duration" "$status" >> "$json_log"
+}
+export -f vvv_log_timing_event
+
+vvv_cleanup_old_timing_logs() {
+  local log_dir="/var/log/provisioners/timing"
+  local max_age_days=180
+
+  if [[ ! -d "$log_dir" ]]; then
+    return 0
+  fi
+
+  vvv_info " - Cleaning up timing logs older than ${max_age_days} days in ${log_dir}"
+
+  find "$log_dir" -type f \( -name "timing-*.csv" -o -name "timing-*.jsonl" \) -mtime +$max_age_days -print -delete
+}
+export -f vvv_cleanup_old_timing_logs
+
+# @description Cleans up provisioner logs older than 1 year.
+vvv_cleanup_old_provision_logs() {
+  local base_dir="/var/log/provisioners"
+  local cutoff_date
+  local folder
+
+  # Compute the cutoff timestamp (1 year ago)
+  cutoff_date=$(date -d "1 year ago" +%s)
+
+  # Sanity check
+  [[ -d "$base_dir" ]] || return 0
+
+  vvv_info " - Cleaning up provisioner logs older than 1 year in '${base_dir}'"
+
+  shopt -s nullglob
+  for folder in "$base_dir"/20??.??.??_*; do
+    if [[ -d "$folder" ]]; then
+      local basename
+      basename=$(basename "$folder")
+
+      # Match pattern like 2022.05.18_12-17-36
+      if [[ $basename =~ ^([0-9]{4})\.([0-9]{2})\.([0-9]{2})_ ]]; then
+        local year="${BASH_REMATCH[1]}"
+        local month="${BASH_REMATCH[2]}"
+        local day="${BASH_REMATCH[3]}"
+
+        # Convert to epoch
+        local folder_date
+        folder_date=$(date -d "${year}-${month}-${day}" +%s 2>/dev/null || echo 0)
+
+        if (( folder_date < cutoff_date )); then
+          vvv_warn " - Removing old provisioner log: <b>${folder}</b>"
+          rm -rf "$folder"
+        fi
+      else
+        vvv_info " - Skipping folder with unrecognized name format: ${basename}"
+      fi
+    fi
+  done
+  shopt -u nullglob
+}
+export -f vvv_cleanup_old_provision_logs
+
+# @description Check if this Ubuntu is near EOL and warn the user.
+vvv_check_ubuntu_eol() {
+  # Confirm we are running Ubuntu
+  if ! grep -qi '^ID=ubuntu' /etc/os-release 2>/dev/null; then
+    vvv_info " - Not running Ubuntu; skipping EOL check."
+    return 0
+  fi
+
+  local UBUNTU_VERSION
+  UBUNTU_VERSION=$(lsb_release -rs 2>/dev/null)
+  if [[ -z "$UBUNTU_VERSION" ]]; then
+    vvv_error " x Could not determine Ubuntu version."
+    return 1
+  fi
+
+  local CSV_FILE="/usr/share/distro-info/ubuntu.csv"
+  if [[ ! -f "$CSV_FILE" ]]; then
+    vvv_error " x EOL data file '$CSV_FILE' not found. Please install 'distro-info' package."
+    return 1
+  fi
+
+  local EOL_DATE
+  EOL_DATE=$(awk -F, -v ver="$UBUNTU_VERSION" '
+    {
+      # Trim spaces from $1
+      gsub(/^ +| +$/, "", $1);
+      v = $1;
+      # Remove " LTS" suffix for comparison
+      sub(/ LTS$/, "", v);
+      if (v == ver) print $7
+    }
+  ' "$CSV_FILE")
+
+  if [[ -z "$EOL_DATE" ]]; then
+    vvv_warn " ! Could not find EOL date for Ubuntu version $UBUNTU_VERSION."
+    return 1
+  fi
+
+  local NOW EOL DIFF
+  NOW=$(date +%s)
+  EOL=$(date -d "$EOL_DATE" +%s 2>/dev/null)
+  if [[ -z "$EOL" ]]; then
+    vvv_error " x Failed to parse EOL date '$EOL_DATE'."
+    return 1
+  fi
+
+  DIFF=$(( (EOL - NOW) / 86400 ))
+
+  if (( DIFF < 0 )); then
+    vvv_error " x Ubuntu $UBUNTU_VERSION reached EOL on $EOL_DATE."
+  elif (( DIFF <= 90 )); then
+    vvv_warn "Ubuntu $UBUNTU_VERSION will reach EOL within $DIFF days (on $EOL_DATE)."
+  else
+    vvv_success "Ubuntu $UBUNTU_VERSION is supported until $EOL_DATE."
+  fi
+}
+export -f vvv_check_ubuntu_eol

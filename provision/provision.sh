@@ -70,6 +70,9 @@ export VVV_PACKAGE_REMOVAL_LIST=()
 ### SCRIPT
 #set -xv
 
+vvv_check_ubuntu_eol
+vvv_cleanup_old_timing_logs
+
 vvv_hook init
 
 # If you need to disable this check then something is terribly wrong, tell us on github/slack

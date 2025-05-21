@@ -16,10 +16,10 @@ function vvv_nvm_setup() {
   if [[ -d "${NVM_DIR}" && -f "${NVM_DIR}/nvm.sh" ]]
   then
     vvv_success " ✓ NVM is already installed, checking for updates"
-    cd "${NVM_DIR}"
+    pushd "${NVM_DIR}" > /dev/null
     noroot git fetch --tags origin
     noroot git checkout $(noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(noroot git rev-list --tags --max-count=1))
-    cd -
+    popd
     vvv_info " - Loading nvm"
     [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
     vvv_info " - nvm loaded"
@@ -34,9 +34,9 @@ function vvv_nvm_setup() {
 
     vvv_info " - Installing NVM via git"
     noroot git clone https://github.com/nvm-sh/nvm.git "${NVM_DIR}"
-    cd "${NVM_DIR}"
+    pushd "${NVM_DIR}" > /dev/null
     noroot git checkout $(noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(noroot git rev-list --tags --max-count=1))
-    cd -
+    popd
     vvv_info " - Loading nvm"
     [ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
     vvv_info " - NVM loaded"

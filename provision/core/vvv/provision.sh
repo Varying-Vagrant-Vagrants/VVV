@@ -59,8 +59,12 @@ function vvv_register_packages() {
 vvv_add_hook register_apt_packages vvv_register_packages 0
 
 function vvv_register_apt_sources() {
-  local OSID=$(lsb_release --id --short)
-  local OSCODENAME=$(lsb_release --codename --short)
+  local OSCODENAME
+  local OSID
+
+  OSID=$(lsb_release --id --short)
+  OSCODENAME=$(lsb_release --codename --short)
+
   local APTSOURCE="/srv/provision/core/vvv/sources-${OSID,,}-${OSCODENAME,,}.list"
   if [ -f "${APTSOURCE}" ]; then
     cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-sources.list"
@@ -82,7 +86,7 @@ vvv_add_hook register_apt_sources vvv_register_keys 0
 function vvv_before_packages() {
   # this package and another are necessary to ensure certificate trust store is up to date
   # without this, some mirrors will faill due to changing letsencrypt intermediate root certificates
-  if [ $(dpkg-query -W -f='${Status}' ca-certificates 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+  if ! vvv_is_apt_pkg_installed "ca-certificates"; then
     vvv_info " * Installing updated certificate stores before proceeding"
     apt-get --yes install ca-certificates libgnutls30
     vvv_info " * Installing updated certificate stores completed with code ${?}"
@@ -96,8 +100,22 @@ function shyaml_setup() {
   # Used for passing custom parameters to the bash provisioning scripts
   if [ ! -f /usr/local/bin/shyaml ]; then
     vvv_info " * Installing Shyaml for bash provisioning.."
-    sudo pip3 install wheel
-    sudo pip3 install shyaml
+
+    local OSVERSION_NUMBER
+    OSVERSION_NUMBER=$(lsb_release -sr)
+
+    # Ubuntu 24 making it hard to install pip packages, throwing externally-managed-environment error
+    # https://stackoverflow.com/a/75722775
+    if dpkg --compare-versions "${OSVERSION_NUMBER[@]}" ge "24.04"
+    then
+      # to make it available globally this is the last workaround, hopefully it doesn't break the system
+      # TODO: try to find a better alternative way to install
+      sudo pip3 install wheel --break-system-packages
+      sudo pip3 install shyaml --break-system-packages
+    else
+      sudo pip3 install wheel
+      sudo pip3 install shyaml
+    fi
   fi
 }
 export -f shyaml_setup
