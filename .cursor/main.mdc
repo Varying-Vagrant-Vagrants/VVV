@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+
+- The root of this project is a VVV vagrant machine with several WordPRess installs located within the www folder.
+- You should follow all the best practices for Varying Vagrant Vagrants the VVV gitHub repository and use the config/config.yaml for finding all of the WordPress instances.
+- Assume Pegasus iss the name of our theme that we created. It includes Bootstrap 5 for the front-end and gulp in the backend for building SCSS, JS, etc. It also includes the Custom Meta Boxes 2 Library (CMB2) for creating custom post type meta boxes and it also powers the Theme Options page as well.
+- Make sure to follow best practices for WordPress Security standards and PHP best practices.
+- Make sure to use the latest information for the CMB2 library.
+- Make sure to use the latest Bootstrap 5 best practices.
+- Make sure to use the latest VVV and vagrant best practices.
