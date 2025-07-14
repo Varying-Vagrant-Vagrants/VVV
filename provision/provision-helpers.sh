@@ -351,6 +351,14 @@ function vvv_warn() {
 }
 export -f vvv_warn
 
+# @description Prints our a warning message
+#
+# @arg $1 string The message to print
+function vvv_warning() {
+  vvv_warn "${1:-}"
+}
+export -f vvv_warning
+
 # @description Prints out a success message
 #
 # @arg $1 string The message to print
