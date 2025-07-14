@@ -32,11 +32,11 @@ body:
       id: customfiles
       attributes:
           label: "Did you use a CustomFile?"
-          description: "Some people add a `CustomFile` to make unsupported vagrant modifications. If you did this you must share what you changed in the issue."
+          description: "Some people add a `CustomFile` to make unsupported vagrant modifications. If you did this you must share what you changed in the issue. This is not a config.yml file."
           multiple: false
           options:
              - 'No (default)'
-             - 'Yes'
+             - 'Yes I created and use a CustomFile'
              - "Don't know"
       validations:
           required: true
