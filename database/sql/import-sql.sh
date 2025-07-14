@@ -112,11 +112,11 @@ if [ "$sql_count" != 0 ]; then
     if [[ "$file" == *.sql.gz ]]; then
       db_name=$(basename "$file" .sql.gz)
       if ! file "$file" | grep -q 'gzip compressed'; then
-        vvv_warning " ! ${file} has a gzip extension but gunzip reports it is not a compressed gzip, proceed with caution."
+        vvv_warn " ! ${file} has a gzip extension but gunzip reports it is not a compressed gzip, proceed with caution."
       fi
     elif [[ "$file" == *.sql ]]; then
       head -n 1 "${file}" | grep -qE '^(--|CREATE|INSERT|DROP|USE|SET)' || {
-        vvv_warning " * Skipping suspicious file: ${file}"
+        vvv_warn " * Skipping suspicious file: ${file}"
         continue
       }
       db_name=$(basename "$file" .sql)
