@@ -1,0 +1,18 @@
+{
+  "name": "json-viewer",
+  "version": "1.0.0",
+  "description": "Simple Express server to view JSON data",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon --ignore www/ --ignore node_modules/ --ignore log/ --ignore database/ --ignore certificates/ --ignore provision/ server.js",
+    "dev:sync": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "nodemon": "^3.0.1"
+  }
+}

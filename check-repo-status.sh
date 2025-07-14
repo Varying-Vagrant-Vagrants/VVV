@@ -90,10 +90,10 @@ add_json_entry() {
     fi
     
     echo '    {' >> "$JSON_OUTPUT"
-    echo '      "path": "'${path//\"/\\\"}'\",' >> "$JSON_OUTPUT"
-    echo '      "remote_url": "'${remote_url//\"/\\\"}'\",' >> "$JSON_OUTPUT"
-    echo '      "current_branch": "'${current_branch//\"/\\\"}'\",' >> "$JSON_OUTPUT"
-    echo '      "default_branch": "'${default_branch//\"/\\\"}'\",' >> "$JSON_OUTPUT"
+    printf '      "path": %s,\n' "$(echo "$path" | jq -R .)" >> "$JSON_OUTPUT"
+    printf '      "remote_url": %s,\n' "$(echo "$remote_url" | jq -R .)" >> "$JSON_OUTPUT"
+    printf '      "current_branch": %s,\n' "$(echo "$current_branch" | jq -R .)" >> "$JSON_OUTPUT"
+    printf '      "default_branch": %s,\n' "$(echo "$default_branch" | jq -R .)" >> "$JSON_OUTPUT"
     echo '      "has_uncommitted_changes": '$has_changes',' >> "$JSON_OUTPUT"
     echo '      "has_untracked_files": '$has_untracked',' >> "$JSON_OUTPUT"
     echo '      "behind_remote": '$behind',' >> "$JSON_OUTPUT"

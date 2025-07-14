@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Markdown Documentation Updater
+# Markdown Documentation Updater  
 # Updates TREE.md and COMMANDS.md with latest repository information
 
 # Colors for output
@@ -14,7 +14,6 @@ NC='\033[0m' # No Color
 BASE_DIR="/home/jim/Projects/vagrant-local/www"
 TREE_FILE="/home/jim/Projects/vagrant-local/TREE.md"
 COMMANDS_FILE="/home/jim/Projects/vagrant-local/COMMANDS.md"
-CACHE_FILE="/home/jim/Projects/vagrant-local/repo-cache.json"
 
 # Function to check if directory is a git repository
 is_git_repo() {
@@ -563,45 +562,6 @@ count_total_repos() {
     echo "$count"
 }
 
-# Function to create cache file
-create_cache() {
-    local cache_file="$1"
-    
-    echo "Creating cache file..."
-    
-    echo '{' > "$cache_file"
-    echo '  "last_updated": "'$(date -Iseconds)'",' >> "$cache_file"
-    echo '  "total_sites": '$(find "$BASE_DIR" -maxdepth 1 -type d | wc -l | awk '{print $1-1}')',' >> "$cache_file"
-    echo '  "pegasus_sites": '$(count_pegasus_sites)',' >> "$cache_file"
-    echo '  "total_repositories": '$(count_total_repos)',' >> "$cache_file"
-    echo '  "directories": [' >> "$cache_file"
-    
-    local first=true
-    for site_dir in "$BASE_DIR"/*; do
-        if [[ -d "$site_dir" ]]; then
-            local site_name="$(basename "$site_dir")"
-            
-            if [[ "$first" == true ]]; then
-                first=false
-            else
-                echo '    },' >> "$cache_file"
-            fi
-            
-            echo '    {' >> "$cache_file"
-            echo '      "name": "'$site_name'",' >> "$cache_file"
-            echo '      "path": "'$site_dir'",' >> "$cache_file"
-            echo '      "has_pegasus_content": '$(has_pegasus_content "$site_dir")',' >> "$cache_file"
-            echo '      "last_scanned": "'$(date -Iseconds)'"' >> "$cache_file"
-        fi
-    done
-    
-    if [[ "$first" == false ]]; then
-        echo '    }' >> "$cache_file"
-    fi
-    
-    echo '  ]' >> "$cache_file"
-    echo '}' >> "$cache_file"
-}
 
 # Function to check if directory has pegasus content
 has_pegasus_content() {
@@ -637,15 +597,10 @@ build_tree "$BASE_DIR" "$TREE_FILE"
 echo -e "${BLUE}Building COMMANDS.md...${NC}"
 update_commands_file "$COMMANDS_FILE"
 
-# Create cache file
-echo -e "${BLUE}Creating cache file...${NC}"
-create_cache "$CACHE_FILE"
-
 echo -e "\n${GREEN}Documentation updated successfully!${NC}"
 echo -e "${GREEN}Files updated:${NC}"
 echo -e "  - $TREE_FILE"
 echo -e "  - $COMMANDS_FILE"
-echo -e "  - $CACHE_FILE"
 
 # Show summary
 echo -e "\n${BLUE}Summary:${NC}"

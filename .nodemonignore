@@ -1,0 +1,11 @@
+www/
+node_modules/
+.git/
+log/
+database/
+certificates/
+provision/
+config/
+*.log
+*.json
+*.md
