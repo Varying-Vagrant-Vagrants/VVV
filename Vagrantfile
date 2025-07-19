@@ -12,57 +12,15 @@ require 'pathname'
 require 'socket'
 
 require_relative 'provision/vagrant/constants'
+require_relative 'provision/vagrant/misc'
+require_relative 'provision/vagrant/splash'
+require_relative 'provision/vagrant/plugins'
 require_relative 'provision/vagrant/networking'
 require_relative 'provision/vagrant/provisioners'
-
-def sudo_warnings
-  red = "\033[38;5;9m" # 124m"
-  creset = "\033[0m"
-  puts "#{RED}┌-──────────────────────────────────────────────────────────────────────────────┐#{CRESET}"
-  puts "#{RED}│                                                                               │#{CRESET}"
-  puts "#{RED}│  ⚠ DANGER DO NOT USE SUDO ⚠                                                   │#{CRESET}"
-  puts "#{RED}│                                                                               │#{CRESET}"
-  puts "#{RED}│ ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.          │#{CRESET}"
-  puts "#{RED}│  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(                            │#{CRESET}"
-  puts "#{RED}│    █░░█░▄▄░░█░░█ !                                                            │#{CRESET}"
-  puts "#{RED}│     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful        │#{CRESET}"
-  puts "#{RED}│  !  ▀▄░█░░██░░█      cleanup commands to fix this.                            │#{CRESET}"
-  puts "#{RED}│                                                                               │#{CRESET}"
-  puts "#{RED}│  If vagrant does not work for you without sudo, open a GitHub issue instead   │#{CRESET}"
-  puts "#{RED}│  In the future, this warning will halt provisioning to prevent new users      │#{CRESET}"
-  puts "#{RED}│  making this mistake.                                                         │#{CRESET}"
-  puts "#{RED}│                                                                               │#{CRESET}"
-  puts "#{RED}│  ⚠ DANGER SUDO DETECTED!                                                      │#{CRESET}"
-  puts "#{RED}│                                                                               │#{CRESET}"
-  puts "#{RED}│  In the future the VVV team will be making it harder to use VVV with sudo.    │#{CRESET}"
-  puts "#{RED}│  We will require a config option so that users can do data recovery, and      │#{CRESET}"
-  puts "#{RED}│  disable sites and the dashboard.                                             │#{CRESET}"
-  puts "#{RED}│                                                                               │#{CRESET}"
-  puts "#{RED}│  DO NOT USE SUDO, use ctrl+c/cmd+c and cancel this command ASAP!!!            │#{CRESET}"
-  puts "#{RED}│                                                                               │#{CRESET}"
-  puts "#{RED}└───────────────────────────────────────────────────────────────────────────────┘#{CRESET}"
-  # exit
-end
-
-
-def vvv_is_docker_present()
-  if `docker version`
-    return true
-  end
-  return false
-end
-
-def vvv_is_parallels_present()
-  return Vagrant.has_plugin?("vagrant-parallels")
-end
+require_relative 'provision/vagrant/synced_folders'
 
 vagrant_dir = __dir__
-
-version = '?'
-File.open("#{vagrant_dir}/version", 'r') do |f|
-  version = f.read
-  version = version.gsub("\n", '')
-end
+version = vvv_version(vagrant_dir)
 
 unless Vagrant::Util::Platform.windows?
   if Process.uid == 0
@@ -86,24 +44,7 @@ show_logo = false if ENV['VVV_SKIP_LOGO']
 
 # Show the initial splash screen
 if show_logo
-  git_or_zip = 'zip-no-vcs'
-  branch = ''
-  commit = ''
-  if File.directory?("#{vagrant_dir}/.git")
-    git_or_zip = 'git::'
-    branch = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --abbrev-ref HEAD`
-    branch = branch.chomp("\n"); # remove trailing newline so it doesn't break the ascii art
-    commit = `git --git-dir="#{vagrant_dir}/.git" --work-tree="#{vagrant_dir}" rev-parse --short HEAD`
-    commit = '(' + commit.chomp("\n") + ')'; # remove trailing newline so it doesn't break the ascii art
-  end
-
-  splashfirst = <<~HEREDOC
-    \033[1;38;5;196m#{RED}__ #{GREEN}__ #{BLUE}__ __
-    #{RED}\\ V#{GREEN}\\ V#{BLUE}\\ V / #{PURPLE}v#{version} #{PURPLE}Ruby:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
-    #{RED} \\_/#{GREEN}\\_/#{BLUE}\\_/  #{CRESET}#{BRANCH_C}#{git_or_zip}#{branch}#{commit}#{CRESET}
-
-  HEREDOC
-  puts splashfirst
+  vvv_show_logo_splash(vagrant_dir)
 end
 
 # Load the config file before the second section of the splash screen
@@ -427,20 +368,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.linked_clone = true
   end
 
-  # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
-  unless Vagrant.has_plugin?('vagrant-hostsupdater') && Vagrant.has_plugin?('vagrant-goodhosts') && Vagrant.has_plugin?('vagrant-hostsmanager')
-    if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
-      system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
-      File.delete(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
-      puts "#{YELLOW}VVV needed to install the vagrant-goodhosts plugin which is now installed. Please run the requested command again.#{CRESET}"
-      exit
-    else
-      config.vagrant.plugins = ['vagrant-goodhosts']
-    end
-  end
-
-  # The vbguest plugin has issues for some users, so we're going to disable it for now
-  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+  vvv_configure_plugins(config,vvv_config,vagrant_dir)
 
   # SSH Agent Forwarding
   #
@@ -453,6 +381,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # This is disabled, we had several contributors who ran into issues.
   # See: https://github.com/Varying-Vagrant-Vagrants/VVV/issues/1551
   config.ssh.insert_key = false
+
   config.vm.box_check_update = false
   config.vm.box_version = '>= 0'
 
@@ -485,11 +414,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :docker do |d, override|
     d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:24.04'
     d.has_ssh = true
-    d.ports =  [ "80:80" ] # HTTP
-    d.ports += [ "443:443" ] # HTTPS
-    d.ports += [ "3306:3306" ] # MySQL
-    d.ports += [ "8025:8025" ] # Mailhog
-    d.ports += [ "9003:9003" ] # Xdebug
+    d.ports =  [
+      "80:80", # HTTP
+      "443:443", # HTTPS
+      "3306:3306", # MySQL
+      "8025:8025", # Mailhog
+      "9003:9003" # Xdebug
+    ]
 
     ## Fix goodhosts aliases format for docker
     override.goodhosts.aliases = {
@@ -525,24 +456,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.hostname = 'vvv'
 
-  # Specify disk size
-  #
-  # If the Vagrant plugin disksize (https://github.com/sprotheroe/vagrant-disksize) is
-  # installed, the following will automatically configure your local machine's disk size
-  # to be the specified size. This plugin only works on VirtualBox.
-  #
-  # Warning: This plugin only resizes up, not down, so don't set this to less than 10GB,
-  # and if you need to downsize, be sure to destroy and reprovision.
-  #
-  if !vvv_config['vagrant-plugins']['disksize'].nil? && defined?(Vagrant::Disksize)
-    config.vm.provider :virtualbox do |_v, override|
-      override.disksize.size = vvv_config['vagrant-plugins']['disksize']
-    end
-    if Etc.uname[:version].include? 'ARM64'
-      puts "WARNING: Vagrant disksize requires VirtualBox, if you are not using VirtualBox please remove this plugin immediatley"
-    end
-  end
-
   # Set up Networking.
   vvv_configure_networking( config, vvv_config )
 
@@ -555,53 +468,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # virtual machine is destroyed with `vagrant destroy`, your files will remain in your local
   # environment.
 
-  # Disable the default synced folder to avoid overlapping mounts
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.vm.provision 'file', source: "#{vagrant_dir}/version", destination: '/home/vagrant/version'
-
-  # /srv/database/
-  #
-  # If a database directory exists in the same directory as your Vagrantfile,
-  # a mapped directory inside the VM will be created that contains these files.
-  # This directory is used to maintain default database scripts as well as backed
-  # up MariaDB/MySQL dumps (SQL files) that are to be imported automatically on vagrant up
-  config.vm.synced_folder 'database/sql/', '/srv/database'
-  use_db_share = false
-
-  if defined? vvv_config['general']['db_share_type']
-    use_db_share = vvv_config['general']['db_share_type'] == true
-  end
-  if use_db_share == true
-    # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-    config.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: MOUNT_OPTIONS_VIRTUALBOX_MYSQL
-  end
-
-  # /srv/config/
-  #
-  # If a server-conf directory exists in the same directory as your Vagrantfile,
-  # a mapped directory inside the VM will be created that contains these files.
-  # This directory is currently used to maintain various config files for php and
-  # nginx as well as any pre-existing database files.
-  config.vm.synced_folder 'config/', '/srv/config'
-
-  # /srv/config/
-  #
-  # Map the provision folder so that extensions and provisioners can access helper scripts
-  config.vm.synced_folder 'provision/', '/srv/provision'
-
-  # /srv/certificates
-  #
-  # This is a location for the TLS certificates to be accessible inside the VM
-  config.vm.synced_folder 'certificates/', '/srv/certificates', create: true
-
-  # /var/log/
-  #
-  # If a log directory exists in the same directory as your Vagrantfile, a mapped
-  # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
-  config.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
-  config.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
-  config.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
+  vvv_sync_provisioner_folders(config,vvv_config,vagrant_dir)
 
   # /srv/www/
   #
@@ -636,6 +503,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
     override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
 
+    use_db_share = vvv_use_db_share(vvv_config)
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
       override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_PARALLELS_MYSQL
@@ -657,6 +525,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_HYPERV_WWW
 
+    use_db_share = vvv_use_db_share(vvv_config)
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
       override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_HYPERV_MYSQL
@@ -684,6 +553,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
     override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
 
+    use_db_share = vvv_use_db_share(vvv_config)
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
       override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_VMWARE_MYSQL
@@ -697,32 +567,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  # Customfile - POSSIBLY UNSTABLE
-  #
-  # Use this to insert your own additional Vagrant config lines. Helpful
-  # for mapping additional drives. If a file 'Customfile' exists in the same directory
-  # as this Vagrantfile, it will be evaluated as ruby inline as it loads.
-  #
-  # Note that if you find yourself using a Customfile for anything crazy or specifying
-  # different provisioning, then you may want to consider a new Vagrantfile entirely.
-  if File.exist?(File.join(vagrant_dir, 'Customfile'))
-    puts " ⚠ ! Running additional Vagrant code in Customfile located at #{File.join(vagrant_dir, 'Customfile')}\n"
-    puts " ⚠ ! Official support is not provided for this feature, it is assumed you are proficient with vagrant\n\n"
-    eval(IO.read(File.join(vagrant_dir, 'Customfile')), binding)
-    puts " ⚠ ! Finished running Customfile, resuming normal vagrantfile execution\n\n"
-  end
-
-  vvv_config['sites'].each do |site, args|
-    next unless args['allow_customfile']
-
-    paths = Dir[File.join(args['local_dir'], '**', 'Customfile')]
-    paths.each do |file|
-      puts " ⚠ ! Running additional site customfile at #{file}\n"
-      puts " ⚠ ! Official support is not provided for this feature.\n\n"
-      eval(IO.read(file), binding)
-      puts " ⚠ ! Finished running Customfile, resuming normal vagrantfile execution\n\n"
-    end
-  end
+  vvv_customfiles(vvv_config,vagrant_dir)
 
   # Provisioning
   #
@@ -742,90 +587,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "post-provision-script", type: 'shell', keep_color: true, path: File.join( 'config/homebin', 'vagrant_provision' ), env: { "VVV_LOG" => "post-provision-script" }
 
-  # Local Machine Hosts
-  #
-  # If the Vagrant plugin goodhosts (https://github.com/goodhosts/vagrant/) is
-  # installed, the following will automatically configure your local machine's hosts file to
-  # be aware of the domains specified below. Watch the provisioning script as you may need to
-  # enter a password for Vagrant to access your hosts file.
-  #
-  # By default, we'll include the domains set up by VVV through the vvv-hosts file
-  # located in the www/ directory and in config/config.yml.
-  #
+  vvv_configure_hosts(config,vvv_config,vagrant_dir)
 
-  if config.vagrant.plugins.include? 'vagrant-goodhosts'
-    config.goodhosts.aliases = vvv_config['hosts']
-    config.goodhosts.remove_on_suspend = true
-
-    # goodhosts already disables clean by default, but lets enforce this at both ends
-    config.goodhosts.disable_clean = true
-  elsif config.vagrant.plugins.include? 'vagrant-hostsmanager'
-    config.hostmanager.aliases = vvv_config['hosts']
-    config.hostmanager.enabled = true
-    config.hostmanager.manage_host = true
-    config.hostmanager.manage_guest = true
-    config.hostmanager.ignore_private_ip = false
-    config.hostmanager.include_offline = true
-  elsif config.vagrant.plugins.include? 'vagrant-hostsupdater'
-    # Pass the found host names to the hostsupdater plugin so it can perform magic.
-    config.hostsupdater.aliases = vvv_config['hosts']
-    config.hostsupdater.remove_on_suspend = true
-  elsif %w[up halt resume suspend status provision reload].include? ARGV[0]
-    puts ""
-    puts " X ! There is no hosts file vagrant plugin installed!"
-    puts " X You need the vagrant-goodhosts plugin (or HostManager/ HostsUpdater ) for domains to work in the browser"
-    puts " X Run 'vagrant plugin install --local' to fix this."
-    puts ""
-  end
-
-  # Vagrant Triggers
-  #
-  # We run various scripts on Vagrant state changes like `vagrant up`, `vagrant halt`,
-  # `vagrant suspend`, and `vagrant destroy`
-  #
-  # These scripts are run on the host machine, so we use `vagrant ssh` to tunnel back
-  # into the VM and execute things. By default, each of these scripts calls db_backup
-  # to create backups of all current databases. This can be overridden with custom
-  # scripting. See the individual files in config/homebin/ for details.
-  unless Vagrant::Util::Platform.windows?
-    if Process.uid == 0
-      config.trigger.after :all do |trigger|
-        trigger.name = 'Do not use sudo'
-        trigger.ruby do |env,machine|
-          sudo_warnings
-        end
-      end
-    end
-  end
-
-  config.trigger.after :up do |trigger|
-    trigger.name = 'VVV Post-Up'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_up' }
-    trigger.on_error = :continue
-  end
-  config.trigger.before :reload do |trigger|
-    trigger.name = 'VVV Pre-Reload'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_halt' }
-    trigger.on_error = :continue
-  end
-  config.trigger.after :reload do |trigger|
-    trigger.name = 'VVV Post-Reload'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_up' }
-    trigger.on_error = :continue
-  end
-  config.trigger.before :halt do |trigger|
-    trigger.name = 'VVV Pre-Halt'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_halt' }
-    trigger.on_error = :continue
-  end
-  config.trigger.before :suspend do |trigger|
-    trigger.name = 'VVV Pre-Suspend'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_suspend' }
-    trigger.on_error = :continue
-  end
-  config.trigger.before :destroy do |trigger|
-    trigger.name = 'VVV Pre-Destroy'
-    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_destroy' }
-    trigger.on_error = :continue
-  end
+  vvv_triggers(config)
 end

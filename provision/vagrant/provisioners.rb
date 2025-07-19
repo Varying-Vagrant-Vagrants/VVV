@@ -156,3 +156,85 @@ def vvv_configure_site_provisioners( config, vvv_config )
       env: { "VVV_LOG" => "site-#{site}" }
   end
 end
+
+def vvv_customfiles(vvv_config,vagrant_dir)
+  # Customfile - POSSIBLY UNSTABLE
+  #
+  # Use this to insert your own additional Vagrant config lines. Helpful
+  # for mapping additional drives. If a file 'Customfile' exists in the same directory
+  # as this Vagrantfile, it will be evaluated as ruby inline as it loads.
+  #
+  # Note that if you find yourself using a Customfile for anything crazy or specifying
+  # different provisioning, then you may want to consider a new Vagrantfile entirely.
+  if File.exist?(File.join(vagrant_dir, 'Customfile'))
+    puts " ⚠ ! Running additional Vagrant code in Customfile located at #{File.join(vagrant_dir, 'Customfile')}\n"
+    puts " ⚠ ! Official support is not provided for this feature, it is assumed you are proficient with vagrant\n\n"
+    eval(IO.read(File.join(vagrant_dir, 'Customfile')), binding)
+    puts " ⚠ ! Finished running Customfile, resuming normal vagrantfile execution\n\n"
+  end
+
+  vvv_config['sites'].each do |site, args|
+    next unless args['allow_customfile']
+
+    paths = Dir[File.join(args['local_dir'], '**', 'Customfile')]
+    paths.each do |file|
+      puts " ⚠ ! Running additional site customfile at #{file}\n"
+      puts " ⚠ ! Official support is not provided for this feature.\n\n"
+      eval(IO.read(file), binding)
+      puts " ⚠ ! Finished running Customfile, resuming normal vagrantfile execution\n\n"
+    end
+  end
+end
+
+def vvv_triggers( config )
+    # Vagrant Triggers
+  #
+  # We run various scripts on Vagrant state changes like `vagrant up`, `vagrant halt`,
+  # `vagrant suspend`, and `vagrant destroy`
+  #
+  # These scripts are run on the host machine, so we use `vagrant ssh` to tunnel back
+  # into the VM and execute things. By default, each of these scripts calls db_backup
+  # to create backups of all current databases. This can be overridden with custom
+  # scripting. See the individual files in config/homebin/ for details.
+  unless Vagrant::Util::Platform.windows?
+    if Process.uid == 0
+      config.trigger.after :all do |trigger|
+        trigger.name = 'Do not use sudo'
+        trigger.ruby do |env,machine|
+          sudo_warnings
+        end
+      end
+    end
+  end
+
+  config.trigger.after :up do |trigger|
+    trigger.name = 'VVV Post-Up'
+    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_up' }
+    trigger.on_error = :continue
+  end
+  config.trigger.before :reload do |trigger|
+    trigger.name = 'VVV Pre-Reload'
+    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_halt' }
+    trigger.on_error = :continue
+  end
+  config.trigger.after :reload do |trigger|
+    trigger.name = 'VVV Post-Reload'
+    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_up' }
+    trigger.on_error = :continue
+  end
+  config.trigger.before :halt do |trigger|
+    trigger.name = 'VVV Pre-Halt'
+    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_halt' }
+    trigger.on_error = :continue
+  end
+  config.trigger.before :suspend do |trigger|
+    trigger.name = 'VVV Pre-Suspend'
+    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_suspend' }
+    trigger.on_error = :continue
+  end
+  config.trigger.before :destroy do |trigger|
+    trigger.name = 'VVV Pre-Destroy'
+    trigger.run_remote = { inline: '/srv/config/homebin/vagrant_destroy' }
+    trigger.on_error = :continue
+  end
+end
