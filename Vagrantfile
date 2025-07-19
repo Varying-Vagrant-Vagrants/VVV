@@ -11,52 +11,36 @@ require 'fileutils'
 require 'pathname'
 require 'socket'
 
-mount_options_parallels_mysql = ['nonempty']
-mount_options_parallels_log = ['nonempty']
-mount_options_parallels_www = ['nonempty']
-
-mount_options_virtualbox_mysql = ['dmode=775', 'fmode=664']
-mount_options_virtualbox_log = ['dmode=777', 'fmode=666']
-mount_options_virtualbox_www = ['dmode=775', 'fmode=774']
-
-mount_options_docker_mysql = ['dmode=775', 'fmode=664']
-mount_options_docker_log = ['dmode=777', 'fmode=666']
-mount_options_docker_www = []
-
-mount_options_hyperv_mysql = ['dir_mode=0775', 'file_mode=0664']
-mount_options_hyperv_log = ['dir_mode=0777', 'file_mode=0666']
-mount_options_hyperv_www = ['dir_mode=0775', 'file_mode=0774']
-
-mount_options_vmware_mysql = ['umask=000']
-mount_options_vmware_log = ['umask=000']
-mount_options_vmware_www = ['umask=002']
+require_relative 'provision/vagrant/constants'
+require_relative 'provision/vagrant/networking'
+require_relative 'provision/vagrant/provisioners'
 
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
   creset = "\033[0m"
-  puts "#{red}┌-──────────────────────────────────────────────────────────────────────────────┐#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  ⚠ DANGER DO NOT USE SUDO ⚠                                                   │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│ ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.          │#{creset}"
-  puts "#{red}│  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(                            │#{creset}"
-  puts "#{red}│    █░░█░▄▄░░█░░█ !                                                            │#{creset}"
-  puts "#{red}│     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful        │#{creset}"
-  puts "#{red}│  !  ▀▄░█░░██░░█      cleanup commands to fix this.                            │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  If vagrant does not work for you without sudo, open a GitHub issue instead   │#{creset}"
-  puts "#{red}│  In the future, this warning will halt provisioning to prevent new users      │#{creset}"
-  puts "#{red}│  making this mistake.                                                         │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  ⚠ DANGER SUDO DETECTED!                                                      │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  In the future the VVV team will be making it harder to use VVV with sudo.    │#{creset}"
-  puts "#{red}│  We will require a config option so that users can do data recovery, and      │#{creset}"
-  puts "#{red}│  disable sites and the dashboard.                                             │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}│  DO NOT USE SUDO, use ctrl+c/cmd+c and cancel this command ASAP!!!            │#{creset}"
-  puts "#{red}│                                                                               │#{creset}"
-  puts "#{red}└───────────────────────────────────────────────────────────────────────────────┘#{creset}"
+  puts "#{RED}┌-──────────────────────────────────────────────────────────────────────────────┐#{CRESET}"
+  puts "#{RED}│                                                                               │#{CRESET}"
+  puts "#{RED}│  ⚠ DANGER DO NOT USE SUDO ⚠                                                   │#{CRESET}"
+  puts "#{RED}│                                                                               │#{CRESET}"
+  puts "#{RED}│ ! ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄ !  You should never use sudo or root with vagrant.          │#{CRESET}"
+  puts "#{RED}│  !█▒▒░░░░░░░░░▒▒█    It causes lots of problems :(                            │#{CRESET}"
+  puts "#{RED}│    █░░█░▄▄░░█░░█ !                                                            │#{CRESET}"
+  puts "#{RED}│     █░░█░░█░▄▄█    ! We're really sorry but you may need to do painful        │#{CRESET}"
+  puts "#{RED}│  !  ▀▄░█░░██░░█      cleanup commands to fix this.                            │#{CRESET}"
+  puts "#{RED}│                                                                               │#{CRESET}"
+  puts "#{RED}│  If vagrant does not work for you without sudo, open a GitHub issue instead   │#{CRESET}"
+  puts "#{RED}│  In the future, this warning will halt provisioning to prevent new users      │#{CRESET}"
+  puts "#{RED}│  making this mistake.                                                         │#{CRESET}"
+  puts "#{RED}│                                                                               │#{CRESET}"
+  puts "#{RED}│  ⚠ DANGER SUDO DETECTED!                                                      │#{CRESET}"
+  puts "#{RED}│                                                                               │#{CRESET}"
+  puts "#{RED}│  In the future the VVV team will be making it harder to use VVV with sudo.    │#{CRESET}"
+  puts "#{RED}│  We will require a config option so that users can do data recovery, and      │#{CRESET}"
+  puts "#{RED}│  disable sites and the dashboard.                                             │#{CRESET}"
+  puts "#{RED}│                                                                               │#{CRESET}"
+  puts "#{RED}│  DO NOT USE SUDO, use ctrl+c/cmd+c and cancel this command ASAP!!!            │#{CRESET}"
+  puts "#{RED}│                                                                               │#{CRESET}"
+  puts "#{RED}└───────────────────────────────────────────────────────────────────────────────┘#{CRESET}"
   # exit
 end
 
@@ -73,17 +57,6 @@ def vvv_is_parallels_present()
 end
 
 vagrant_dir = __dir__
-show_logo = false
-branch_c = "\033[38;5;6m" # 111m"
-red = "\033[38;5;9m" # 124m"
-green = "\033[1;38;5;2m" # 22m"
-blue = "\033[38;5;4m" # 33m"
-purple = "\033[38;5;5m" # 129m"
-docs = "\033[0m"
-yellow = "\033[38;5;3m" # 136m"
-yellow_underlined = "\033[4;38;5;3m" # 136m"
-url = yellow_underlined
-creset = "\033[0m"
 
 version = '?'
 File.open("#{vagrant_dir}/version", 'r') do |f|
@@ -100,10 +73,12 @@ end
 unless Vagrant::Util::Platform.windows?
   if Process.uid == 0
     puts " "
-    puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
+    puts "#{RED} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{CRESET}"
     puts " "
   end
 end
+
+show_logo = false
 
 # whitelist when we show the logo, else it'll show on global Vagrant commands
 show_logo = true if %w[up resume status provision reload].include? ARGV[0]
@@ -123,9 +98,9 @@ if show_logo
   end
 
   splashfirst = <<~HEREDOC
-    \033[1;38;5;196m#{red}__ #{green}__ #{blue}__ __
-    #{red}\\ V#{green}\\ V#{blue}\\ V / #{purple}v#{version} #{purple}Ruby:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
-    #{red} \\_/#{green}\\_/#{blue}\\_/  #{creset}#{branch_c}#{git_or_zip}#{branch}#{commit}#{creset}
+    \033[1;38;5;196m#{RED}__ #{GREEN}__ #{BLUE}__ __
+    #{RED}\\ V#{GREEN}\\ V#{BLUE}\\ V / #{PURPLE}v#{version} #{PURPLE}Ruby:#{RUBY_VERSION}, Path:"#{vagrant_dir}"
+    #{RED} \\_/#{GREEN}\\_/#{BLUE}\\_/  #{CRESET}#{BRANCH_C}#{git_or_zip}#{branch}#{commit}#{CRESET}
 
   HEREDOC
   puts splashfirst
@@ -138,10 +113,10 @@ vvv_config_file = File.join(vagrant_dir, 'config/config.yml')
 unless File.file?(vvv_config_file)
   old_vvv_config = File.join(vagrant_dir, 'vvv-custom.yml')
   if File.file?(old_vvv_config)
-    puts "#{yellow}Migrating #{red}vvv-custom.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow}.#{creset}\n\n"
+    puts "#{YELLOW}Migrating #{RED}vvv-custom.yml#{YELLOW} to #{GREEN}config/config.yml#{YELLOW}\nIMPORTANT NOTE: Make all modifications to #{GREEN}config/config.yml#{YELLOW}.#{CRESET}\n\n"
     FileUtils.mv(old_vvv_config, vvv_config_file)
   else
-    puts "#{yellow}Copying #{red}config/default-config.yml#{yellow} to #{green}config/config.yml#{yellow}\nIMPORTANT NOTE: Make all modifications to #{green}config/config.yml#{yellow} in future so that they are not lost when VVV updates.#{creset}\n\n"
+    puts "#{YELLOW}Copying #{RED}config/default-config.yml#{YELLOW} to #{GREEN}config/config.yml#{YELLOW}\nIMPORTANT NOTE: Make all modifications to #{GREEN}config/config.yml#{YELLOW} in future so that they are not lost when VVV updates.#{CRESET}\n\n"
     FileUtils.cp(File.join(vagrant_dir, 'config/default-config.yml'), vvv_config_file)
   end
 end
@@ -158,11 +133,11 @@ begin
   unless vvv_config['sites'].is_a? Hash
     vvv_config['sites'] = {}
 
-    puts "#{red}config/config.yml is missing a sites section.#{creset}\n\n"
+    puts "#{RED}config/config.yml is missing a sites section.#{CRESET}\n\n"
   end
 rescue StandardError => e
-  puts "#{red}config/config.yml isn't a valid YAML file.#{creset}\n\n"
-  puts "#{red}VVV cannot be executed!#{creset}\n\n"
+  puts "#{RED}config/config.yml isn't a valid YAML file.#{CRESET}\n\n"
+  puts "#{RED}VVV cannot be executed!#{CRESET}\n\n"
 
   warn e.message
   exit
@@ -175,21 +150,23 @@ vvv_config['hosts'] += ['vvv.test']
 vvv_config['sites'].each do |site, args|
   if args.is_a? String
     repo = args
-    args = {}
-    args['repo'] = repo
+    args = {
+      'repo' => repo
+    }
   end
 
   args = {} unless args.is_a? Hash
 
-  defaults = {}
-  defaults['repo'] = false
-  defaults['vm_dir'] = "/srv/www/#{site}"
-  defaults['local_dir'] = File.join(vagrant_dir, 'www', site)
-  defaults['branch'] = 'master'
-  defaults['skip_provisioning'] = false
-  defaults['allow_customfile'] = false
-  defaults['nginx_upstream'] = 'php'
-  defaults['hosts'] = []
+  defaults = {
+    'repo' => false,
+    'vm_dir' => "/srv/www/#{site}",
+    'local_dir' => File.join(vagrant_dir, 'www', site),
+    'branch' => 'master',
+    'skip_provisioning' => false,
+    'allow_customfile' => false,
+    'nginx_upstream' => 'php',
+    'hosts' => []
+  }
 
   vvv_config['sites'][site] = defaults.merge(args)
 
@@ -213,9 +190,10 @@ if vvv_config['extension-sources'].is_a? Hash
     next unless args.is_a? String
 
     repo = args
-    args = {}
-    args['repo'] = repo
-    args['branch'] = 'master'
+    args = {
+      'repo' => repo,
+      'branch' => 'master'
+    }
 
     vvv_config['extension-sources'][name] = args
   end
@@ -224,15 +202,17 @@ else
 end
 
 vvv_config['dashboard'] = {} unless vvv_config['dashboard']
-dashboard_defaults = {}
-dashboard_defaults['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/dashboard.git'
-dashboard_defaults['branch'] = 'master'
+dashboard_defaults = {
+  'repo' => 'https://github.com/Varying-Vagrant-Vagrants/dashboard.git',
+  'branch' => 'master'
+}
 vvv_config['dashboard'] = dashboard_defaults.merge(vvv_config['dashboard'])
 
 unless vvv_config['extension-sources'].key?('core')
-  vvv_config['extension-sources']['core'] = {}
-  vvv_config['extension-sources']['core']['repo'] = 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git'
-  vvv_config['extension-sources']['core']['branch'] = 'master'
+  vvv_config['extension-sources']['core'] = {
+    'repo' => 'https://github.com/Varying-Vagrant-Vagrants/vvv-utilities.git',
+    'branch' => 'master'
+  }
 end
 
 vvv_config['utilities'] = {} unless vvv_config['utilities'].is_a? Hash
@@ -244,24 +224,22 @@ vvv_config['vm_config'] = {} unless vvv_config['vm_config'].is_a? Hash
 
 vvv_config['general'] = {} unless vvv_config['general'].is_a? Hash
 
-defaults = {}
-defaults['memory'] = 2048
-defaults['cores'] = 2
-defaults['provider'] = 'virtualbox'
+vm_defaults = {
+  'memory' => 2048,
+  'cores' => 2,
+  'provider' => 'virtualbox',
+  'private_network_ip' => '192.168.56.4'
+}
 
 # if Arm default to docker then parallels
 if Etc.uname[:version].include? 'ARM64'
+  vm_defaults['provider'] = 'docker'
   if vvv_is_parallels_present()
-    defaults['provider'] = 'parallels'
-  else
-    defaults['provider'] = 'docker'
+    vm_defaults['provider'] = 'parallels'
   end
 end
 
-# This should rarely be overridden, so it's not included in the config/default-config.yml file.
-defaults['private_network_ip'] = '192.168.56.4'
-
-vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
+vvv_config['vm_config'] = vm_defaults.merge(vvv_config['vm_config'])
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
 vvv_config['vagrant-plugins'] = {} unless vvv_config['vagrant-plugins']
@@ -276,6 +254,7 @@ vvv_config['utilities'].each do |name, extensions|
     end
   end
 end
+
 vvv_config['extensions'].each do |name, extensions|
   extensions = {} unless extensions.is_a? Array
   extensions.each do |extension|
@@ -371,12 +350,12 @@ if show_logo
   end
 
   splashsecond = <<~HEREDOC
-    #{yellow}Platform: #{yellow}#{platform.join(' ')}
-    #{green}Vagrant: #{green}v#{Vagrant::VERSION}, #{blue}#{vvv_config['vm_config']['provider']}: #{blue}v#{provider_version}
+    #{YELLOW}Platform: #{YELLOW}#{platform.join(' ')}
+    #{GREEN}Vagrant: #{GREEN}v#{Vagrant::VERSION}, #{BLUE}#{vvv_config['vm_config']['provider']}: #{BLUE}v#{provider_version}
 
-    #{docs}Docs:       #{url}https://varyingvagrantvagrants.org/
-    #{docs}Contribute: #{url}https://github.com/varying-vagrant-vagrants/vvv
-    #{docs}Dashboard:  #{url}http://vvv.test#{creset}
+    #{DOCS}Docs:       #{URL}https://varyingvagrantvagrants.org/
+    #{DOCS}Contribute: #{URL}https://github.com/varying-vagrant-vagrants/vvv
+    #{DOCS}Dashboard:  #{URL}http://vvv.test#{CRESET}
 
   HEREDOC
   puts splashsecond
@@ -396,7 +375,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if Process.uid == 0
         machine_id_file=Pathname.new(".vagrant/machines/default/virtualbox/id")
         unless machine_id_file.exist?()
-          puts "#{red} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{creset}"
+          puts "#{RED} ⚠ DANGER VAGRANT IS RUNNING AS ROOT/SUDO, DO NOT USE SUDO ⚠#{CRESET}"
           puts " ! VVV has detected that the VM has not been created yet, and is running as root/sudo."
           puts " ! Do not use sudo with VVV, do not run VVV as a root user. Aborting."
           abort( "Aborting Vagrant command to prevent a critical mistake, do not use sudo/root with VVV." )
@@ -453,7 +432,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
       system('vagrant plugin install ' + File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
       File.delete(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
-      puts "#{yellow}VVV needed to install the vagrant-goodhosts plugin which is now installed. Please run the requested command again.#{creset}"
+      puts "#{YELLOW}VVV needed to install the vagrant-goodhosts plugin which is now installed. Please run the requested command again.#{CRESET}"
       exit
     else
       config.vagrant.plugins = ['vagrant-goodhosts']
@@ -513,7 +492,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     d.ports += [ "9003:9003" ] # Xdebug
 
     ## Fix goodhosts aliases format for docker
-    override.goodhosts.aliases = { '127.0.0.1' => vvv_config['hosts'], '::1' => vvv_config['hosts'] }
+    override.goodhosts.aliases = {
+      '127.0.0.1' => vvv_config['hosts'],
+      '::1' => vvv_config['hosts']
+    }
   end
 
   # Virtualbox.
@@ -533,11 +515,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  if defined? vvv_config['vm_config']['box']
-    unless vvv_config['vm_config']['box'].nil?
-      config.vm.box = vvv_config['vm_config']['box']
-    end
-  end
+  config.vm.box = vvv_config['vm_config']['box'] if vvv_config['vm_config']['box']
 
   if defined? vvv_config['vm_config']['box_version']
     unless vvv_config['vm_config']['box_version'].nil?
@@ -565,49 +543,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  # Private Network (default)
-  #
-  # A private network is created by default. This is the IP address through which your
-  # host machine will communicate to the guest. In this default configuration, the virtual
-  # machine will have an IP address of 192.168.56.4 and a virtual network adapter will be
-  # created on your host machine with the IP of 192.168.50.1 as a gateway.
-  #
-  # Access to the guest machine is only available to your local host. To provide access to
-  # other devices, a public network should be configured or port forwarding enabled.
-  #
-  # Note: If your existing network is using the 192.168.56.x subnet, this default IP address
-  # should be changed. If more than one VM is running through VirtualBox, including other
-  # Vagrant machines, different subnets should be used for each.
-  #
-  config.vm.network :private_network, id: 'vvv_primary', ip: vvv_config['vm_config']['private_network_ip']
-
-  config.vm.provider :hyperv do |_v, override|
-    override.vm.network :private_network, id: 'vvv_primary', ip: nil
-  end
-
-  # Public Network (disabled)
-  #
-  # Using a public network rather than the default private network configuration will allow
-  # access to the guest machine from other devices on the network. By default, enabling this
-  # line will cause the guest machine to use DHCP to determine its IP address. You will also
-  # be prompted to choose a network interface to bridge with during `vagrant up`.
-  #
-  # Please see VVV and Vagrant documentation for additional details.
-  #
-  # config.vm.network :public_network
-
-  # Port Forwarding (disabled)
-  #
-  # This network configuration works alongside any other network configuration in Vagrantfile
-  # and forwards any requests to port 8080 on the local host machine to port 80 in the guest.
-  #
-  # Port forwarding is a first step to allowing access to outside networks, though additional
-  # configuration will likely be necessary on our host machine or router so that outside
-  # requests will be forwarded from 80 -> 8080 -> 80.
-  #
-  # Please see VVV and Vagrant documentation for additional details.
-  #
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # Set up Networking.
+  vvv_configure_networking( config, vvv_config )
 
   # Drive mapping
   #
@@ -636,7 +573,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
   if use_db_share == true
     # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-    config.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: mount_options_virtualbox_mysql
+    config.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: MOUNT_OPTIONS_VIRTUALBOX_MYSQL
   end
 
   # /srv/config/
@@ -661,53 +598,53 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_virtualbox_log
-  config.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_virtualbox_log
-  config.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_virtualbox_log
-  config.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_virtualbox_log
+  config.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
+  config.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
+  config.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
+  config.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
 
   # /srv/www/
   #
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
-  config.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_virtualbox_www
+  config.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VIRTUALBOX_WWW
 
   vvv_config['sites'].each do |site, args|
     next if args['skip_provisioning']
     if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-      config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_virtualbox_www
+      config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VIRTUALBOX_WWW
     end
   end
 
   config.vm.provider :docker do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', mount_options: mount_options_docker_www
+    override.vm.synced_folder 'www/', '/srv/www', mount_options: MOUNT_OPTIONS_DOCKER_WWW
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: mount_options_docker_www
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: MOUNT_OPTIONS_DOCKER_WWW
       end
     end
   end
 
   config.vm.provider :parallels do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_parallels_www
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_PARALLELS_WWW
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_parallels_log
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_parallels_log
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_parallels_log
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_parallels_log
+    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
 
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: mount_options_parallels_mysql
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_PARALLELS_MYSQL
     end
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_parallels_www
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_PARALLELS_WWW
       end
     end
   end
@@ -718,44 +655,44 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :hyperv do |v, override|
     v.vmname = File.basename(vagrant_dir) + '_' + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
 
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_hyperv_www
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_HYPERV_WWW
 
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: mount_options_hyperv_mysql
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_HYPERV_MYSQL
     end
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_hyperv_log
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_hyperv_log
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_hyperv_log
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_hyperv_log
+    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_hyperv_www
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_HYPERV_WWW
       end
     end
   end
 
   # Specify the VMware Provider mount options for synced folders.
   config.vm.provider :vmware_desktop do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: mount_options_vmware_www
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VMWARE_WWW
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: mount_options_vmware_log
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: mount_options_vmware_log
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: mount_options_vmware_log
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: mount_options_vmware_log
+    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
 
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: mount_options_vmware_mysql
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_VMWARE_MYSQL
     end
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: mount_options_vmware_www
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VMWARE_WWW
       end
     end
   end
@@ -791,129 +728,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   # Process one or more provisioning scripts depending on the existence of custom files.
 
-  unless Vagrant::Util::Platform.windows?
-    if Process.uid == 0
-      # the VM should know if vagrant was ran by a root user or using sudo
-      config.vm.provision "flag-root-vagrant-command", type: 'shell', keep_color: true, inline: "mkdir -p /vagrant && touch /vagrant/provisioned_as_root"
-    end
-  end
-
-  long_provision_bear = <<~HTML
-  #{blue}#{creset}
-  #{blue}    ▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄    ▄   ▄    #{green}A full provision will take a bit.#{creset}
-  #{blue}    █▒▒░░░░░░░░░▒▒█   █   █     #{green}Sit back, relax, and have some tea.#{creset}
-  #{blue}     █░░█░░░░░█░░█   ▀   ▀      #{creset}
-  #{blue}  ▄▄  █░░░▀█▀░░░█   █▀▀▀▀▀▀█    #{green}If you didn't want to provision you can#{creset}
-  #{blue} █░░█ ▀▄░░░░░░░▄▀▄▀▀█      █    #{green}turn VVV on with 'vagrant up'.#{creset}
-  #{blue}───────────────────────────────────────────────────────────────────────#{creset}
-  HTML
-
-  # Changed the message here because it's going to show the first time you do vagrant up, which might be confusing
-  config.vm.provision "pre-provision-script", type: 'shell', keep_color: true, inline: "echo \"#{long_provision_bear}\""
-
-  # provison-pre.sh acts as a pre-hook to our default provisioning script. Anything that
-  # should run before the shell commands laid out in provision.sh (or your provision-custom.sh
-  # file) should go in this script. If it does not exist, no extra provisioning will run.
-  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-pre.sh'))
-    config.vm.provision 'pre', type: 'shell', keep_color: true, path: File.join('provision', 'provision-pre.sh'), env: { "VVV_LOG" => "pre" }
-  end
-
-  # provision.sh or provision-custom.sh
-  #
-  # By default, Vagrantfile is set to use the provision.sh bash script located in the
-  # provision directory. If it is detected that a provision-custom.sh script has been
-  # created, that is run as a replacement. This is an opportunity to replace the entirety
-  # of the provisioning provided by default.
-  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-custom.sh'))
-    config.vm.provision 'custom', type: 'shell', keep_color: true, path: File.join('provision', 'provision-custom.sh'), env: { "VVV_LOG" => "main-custom" }
-  else
-    config.vm.provision 'default', type: 'shell', keep_color: true, path: File.join('provision', 'provision.sh'), env: { "VVV_LOG" => "main" }
-  end
-
-  config.vm.provision 'tools', type: 'shell', keep_color: true, path: File.join('provision', 'provision-tools.sh'), env: { "VVV_LOG" => "tools" }
-
-  # Provision the dashboard that appears when you visit vvv.test
-  config.vm.provision 'dashboard',
-                      type: 'shell',
-                      keep_color: true,
-                      path: File.join('provision', 'provision-dashboard.sh'),
-                      args: [
-                        vvv_config['dashboard']['repo'],
-                        vvv_config['dashboard']['branch']
-                      ],
-                      env: { "VVV_LOG" => "dashboard" }
-
-  vvv_config['utility-sources'].each do |name, args|
-    config.vm.provision "extension-source-#{name}",
-                        type: 'shell',
-                        keep_color: true,
-                        path: File.join('provision', 'provision-extension-source.sh'),
-                        args: [
-                          name,
-                          args['repo'].to_s,
-                          args['branch']
-                        ],
-                        env: { "VVV_LOG" => "extension-source-#{name}" }
-  end
-  vvv_config['extension-sources'].each do |name, args|
-    config.vm.provision "extension-source-#{name}",
-                        type: 'shell',
-                        keep_color: true,
-                        path: File.join('provision', 'provision-extension-source.sh'),
-                        args: [
-                          name,
-                          args['repo'].to_s,
-                          args['branch']
-                        ],
-                        env: { "VVV_LOG" => "extension-source-#{name}" }
-  end
-
-  vvv_config['utilities'].each do |name, extensions|
-    extensions = {} unless extensions.is_a? Array
-    extensions.each do |extension|
-      config.vm.provision "extension-#{name}-#{extension}",
-                          type: 'shell',
-                          keep_color: true,
-                          path: File.join('provision', 'provision-extension.sh'),
-                          args: [
-                            name,
-                            extension
-                          ],
-                          env: { "VVV_LOG" => "extension-#{name}-#{extension}" }
-    end
-  end
-  vvv_config['extensions'].each do |name, extensions|
-    extensions = {} unless extensions.is_a? Array
-    extensions.each do |extension|
-      config.vm.provision "extension-#{name}-#{extension}",
-                          type: 'shell',
-                          keep_color: true,
-                          path: File.join('provision', 'provision-extension.sh'),
-                          args: [
-                            name,
-                            extension
-                          ],
-                          env: { "VVV_LOG" => "extension-#{name}-#{extension}" }
-    end
-  end
-
-  vvv_config['sites'].each do |site, args|
-    next if args['skip_provisioning']
-
-    config.vm.provision "site-#{site}",
-                        type: 'shell',
-                        keep_color: true,
-                        path: File.join('provision', 'provision-site.sh'),
-                        args: [
-                          site,
-                          args['repo'].to_s,
-                          args['branch'],
-                          args['vm_dir'],
-                          args['skip_provisioning'].to_s,
-                          args['nginx_upstream']
-                        ],
-                        env: { "VVV_LOG" => "site-#{site}" }
-  end
+  vvv_configure_main_provisioners(config, vvv_config, vagrant_dir)
+  vvv_configure_extension_provisioners(config, vvv_config)
+  vvv_configure_site_provisioners(config, vvv_config)
 
   # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
   # run after the shell commands laid out in provision.sh or provision-custom.sh should be
