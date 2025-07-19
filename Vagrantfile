@@ -423,7 +423,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.customize ['setextradata', :id, 'VBoxInternal2/SharedFoldersEnableSymlinksCreate//srv/www', '1']
     v.customize ['setextradata', :id, 'VBoxInternal2/SharedFoldersEnableSymlinksCreate//srv/config', '1']
 
-    # Set the box name in VirtualBox to match the working directory.
+    # Set the VM name and include a hash of the working directory, this prevents multiple
+    # VVV's interfering with eachother or using the same VM.
     v.name = File.basename(vagrant_dir) + '_' + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
   end
 
