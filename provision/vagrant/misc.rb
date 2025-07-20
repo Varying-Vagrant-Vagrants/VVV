@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby ts=2 sw=2 et:
+
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
   creset = "\033[0m"
@@ -55,4 +60,13 @@ def vvv_use_db_share(vvv_config)
     use_db_share = vvv_config['general']['db_share_type'] == true
   end
   return use_db_share
+end
+
+def vvv_migrate_db_folders( vagrant_dir )
+  old_db_backup_dir = File.join(vagrant_dir, 'database/backups/')
+  new_db_backup_dir = File.join(vagrant_dir, 'database/sql/backups/')
+  if (File.directory?(old_db_backup_dir) == true) && (File.directory?(new_db_backup_dir) == false)
+    puts 'Moving db backup directory into database/sql/backups'
+    FileUtils.mv(old_db_backup_dir, new_db_backup_dir)
+  end
 end

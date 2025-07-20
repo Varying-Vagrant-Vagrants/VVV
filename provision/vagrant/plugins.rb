@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby ts=2 sw=2 et:
+
 def vvv_configure_plugins( config, vvv_config, vagrant_dir )
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
   unless Vagrant.has_plugin?('vagrant-hostsupdater') && Vagrant.has_plugin?('vagrant-goodhosts') && Vagrant.has_plugin?('vagrant-hostsmanager')

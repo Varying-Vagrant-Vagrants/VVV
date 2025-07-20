@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby ts=2 sw=2 et:
 
 # Configures the main/tools/dashboard provisioners.
 def vvv_configure_main_provisioners( config, vvv_config, vagrant_dir )
@@ -237,4 +241,16 @@ def vvv_triggers( config )
     trigger.run_remote = { inline: '/srv/config/homebin/vagrant_destroy' }
     trigger.on_error = :continue
   end
+end
+
+def vvv_post_provisioners( config, vagrant_dir )
+  # provision-post.sh acts as a post-hook to the default provisioning. Anything that should
+  # run after the shell commands laid out in provision.sh or provision-custom.sh should be
+  # put into this file. This provides a good opportunity to install additional packages
+  # without having to replace the entire default provisioning script.
+  if File.exist?(File.join(vagrant_dir, 'provision', 'provision-post.sh'))
+    config.vm.provision 'post', type: 'shell', keep_color: true, path: File.join('provision', 'provision-post.sh'), env: { "VVV_LOG" => "post" }
+  end
+
+  config.vm.provision "post-provision-script", type: 'shell', keep_color: true, path: File.join( 'config/homebin', 'vagrant_provision' ), env: { "VVV_LOG" => "post-provision-script" }
 end
