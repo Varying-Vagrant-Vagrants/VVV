@@ -1,22 +1,26 @@
-MOUNT_OPTIONS_PARALLELS_MYSQL = ['nonempty']
-MOUNT_OPTIONS_PARALLELS_LOG = ['nonempty']
-MOUNT_OPTIONS_PARALLELS_WWW = ['nonempty']
-
-MOUNT_OPTIONS_VIRTUALBOX_MYSQL = ['dmode=775', 'fmode=664']
-MOUNT_OPTIONS_VIRTUALBOX_LOG = ['dmode=777', 'fmode=666']
-MOUNT_OPTIONS_VIRTUALBOX_WWW = ['dmode=775', 'fmode=774']
-
-MOUNT_OPTIONS_DOCKER_MYSQL = ['dmode=775', 'fmode=664']
-MOUNT_OPTIONS_DOCKER_LOG = ['dmode=777', 'fmode=666']
-MOUNT_OPTIONS_DOCKER_WWW = []
-
-MOUNT_OPTIONS_HYPERV_MYSQL = ['dir_mode=0775', 'file_mode=0664']
-MOUNT_OPTIONS_HYPERV_LOG = ['dir_mode=0777', 'file_mode=0666']
-MOUNT_OPTIONS_HYPERV_WWW = ['dir_mode=0775', 'file_mode=0774']
-
-MOUNT_OPTIONS_VMWARE_MYSQL = ['umask=000']
-MOUNT_OPTIONS_VMWARE_LOG = ['umask=000']
-MOUNT_OPTIONS_VMWARE_WWW = ['umask=002']
+MOUNT_OPTIONS = {
+  MYSQL: {
+    VIRTUALBOX: ['dmode=775', 'fmode=664'],
+    PARALLELS: ['nonempty'],
+    DOCKER: ['dmode=775', 'fmode=664'],
+    HYPERV: ['dir_mode=0775', 'file_mode=0664'],
+    VMWARE_DESKTOP: ['umask=000']
+  },
+  LOG: {
+    VIRTUALBOX: ['dmode=777', 'fmode=666'],
+    PARALLELS: ['nonempty'],
+    DOCKER: ['dmode=777', 'fmode=666'],
+    HYPERV: ['dir_mode=0777', 'file_mode=0666'],
+    VMWARE_DESKTOP: ['umask=000']
+  },
+  WWW: {
+    VIRTUALBOX: ['dmode=775', 'fmode=774'],
+    PARALLELS: ['nonempty'],
+    DOCKER: [],
+    HYPERV: ['dir_mode=0775', 'file_mode=0774'],
+    VMWARE_DESKTOP: ['umask=002']
+  }
+}
 
 BRANCH_C = "\033[38;5;6m" # 111m"
 RED = "\033[38;5;9m" # 124m"

@@ -475,44 +475,44 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If a www directory exists in the same directory as your Vagrantfile, a mapped directory
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
-  config.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VIRTUALBOX_WWW
+  config.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:VIRTUALBOX]
 
   vvv_config['sites'].each do |site, args|
     next if args['skip_provisioning']
     if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-      config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VIRTUALBOX_WWW
+      config.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:VIRTUALBOX]
     end
   end
 
   config.vm.provider :docker do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', mount_options: MOUNT_OPTIONS_DOCKER_WWW
+    override.vm.synced_folder 'www/', '/srv/www', mount_options: MOUNT_OPTIONS[:WWW][:DOCKER]
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: MOUNT_OPTIONS_DOCKER_WWW
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: MOUNT_OPTIONS[:WWW][:DOCKER]
       end
     end
   end
 
   config.vm.provider :parallels do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_PARALLELS_WWW
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:PARALLELS]
 
-    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_PARALLELS_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:PARALLELS]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:PARALLELS]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:PARALLELS]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:PARALLELS]
 
     use_db_share = vvv_use_db_share(vvv_config)
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_PARALLELS_MYSQL
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS[:MYSQL][:PARALLELS]
     end
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_PARALLELS_WWW
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:PARALLELS]
       end
     end
   end
@@ -523,46 +523,46 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :hyperv do |v, override|
     v.vmname = File.basename(vagrant_dir) + '_' + (Digest::SHA256.hexdigest vagrant_dir)[0..10]
 
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_HYPERV_WWW
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:HYPERV]
 
     use_db_share = vvv_use_db_share(vvv_config)
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_HYPERV_MYSQL
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS[:MYSQL][:HYPERV]
     end
 
-    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_HYPERV_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:HYPERV]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:HYPERV]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:HYPERV]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:HYPERV]
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_HYPERV_WWW
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:HYPERV]
       end
     end
   end
 
   # Specify the VMware Provider mount options for synced folders.
   config.vm.provider :vmware_desktop do |_v, override|
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VMWARE_WWW
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:VMWARE_DESKTOP]
 
-    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
-    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VMWARE_LOG
+    override.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VMWARE_DESKTOP]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VMWARE_DESKTOP]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VMWARE_DESKTOP]
+    override.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VMWARE_DESKTOP]
 
     use_db_share = vvv_use_db_share(vvv_config)
     if use_db_share == true
       # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS_VMWARE_MYSQL
+      override.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 112, group: 115, mount_options: MOUNT_OPTIONS[:MYSQL][:VMWARE_DESKTOP]
     end
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS_VMWARE_WWW
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', mount_options: MOUNT_OPTIONS[:WWW][:VMWARE_DESKTOP]
       end
     end
   end

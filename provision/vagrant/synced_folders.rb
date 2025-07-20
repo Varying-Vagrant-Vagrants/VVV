@@ -13,7 +13,7 @@ def vvv_sync_provisioner_folders( config, vvv_config, vagrant_dir )
   use_db_share = vvv_use_db_share(vvv_config)
   if use_db_share == true
     # Map the MySQL Data folders on to mounted folders so it isn't stored inside the VM
-    config.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: MOUNT_OPTIONS_VIRTUALBOX_MYSQL
+    config.vm.synced_folder 'database/data/', '/var/lib/mysql', create: true, owner: 9001, group: 9001, mount_options: MOUNT_OPTIONS[:MYSQL][:VIRTUALBOX]
   end
 
   # /srv/config/
@@ -38,9 +38,9 @@ def vvv_sync_provisioner_folders( config, vvv_config, vagrant_dir )
   #
   # If a log directory exists in the same directory as your Vagrantfile, a mapped
   # directory inside the VM will be created for some generated log files.
-  config.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
-  config.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
-  config.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
-  config.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS_VIRTUALBOX_LOG
+  config.vm.synced_folder LOCAL_LOG_PATHS[:memcached], '/var/log/memcached', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VIRTUALBOX]
+  config.vm.synced_folder LOCAL_LOG_PATHS[:nginx], '/var/log/nginx', owner: 'root', create: true, group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VIRTUALBOX]
+  config.vm.synced_folder LOCAL_LOG_PATHS[:php], '/var/log/php', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VIRTUALBOX]
+  config.vm.synced_folder LOCAL_LOG_PATHS[:provisioners], '/var/log/provisioners', create: true, owner: 'root', group: 'root', mount_options: MOUNT_OPTIONS[:LOG][:VIRTUALBOX]
 
 end
