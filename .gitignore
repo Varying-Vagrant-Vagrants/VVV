@@ -61,6 +61,7 @@ vagrant.log
 
 # And no need to share individual SQL files with each other
 *.sql
+*.sql.sha256
 *.sql.gz
 *.sql.gz.sha256
 
