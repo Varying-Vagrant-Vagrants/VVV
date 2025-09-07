@@ -10,18 +10,28 @@
 	<dict>
 		<key>connection</key>
 		<dict>
-			<key>allowDataLocalInfile</key>
-			<integer>0</integer>
-			<key>enableClearTextPlugin</key>
-			<integer>0</integer>
+			<key>database</key>
+			<string>mysql</string>
 			<key>host</key>
 			<string>vvv.test</string>
 			<key>name</key>
-			<string>VVV</string>
+			<string>external@vvv.test</string>
 			<key>password</key>
 			<string>external</string>
+			<key>port</key>
+			<integer>3306</integer>
 			<key>rdbms_type</key>
 			<string>mysql</string>
+			<key>ssh_host</key>
+			<string></string>
+			<key>ssh_keyLocation</key>
+			<string></string>
+			<key>ssh_keyLocationEnabled</key>
+			<integer>0</integer>
+			<key>ssh_port</key>
+			<string></string>
+			<key>ssh_user</key>
+			<string></string>
 			<key>sslCACertFileLocation</key>
 			<string></string>
 			<key>sslCACertFileLocationEnabled</key>
@@ -35,52 +45,14 @@
 			<key>sslKeyFileLocationEnabled</key>
 			<integer>0</integer>
 			<key>type</key>
-			<string>SPTCPIPConnection</string>
+			<string>StandardConnection</string>
 			<key>useSSL</key>
 			<integer>0</integer>
 			<key>user</key>
 			<string>external</string>
 		</dict>
 		<key>session</key>
-		<dict>
-			<key>connectionEncoding</key>
-			<string>utf8mb4</string>
-			<key>contentFilterV2</key>
-			<dict>
-				<key>children</key>
-				<array/>
-				<key>filterClass</key>
-				<string>groupNode</string>
-				<key>isConjunction</key>
-				<true/>
-			</dict>
-			<key>contentPageNumber</key>
-			<integer>1</integer>
-			<key>contentSelection</key>
-			<data>
-			YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0
-			b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRk
-			YXRhgAGoCwwXGBkaHiVVJG51bGzTDQ4PEBMWV05TLmtleXNaTlMu
-			b2JqZWN0c1YkY2xhc3OiERKAAoADohQVgASABYAHVHR5cGVUcm93
-			c18QHVNlbGVjdGlvbkRldGFpbFR5cGVOU0luZGV4U2V00hsPHB1c
-			TlNSYW5nZUNvdW50EACABtIfICEiWiRjbGFzc25hbWVYJGNsYXNz
-			ZXNaTlNJbmRleFNldKIjJFpOU0luZGV4U2V0WE5TT2JqZWN00h8g
-			JidcTlNEaWN0aW9uYXJ5oiYkAAgAEQAaACQAKQAyADcASQBMAFEA
-			UwBcAGIAaQBxAHwAgwCGAIgAigCNAI8AkQCTAJgAnQC9AMIAzwDR
-			ANMA2ADjAOwA9wD6AQUBDgETASAAAAAAAAACAQAAAAAAAAAoAAAA
-			AAAAAAAAAAAAAAABIw==
-			</data>
-			<key>contentSortColIsAsc</key>
-			<true/>
-			<key>contentViewport</key>
-			<string>{{0, 0}, {693, 474}}</string>
-			<key>isToolbarVisible</key>
-			<true/>
-			<key>view</key>
-			<string>SP_VIEW_STRUCTURE</string>
-			<key>windowVerticalDividerPosition</key>
-			<real>301.5</real>
-		</dict>
+		<dict/>
 	</dict>
 	<key>encrypted</key>
 	<false/>
@@ -88,10 +60,12 @@
 	<string>connection</string>
 	<key>queryFavorites</key>
 	<array/>
+	<key>queryHistory</key>
+	<array/>
 	<key>rdbms_type</key>
 	<string>mysql</string>
 	<key>rdbms_version</key>
-	<string>5.5.5-10.4.17-MariaDB-1:10.4.17+maria~bionic</string>
+	<string>5.5.5-10.11.13-MariaDB-ubu2404</string>
 	<key>version</key>
 	<integer>1</integer>
 </dict>
