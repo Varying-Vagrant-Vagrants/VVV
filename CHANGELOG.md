@@ -10,7 +10,7 @@ permalink: /docs/en-US/changelog/
 
 ### Maintenance
 
- - Regenerated Sequel Pro/Sequel Ace SPF file.
+ - Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
 
 ## 3.15.1 ( 2025 May 21st )
 
