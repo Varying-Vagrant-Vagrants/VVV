@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.16
 
+### Enhancements
+
+ - Added the `stow`, `tmux`, `neovim`, `fzf`, `httpie`, and `ghostscript` apt packages ( #2771 )
+
 ### Maintenance
 
  - Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
