@@ -8,6 +8,10 @@ permalink: /docs/en-US/changelog/
 
 ## 3.16
 
+### Maintenance
+
+ - Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
+
 ## 3.15.1 ( 2025 May 21st )
 
 This release brings with it an update to Ubuntu 24, it's recommended to upgrade for continued support. To do this backup your database, destroy your VM, reprovision, and restore the database. A `vagrant ssh -c db_restore` script is available inside the VM to perform these backups, and will place SQL dumps in the `database/sql/backups` folder if backups and restores are enabled in your `config/config.yml`. There is also a `vagrant ssh -c db_restore` command for importing those backups.
