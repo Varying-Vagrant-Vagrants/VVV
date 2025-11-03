@@ -1,0 +1,19 @@
+# .github/issues.yml
+"type:bug":
+  match:
+    - "error"
+    - "fail"
+    - "bug"
+    - "crash"
+  description: "Indicates a bug or error in the system."
+
+"provider:parallels":
+  match:
+    - "parallels"
+  description: "Parallels provider"
+
+"provider:virtualbox":
+  match:
+    - "virtualbox"
+    - "oracle"
+  description: "Virtualbox provider"
