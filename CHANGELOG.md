@@ -11,6 +11,7 @@ permalink: /docs/en-US/changelog/
 ### Enhancements
 
 * Added the `stow`, `tmux`, `neovim`, `fzf`, `httpie`, and `ghostscript` apt packages ( #2771 )
+* Adds the `yq` package ( #2774 )
 
 ### Bug Fixes
 

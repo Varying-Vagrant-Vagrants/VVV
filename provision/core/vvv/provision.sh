@@ -31,6 +31,7 @@ function vvv_register_packages() {
     python3-pip # needed for shyaml
     python3-setuptools
     jq
+    yq
     less
 
     # Needed for WordPress PDF previews.
