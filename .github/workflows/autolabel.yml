@@ -5,15 +5,21 @@ on:
       - reopened
       - opened
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 jobs:
   build:
     name: AutoLabelling
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Apply Labels on Issues
         if: github.event_name == 'issues'
         uses: offensive-vk/auto-label@v8
         with:
-          auth-token: ${{ github.token }} # Optional, defaults to ${{ secrets.GITHUB_TOKEN }}
-          issue-config: .github/issues.yml # Required, path to the issue configuration file.
-          debug: True
+          auth-token: ${{ secrets.GITHUB_TOKEN || github.token }}
+          issue-config: '.github/issues.yml'
