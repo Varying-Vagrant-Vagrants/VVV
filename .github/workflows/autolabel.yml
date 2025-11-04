@@ -16,3 +16,4 @@ jobs:
         with:
           auth-token: ${{ github.token }} # Optional, defaults to ${{ secrets.GITHUB_TOKEN }}
           issue-config: .github/issue-labels.yml # Required, path to the issue configuration file.
+          debug: True
