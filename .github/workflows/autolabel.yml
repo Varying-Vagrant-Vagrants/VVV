@@ -23,3 +23,4 @@ jobs:
         with:
           auth-token: ${{ secrets.GITHUB_TOKEN || github.token }}
           issue-config: '.github/issues.yml'
+          debug: true
