@@ -1,7 +1,7 @@
 name: Syntax Checking and Linting
 on:
   [pull_request]
-    
+
 jobs:
   build:
     name: Linting
