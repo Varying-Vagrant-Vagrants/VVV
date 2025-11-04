@@ -11,9 +11,9 @@ require 'fileutils'
 require 'pathname'
 require 'socket'
 
-mount_options_parallels_mysql = ['nonempty']
-mount_options_parallels_log = ['nonempty']
-mount_options_parallels_www = ['nonempty']
+mount_options_parallels_mysql = ['share']
+mount_options_parallels_log = ['share']
+mount_options_parallels_www = ['share']
 
 mount_options_virtualbox_mysql = ['dmode=775', 'fmode=664']
 mount_options_virtualbox_log = ['dmode=777', 'fmode=666']

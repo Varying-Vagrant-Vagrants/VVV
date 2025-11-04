@@ -10,12 +10,16 @@ permalink: /docs/en-US/changelog/
 
 ### Enhancements
 
- - Added the `stow`, `tmux`, `neovim`, `fzf`, `httpie`, and `ghostscript` apt packages ( #2771 )
+* Added the `stow`, `tmux`, `neovim`, `fzf`, `httpie`, and `ghostscript` apt packages ( #2771 )
 * Adds the `yq` package ( #2774 )
+
+### Bug Fixes
+
+* Fixes an issue in Parallels folder mounts ( #2776 )
 
 ### Maintenance
 
- - Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
+* Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
 
 ## 3.15.1 ( 2025 May 21st )
 
