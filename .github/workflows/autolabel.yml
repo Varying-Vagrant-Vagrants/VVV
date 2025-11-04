@@ -15,5 +15,5 @@ jobs:
         uses: offensive-vk/auto-label@v8
         with:
           auth-token: ${{ github.token }} # Optional, defaults to ${{ secrets.GITHUB_TOKEN }}
-          issue-config: .github/issue-labels.yml # Required, path to the issue configuration file.
+          issue-config: .github/issues.yml # Required, path to the issue configuration file.
           debug: True
