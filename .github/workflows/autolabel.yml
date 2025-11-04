@@ -1,6 +1,9 @@
 name: Auto Labelling Checks
 on:
-  [pull_request]
+  issues:
+    types:
+      - reopened
+      - opened
 
 jobs:
   build:
