@@ -456,6 +456,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Configuration options for libvirt provider.
   config.vm.provider :libvirt do |v|
+    v.qemu_use_session = false          # use qemu:///system
+    v.memorybacking :access, :mode => "shared"
     v.memory = vvv_config['vm_config']['memory']
     v.cpus = vvv_config['vm_config']['cores']
     # Use the system libvirt instance for full feature support
@@ -711,31 +713,31 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.provider :libvirt do |_v, override|
-    # Use rsync synced folders with libvirt to avoid NFS hangs and 9p permission issues
+    # Use virtio-fs synced folders with libvirt for two-way live sharing
 
-    # Core shares (one-way host -> guest)
-    override.vm.synced_folder 'database/sql/', '/srv/database', type: 'rsync', rsync__auto: true
-    override.vm.synced_folder 'config/', '/srv/config', type: 'rsync', rsync__auto: true
-    override.vm.synced_folder 'provision/', '/srv/provision', type: 'rsync', rsync__auto: true
-    override.vm.synced_folder 'certificates/', '/srv/certificates', create: true, type: 'rsync', rsync__auto: true
+    # Core shares (two-way host <-> guest)
+    override.vm.synced_folder 'database/sql/', '/srv/database', type: 'virtiofs'
+    override.vm.synced_folder 'config/', '/srv/config', type: 'virtiofs'
+    override.vm.synced_folder 'provision/', '/srv/provision', type: 'virtiofs'
+    override.vm.synced_folder 'certificates/', '/srv/certificates', create: true, type: 'virtiofs'
 
     # Web root and logs
-    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', type: 'virtiofs'
 
-    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', type: 'rsync', rsync__auto: true
-    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', type: 'rsync', rsync__auto: true
-    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', type: 'rsync', rsync__auto: true
-    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', type: 'virtiofs'
+    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', type: 'virtiofs'
+    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', type: 'virtiofs'
+    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', type: 'virtiofs'
 
     if use_db_share == true
-      # Disabled on libvirt when using rsync synced folders; MySQL requires a read-write shared filesystem
-      puts "VVV: libvirt provider - database/data shared folder is disabled when using rsync. Data will be stored inside the VM."
+      # Disabled on libvirt when using virtio-fs for reliability; MariaDB data will remain inside the VM
+      puts "VVV: libvirt provider - database/data shared folder is disabled when using virtio-fs. Data will be stored inside the VM."
     end
 
     vvv_config['sites'].each do |site, args|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
-        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', type: 'rsync', rsync__auto: true
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', type: 'virtiofs'
       end
     end
   end
