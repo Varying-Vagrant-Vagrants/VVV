@@ -31,6 +31,10 @@ mount_options_vmware_mysql = ['umask=000']
 mount_options_vmware_log = ['umask=000']
 mount_options_vmware_www = ['umask=002']
 
+mount_options_libvirt_mysql = ['dmode=775', 'fmode=664']
+mount_options_libvirt_log = ['dmode=777', 'fmode=666']
+mount_options_libvirt_www = ['dmode=775', 'fmode=774']
+
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
   creset = "\033[0m"
@@ -366,6 +370,8 @@ if show_logo
     provider_version = 'n/a'
   when 'docker'
     provider_version = `docker -v`.gsub("Docker version ", "")
+  when 'libvirt'
+    provider_version = `virsh --version`.gsub("\n", "")
   else
     provider_version = '??'
   end
@@ -448,6 +454,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.linked_clone = true
   end
 
+  # Configuration options for libvirt provider.
+  config.vm.provider :libvirt do |v|
+    v.memory = vvv_config['vm_config']['memory']
+    v.cpus = vvv_config['vm_config']['cores']
+    # Use the system libvirt instance for full feature support
+    v.cpu_mode = 'host-passthrough'
+  end
+
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
   unless Vagrant.has_plugin?('vagrant-hostsupdater') && Vagrant.has_plugin?('vagrant-goodhosts') && Vagrant.has_plugin?('vagrant-hostsmanager')
     if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
@@ -500,6 +514,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # so we're using the most popular box available in the box catalog as a temporary measure.
     override.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
     override.vm.box_version = ">=2404.0.2503"
+  end
+
+  config.vm.provider :libvirt do |v, override|
+    override.vm.box = 'bento/ubuntu-24.04'
+    v.graphics_type = 'vnc'
   end
 
   # Docker use image.
@@ -687,6 +706,36 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: mount_options_docker_www
+      end
+    end
+  end
+
+  config.vm.provider :libvirt do |_v, override|
+    # Use rsync synced folders with libvirt to avoid NFS hangs and 9p permission issues
+
+    # Core shares (one-way host -> guest)
+    override.vm.synced_folder 'database/sql/', '/srv/database', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'config/', '/srv/config', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'provision/', '/srv/provision', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'certificates/', '/srv/certificates', create: true, type: 'rsync', rsync__auto: true
+
+    # Web root and logs
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', type: 'rsync', rsync__auto: true
+
+    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', type: 'rsync', rsync__auto: true
+    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', type: 'rsync', rsync__auto: true
+
+    if use_db_share == true
+      # Disabled on libvirt when using rsync synced folders; MySQL requires a read-write shared filesystem
+      puts "VVV: libvirt provider - database/data shared folder is disabled when using rsync. Data will be stored inside the VM."
+    end
+
+    vvv_config['sites'].each do |site, args|
+      next if args['skip_provisioning']
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site)
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', type: 'rsync', rsync__auto: true
       end
     end
   end
