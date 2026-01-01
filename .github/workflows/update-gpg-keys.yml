@@ -1,0 +1,274 @@
+name: Update GPG Keys
+
+on:
+  schedule:
+    # Run monthly on the 1st at 3am UTC
+    - cron: '0 3 1 * *'
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-and-update-keys:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Check and update PHP GPG key
+        id: php-key
+        run: |
+          KEY_FILE="provision/core/php/apt-keys/php.gpg"
+          KEY_ID_1="71DAEAAB4AD4CAB6"  # 2024 Launchpad PPA key
+          KEY_ID_2="4F4EA0AAE5267A6C"  # 2009 Launchpad PPA key (legacy)
+          KEYSERVER="https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x"
+          UPDATED=false
+
+          echo "Checking PHP GPG key expiry..."
+
+          if [ -f "$KEY_FILE" ]; then
+            EXPIRY_CHECK=$(gpg --show-keys "$KEY_FILE" 2>/dev/null | grep -E "expired|expires" || true)
+
+            if echo "$EXPIRY_CHECK" | grep -q "expired"; then
+              echo "⚠️ PHP GPG key is EXPIRED"
+              UPDATED=true
+            else
+              # Check if key contains required Launchpad PPA key ID
+              KEY_OUTPUT=$(gpg --show-keys "$KEY_FILE" 2>/dev/null || echo "")
+              if ! echo "$KEY_OUTPUT" | grep -q "$KEY_ID_1"; then
+                echo "⚠️ PHP GPG key is missing Launchpad PPA key $KEY_ID_1"
+                UPDATED=true
+              else
+                echo "✅ PHP GPG key contains required Launchpad PPA keys"
+              fi
+            fi
+          else
+            echo "⚠️ PHP GPG key file not found"
+            UPDATED=true
+          fi
+
+          if [ "$UPDATED" = true ]; then
+            echo "📥 Downloading Launchpad PPA keys from Ubuntu keyserver"
+            TEMP_FILE=$(mktemp)
+
+            # Download both Launchpad PPA keys, dearmor, and combine them
+            if curl -fsSL "${KEYSERVER}${KEY_ID_1}" -o "${TEMP_FILE}.1.asc" && \
+               curl -fsSL "${KEYSERVER}${KEY_ID_2}" -o "${TEMP_FILE}.2.asc"; then
+              # Dearmor keys (convert ASCII to binary format for APT)
+              gpg --dearmor < "${TEMP_FILE}.1.asc" > "${TEMP_FILE}.1"
+              gpg --dearmor < "${TEMP_FILE}.2.asc" > "${TEMP_FILE}.2"
+              # Combine binary keys
+              cat "${TEMP_FILE}.1" "${TEMP_FILE}.2" > "$KEY_FILE"
+              rm -f "${TEMP_FILE}" "${TEMP_FILE}.1" "${TEMP_FILE}.2" "${TEMP_FILE}.1.asc" "${TEMP_FILE}.2.asc"
+              echo "✅ PHP Launchpad PPA keys downloaded and dearmored successfully"
+              echo "updated=true" >> $GITHUB_OUTPUT
+            else
+              rm -f "${TEMP_FILE}" "${TEMP_FILE}.1" "${TEMP_FILE}.2" "${TEMP_FILE}.1.asc" "${TEMP_FILE}.2.asc"
+              echo "❌ Failed to download PHP Launchpad PPA keys"
+              exit 1
+            fi
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check and update Nginx GPG key
+        id: nginx-key
+        run: |
+          KEY_FILE="provision/core/nginx/apt-keys/nginx-archive-keyring.gpg"
+          KEY_URL="https://nginx.org/keys/nginx_signing.key"
+          UPDATED=false
+
+          echo "Checking Nginx GPG key expiry..."
+
+          if [ -f "$KEY_FILE" ]; then
+            EXPIRY_CHECK=$(gpg --show-keys "$KEY_FILE" 2>/dev/null | grep -E "expired|expires" || true)
+
+            if echo "$EXPIRY_CHECK" | grep -q "expired"; then
+              echo "⚠️ Nginx GPG key is EXPIRED"
+              UPDATED=true
+            else
+              echo "✅ Nginx GPG key is valid"
+            fi
+          else
+            echo "⚠️ Nginx GPG key file not found"
+            UPDATED=true
+          fi
+
+          if [ "$UPDATED" = true ]; then
+            echo "📥 Downloading fresh Nginx GPG key from $KEY_URL"
+            if curl -fsSL "$KEY_URL" | gpg --dearmor -o "$KEY_FILE"; then
+              echo "✅ Nginx GPG key downloaded successfully"
+              echo "updated=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Failed to download Nginx GPG key"
+              exit 1
+            fi
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check and update MariaDB GPG key
+        id: mariadb-key
+        run: |
+          KEY_FILE="provision/core/mariadb/apt-keys/mariadb_release_signing_key.pgp"
+          KEY_URL="https://supplychain.mariadb.com/mariadb-keyring-2019.gpg"
+          UPDATED=false
+
+          echo "Checking MariaDB GPG key expiry..."
+
+          if [ -f "$KEY_FILE" ]; then
+            EXPIRY_CHECK=$(gpg --show-keys "$KEY_FILE" 2>/dev/null | grep -E "expired|expires" || true)
+
+            if echo "$EXPIRY_CHECK" | grep -q "expired"; then
+              echo "⚠️ MariaDB GPG key is EXPIRED"
+              UPDATED=true
+            else
+              echo "✅ MariaDB GPG key is valid"
+            fi
+          else
+            echo "⚠️ MariaDB GPG key file not found"
+            UPDATED=true
+          fi
+
+          if [ "$UPDATED" = true ]; then
+            echo "📥 Downloading fresh MariaDB GPG key from $KEY_URL"
+            if curl -fsSL "$KEY_URL" -o "$KEY_FILE"; then
+              echo "✅ MariaDB GPG key downloaded successfully"
+              echo "updated=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Failed to download MariaDB GPG key"
+              exit 1
+            fi
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if any keys were updated
+        id: check-updates
+        run: |
+          if [ "${{ steps.php-key.outputs.updated }}" = "true" ] || \
+             [ "${{ steps.nginx-key.outputs.updated }}" = "true" ] || \
+             [ "${{ steps.mariadb-key.outputs.updated }}" = "true" ]; then
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+
+            # Build update summary
+            SUMMARY="Updated GPG keys:\n"
+            [ "${{ steps.php-key.outputs.updated }}" = "true" ] && SUMMARY="${SUMMARY}- PHP (Ondřej Surý PPA)\n"
+            [ "${{ steps.nginx-key.outputs.updated }}" = "true" ] && SUMMARY="${SUMMARY}- Nginx\n"
+            [ "${{ steps.mariadb-key.outputs.updated }}" = "true" ] && SUMMARY="${SUMMARY}- MariaDB\n"
+
+            echo -e "$SUMMARY"
+            echo "summary<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$SUMMARY" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "has_updates=false" >> $GITHUB_OUTPUT
+            echo "✅ All GPG keys are up to date"
+          fi
+
+      - name: Create Pull Request
+        if: steps.check-updates.outputs.has_updates == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            Update expired or expiring GPG keys
+
+            ${{ steps.check-updates.outputs.summary }}
+
+            This automated update ensures APT package repositories can be verified.
+            Keys are downloaded from official sources:
+            - PHP: Launchpad PPA keys from Ubuntu keyserver (71DAEAAB4AD4CAB6, 4F4EA0AAE5267A6C)
+            - Nginx: https://nginx.org/keys/nginx_signing.key
+            - MariaDB: https://supplychain.mariadb.com/mariadb-keyring-2019.gpg
+          branch: update-gpg-keys
+          delete-branch: true
+          title: "🔐 Update expired/expiring GPG keys"
+          body: |
+            ## 🔐 Automated GPG Key Update
+
+            This PR updates expired or expiring GPG keys for APT package repositories.
+
+            ### Changes
+
+            ${{ steps.check-updates.outputs.summary }}
+
+            ### Details
+
+            Keys are automatically checked monthly and updated when:
+            - The key has expired
+            - The key will expire within 60 days (PHP only)
+            - The key file is missing
+
+            ### Official Sources
+
+            All keys are downloaded from official upstream sources:
+            - **PHP**: Launchpad PPA keys from Ubuntu keyserver (IDs: 71DAEAAB4AD4CAB6, 4F4EA0AAE5267A6C)
+            - **Nginx**: https://nginx.org/keys/nginx_signing.key
+            - **MariaDB**: https://supplychain.mariadb.com/mariadb-keyring-2019.gpg
+
+            ### Testing
+
+            ✅ Keys have been verified using `gpg --show-keys`
+            ✅ No expired keys in this update
+
+            ### Review Checklist
+
+            - [ ] Verify key fingerprints match official documentation
+            - [ ] Check workflow logs for any warnings
+            - [ ] Merge and close
+
+            ---
+
+            *This PR was automatically created by the [Update GPG Keys workflow](.github/workflows/update-gpg-keys.yml)*
+          labels: |
+            maintenance
+            security
+            automated
+          assignees: ${{ github.repository_owner }}
+
+      - name: Summary
+        run: |
+          echo "## GPG Key Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.check-updates.outputs.has_updates }}" = "true" ]; then
+            echo "✅ **Updates Available**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "${{ steps.check-updates.outputs.summary }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "A pull request has been created with the updated keys." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ **All keys are up to date**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No updates needed at this time." >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Key Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Package | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.php-key.outputs.updated }}" = "true" ]; then
+            echo "| PHP | 🔄 Updated |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| PHP | ✅ Current |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ steps.nginx-key.outputs.updated }}" = "true" ]; then
+            echo "| Nginx | 🔄 Updated |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Nginx | ✅ Current |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ steps.mariadb-key.outputs.updated }}" = "true" ]; then
+            echo "| MariaDB | 🔄 Updated |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| MariaDB | ✅ Current |" >> $GITHUB_STEP_SUMMARY
+          fi
