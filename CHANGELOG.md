@@ -12,14 +12,31 @@ permalink: /docs/en-US/changelog/
 
 * Added the `stow`, `tmux`, `neovim`, `fzf`, `httpie`, and `ghostscript` apt packages ( #2771 )
 * Adds the `yq` package ( #2774 )
+* Added automated GitHub Actions workflow to check and update GPG keys monthly
 
 ### Bug Fixes
 
 * Fixes an issue in Parallels folder mounts ( #2776 )
+* **Fixed critical GPG key mismatch causing "repository is not signed" errors for PHP PPA**
+  - Launchpad PPA repository now uses correct Launchpad GPG keys from Ubuntu keyserver
+  - Keys are properly converted from ASCII-armored to binary format for APT
+  - Resolves NO_PUBKEY errors (71DAEAAB4AD4CAB6, 4F4EA0AAE5267A6C)
+* Fixed deprecated apt-key usage across all provisioners (PHP, Nginx, MariaDB)
+  - Migrated to modern `[signed-by=...]` syntax in APT source files
+  - Added intelligent key expiry detection and automatic key downloads
+  - Keys now properly verified before provisioning continues
+* Added input validation to prevent issues with malformed site names and config paths
+* Fixed potential word splitting issues by quoting variable expansions in provisioners
 
 ### Maintenance
 
 * Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
+* Modernized GPG key management for PHP, Nginx, and MariaDB
+  - Keys downloaded from official sources: Ubuntu keyserver, nginx.org, MariaDB
+  - Added comprehensive error handling and validation
+  - Proper permissions (644) set on all GPG keyring files
+  - Fallback to existing keys if downloads fail
+* Added security documentation for eval usage in hook system
 
 ## 3.15.1 ( 2025 May 21st )
 
