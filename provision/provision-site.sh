@@ -13,6 +13,17 @@
 
 set -eo pipefail
 
+# Validate required arguments
+if [[ -z "$1" ]]; then
+  echo " ! Error: Site name (argument 1) is required" >&2
+  exit 1
+fi
+
+if [[ -z "$4" ]]; then
+  echo " ! Error: VM directory path (argument 4) is required" >&2
+  exit 1
+fi
+
 SITE=$1
 SITE_ESCAPED="${SITE//./\\.}"
 REPO=$2
@@ -20,6 +31,19 @@ BRANCH=$3
 VM_DIR="${4%/}" # No trailing strings
 SKIP_PROVISIONING=$5
 NGINX_UPSTREAM=$6
+
+# Validate site name format (alphanumeric, dashes, underscores, dots)
+if [[ ! "$SITE" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+  echo " ! Error: Invalid site name '${SITE}'. Site names must contain only alphanumeric characters, dots, dashes, and underscores." >&2
+  exit 1
+fi
+
+# Validate VM_DIR is an absolute path
+if [[ ! "$VM_DIR" =~ ^/ ]]; then
+  echo " ! Error: VM directory '${VM_DIR}' must be an absolute path" >&2
+  exit 1
+fi
+
 VVV_PATH_TO_SITE=${VM_DIR} # used in site templates
 VVV_SITE_NAME=${SITE}
 VVV_HOSTS=""
@@ -265,7 +289,7 @@ function vvv_process_site_hosts() {
       echo " * Searching subfolders 4 levels down for a vvv-hosts file ( this can be skipped by using ./vvv-hosts, .vvv/vvv-hosts, or provision/vvv-hosts"
       local HOST_FILES
       HOST_FILES=$(find "${VM_DIR}" -maxdepth 4 -name 'vvv-hosts');
-      if [[ -z $HOST_FILES ]] ; then
+      if [[ -z "$HOST_FILES" ]] ; then
         vvv_error " ! Warning: No vvv-hosts file was found, and no hosts were defined in the vvv config, this site may be inaccessible"
       else
         for HOST_FILE in $HOST_FILES; do
