@@ -1,3 +1,3 @@
 # Provides Nginx mainline
-deb https://nginx.org/packages/mainline/ubuntu/ focal nginx
-deb-src https://nginx.org/packages/mainline/ubuntu/ focal nginx
+deb [signed-by=/etc/apt/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/mainline/ubuntu/ focal nginx
+deb-src [signed-by=/etc/apt/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/mainline/ubuntu/ focal nginx
