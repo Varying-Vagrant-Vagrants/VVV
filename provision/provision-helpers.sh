@@ -628,14 +628,22 @@ export -f vvv_hook
 
 # @description Necessary for vvv_parallel_hook, do not use.
 # @internal
-function vvv_run_parallel_hook_function() {
-  eval "${1}"
+function _vvv_run_parallel_hook_function() {
+  local func_name="${1}"
+  eval "${func_name}"
+  local exit_code=$?
 
-  # kill all sub-processes
-  pkill -P $$
+  # Signal completion (helps with debugging parallel execution)
+  if [ $exit_code -eq 0 ]; then
+    vvv_info "   ✓ Completed: ${func_name}"
+  else
+    vvv_error "   ✗ Failed: ${func_name} (exit code: ${exit_code})"
+  fi
+
+  return $exit_code
 }
 
-export -f vvv_run_parallel_hook_function
+export -f _vvv_run_parallel_hook_function
 
 # @description Executes a hook. Functions added to this hook will be executed in parallel
 #
@@ -653,19 +661,52 @@ function vvv_parallel_hook() {
   local start
   start=$(date +%s)
   eval "if [ -z \"\${${hook_var_prios}}\" ]; then return 0; fi"
-  vvv_info " ▷ Running <b>${1}</b><info> hook"
+  vvv_info " ▷ Running <b>${1}</b><info> hook </info><success>(parallel mode)</success>"
   local sorted
   eval "if [ ! -z \"\${${hook_var_prios}}\" ]; then IFS=$'\n' sorted=(\$(sort -n <<<\"\${${hook_var_prios}[*]}\")); unset IFS; fi"
 
   for i in "${!sorted[@]}"; do
     local prio="${sorted[$i]}"
     hooks_on_prio="${hook_var_prios}_${prio}[@]"
+
+    # Count functions at this priority
+    eval "local func_array=(\"\${${hook_var_prios}_${prio}[@]}\")"
+    local func_count=${#func_array[@]}
+
+    vvv_info "   - Starting ${func_count} function(s) in parallel at priority ${prio}:"
+
+    # List all functions that will run
     for f in ${!hooks_on_prio}; do
-      vvv_info "   - Starting subhook ${f} with priority ${prio}"
-      vvv_run_parallel_hook_function "${f}" &
+      vvv_info "     • ${f}"
     done
-    wait
-    vvv_info "   - Subhooks completed for ${1} with priority ${prio}"
+
+    # Start all functions in background and track PIDs
+    local pids=()
+    for f in ${!hooks_on_prio}; do
+      _vvv_run_parallel_hook_function "${f}" &
+      pids+=($!)
+    done
+
+    vvv_info "   - Waiting for ${func_count} parallel function(s) to complete (PIDs: ${pids[*]})..."
+
+    # Wait for all background jobs
+    local wait_result=0
+    local all_completed=true
+
+    # Check each PID to see which ones complete
+    for pid in "${pids[@]}"; do
+      if ! wait "$pid" 2>/dev/null; then
+        wait_result=$?
+        all_completed=false
+        vvv_warn "   - PID ${pid} failed with exit code: ${wait_result}"
+      fi
+    done
+
+    if $all_completed; then
+      vvv_success "   - ✓ All functions at priority ${prio} completed successfully"
+    else
+      vvv_warn "   - ⚠ Functions at priority ${prio} completed with errors"
+    fi
 
   done
   local end
