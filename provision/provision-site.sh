@@ -400,13 +400,26 @@ function vvv_provision_site_repo() {
 # @arg $2 string the folder containing the provisioner to runn
 # @internal
 function vvv_run_site_template_script() {
-  echo " * Found ${1} at ${2}/${1}"
-  cd "${2}"
-  if source "${1}"; then
-    vvv_info " * sourcing of ${1} reported success"
+  local script="${1}"
+  local script_dir="${2}"
+
+  if [[ -z "${script}" || -z "${script_dir}" ]]; then
+    vvv_error " ! vvv_run_site_template_script: script and script_dir are required"
+    return 1
+  fi
+
+  echo " * Found ${script} at ${script_dir}/${script}"
+
+  if ! cd "${script_dir}"; then
+    vvv_error " ! Failed to change to directory '${script_dir}'"
+    return 1
+  fi
+
+  if source "${script}"; then
+    vvv_info " * sourcing of ${script} reported success"
     return 0
   else
-    vvv_error " ! sourcing of ${1} reported failure with an error code of ${?}"
+    vvv_error " ! sourcing of ${script} reported failure with an error code of ${?}"
     return 1
   fi
 }
@@ -486,9 +499,25 @@ function vvv_provision_site_nginx() {
 function vvv_clone_site_git_folder() {
   local repo="${1}"
   local folder="${2}"
+
+  if [[ -z "${repo}" || -z "${folder}" ]]; then
+    vvv_error " ! vvv_clone_site_git_folder: repo and folder are required"
+    return 1
+  fi
+
   vvv_info " * git cloning <b>'${repo}'</b><info> into </info><b>'${VVV_PATH_TO_SITE}/${folder}'</b>"
-  noroot mkdir -p "${VVV_PATH_TO_SITE}/${folder}"
-  noroot git clone  --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"
+
+  if ! noroot mkdir -p "${VVV_PATH_TO_SITE}/${folder}"; then
+    vvv_error " ! Failed to create directory '${VVV_PATH_TO_SITE}/${folder}'"
+    return 1
+  fi
+
+  if ! noroot git clone --recurse-submodules -j2 "${repo}" "${VVV_PATH_TO_SITE}/${folder}"; then
+    vvv_error " ! Failed to clone repository '${repo}'"
+    return 1
+  fi
+
+  return 0
 }
 
 # @description Processes a folder sections composer option for a site as specified in `config.yml`
@@ -496,30 +525,57 @@ function vvv_clone_site_git_folder() {
 # @arg $1 string the folder name to process specified in `config.yml`
 function vvv_custom_folder_composer() {
   local folder="${1}"
+
+  if [[ -z "${folder}" ]]; then
+    vvv_error " ! vvv_custom_folder_composer: folder parameter is required"
+    return 1
+  fi
+
   if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.composer" < "${VVV_CONFIG}"); then
       for key in $keys; do
-        pushd "${folder}" > /dev/null
+        if ! pushd "${folder}" > /dev/null 2>&1; then
+          vvv_error " ! Failed to change to directory '${folder}'"
+          return 1
+        fi
+
         local value
         value=$(vvv_get_site_config_value "folders.${folder}.composer.${key}" "")
         if [[ "install" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
             vvv_info " * Running composer install in ${folder}"
-            noroot composer install
+            if ! noroot composer install; then
+              vvv_error " ! composer install failed in ${folder}"
+              popd > /dev/null 2>&1
+              return 1
+            fi
           fi
         elif [[ "update" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
             vvv_info " * Running composer update in ${folder}"
-            noroot composer update
+            if ! noroot composer update; then
+              vvv_error " ! composer update failed in ${folder}"
+              popd > /dev/null 2>&1
+              return 1
+            fi
           fi
         elif [[ "create-project" == "${key}" ]]; then
           vvv_info " * Running composer create-project ${value} in ${folder}"
-          noroot composer create-project "${value}" .
+          if ! noroot composer create-project "${value}" .; then
+            vvv_error " ! composer create-project failed in ${folder}"
+            popd > /dev/null 2>&1
+            return 1
+          fi
         else
           vvv_warn " * Unknown key in Composer section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
-        popd
+
+        if ! popd > /dev/null 2>&1; then
+          vvv_warn " ! Failed to return to previous directory"
+        fi
       done
   fi
+
+  return 0
 }
 
 
@@ -528,30 +584,57 @@ function vvv_custom_folder_composer() {
 # @arg $1 string the folder name to process specified in `config.yml`
 function vvv_custom_folder_npm() {
   local folder="${1}"
+
+  if [[ -z "${folder}" ]]; then
+    vvv_error " ! vvv_custom_folder_npm: folder parameter is required"
+    return 1
+  fi
+
   if keys=$(shyaml keys -y -q "sites.${SITE_ESCAPED}.folders.${folder}.npm" < "${VVV_CONFIG}"); then
       for key in $keys; do
-        pushd "${folder}" > /dev/null
+        if ! pushd "${folder}" > /dev/null 2>&1; then
+          vvv_error " ! Failed to change to directory '${folder}'"
+          return 1
+        fi
+
         local value
         value=$(vvv_get_site_config_value "folders.${folder}.npm.${key}" "")
         if [[ "install" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
             vvv_info " * Running npm install in ${folder}"
-            noroot npm install
+            if ! noroot npm install; then
+              vvv_error " ! npm install failed in ${folder}"
+              popd > /dev/null 2>&1
+              return 1
+            fi
           fi
         elif [[ "update" == "${key}" ]]; then
           if [[ "True" == "${value}" ]]; then
             vvv_info " * Running npm update in ${folder}"
-            noroot npm update
+            if ! noroot npm update; then
+              vvv_error " ! npm update failed in ${folder}"
+              popd > /dev/null 2>&1
+              return 1
+            fi
           fi
         elif [[ "run" == "${key}" ]]; then
           vvv_info " * Running npm run ${value} in ${folder}"
-          noroot npm run "${value}"
+          if ! noroot npm run "${value}"; then
+            vvv_error " ! npm run ${value} failed in ${folder}"
+            popd > /dev/null 2>&1
+            return 1
+          fi
         else
           vvv_warn " * Unknown key in NPM section: <b>${key}</b><warn> for </warn><b>${folder}</b>"
         fi
-        popd
+
+        if ! popd > /dev/null 2>&1; then
+          vvv_warn " ! Failed to return to previous directory"
+        fi
       done
   fi
+
+  return 0
 }
 
 # @description Processes a folder sections git option for a site as specified in `config.yml`
@@ -567,20 +650,35 @@ function vvv_custom_folder_git() {
   local pull
 
   folder="${1}"
+
+  if [[ -z "${folder}" ]]; then
+    vvv_error " ! vvv_custom_folder_git: folder parameter is required"
+    return 1
+  fi
+
   repo=$(vvv_get_site_config_value "folders.${folder}.git.repo" "?")
   overwrite_on_clone=$(vvv_get_site_config_value "folders.${folder}.git.overwrite_on_clone" "False")
   hard_reset=$(vvv_get_site_config_value "folders.${folder}.git.hard_reset" "False")
   pull=$(vvv_get_site_config_value "folders.${folder}.git.pull" "False")
 
   if [ ! -d "${VVV_PATH_TO_SITE}/${folder}" ]; then
-    vvv_clone_site_git_folder "${repo}" "${folder}"
+    if ! vvv_clone_site_git_folder "${repo}" "${folder}"; then
+      vvv_error " ! Failed to clone repository for ${folder}"
+      return 1
+    fi
   else
     if [[ $overwrite_on_clone == "True" ]]; then
       if [ ! -d "${VVV_PATH_TO_SITE}/${folder}/.git" ]; then
         vvv_info " - VVV was asked to clone into a folder that already exists (${folder}), but does not contain a git repo"
         vvv_info " - overwrite_on_clone is turned on so VVV will purge with extreme predjudice and clone over the folders grave"
-        rm -rf "${VVV_PATH_TO_SITE:?}/${folder}"
-        vvv_clone_site_git_folder "${repo}" "${folder}"
+        if ! rm -rf "${VVV_PATH_TO_SITE:?}/${folder}"; then
+          vvv_error " ! Failed to remove existing folder '${folder}'"
+          return 1
+        fi
+        if ! vvv_clone_site_git_folder "${repo}" "${folder}"; then
+          vvv_error " ! Failed to clone repository for ${folder}"
+          return 1
+        fi
       fi
     else
       vvv_warn " - Cannot clone into <b>'${folder}'</b><warn>, a folder that is not a git repo already exists. Set overwrite: true to force the folders deletion and a clone will take place"
@@ -589,17 +687,42 @@ function vvv_custom_folder_git() {
 
   if [[ $hard_reset == "True" ]]; then
     vvv_info " - resetting git checkout and discarding changes in ${folder}"
-    pushd "${VVV_PATH_TO_SITE}/${folder}" > /dev/null
-    noroot git reset --hard -q
-    noroot git checkout -q
-    popd
+    if ! pushd "${VVV_PATH_TO_SITE}/${folder}" > /dev/null 2>&1; then
+      vvv_error " ! Failed to change to directory '${VVV_PATH_TO_SITE}/${folder}'"
+      return 1
+    fi
+    if ! noroot git reset --hard -q; then
+      vvv_error " ! git reset --hard failed in ${folder}"
+      popd > /dev/null 2>&1
+      return 1
+    fi
+    if ! noroot git checkout -q; then
+      vvv_error " ! git checkout failed in ${folder}"
+      popd > /dev/null 2>&1
+      return 1
+    fi
+    if ! popd > /dev/null 2>&1; then
+      vvv_warn " ! Failed to return to previous directory"
+    fi
   fi
+
   if [[ $pull == "True" ]]; then
     vvv_info " - runnning git pull in ${folder}"
-    pushd "${VVV_PATH_TO_SITE}/${folder}" > /dev/null
-    noroot git pull -q
-    popd
+    if ! pushd "${VVV_PATH_TO_SITE}/${folder}" > /dev/null 2>&1; then
+      vvv_error " ! Failed to change to directory '${VVV_PATH_TO_SITE}/${folder}'"
+      return 1
+    fi
+    if ! noroot git pull -q; then
+      vvv_error " ! git pull failed in ${folder}"
+      popd > /dev/null 2>&1
+      return 1
+    fi
+    if ! popd > /dev/null 2>&1; then
+      vvv_warn " ! Failed to return to previous directory"
+    fi
   fi
+
+  return 0
 }
 
 # @description Processes the folders option from the sites `config.yml`
