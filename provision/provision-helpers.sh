@@ -65,7 +65,7 @@ function network_detection() {
 }
 export -f network_detection
 
-# @description Test that we have network connectivity with a URL.
+# @description Test that we have network connectivity with a URL with retry logic and exponential backoff.
 #
 # @arg $1 string The address to test, defaults to `https://ppa.launchpadcontent.net`
 #
@@ -73,6 +73,8 @@ export -f network_detection
 # @exitcode 1 If network issues are found
 function check_network_connection_to_host() {
   local url="${1:-http://ppa.launchpadcontent.net}"
+  local max_retries=3
+  local retry_count=0
 
   if [[ -z "${url}" ]]; then
     vvv_error " ! No URL provided to check_network_connection_to_host"
@@ -81,27 +83,46 @@ function check_network_connection_to_host() {
 
   vvv_info " * Checking network connectivity to <url>${url}</url><info>..."
 
+  # Try with curl first (with retries)
   if command -v curl >/dev/null 2>&1; then
-    if curl -s --connect-timeout 5 --max-time 10 --head "${url}" >/dev/null; then
-      vvv_success " ✔ curl connected successfully to <url>${url}</url>"
-      return 0
-    else
-      if command -v wget >/dev/null 2>&1; then
-        vvv_warn " - curl failed to connect to <url>${url}</url><warn>, trying wget..."
-      else
-        vvv_warn " - curl failed to connect to <url>${url}</url>"
+    retry_count=0
+    while [ ${retry_count} -lt ${max_retries} ]; do
+      if curl -s --connect-timeout 5 --max-time 10 --head "${url}" >/dev/null 2>&1; then
+        vvv_success " ✔ curl connected successfully to <url>${url}</url>"
+        return 0
       fi
+      retry_count=$((retry_count + 1))
+      if [ ${retry_count} -lt ${max_retries} ]; then
+        local wait_time=$((retry_count * 2))
+        vvv_info " * curl attempt ${retry_count}/${max_retries} failed, retrying in ${wait_time}s..."
+        sleep ${wait_time}
+      fi
+    done
+    if command -v wget >/dev/null 2>&1; then
+      vvv_warn " - curl failed to connect to <url>${url}</url><warn> after ${max_retries} attempts, trying wget..."
+    else
+      vvv_warn " - curl failed to connect to <url>${url}</url><warn> after ${max_retries} attempts"
     fi
   fi
 
+  # Try with wget (with retries)
   if command -v wget >/dev/null 2>&1; then
-    if wget -q --spider --timeout=5 --tries=2 "${url}"; then
-      vvv_success " ✔ wget connected successfully to <url>${url}</url>"
-      return 0
-    fi
+    retry_count=0
+    while [ ${retry_count} -lt ${max_retries} ]; do
+      if wget -q --spider --timeout=5 --tries=1 "${url}" 2>/dev/null; then
+        vvv_success " ✔ wget connected successfully to <url>${url}</url>"
+        return 0
+      fi
+      retry_count=$((retry_count + 1))
+      if [ ${retry_count} -lt ${max_retries} ]; then
+        local wait_time=$((retry_count * 2))
+        vvv_info " * wget attempt ${retry_count}/${max_retries} failed, retrying in ${wait_time}s..."
+        sleep ${wait_time}
+      fi
+    done
   fi
 
-  vvv_error " ✘ Network connection to <url>${url}</url><error> failed via wget and curl"
+  vvv_error " ✘ Network connection to <url>${url}</url><error> failed via wget and curl after ${max_retries} attempts each"
   return 1
 }
 export -f check_network_connection_to_host
@@ -610,12 +631,21 @@ export -f vvv_parallel_hook
 # @description Updates Apt keys then fetches Apt updates.
 vvv_apt_update() {
   vvv_info " * Updating apt keys"
-  apt-key update -y
+  if ! apt-key update -y; then
+    vvv_error " * Updating apt keys failed"
+    return 1
+  fi
 
   # Update all of the package references before installing anything
   vvv_info " * Running apt-get update..."
-  rm -rf /var/lib/apt/lists/*
-  apt-get update -y --fix-missing
+  if ! rm -rf /var/lib/apt/lists/*; then
+    vvv_warn " * Failed to clean apt lists, continuing anyway"
+  fi
+
+  if ! apt-get update -y --fix-missing; then
+    vvv_error " * apt-get update failed"
+    return 1
+  fi
 }
 
 # @description Upgrades all Apt packages.
@@ -635,11 +665,15 @@ export -f vvv_apt_packages_upgrade
 vvv_apt_cleanup() {
   # Remove unnecessary packages
   vvv_info " * Removing unnecessary apt packages..."
-  apt-get autoremove -y
+  if ! apt-get autoremove -y; then
+    vvv_warn " * apt-get autoremove failed, continuing anyway"
+  fi
 
   # Clean up apt caches
   vvv_info " * Cleaning apt caches..."
-  apt-get clean -y
+  if ! apt-get clean -y; then
+    vvv_warn " * apt-get clean failed, continuing anyway"
+  fi
 }
 
 # @description Installs a selection of packages via `apt`
@@ -718,9 +752,19 @@ vvv_is_apt_pkg_installed() {
 # based on a fix from https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2150
 vvv_cleanup_dpkg_locks() {
   vvv_info " * Cleaning up dpkg lock file"
+
+  # Check if dpkg is currently running before removing locks
+  if pgrep -x dpkg > /dev/null 2>&1; then
+    vvv_warn " * dpkg is currently running, not removing lock files"
+    return 1
+  fi
+
   lockfiles=(/var/lib/dpkg/lock*)
-  if [ "${#lockfiles[@]}" ]; then
-    rm /var/lib/dpkg/lock*
+  if [ "${#lockfiles[@]}" -gt 0 ] && [ -e "${lockfiles[0]}" ]; then
+    if ! rm -f /var/lib/dpkg/lock*; then
+      vvv_error " * Failed to remove dpkg lock files"
+      return 1
+    fi
   fi
 }
 
@@ -782,13 +826,39 @@ function vvv_maybe_install_nginx_config() {
   TARGET="${3}"
   TARGET_DIR="/etc/nginx/custom-${3}/"
   TARGET_FILE="${TARGET_DIR}${TARGET_NAME}"
-  if [ -f "${TARGET_FILE}" ]; then
-    sudo rm -f "${TARGET_FILE}"
+
+  # Validate inputs
+  if [[ -z "${SOURCE_FILE}" || -z "${TARGET_NAME}" || -z "${TARGET}" ]]; then
+    vvv_error " ! vvv_maybe_install_nginx_config: missing required parameters"
+    return 1
   fi
 
-  sudo mkdir -p "${TARGET_DIR}"
-  sudo cp -f "${SOURCE_FILE}" "${TARGET_FILE}"
+  if [[ ! -f "${SOURCE_FILE}" ]]; then
+    vvv_error " ! Source file '${SOURCE_FILE}' does not exist"
+    return 1
+  fi
 
+  # Remove existing config if present
+  if [ -f "${TARGET_FILE}" ]; then
+    if ! sudo rm -f "${TARGET_FILE}"; then
+      vvv_error " ! Failed to remove existing config file '${TARGET_FILE}'"
+      return 1
+    fi
+  fi
+
+  # Create target directory
+  if ! sudo mkdir -p "${TARGET_DIR}"; then
+    vvv_error " ! Failed to create directory '${TARGET_DIR}'"
+    return 1
+  fi
+
+  # Copy config to target location
+  if ! sudo cp -f "${SOURCE_FILE}" "${TARGET_FILE}"; then
+    vvv_error " ! Failed to copy '${SOURCE_FILE}' to '${TARGET_FILE}'"
+    return 1
+  fi
+
+  # Test nginx configuration
   if ! sudo nginx -t; then
     vvv_error " ! Installing an Nginx config failed! VVV tried to install ${TARGET_NAME} into ${TARGET} from ${SOURCE_FILE} but a syntax test with sudo nginx -t failed!"
     vvv_error " ! VVV is now deleting the config to avoid further breakage"
@@ -796,10 +866,17 @@ function vvv_maybe_install_nginx_config() {
     return 1
   fi
 
-  if sudo service nginx status > /dev/null; then
-    sudo service nginx reload
+  # Reload or start nginx
+  if sudo service nginx status > /dev/null 2>&1; then
+    if ! sudo service nginx reload; then
+      vvv_error " ! Failed to reload nginx service"
+      return 1
+    fi
   else
-    sudo service nginx start
+    if ! sudo service nginx start; then
+      vvv_error " ! Failed to start nginx service"
+      return 1
+    fi
   fi
 
   return 0
@@ -819,8 +896,22 @@ export -f vvv_get_sites
 # @noargs
 function vvv_update_guest_hosts() {
   local SITES
+  local tempfile
+
   SITES=$(vvv_get_sites)
-  cp -f /etc/hosts /tmp/hosts
+
+  # Create temporary file with unique name
+  tempfile=$(mktemp /tmp/vvv-hosts.XXXXXX) || {
+    vvv_error " * Failed to create temporary hosts file"
+    return 1
+  }
+
+  # Copy current hosts file to temp location
+  if ! cp -f /etc/hosts "${tempfile}"; then
+    vvv_error " * Failed to copy /etc/hosts to temporary file"
+    rm -f "${tempfile}"
+    return 1
+  fi
 
   # Add each site.
   for SITE in $SITES; do
@@ -829,19 +920,32 @@ function vvv_update_guest_hosts() {
     local value
     value=$(shyaml -q get-values "sites.${SITE_ESCAPED}.hosts" <${VVV_CONFIG})
     for v in $value; do
-      sed -i "/127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}/d" /tmp/hosts
-      if [[ -z "$(grep -q "^127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}$" /tmp/hosts)" ]]; then
-        echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/tmp/hosts"
-        echo "::1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "/tmp/hosts"
+      if ! sed -i "/127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}/d" "${tempfile}"; then
+        vvv_warn " * sed failed to remove old host entry for ${v:-"${VVV_SITE_NAME}.test"}"
+      fi
+      if [[ -z "$(grep -q "^127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"}$" "${tempfile}")" ]]; then
+        echo "127.0.0.1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "${tempfile}" || vvv_warn " * Failed to add IPv4 host entry"
+        echo "::1 ${v:-"${VVV_SITE_NAME}.test"} # vvv-auto" >> "${tempfile}" || vvv_warn " * Failed to add IPv6 host entry"
       fi
     done
   done
 
-  # Remove duplicate lines then replace hosts file.
-  awk -i inplace '!seen[$0]++' /tmp/hosts
+  # Remove duplicate lines
+  if ! awk -i inplace '!seen[$0]++' "${tempfile}"; then
+    vvv_error " * awk failed to remove duplicate lines"
+    rm -f "${tempfile}"
+    return 1
+  fi
 
-  cp -f /tmp/hosts /etc/hosts
-  rm /tmp/hosts
+  # Atomically replace hosts file (write-to-temp-then-move pattern)
+  if ! cp -f "${tempfile}" /etc/hosts; then
+    vvv_error " * Failed to update /etc/hosts"
+    rm -f "${tempfile}"
+    return 1
+  fi
+
+  rm -f "${tempfile}"
+  return 0
 }
 export -f vvv_update_guest_hosts
 
@@ -851,10 +955,36 @@ function vvv_safe_sed() {
   local expression="${1}"
   local file="${2}"
   local tempfile
-  tempfile=$(mktemp /tmp/safe-sed.XXXXXX)
-  /usr/bin/sed "${expression}" "${file}" > "${tempfile}"
-  cat "${tempfile}" > "${file}"
-  rm "${tempfile}"
+
+  if [[ -z "${expression}" || -z "${file}" ]]; then
+    vvv_error " * vvv_safe_sed: expression and file are required"
+    return 1
+  fi
+
+  if [[ ! -f "${file}" ]]; then
+    vvv_error " * vvv_safe_sed: file '${file}' does not exist"
+    return 1
+  fi
+
+  tempfile=$(mktemp /tmp/safe-sed.XXXXXX) || {
+    vvv_error " * vvv_safe_sed: failed to create temporary file"
+    return 1
+  }
+
+  if ! /usr/bin/sed "${expression}" "${file}" > "${tempfile}"; then
+    vvv_error " * vvv_safe_sed: sed command failed"
+    rm -f "${tempfile}"
+    return 1
+  fi
+
+  if ! cat "${tempfile}" > "${file}"; then
+    vvv_error " * vvv_safe_sed: failed to write back to '${file}'"
+    rm -f "${tempfile}"
+    return 1
+  fi
+
+  rm -f "${tempfile}"
+  return 0
 }
 export -f vvv_safe_sed
 
