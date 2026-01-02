@@ -44,7 +44,7 @@ function nginx_register_apt_keys() {
       if command -v gpg &> /dev/null; then
         if gpg --show-keys "${SOURCE_KEY}" 2>/dev/null | grep -q "expired"; then
           vvv_warn " * Source Nginx GPG key is expired, downloading fresh key from ${KEY_URL}"
-          if curl -fsSL "${KEY_URL}" | gpg --dearmor -o "${SOURCE_KEY}"; then
+          if curl --connect-timeout 10 --max-time 60 -fsSL "${KEY_URL}" | gpg --dearmor -o "${SOURCE_KEY}"; then
             vvv_success " * Downloaded fresh Nginx GPG key"
           else
             vvv_error " ! Failed to download fresh Nginx GPG key from ${KEY_URL}"
@@ -61,7 +61,7 @@ function nginx_register_apt_keys() {
     else
       # Source file doesn't exist, download directly
       vvv_warn " * Nginx GPG key file not found at ${SOURCE_KEY}, downloading from ${KEY_URL}"
-      if curl -fsSL "${KEY_URL}" | gpg --dearmor -o "${DEST_KEY}"; then
+      if curl --connect-timeout 10 --max-time 60 -fsSL "${KEY_URL}" | gpg --dearmor -o "${DEST_KEY}"; then
         vvv_success " * Downloaded Nginx GPG key to ${DEST_KEY}"
         # Also save to source location for future use
         mkdir -p "$(dirname "${SOURCE_KEY}")"

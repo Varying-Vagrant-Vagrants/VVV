@@ -90,13 +90,13 @@ function php_register_apt_keys() {
   if [ -f "${DEST_KEY}" ]; then
     # Check if the existing key is expired
     if command -v gpg &> /dev/null; then
-      if gpg --show-keys "${DEST_KEY}" 2>/dev/null | grep -q "expired"; then
+      if gpg --batch --no-tty --show-keys "${DEST_KEY}" 2>/dev/null | grep -q "expired"; then
         vvv_warn " * Installed PHP GPG key has expired, will update"
         NEEDS_UPDATE=1
       else
         # Check if the key contains the required Launchpad key IDs
         local KEY_OUTPUT
-        KEY_OUTPUT=$(gpg --show-keys "${DEST_KEY}" 2>/dev/null || echo "")
+        KEY_OUTPUT=$(gpg --batch --no-tty --show-keys "${DEST_KEY}" 2>/dev/null || echo "")
         if ! echo "${KEY_OUTPUT}" | grep -q "${KEY_ID_1}"; then
           vvv_warn " * PHP GPG key is missing Launchpad PPA key ${KEY_ID_1}, will update"
           NEEDS_UPDATE=1
@@ -121,11 +121,11 @@ function php_register_apt_keys() {
 
     # Download and combine both Launchpad keys
     local DOWNLOAD_SUCCESS=0
-    if curl -fsSL "${KEYSERVER}${KEY_ID_1}" -o "${TEMP_KEY}.1.asc" && \
-       curl -fsSL "${KEYSERVER}${KEY_ID_2}" -o "${TEMP_KEY}.2.asc"; then
+    if curl --connect-timeout 10 --max-time 60 -fsSL "${KEYSERVER}${KEY_ID_1}" -o "${TEMP_KEY}.1.asc" && \
+       curl --connect-timeout 10 --max-time 60 -fsSL "${KEYSERVER}${KEY_ID_2}" -o "${TEMP_KEY}.2.asc"; then
       # Dearmor keys (convert from ASCII to binary format required by APT)
-      if gpg --dearmor < "${TEMP_KEY}.1.asc" > "${TEMP_KEY}.1" 2>/dev/null && \
-         gpg --dearmor < "${TEMP_KEY}.2.asc" > "${TEMP_KEY}.2" 2>/dev/null; then
+      if gpg --batch --no-tty --dearmor < "${TEMP_KEY}.1.asc" > "${TEMP_KEY}.1" 2>/dev/null && \
+         gpg --batch --no-tty --dearmor < "${TEMP_KEY}.2.asc" > "${TEMP_KEY}.2" 2>/dev/null; then
         # Combine both binary keys into single keyring
         cat "${TEMP_KEY}.1" "${TEMP_KEY}.2" > "${TEMP_KEY}"
         DOWNLOAD_SUCCESS=1
