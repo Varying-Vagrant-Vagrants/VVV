@@ -761,7 +761,7 @@ if [[ true == "${SKIP_PROVISIONING}" ]]; then
 fi
 
 # Ensure npm is available
-if ! command -v nvm &> /dev/null; then
+if ! cmd_exists nvm; then
   if [ -f /home/vagrant/.nvm/nvm.sh ]; then
     source /home/vagrant/.nvm/nvm.sh
   fi

@@ -27,6 +27,13 @@ fi
 export VVV_CONFIG
 export VVV_CURRENT_LOG_FILE=""
 
+# Performance optimization: Flag to track if apt-get update has been run during this provisioning session
+export VVV_APT_UPDATED=0
+
+# Performance optimization: Associative array to cache command existence results
+declare -gA VVV_CMD_CACHE
+export VVV_CMD_CACHE
+
 # @description Checks whether a Bash array contains a specific value.
 #
 # @arg $1 string The value to search for
@@ -53,6 +60,45 @@ function vvv_array_contains() {
   return 1
 }
 export -f vvv_array_contains
+
+# @description Check if a command exists, using cached results to avoid repeated subprocess calls.
+# Works similarly to `command -v` but caches results within the provisioning run.
+#
+# @arg $1 string The command name to check
+#
+# @exitcode 0 If the command exists
+# @exitcode 1 If the command does not exist
+# @example
+#   if cmd_exists curl; then
+#     echo "curl is available"
+#   fi
+function cmd_exists() {
+  local cmd="$1"
+
+  # Validate input
+  if [[ -z "$cmd" ]]; then
+    return 1
+  fi
+
+  # Check cache first
+  if [[ -n "${VVV_CMD_CACHE[$cmd]}" ]]; then
+    if [[ "${VVV_CMD_CACHE[$cmd]}" == "1" ]]; then
+      return 0
+    else
+      return 1
+    fi
+  fi
+
+  # Command not in cache, check if it exists
+  if command -v "$cmd" >/dev/null 2>&1; then
+    VVV_CMD_CACHE[$cmd]=1
+    return 0
+  else
+    VVV_CMD_CACHE[$cmd]=0
+    return 1
+  fi
+}
+export -f cmd_exists
 
 # @description Test that we have network connectivity with a URL.
 # Deprecated, use check_network_connection_to_host instead
@@ -84,7 +130,7 @@ function check_network_connection_to_host() {
   vvv_info " * Checking network connectivity to <url>${url}</url><info>..."
 
   # Try with curl first (with retries)
-  if command -v curl >/dev/null 2>&1; then
+  if cmd_exists curl; then
     retry_count=0
     while [ ${retry_count} -lt ${max_retries} ]; do
       if curl -s --connect-timeout 5 --max-time 10 --head "${url}" >/dev/null 2>&1; then
@@ -98,7 +144,7 @@ function check_network_connection_to_host() {
         sleep ${wait_time}
       fi
     done
-    if command -v wget >/dev/null 2>&1; then
+    if cmd_exists wget; then
       vvv_warn " - curl failed to connect to <url>${url}</url><warn> after ${max_retries} attempts, trying wget..."
     else
       vvv_warn " - curl failed to connect to <url>${url}</url><warn> after ${max_retries} attempts"
@@ -106,7 +152,7 @@ function check_network_connection_to_host() {
   fi
 
   # Try with wget (with retries)
-  if command -v wget >/dev/null 2>&1; then
+  if cmd_exists wget; then
     retry_count=0
     while [ ${retry_count} -lt ${max_retries} ]; do
       if wget -q --spider --timeout=5 --tries=1 "${url}" 2>/dev/null; then
@@ -182,7 +228,7 @@ function network_check() {
     vvv_error "provisioning involves downloading things, a full provision may "
     vvv_error "ruin the wifi for everybody else :("
     vvv_error " "
-    if command -v ifconfig &> /dev/null; then
+    if cmd_exists ifconfig; then
       vvv_error "Network ifconfig output:"
       vvv_error " "
       ifconfig
@@ -630,6 +676,12 @@ export -f vvv_parallel_hook
 
 # @description Updates Apt keys then fetches Apt updates.
 vvv_apt_update() {
+  # Check if we've already updated apt during this provisioning run
+  if [[ "${VVV_APT_UPDATED}" == "1" ]]; then
+    vvv_info " * APT package cache already updated, skipping redundant update"
+    return 0
+  fi
+
   vvv_info " * Updating apt keys"
   if ! apt-key update -y; then
     vvv_error " * Updating apt keys failed"
@@ -646,6 +698,9 @@ vvv_apt_update() {
     vvv_error " * apt-get update failed"
     return 1
   fi
+
+  # Mark that we've successfully updated apt cache
+  export VVV_APT_UPDATED=1
 }
 
 # @description Upgrades all Apt packages.
