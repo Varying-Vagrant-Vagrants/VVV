@@ -86,7 +86,7 @@ vvv_info " * Apt package install pre-checks"
 vvv_hook before_packages
 
 vvv_info " * Registering apt keys"
-vvv_hook register_apt_keys
+vvv_parallel_hook register_apt_keys
 
 vvv_info " * Registering apt sources"
 vvv_hook register_apt_sources
