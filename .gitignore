@@ -6,6 +6,9 @@ Icon?
 Icon\r
 Icon\r\r
 
+# AI nonsense
+/.claude/
+
 # Because this really is a working directory, ignore vagrant's files
 /.vagrant
 vagrant.log
