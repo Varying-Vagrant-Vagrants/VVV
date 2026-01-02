@@ -42,8 +42,25 @@ vvv_add_hook register_apt_packages git_register_apt_packages
 
 # @noargs
 function git_register_apt_keys() {
-  cp -f /srv/provision/core/git/apt-keys/github_git-lfs-archive-keyring.gpg /etc/apt/keyrings/github_git-lfs-archive-keyring.gpg
-  chmod 0644 /etc/apt/keyrings/github_git-lfs-archive-keyring.gpg
+  local SOURCE_KEY="/srv/provision/core/git/apt-keys/github_git-lfs-archive-keyring.gpg"
+  local DEST_KEY="/etc/apt/keyrings/github_git-lfs-archive-keyring.gpg"
+
+  # Ensure keyrings directory exists
+  mkdir -p /etc/apt/keyrings
+
+  if [ ! -f "${SOURCE_KEY}" ]; then
+    vvv_error " ! Git LFS GPG key not found at ${SOURCE_KEY}"
+    return 1
+  fi
+
+  vvv_info " * Installing Git LFS signing key to ${DEST_KEY}"
+  if ! cp -f "${SOURCE_KEY}" "${DEST_KEY}"; then
+    vvv_error " ! Failed to copy Git LFS GPG key to ${DEST_KEY}"
+    return 1
+  fi
+
+  chmod 0644 "${DEST_KEY}"
+  vvv_success " * Git LFS GPG key installed successfully"
 }
 vvv_add_hook register_apt_keys git_register_apt_keys
 
