@@ -166,11 +166,21 @@ export -f nginx_setup
 vvv_add_hook after_packages nginx_setup 40
 
 function vvv_nginx_restart() {
-  if service nginx status > /dev/null; then
-    service nginx restart
+  if service nginx status > /dev/null 2>&1; then
+    vvv_info " * Restarting nginx service..."
+    if ! service nginx restart; then
+      vvv_error " ! Failed to restart nginx service"
+      return 1
+    fi
   else
-    service nginx start
+    vvv_info " * Starting nginx service..."
+    if ! service nginx start; then
+      vvv_error " ! Failed to start nginx service"
+      return 1
+    fi
   fi
+  vvv_success " ✔ nginx service is running"
+  return 0
 }
 
 vvv_add_hook services_restart vvv_nginx_restart

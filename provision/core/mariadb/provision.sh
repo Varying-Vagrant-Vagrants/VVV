@@ -189,14 +189,20 @@ function mysql_setup() {
 
   # Due to systemd dependencies, in docker, mysql service is not auto started
   vvv_info " * Ensuring MariaDB service is started"
-  service mariadb status > /dev/null || service mariadb start
+  if ! service mariadb status > /dev/null 2>&1; then
+    if ! service mariadb start; then
+      vvv_error " ! Failed to start MariaDB service"
+      service mariadb status
+      exit 1
+    fi
+  fi
 
   check_mysql_root_password
 
   # MySQL gives us an error if we restart a non running service, which
   # happens after a `vagrant halt`. Check to see if it's running before
   # deciding whether to start or restart.
-  if service mariadb status > /dev/null; then
+  if service mariadb status > /dev/null 2>&1; then
     vvv_info " * Restarting the mariadb service"
     if ! service mariadb restart; then
       vvv_error " * Restarting the MariaDB failed! Fetching service status."
@@ -204,8 +210,7 @@ function mysql_setup() {
       exit 1
     fi
   else
-    vvv_info " * Restarting mariadb service"
-    service mariadb start
+    vvv_info " * Starting mariadb service"
     if ! service mariadb start; then
       vvv_error " * Starting MariaDB failed! Fetching service status."
       service mariadb status

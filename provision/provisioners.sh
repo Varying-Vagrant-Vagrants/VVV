@@ -7,9 +7,26 @@ if ( type provisioner_begin &>/dev/null ); then
 fi
 
 # backup original file descriptors
+# Ensure file descriptors 6 and 7 are available before duplicating stdout and stderr
 if [[ -z "$VVV_FD_BACKUP_DONE" ]]; then
-  exec 6>&1
-  exec 7>&2
+  # Check if FD 6 is already in use
+  if { : >&6; } 2>/dev/null; then
+    echo "Warning: File descriptor 6 is already in use, skipping stdout backup" >&2
+  else
+    if ! exec 6>&1; then
+      echo "Error: Failed to duplicate stdout to file descriptor 6" >&2
+    fi
+  fi
+
+  # Check if FD 7 is already in use
+  if { : >&7; } 2>/dev/null; then
+    echo "Warning: File descriptor 7 is already in use, skipping stderr backup" >&2
+  else
+    if ! exec 7>&2; then
+      echo "Error: Failed to duplicate stderr to file descriptor 7" >&2
+    fi
+  fi
+
   export VVV_FD_BACKUP_DONE=1
 fi
 
