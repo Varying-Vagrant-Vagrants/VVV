@@ -14,19 +14,80 @@ function nginx_register_apt_sources() {
 }
 vvv_add_hook register_apt_sources nginx_register_apt_sources
 function nginx_register_apt_keys() {
-  # Before running `apt-get update`, we should add the public keys for
-  # the packages that we are installing from non standard sources via
-  # our appended apt source.list
-  if vvv_apt_keys_has '573B FD6B 3D8F BC64 1079  A6AB ABF5 BD82 7BD9 BF62'; then
-    # Retrieve the Nginx signing key from nginx.org
-    vvv_info " * Replacing expired Nginx signing key..."
-    apt-key add /srv/provision/core/nginx/apt-keys/nginx-archive-keyring.gpg
+  # Modern approach: copy GPG key to keyrings directory
+  # This replaces the deprecated apt-key add method
+
+  local SOURCE_KEY="/srv/provision/core/nginx/apt-keys/nginx-archive-keyring.gpg"
+  local DEST_KEY="/etc/apt/keyrings/nginx-archive-keyring.gpg"
+  local KEY_URL="https://nginx.org/keys/nginx_signing.key"
+  local NEEDS_UPDATE=0
+
+  mkdir -p /etc/apt/keyrings
+
+  # Check if we need to update the key
+  if [ -f "${DEST_KEY}" ]; then
+    # Check if the existing key is expired
+    if command -v gpg &> /dev/null; then
+      if gpg --show-keys "${DEST_KEY}" 2>/dev/null | grep -q "expired"; then
+        vvv_warn " * Installed Nginx GPG key has expired, will update"
+        NEEDS_UPDATE=1
+      fi
+    fi
+  else
+    NEEDS_UPDATE=1
   fi
 
-  if ! vvv_apt_keys_has 'nginx'; then
-    # Retrieve the Nginx signing key from nginx.org
-    vvv_info " * Adding Nginx signing key..."
-    apt-key add /srv/provision/core/nginx/apt-keys/nginx-archive-keyring.gpg
+  # If we need to update, prefer source file, fallback to download
+  if [ "${NEEDS_UPDATE}" -eq 1 ] || [ ! -f "${DEST_KEY}" ]; then
+    if [ -f "${SOURCE_KEY}" ]; then
+      # Check if source key is also expired
+      if command -v gpg &> /dev/null; then
+        if gpg --show-keys "${SOURCE_KEY}" 2>/dev/null | grep -q "expired"; then
+          vvv_warn " * Source Nginx GPG key is expired, downloading fresh key from ${KEY_URL}"
+          if curl -fsSL "${KEY_URL}" | gpg --dearmor -o "${SOURCE_KEY}"; then
+            vvv_success " * Downloaded fresh Nginx GPG key"
+          else
+            vvv_error " ! Failed to download fresh Nginx GPG key from ${KEY_URL}"
+            vvv_error " ! Attempting to use existing key anyway"
+          fi
+        fi
+      fi
+
+      vvv_info " * Installing Nginx signing key to ${DEST_KEY}"
+      if ! cp -f "${SOURCE_KEY}" "${DEST_KEY}"; then
+        vvv_error " ! Failed to copy Nginx GPG key to ${DEST_KEY}"
+        return 1
+      fi
+    else
+      # Source file doesn't exist, download directly
+      vvv_warn " * Nginx GPG key file not found at ${SOURCE_KEY}, downloading from ${KEY_URL}"
+      if curl -fsSL "${KEY_URL}" | gpg --dearmor -o "${DEST_KEY}"; then
+        vvv_success " * Downloaded Nginx GPG key to ${DEST_KEY}"
+        # Also save to source location for future use
+        mkdir -p "$(dirname "${SOURCE_KEY}")"
+        cp -f "${DEST_KEY}" "${SOURCE_KEY}"
+      else
+        vvv_error " ! Failed to download Nginx GPG key from ${KEY_URL}"
+        return 1
+      fi
+    fi
+
+    # Set proper permissions (keys must be world-readable)
+    chmod 644 "${DEST_KEY}"
+
+    # Verify the key was installed successfully
+    if [ ! -f "${DEST_KEY}" ]; then
+      vvv_error " ! Nginx GPG key was not successfully installed"
+      return 1
+    fi
+
+    # Legacy support: also copy to trusted.gpg.d for older Ubuntu versions
+    cp -f "${DEST_KEY}" "/etc/apt/trusted.gpg.d/nginx-archive-keyring.gpg"
+    chmod 644 /etc/apt/trusted.gpg.d/nginx-archive-keyring.gpg
+
+    vvv_success " * Nginx GPG key installed successfully"
+  else
+    vvv_info " * Nginx GPG key is up to date"
   fi
 }
 vvv_add_hook register_apt_keys nginx_register_apt_keys

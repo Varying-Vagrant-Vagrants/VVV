@@ -1,3 +1,2 @@
 # Provides PHP
-deb https://ppa.launchpadcontent.net/ondrej/php/ubuntu bionic main
-deb-src https://ppa.launchpadcontent.net/ondrej/php/ubuntu bionic main
+deb [signed-by=/etc/apt/keyrings/php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu bionic main

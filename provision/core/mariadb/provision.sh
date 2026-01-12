@@ -37,13 +37,78 @@ function mariadb_before_packages() {
 vvv_add_hook before_packages mariadb_before_packages
 
 function mariadb_register_apt_keys() {
-  if ! vvv_apt_keys_has 'MariaDB'; then
-    # Apply the MariaDB signing key
-    vvv_info " * Applying the MariaDB signing key..."
-    apt-key add /srv/provision/core/mariadb/apt-keys/mariadb.key
-  fi
+  # Modern approach: copy GPG key to keyrings directory
+  # This replaces the deprecated apt-key add method
+  # The source files already use [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp]
+
+  local SOURCE_KEY="/srv/provision/core/mariadb/apt-keys/mariadb_release_signing_key.pgp"
+  local DEST_KEY="/etc/apt/keyrings/mariadb-keyring.pgp"
+  local KEY_URL="https://supplychain.mariadb.com/mariadb-keyring-2019.gpg"
+  local NEEDS_UPDATE=0
+
   mkdir -p /etc/apt/keyrings
-  cp -f "/srv/provision/core/mariadb/apt-keys/mariadb_release_signing_key.pgp" /etc/apt/keyrings/mariadb-keyring.pgp
+
+  # Check if we need to update the key
+  if [ -f "${DEST_KEY}" ]; then
+    # Check if the existing key is expired
+    if command -v gpg &> /dev/null; then
+      if gpg --show-keys "${DEST_KEY}" 2>/dev/null | grep -q "expired"; then
+        vvv_warn " * Installed MariaDB GPG key has expired, will update"
+        NEEDS_UPDATE=1
+      fi
+    fi
+  else
+    NEEDS_UPDATE=1
+  fi
+
+  # If we need to update, prefer source file, fallback to download
+  if [ "${NEEDS_UPDATE}" -eq 1 ] || [ ! -f "${DEST_KEY}" ]; then
+    if [ -f "${SOURCE_KEY}" ]; then
+      # Check if source key is also expired
+      if command -v gpg &> /dev/null; then
+        if gpg --show-keys "${SOURCE_KEY}" 2>/dev/null | grep -q "expired"; then
+          vvv_warn " * Source MariaDB GPG key is expired, downloading fresh key from ${KEY_URL}"
+          if curl -fsSL "${KEY_URL}" -o "${SOURCE_KEY}"; then
+            vvv_success " * Downloaded fresh MariaDB GPG key"
+          else
+            vvv_error " ! Failed to download fresh MariaDB GPG key from ${KEY_URL}"
+            vvv_error " ! Attempting to use existing key anyway"
+          fi
+        fi
+      fi
+
+      vvv_info " * Installing MariaDB signing key to ${DEST_KEY}"
+      if ! cp -f "${SOURCE_KEY}" "${DEST_KEY}"; then
+        vvv_error " ! Failed to copy MariaDB GPG key to ${DEST_KEY}"
+        return 1
+      fi
+    else
+      # Source file doesn't exist, download directly
+      vvv_warn " * MariaDB GPG key file not found at ${SOURCE_KEY}, downloading from ${KEY_URL}"
+      if curl -fsSL "${KEY_URL}" -o "${DEST_KEY}"; then
+        vvv_success " * Downloaded MariaDB GPG key to ${DEST_KEY}"
+        # Also save to source location for future use
+        mkdir -p "$(dirname "${SOURCE_KEY}")"
+        cp -f "${DEST_KEY}" "${SOURCE_KEY}"
+      else
+        vvv_error " ! Failed to download MariaDB GPG key from ${KEY_URL}"
+        return 1
+      fi
+    fi
+
+    # Set proper permissions (keys must be world-readable)
+    chmod 644 "${DEST_KEY}"
+
+    # Verify the key was copied successfully
+    if [ ! -f "${DEST_KEY}" ]; then
+      vvv_error " ! MariaDB GPG key was not successfully installed"
+      return 1
+    fi
+
+    vvv_success " * MariaDB GPG key installed successfully"
+  else
+    vvv_info " * MariaDB GPG key is up to date"
+  fi
 }
 vvv_add_hook register_apt_keys mariadb_register_apt_keys
 

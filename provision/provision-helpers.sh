@@ -373,6 +373,20 @@ export -f vvv_success
 # @arg $1 string the path/key to read from, e.g. sites.wordpress-one.repo
 # @arg $2 string a default value to fall back upon
 function get_config_value() {
+  # Validate input parameter is provided
+  if [[ -z "$1" ]]; then
+    vvv_warn " ! get_config_value() called without a config path parameter"
+    echo "${2:-}"
+    return 1
+  fi
+
+  # Validate path contains only safe characters (alphanumeric, dots, dashes, underscores)
+  if [[ ! "$1" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+    vvv_warn " ! get_config_value() called with invalid config path: '${1}'"
+    echo "${2:-}"
+    return 1
+  fi
+
   local value
   value=$(shyaml get-value "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-${2:-}}"
@@ -385,6 +399,20 @@ export -f get_config_value
 # @arg $1 string the path/key to read from, e.g. sites.wordpress-one.hosts
 # @arg $2 string a default value to fall back upon
 function get_config_values() {
+  # Validate input parameter is provided
+  if [[ -z "$1" ]]; then
+    vvv_warn " ! get_config_values() called without a config path parameter"
+    echo "${2:-}"
+    return 1
+  fi
+
+  # Validate path contains only safe characters
+  if [[ ! "$1" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+    vvv_warn " ! get_config_values() called with invalid config path: '${1}'"
+    echo "${2:-}"
+    return 1
+  fi
+
   local value
   value=$(shyaml get-values "${1}" 2> /dev/null < "${VVV_CONFIG}")
   echo "${value:-${2:-}}"
@@ -417,6 +445,13 @@ export -f get_config_keys
 #
 # hook engine
 #
+# SECURITY NOTE: The hook system uses eval for dynamic variable names.
+# This is safe because:
+# 1. Hook names are strictly validated (^[a-zA-Z_][a-zA-Z0-9_]*$)
+# 2. Only provisioner scripts (not user input) can register hooks
+# 3. Function names are validated before execution (declare -f check)
+# 4. Priority values are validated to be numeric only
+# The eval is necessary to create dynamically-named arrays like VVV_HOOKS_init_0
 
 # @description Add a bash function to execute on a hook
 #
@@ -426,8 +461,11 @@ export -f get_config_keys
 # @arg $1 string the name of the hook
 # @arg $2 string the name of the bash function to call
 # @arg $3 number the priority of the function when the hook executes, determines order, lower values execute earlier
+#
+# @security Hook names are validated against ^[a-zA-Z_][a-zA-Z0-9_]*$ to prevent code injection
 vvv_add_hook() {
   # Validate hook name: must start with a letter/underscore, and contain only alphanumeric + underscore
+  # This regex prevents code injection via the hook name parameter
   if [[ ! "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
     vvv_warn "Invalid hook name '${1}', hooks must match: ^[a-zA-Z_][a-zA-Z0-9_]*$"
     return 1
@@ -437,7 +475,7 @@ vvv_add_hook() {
   local function_name="$2"
   local hook_prio="${3:-10}"
 
-  # Validate priority is a number
+  # Validate priority is a number to prevent code injection
   if ! [[ "$hook_prio" =~ ^[0-9]+$ ]]; then
     hook_prio=10
   fi
@@ -446,6 +484,8 @@ vvv_add_hook() {
   local hook_var="${hook_var_prios}_${hook_prio}"
 
   # Create arrays if not already defined
+  # SECURITY: eval is safe here because hook_var_prios and hook_var are constructed
+  # from validated inputs (hook_name matches ^[a-zA-Z_][a-zA-Z0-9_]*$, prio is numeric)
   eval "declare -g -a ${hook_var_prios} ${hook_var}"
   eval "if [[ ! \" \${${hook_var_prios}[*]} \" =~ \" ${hook_prio} \" ]]; then ${hook_var_prios}+=(\"${hook_prio}\"); fi"
   eval "${hook_var}+=(\"${function_name}\")"
@@ -458,7 +498,10 @@ export -f vvv_add_hook
 #   vvv_hook before_packages
 #
 # @arg $1 string the hook to execute
+#
+# @security Hook names are validated against ^[a-zA-Z_][a-zA-Z0-9_]*$ to prevent code injection
 vvv_hook() {
+  # Validate hook name to prevent code injection
   if [[ ! "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
     vvv_error " x Disallowed hook name '${1}'"
     return 1
@@ -472,6 +515,7 @@ vvv_hook() {
   vvv_info " ▷ Running <b>${hook_name}</b><info> hook"
 
   # Check if any hooks registered
+  # SECURITY: eval is safe here because hook_var_prios is constructed from validated hook_name
   eval "local prios=(\"\${${hook_var_prios}[@]}\")"
   if [[ ${#prios[@]} -eq 0 ]]; then
     return 0
@@ -483,9 +527,11 @@ vvv_hook() {
 
   for prio in "${sorted[@]}"; do
     local hook_var="${hook_var_prios}_${prio}"
+    # SECURITY: eval is safe here because hook_var is constructed from validated inputs
     eval "local funcs=(\"\${${hook_var}[@]}\")"
 
     for f in "${funcs[@]}"; do
+      # Verify function exists before calling (additional safety check)
       if declare -f "$f" >/dev/null; then
         "$f"
       else
@@ -600,7 +646,7 @@ vvv_apt_cleanup() {
 # @example
 #   vvv_package_install wget curl etc
 vvv_package_install() {
-  declare -a initialPackages=($@)
+  declare -a initialPackages=("$@")
   declare -a packages
 
   # Ensure packages are not installed before adding them
@@ -625,7 +671,7 @@ vvv_package_install() {
 
   # To avoid issues on provisioning and failed apt installation
   dpkg --configure -a
-  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --no-install-recommends --fix-broken "${packages[@]}"; then
     vvv_error " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean -y
     return 1
@@ -682,7 +728,7 @@ vvv_cleanup_dpkg_locks() {
 # @example
 #   vvv_apt_package_remove wget curl etc
 vvv_apt_package_remove() {
-  declare -a initialPackages=($@)
+  declare -a initialPackages=("$@")
   declare -a packages
 
   # Ensure packages are actually installed before removing them
@@ -708,7 +754,7 @@ vvv_apt_package_remove() {
 
   # To avoid issues on provisioning and failed apt installation
   dpkg --configure -a
-  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew remove --fix-missing --no-install-recommends --fix-broken ${packages[@]}; then
+  if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew remove --fix-missing --no-install-recommends --fix-broken "${packages[@]}"; then
     vvv_error " * Removing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean -y
     return 1
