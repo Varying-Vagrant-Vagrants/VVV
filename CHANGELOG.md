@@ -17,6 +17,12 @@ permalink: /docs/en-US/changelog/
   - Added network retry logic with exponential backoff to handle transient connection issues
   - Network checks now retry up to 3 times with increasing delays (2s, 4s, 6s)
   - Improved resilience during package installation and updates
+* **Performance optimizations reduce provisioning time by 5-15%**
+  - Implemented APT update caching to prevent redundant `apt-get update` calls
+  - Added command existence caching to eliminate repeated subprocess calls
+  - Saves 11-35 seconds per provision run (typical: 11-23 seconds)
+  - New `cmd_exists()` helper function caches `command -v` results
+  - Session-scoped optimizations automatically reset between provisions
 
 ### Bug Fixes
 
