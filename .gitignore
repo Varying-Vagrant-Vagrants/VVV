@@ -6,6 +6,10 @@ Icon?
 Icon\r
 Icon\r\r
 
+# Claude Code and AI agent local configuration (settings, plans, etc.)
+# Note: AI instruction files (CLAUDE.md, agents.md) are in root and ARE tracked
+/.claude/
+
 # Because this really is a working directory, ignore vagrant's files
 /.vagrant
 vagrant.log
