@@ -69,6 +69,90 @@ This script:
 
 ---
 
+## SiteGround Git Deploy Commands
+
+### Git-Based Deployment Workflow
+
+Deploy themes and plugins by SSH'ing to SiteGround and running `git pull`.
+
+**Workflow:**
+1. Make changes locally in VVV
+2. Test at `sitename.test`
+3. Commit and push to GitHub
+4. Run deploy script to `git pull` on production
+
+### Deploy Commands
+```bash
+cd /home/jim/Projects/vagrant-local/sync/
+
+# Interactive mode
+./git-deploy.sh
+
+# Deploy all themes + plugins for a site
+./git-deploy.sh deploy uptownlifegroup
+
+# Deploy specific theme
+./git-deploy.sh deploy-theme uptownlifegroup pegasus
+
+# Deploy specific plugin
+./git-deploy.sh deploy-plugin uptownlifegroup pegasus-carousel
+
+# Check git status on remote
+./git-deploy.sh status uptownlifegroup
+
+# List configured sites
+./git-deploy.sh list
+```
+
+### First-Time Setup (Clone Repos on Remote)
+```bash
+# Setup GitHub SSH and clone all repos on SiteGround
+./setup-remote-git.sh uptownlifegroup
+```
+
+This script will:
+- Add GitHub to known_hosts on remote
+- Show/generate SSH key (add to GitHub)
+- Clone theme and plugin repos from GitHub
+
+### Add New Site
+```bash
+./add-site.sh
+```
+
+### Site Configuration
+Stored in `sync/sites.json`:
+```json
+{
+  "sites": {
+    "uptownlifegroup": {
+      "ssh_user": "u2337-sdvymoa8u5vg",
+      "ssh_host": "gvam1201.siteground.biz",
+      "ssh_port": 18765,
+      "remote_path": "www/uptownlifegroup.com/public_html",
+      "sync_themes": ["pegasus", "pegasus-child"],
+      "sync_plugins": ["pegasus-carousel", "pegasus-slider", ...]
+    }
+  }
+}
+```
+
+### Complete Deployment Example
+```bash
+# 1. Make changes locally
+cd /home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/themes/pegasus/
+# ... edit files ...
+
+# 2. Commit and push
+git add . && git commit -m "Update header styles" && git push
+
+# 3. Deploy to production
+cd /home/jim/Projects/vagrant-local/sync/
+./git-deploy.sh deploy-theme uptownlifegroup pegasus
+```
+
+---
+
 ## Vagrant & VVV Core Commands
 
 ### Vagrant Operations

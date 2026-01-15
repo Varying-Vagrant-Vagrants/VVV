@@ -1,5 +1,6 @@
 # Stuff that pops up locally for me - @jeremyfelt
 ../node_modules/
+node_modules/
 *.sublime*
 .DS_Store
 .idea

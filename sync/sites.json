@@ -1,0 +1,21 @@
+{
+  "sites": {
+    "uptownlifegroup": {
+      "local_name": "uptownlifegroup",
+      "remote_domain": "uptownlifegroup.com",
+      "ssh_user": "u2337-sdvymoa8u5vg",
+      "ssh_host": "gvam1201.siteground.biz",
+      "ssh_port": 18765,
+      "remote_path": "www/uptownlifegroup.com/public_html",
+      "sync_themes": ["pegasus", "pegasus-child"],
+      "sync_plugins": ["pegasus-carousel", "pegasus-slider", "pegasus-toggleslide", "pegasus-accordion", "wp-bootstrap-hooks"],
+      "exclude_patterns": [".git", ".gitignore", "node_modules", ".DS_Store", "*.log", ".sass-cache"],
+      "enabled": true
+    }
+  },
+  "defaults": {
+    "ssh_port": 18765,
+    "remote_base_path": "www",
+    "exclude_patterns": [".git", ".gitignore", "node_modules", ".DS_Store", "*.log", ".sass-cache", "*.map"]
+  }
+}
