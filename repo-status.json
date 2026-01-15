@@ -1,5 +1,5 @@
 {
-  "scan_date": "2025-07-11T20:27:43-04:00",
+  "scan_date": "2025-08-25T00:34:01-04:00",
   "repositories": [
     {
       "path": "/home/jim/Projects/vagrant-local/www/cadence-group",
@@ -37,11 +37,11 @@
     {
       "path": "/home/jim/Projects/vagrant-local/www/cadence-group/public_html/wp-content/themes/pegasus",
       "remote_url": "git@github.com:Visionquest-Development/pegasus.git",
-      "current_branch": "master",
+      "current_branch": "cadence_temp_changes",
       "default_branch": "master",
       "has_uncommitted_changes": true,
       "has_untracked_files": false,
-      "behind_remote": true,
+      "behind_remote": false,
       "ahead_remote": false,
       "status": "WARNING"
     },
@@ -51,7 +51,7 @@
       "current_branch": "cadence_group_theme",
       "default_branch": "master",
       "has_uncommitted_changes": true,
-      "has_untracked_files": false,
+      "has_untracked_files": true,
       "behind_remote": false,
       "ahead_remote": false,
       "status": "WARNING"
@@ -94,9 +94,9 @@
       "remote_url": "git@github.com:Visionquest-Development/pegasus.git",
       "current_branch": "master",
       "default_branch": "master",
-      "has_uncommitted_changes": true,
-      "has_untracked_files": true,
-      "behind_remote": false,
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": true,
       "ahead_remote": false,
       "status": "WARNING"
     },
@@ -108,6 +108,17 @@
       "has_uncommitted_changes": true,
       "has_untracked_files": true,
       "behind_remote": false,
+      "ahead_remote": false,
+      "status": "WARNING"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/ourpalsplace/public_html/wp-content/plugins/pegasus-accordion",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-accordion.git",
+      "current_branch": "main",
+      "default_branch": "main",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": true,
       "ahead_remote": false,
       "status": "WARNING"
     },
@@ -169,11 +180,11 @@
     {
       "path": "/home/jim/Projects/vagrant-local/www/ourpalsplace/public_html/wp-content/themes/pegasus",
       "remote_url": "git@github.com:Visionquest-Development/pegasus.git",
-      "current_branch": "master",
+      "current_branch": "ourpalsplaceopp_updates_2025",
       "default_branch": "master",
-      "has_uncommitted_changes": true,
+      "has_uncommitted_changes": false,
       "has_untracked_files": false,
-      "behind_remote": true,
+      "behind_remote": false,
       "ahead_remote": false,
       "status": "WARNING"
     },
@@ -190,6 +201,17 @@
     },
     {
       "path": "/home/jim/Projects/vagrant-local/www/outlawcoffe",
+      "remote_url": "https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/outlawcoffee",
       "remote_url": "https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git",
       "current_branch": "master",
       "default_branch": "master",
@@ -393,9 +415,9 @@
       "default_branch": "master",
       "has_uncommitted_changes": false,
       "has_untracked_files": false,
-      "behind_remote": false,
+      "behind_remote": true,
       "ahead_remote": false,
-      "status": "OK"
+      "status": "WARNING"
     },
     {
       "path": "/home/jim/Projects/vagrant-local/www/pegasus/public_html/wp-content/themes/pegasus-child",
@@ -624,9 +646,9 @@
       "default_branch": "master",
       "has_uncommitted_changes": false,
       "has_untracked_files": false,
-      "behind_remote": false,
+      "behind_remote": true,
       "ahead_remote": false,
-      "status": "OK"
+      "status": "WARNING"
     },
     {
       "path": "/home/jim/Projects/vagrant-local/www/pegasustheme/public_html/wp-content/themes/pegasus-child",
@@ -657,9 +679,9 @@
       "default_branch": "master",
       "has_uncommitted_changes": false,
       "has_untracked_files": false,
-      "behind_remote": false,
+      "behind_remote": true,
       "ahead_remote": false,
-      "status": "OK"
+      "status": "WARNING"
     },
     {
       "path": "/home/jim/Projects/vagrant-local/www/qbiqcamp",
@@ -688,7 +710,7 @@
       "remote_url": "git@github.com:Visionquest-Development/pegasus.git",
       "current_branch": "master",
       "default_branch": "master",
-      "has_uncommitted_changes": true,
+      "has_uncommitted_changes": false,
       "has_untracked_files": false,
       "behind_remote": true,
       "ahead_remote": false,
@@ -698,6 +720,39 @@
       "path": "/home/jim/Projects/vagrant-local/www/qbiqcamp/public_html/wp-content/themes/pegasus-child",
       "remote_url": "git@github.com:Visionquest-Development/pegasus-child.git",
       "current_branch": "qbiqcamp_theme",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "WARNING"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/russelcontracting",
+      "remote_url": "https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/sagecnc",
+      "remote_url": "https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/sagecnc/public_html/wp-content/themes/pegasus-child",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-child.git",
+      "current_branch": "sage_theme",
       "default_branch": "master",
       "has_uncommitted_changes": false,
       "has_untracked_files": false,
@@ -723,9 +778,9 @@
       "default_branch": "master",
       "has_uncommitted_changes": false,
       "has_untracked_files": false,
-      "behind_remote": false,
+      "behind_remote": true,
       "ahead_remote": false,
-      "status": "OK"
+      "status": "WARNING"
     },
     {
       "path": "/home/jim/Projects/vagrant-local/www/theloft/public_html/wp-content/themes/pegasus-child",
@@ -737,6 +792,116 @@
       "behind_remote": false,
       "ahead_remote": false,
       "status": "WARNING"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup",
+      "remote_url": "https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/plugins/pegasus-carousel",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-carousel.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/plugins/pegasus-slider",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-slider.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/plugins/pegasus-tabs",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-tabs.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/plugins/pegasus-toggleslide",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-toggleslide.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": true,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "WARNING"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/plugins/pegasus-wow",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-wow.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/themes/pegasus",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": true,
+      "has_untracked_files": false,
+      "behind_remote": true,
+      "ahead_remote": false,
+      "status": "WARNING"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/themes/pegasus-child",
+      "remote_url": "git@github.com:Visionquest-Development/pegasus-child.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": true,
+      "has_untracked_files": true,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "WARNING"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/vineandvision",
+      "remote_url": "https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
+    },
+    {
+      "path": "/home/jim/Projects/vagrant-local/www/visionquestgoods",
+      "remote_url": "https://github.com/Varying-Vagrant-Vagrants/custom-site-template.git",
+      "current_branch": "master",
+      "default_branch": "master",
+      "has_uncommitted_changes": false,
+      "has_untracked_files": false,
+      "behind_remote": false,
+      "ahead_remote": false,
+      "status": "OK"
     },
     {
       "path": "/home/jim/Projects/vagrant-local/www/wordpress-one",
