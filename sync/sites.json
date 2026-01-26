@@ -1,21 +1,141 @@
 {
   "sites": {
-    "uptownlifegroup": {
-      "local_name": "uptownlifegroup",
-      "remote_domain": "uptownlifegroup.com",
+    "ulg": {
+      "name": "ULG Website",
+      "domain": "uptownlifegroup.com",
       "ssh_user": "u2337-sdvymoa8u5vg",
       "ssh_host": "gvam1201.siteground.biz",
-      "ssh_port": 18765,
-      "remote_path": "www/uptownlifegroup.com/public_html",
-      "sync_themes": ["pegasus", "pegasus-child"],
-      "sync_plugins": ["pegasus-carousel", "pegasus-slider", "pegasus-toggleslide", "pegasus-accordion", "wp-bootstrap-hooks"],
-      "exclude_patterns": [".git", ".gitignore", "node_modules", ".DS_Store", "*.log", ".sass-cache"],
-      "enabled": true
+      "remote_path": "/home/u2337-sdvymoa8u5vg/www/uptownlifegroup.com/public_html",
+      "themes": {
+        "pegasus": {
+          "branch": "master"
+        },
+        "pegasus-child": {
+          "branch": "ulg_theme"
+        }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-slider",
+        "pegasus-toggleslide",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "ulg-events": {
+      "name": "ULG Events",
+      "domain": "events.uptownlifegroup.com",
+      "ssh_user": "u2337-sdvymoa8u5vg",
+      "ssh_host": "gvam1201.siteground.biz",
+      "remote_path": "/home/u2337-sdvymoa8u5vg/www/events.uptownlifegroup.com/public_html",
+      "themes": {
+        "pegasus": {
+          "branch": "master"
+        },
+        "pegasus-child": {
+          "branch": "ulg_events_theme"
+        }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-slider",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "theloft": {
+      "name": "The Loft",
+      "domain": "theloft.com",
+      "ssh_user": "u2322-twgfllmscyih",
+      "ssh_host": "gvam1201.siteground.biz",
+      "remote_path": "/home/u2322-twgfllmscyih/www/theloft.com/public_html",
+      "themes": {
+        "pegasus": {
+          "branch": "master"
+        },
+        "pegasus-child": {
+          "branch": "theloft2025_theme"
+        }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-packery",
+        "pegasus-slider",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "mabellas": {
+      "name": "Mabellas",
+      "domain": "mabellas.com",
+      "ssh_user": "u2334-rmtgm55yo6gg",
+      "ssh_host": "gvam1201.siteground.biz",
+      "remote_path": "/home/u2334-rmtgm55yo6gg/www/mabellas.com/public_html",
+      "themes": {
+        "pegasus": {
+          "branch": "master"
+        },
+        "pegasus-child": {
+          "branch": "mabellas_theme"
+        }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-slider",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "saltcellar": {
+      "name": "Salt Cellar",
+      "domain": "saltcellar.com",
+      "ssh_user": "u1922-ox3nr6uplk2h",
+      "ssh_host": "gvam1248.siteground.biz",
+      "remote_path": "/home/u1922-ox3nr6uplk2h/www/saltcellar.com/public_html",
+      "themes": {
+        "pegasus": {
+          "branch": "master"
+        },
+        "pegasus-child": {
+          "branch": "saltcellar_theme"
+        }
+      },
+      "plugins": [
+        "pegasus-tabs",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "mixmarket": {
+      "name": "The Mix Market",
+      "domain": "themixmarket.com",
+      "ssh_user": "u1926-nm5r7lzdccbc",
+      "ssh_host": "gvam1248.siteground.biz",
+      "remote_path": "/home/u1926-nm5r7lzdccbc/www/themixmarket.com/public_html",
+      "themes": {
+        "pegasus": {
+          "branch": "master"
+        },
+        "pegasus-child": {
+          "branch": "mixmarket_theme"
+        }
+      },
+      "plugins": [
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "tommygs": {
+      "name": "Tommy Gs",
+      "domain": "tommygs.com",
+      "ssh_user": "u1929-p96clzjdofva",
+      "ssh_host": "gvam1248.siteground.biz",
+      "remote_path": "/home/u1929-p96clzjdofva/www/tommygs.com/public_html",
+      "themes": {
+        "pegasus": {
+          "branch": "master"
+        },
+        "pegasus-child": {
+          "branch": "tommygs_theme"
+        }
+      },
+      "plugins": [
+        "wp-bootstrap-hooks"
+      ]
     }
-  },
-  "defaults": {
-    "ssh_port": 18765,
-    "remote_base_path": "www",
-    "exclude_patterns": [".git", ".gitignore", "node_modules", ".DS_Store", "*.log", ".sass-cache", "*.map"]
   }
 }
