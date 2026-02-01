@@ -1,0 +1,99 @@
+sname: Deploy ULG Sites Themes
+
+on:
+  push:
+    branches:
+      - ulg_theme
+      - ulg_events_theme
+      - theloft2025_theme
+      - mabellas_theme
+      - saltcellar_theme
+      - mixmarket_theme
+      - tommygs_theme
+    paths:
+      - "www/uptownlifegroup/public_html/wp-content/themes/pegasus-child/**"
+      - "www/ulgevents/public_html/wp-content/themes/pegasus-child/**"
+      - "www/theloftnew/public_html/wp-content/themes/pegasus-child/**"
+      - "www/mabellas/public_html/wp-content/themes/pegasus-child/**"
+      - "www/saltcellar/public_html/wp-content/themes/pegasus-child/**"
+      - "www/mixmarket/public_html/wp-content/themes/pegasus-child/**"
+      - "www/tommygs/public_html/wp-content/themes/pegasus-child/**"
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    name: Deploy theme (matrix)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        site:
+          - name: ULG
+            branch: ulg_theme
+            host: gvam1201.siteground.biz
+            user: u2337-sdvymoa8u5vg
+            remote_path: /home/u2337-sdvymoa8u5vg/www/uptownlifegroup.com/public_html/wp-content/themes/pegasus-child
+            local_path: www/uptownlifegroup/public_html/wp-content/themes/pegasus-child
+          - name: ULG Events
+            branch: ulg_events_theme
+            host: gvam1201.siteground.biz
+            user: u2337-sdvymoa8u5vg
+            remote_path: /home/u2337-sdvymoa8u5vg/www/events.uptownlifegroup.com/public_html/wp-content/themes/pegasus-child
+            local_path: www/ulgevents/public_html/wp-content/themes/pegasus-child
+          - name: The Loft
+            branch: theloft2025_theme
+            host: gvam1201.siteground.biz
+            user: u2322-twgfllmscyih
+            remote_path: /home/u2322-twgfllmscyih/www/theloft.com/public_html/wp-content/themes/pegasus-child
+            local_path: www/theloftnew/public_html/wp-content/themes/pegasus-child
+          - name: Mabellas
+            branch: mabellas_theme
+            host: gvam1201.siteground.biz
+            user: u2334-rmtgm55yo6gg
+            remote_path: /home/u2334-rmtgm55yo6gg/www/mabellas.com/public_html/wp-content/themes/pegasus-child
+            local_path: www/mabellas/public_html/wp-content/themes/pegasus-child
+          - name: Saltcellar
+            branch: saltcellar_theme
+            host: gvam1248.siteground.biz
+            user: u1922-ox3nr6uplk2h
+            remote_path: /home/u1922-ox3nr6uplk2h/www/mabellas.com/public_html/wp-content/themes/pegasus-child
+            local_path: www/saltcellar/public_html/wp-content/themes/pegasus-child
+          - name: The Mix Market
+            branch: mixmarket_theme
+            host: gvam1248.siteground.biz
+            user: u1926-nm5r7lzdccbc
+            remote_path: /home/u1926-nm5r7lzdccbc/www/mabellas.com/public_html/wp-content/themes/pegasus-child
+            local_path: www/mixmarket/public_html/wp-content/themes/pegasus-child
+          - name: TommyG's
+            branch: tommygs_theme
+            host: gvam1248.siteground.biz
+            user: u1929-p96clzjdofva
+            remote_path: /home/u1929-p96clzjdofva/www/mabellas.com/public_html/wp-content/themes/pegasus-child
+            local_path: www/tommygs/public_html/wp-content/themes/pegasus-child
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Detect changes for site
+        id: changes
+        shell: bash
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.site.local_path }}/"; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Deploy via SSH
+        if: steps.changes.outputs.changed == 'true' && github.ref_name == matrix.site.branch
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ matrix.site.host }}
+          username: ${{ matrix.site.user }}
+          key: ${{ secrets.SITEGROUND_SSH_KEY }}
+          port: ${{ secrets.SITEGROUND_SSH_PORT }}
+          script: |
+            cd ${{ matrix.site.remote_path }}
+            git fetch --prune origin
+            git checkout ${{ matrix.site.branch }}
+            git pull origin ${{ matrix.site.branch }}

@@ -1,0 +1,92 @@
+{
+  "sites": {
+    "ulg": {
+      "name": "ULG Website",
+      "local_dir": "uptownlifegroup",
+      "themes": {
+        "pegasus": { "branch": "master" },
+        "pegasus-child": { "branch": "ulg_theme" }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-slider",
+        "pegasus-toggleslide",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "ulg-events": {
+      "name": "ULG Events",
+      "local_dir": "ulgevents",
+      "themes": {
+        "pegasus": { "branch": "master" },
+        "pegasus-child": { "branch": "ulg_events_theme" }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-slider",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "theloft": {
+      "name": "The Loft",
+      "local_dir": "theloftnew",
+      "themes": {
+        "pegasus": { "branch": "master" },
+        "pegasus-child": { "branch": "theloft2025_theme" }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-packery",
+        "pegasus-slider",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "mabellas": {
+      "name": "Mabellas",
+      "local_dir": "mabellas",
+      "themes": {
+        "pegasus": { "branch": "master" },
+        "pegasus-child": { "branch": "mabellas_theme" }
+      },
+      "plugins": [
+        "pegasus-carousel",
+        "pegasus-slider",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "saltcellar": {
+      "name": "Salt Cellar",
+      "local_dir": "saltcellar",
+      "themes": {
+        "pegasus": { "branch": "master" },
+        "pegasus-child": { "branch": "saltcellar_theme" }
+      },
+      "plugins": [
+        "pegasus-tabs",
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "mixmarket": {
+      "name": "The Mix Market",
+      "local_dir": "mixmarket",
+      "themes": {
+        "pegasus": { "branch": "master" },
+        "pegasus-child": { "branch": "mixmarket_theme" }
+      },
+      "plugins": [
+        "wp-bootstrap-hooks"
+      ]
+    },
+    "tommygs": {
+      "name": "Tommy Gs",
+      "local_dir": "tommygs",
+      "themes": {
+        "pegasus": { "branch": "master" },
+        "pegasus-child": { "branch": "tommygs_theme" }
+      },
+      "plugins": [
+        "wp-bootstrap-hooks"
+      ]
+    }
+  }
+}

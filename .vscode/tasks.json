@@ -69,6 +69,121 @@
 				"panel": "new"
 			},
 			"problemMatcher": []
+		},
+		{
+			"label": "ULG: Open Theme Terminals",
+			"type": "shell",
+			"command": "echo",
+			"args": ["Opening ULG theme terminals..."],
+			"dependsOn": [
+				"ULG: Mabellas Theme",
+				"ULG: Mix Market Theme",
+				"ULG: Saltcellar Theme",
+				"ULG: The Loft Theme",
+				"ULG: TommyG's Theme",
+				"ULG: ULG Events Theme",
+				"ULG: Uptown Life Group Theme"
+			],
+			"dependsOrder": "parallel",
+			"problemMatcher": []
+		},
+		{
+			"label": "ULG: Mabellas Theme",
+			"type": "shell",
+			"command": "zsh",
+			"args": ["-lc", "git status; exec zsh -l"],
+			"options": {
+				"cwd": "/home/jim/Projects/vagrant-local/www/mabellas/public_html/wp-content/themes/pegasus-child"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "ULG: Mix Market Theme",
+			"type": "shell",
+			"command": "zsh",
+			"args": ["-lc", "git status; exec zsh -l"],
+			"options": {
+				"cwd": "/home/jim/Projects/vagrant-local/www/mixmarket/public_html/wp-content/themes/pegasus-child"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "ULG: Saltcellar Theme",
+			"type": "shell",
+			"command": "zsh",
+			"args": ["-lc", "git status; exec zsh -l"],
+			"options": {
+				"cwd": "/home/jim/Projects/vagrant-local/www/saltcellar/public_html/wp-content/themes/pegasus-child"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "ULG: The Loft Theme",
+			"type": "shell",
+			"command": "zsh",
+			"args": ["-lc", "git status; exec zsh -l"],
+			"options": {
+				"cwd": "/home/jim/Projects/vagrant-local/www/theloftnew/public_html/wp-content/themes/pegasus-child"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "ULG: TommyG's Theme",
+			"type": "shell",
+			"command": "zsh",
+			"args": ["-lc", "git status; exec zsh -l"],
+			"options": {
+				"cwd": "/home/jim/Projects/vagrant-local/www/tommygs/public_html/wp-content/themes/pegasus-child"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "ULG: ULG Events Theme",
+			"type": "shell",
+			"command": "zsh",
+			"args": ["-lc", "git status; exec zsh -l"],
+			"options": {
+				"cwd": "/home/jim/Projects/vagrant-local/www/ulgevents/public_html/wp-content/themes/pegasus-child"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "ULG: Uptown Life Group Theme",
+			"type": "shell",
+			"command": "zsh",
+			"args": ["-lc", "git status; exec zsh -l"],
+			"options": {
+				"cwd": "/home/jim/Projects/vagrant-local/www/uptownlifegroup/public_html/wp-content/themes/pegasus-child"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
 		}
 	]
 }
