@@ -138,7 +138,6 @@ Only these types of changes are appropriate for VVV pull requests:
 ## Files That ARE Tracked in www/
 
 Only these specific files in `www/` are committed to VVV:
-- `www/vvv-hosts` - Default hostname mappings file
 - `www/default/` directory - VVV dashboard and utilities:
   - `www/default/index.php` - VVV dashboard page
   - `www/default/phpinfo/index.php` - PHP version info page
