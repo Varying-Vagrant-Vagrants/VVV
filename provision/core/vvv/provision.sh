@@ -90,11 +90,14 @@ function vvv_register_apt_sources() {
 vvv_add_hook register_apt_sources vvv_register_apt_sources 0
 
 function vvv_register_keys() {
-  if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
-    # Apply the VVV signing key
-    vvv_info " * Applying the VVV mirror signing key..."
-    apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
-  fi
+  # The VVV mirror this key signs is only enabled on older releases (e.g. bionic),
+  # which still rely on the legacy apt-key trust store. apt-key was removed in
+  # Ubuntu 26.04+, so skip cleanly where it no longer exists.
+  command -v apt-key >/dev/null 2>&1 || return 0
+  # apt-key add is idempotent, so re-importing on each run is harmless and lets
+  # VVV core avoid depending on the legacy vvv_apt_keys_has() lookup.
+  vvv_info " * Applying the VVV mirror signing key..."
+  apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
 }
 vvv_add_hook register_apt_sources vvv_register_keys 0
 
