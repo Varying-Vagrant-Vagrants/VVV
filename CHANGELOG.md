@@ -12,6 +12,7 @@ permalink: /docs/en-US/changelog/
 
 * Added the `stow`, `tmux`, `neovim`, `fzf`, `httpie`, and `ghostscript` apt packages ( #2771 )
 * Adds the `yq` package ( #2774 )
+* Switched the base box to Ubuntu 26.04 LTS (Resolute Raccoon) for newly created VMs; existing 24.04 VMs are unaffected until destroyed and recreated ( #2796 )
 * Added automated GitHub Actions workflow to check and update GPG keys monthly
 * **Improved provisioning reliability and error handling**
   - Added network retry logic with exponential backoff to handle transient connection issues
