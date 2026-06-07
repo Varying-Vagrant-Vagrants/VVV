@@ -122,3 +122,102 @@ jobs:
         with:
           name: logs-on-docker
           path: "${{ github.workspace }}/log"
+
+  on-docker-26:
+    name: Ubuntu 26 Docker Provisioner
+    runs-on: ubuntu-latest
+    container: pentatonicfunk/vagrant-ubuntu-base-images:26.04
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Vagrant Like Environment
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -yq autoclean
+
+          # Create vagrant group if it doesn't exist
+          if ! getent group vagrant >/dev/null; then
+            echo "Creating vagrant group"
+            sudo groupadd -g 2000 vagrant
+          fi
+
+          # Create vagrant user if it doesn't exist
+          if ! id -u vagrant >/dev/null 2>&1; then
+            echo "Creating vagrant user"
+            sudo useradd -u 2000 -g vagrant -m vagrant
+          fi
+
+          # Create /srv if it doesn't exist
+          if [ ! -d "/srv" ]; then
+            echo "Preparing /srv"
+            sudo mkdir -p /srv
+            sudo chown vagrant:vagrant /srv
+          fi
+
+          echo "Copying files.."
+
+          # copy files provided by vagrant
+          sudo cp -f "$GITHUB_WORKSPACE/config/default-config.yml" "$GITHUB_WORKSPACE/config/config.yml"
+          sudo cp -f "$GITHUB_WORKSPACE/version" "/home/vagrant/version"
+
+          sudo mkdir -p /srv/certificates
+          sudo cp -rT "$GITHUB_WORKSPACE/www" /srv/certificates
+          sudo chown -R vagrant:vagrant /srv/certificates
+
+          sudo mkdir -p /srv/www
+          sudo cp -rT "$GITHUB_WORKSPACE/www" /srv/www
+          sudo chown -R vagrant:vagrant /srv/www
+
+          echo "Preparing Symlinks..."
+
+          # vvv_symlink function to sumulate synced folders
+          vvv_symlink() {
+            if [ ! -d "${1}" ]; then
+              sudo mkdir -p "${1}"
+            fi
+            sudo chown -R vagrant:vagrant "${1}"
+            sudo ln -sf "${1}" "${2}"
+          }
+
+          # make folders available
+          vvv_symlink "$GITHUB_WORKSPACE/database/sql" "/srv/database"
+          vvv_symlink "$GITHUB_WORKSPACE/config" "/srv/config"
+          vvv_symlink "$GITHUB_WORKSPACE/provision" "/srv/provision"
+
+      - name: Run provison-pre.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && pre_hook'
+
+      - name: Run provision.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_main'
+
+      - name: Run provision-tools.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_tools'
+
+      - name: Run provison-dashboard.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_dashboard'
+
+      - name: Run provision-extension-source.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_extension_sources'
+
+      - name: Run provision-extension.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_extensions'
+
+      - name: Run provision-site.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && provision_sites'
+
+      - name: Run provision-post.sh
+        run: sudo bash -c '. "/srv/provision/tests/provisioners.sh" && post_hook'
+
+      - name: Prepare Output
+        if: ${{ always() }}
+        run: |
+          MYUID=$(id -u -n)
+          MYGID=$(id -g -n)
+          sudo chown -R $MYUID:$MYGID "$GITHUB_WORKSPACE/log"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: logs-on-docker-26
+          path: "${{ github.workspace }}/log"

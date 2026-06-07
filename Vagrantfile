@@ -479,32 +479,32 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The Parallels Provider uses a different naming scheme.
   config.vm.provider :parallels do |_v, override|
-    override.vm.box = 'bento/ubuntu-24.04'
+    override.vm.box = 'bento/ubuntu-26.04'
 
     # Pin the arm64 version of the box to a specific version we know has an arm build.
     if Etc.uname[:version].include? 'ARM64'
-      override.vm.box_version = "202502.21.0"
+      override.vm.box_version = "202606.01.0"
     end
   end
 
   # The VMware Desktop Provider uses a different naming scheme.
   config.vm.provider :vmware_desktop do |v, override|
-    override.vm.box = 'bento/ubuntu-24.04'
+    override.vm.box = 'bento/ubuntu-26.04'
     v.gui = false
   end
 
   # Hyper-V uses a different base box.
   config.vm.provider :hyperv do |_v, override|
-    # override.vm.box = 'bento/ubuntu-24.04'
-    # At the time of writing no Bento box existed for Ubuntu 2024 with the Hyper-V provider,
-    # so we're using the most popular box available in the box catalog as a temporary measure.
+    # No Bento box ships a Hyper-V build for Ubuntu 24.04 or 26.04, and no
+    # gusztavvargadr 26.04 box exists yet, so Hyper-V stays on 24.04 for now.
+    # Revisit when a 26.04 Hyper-V box becomes available.
     override.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
     override.vm.box_version = ">=2404.0.2503"
   end
 
   # Docker use image.
   config.vm.provider :docker do |d, override|
-    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:24.04'
+    d.image = 'pentatonicfunk/vagrant-ubuntu-base-images:26.04'
     d.has_ssh = true
     d.ports =  [ "80:80" ] # HTTP
     d.ports += [ "443:443" ] # HTTPS
@@ -523,7 +523,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # This box is provided by Bento boxes via vagrantcloud.com and is a nicely sized
     # box containing the Ubuntu LTS release. Once this box is downloaded
     # to your host computer, it is cached for future use under the specified box name.
-    override.vm.box = 'bento/ubuntu-24.04'
+    override.vm.box = 'bento/ubuntu-26.04'
 
     # If we're at a contributor day, switch the base box to the prebuilt one
     if defined? vvv_config['vm_config']['wordcamp_contributor_day_box']
