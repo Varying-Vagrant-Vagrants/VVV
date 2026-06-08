@@ -67,14 +67,51 @@ function php_register_apt_packages() {
 vvv_add_hook register_apt_packages php_register_apt_packages
 
 
-function php_register_apt_keys() {
-  # Modern approach: copy GPG key to keyrings directory
-  # This replaces the deprecated apt-key add method
-  # IMPORTANT: Keys must be installed BEFORE sources are registered
-  #
-  # NOTE: We use Launchpad PPA keys because packages.sury.org blocks VM/automated access
-  # with HTTP 418. The Launchpad PPA mirrors the same packages with different signing keys.
+# @description Install the deb.sury.org archive keyring used by the unified
+# packages.sury.org PHP repository. Used on supported Ubuntu releases (jammy,
+# noble, resolute); see https://github.com/Varying-Vagrant-Vagrants/VVV/issues/2797
+function php_install_sury_keyring() {
+  local KEYRING="/usr/share/keyrings/debsuryorg-archive-keyring.gpg"
+  if [ -f "${KEYRING}" ]; then
+    vvv_info " * deb.sury.org archive keyring already installed"
+    return 0
+  fi
 
+  vvv_info " * Installing the deb.sury.org archive keyring"
+  local TMP_DEB
+  TMP_DEB=$(mktemp --suffix=.deb) || {
+    vvv_error " ! Failed to create a temporary file for the sury keyring"
+    return 1
+  }
+  if curl -fsSL "https://packages.sury.org/debsuryorg-archive-keyring.deb" -o "${TMP_DEB}"; then
+    if dpkg -i "${TMP_DEB}"; then
+      rm -f "${TMP_DEB}"
+      vvv_success " * deb.sury.org archive keyring installed"
+    else
+      rm -f "${TMP_DEB}"
+      vvv_error " ! Failed to install the deb.sury.org archive keyring"
+      return 1
+    fi
+  else
+    rm -f "${TMP_DEB}"
+    vvv_error " ! Failed to download the deb.sury.org archive keyring"
+    return 1
+  fi
+}
+
+function php_register_apt_keys() {
+  # Supported Ubuntu releases use the unified packages.sury.org repository, which
+  # ships its own archive keyring. Older (EOL) releases fall through to the legacy
+  # Launchpad PPA key handling below.
+  # IMPORTANT: Keys must be installed BEFORE sources are registered
+  case "$(lsb_release -sc)" in
+    jammy|noble|resolute)
+      php_install_sury_keyring
+      return $?
+      ;;
+  esac
+
+  # --- Legacy Launchpad PPA key handling (EOL releases only) ---
   local DEST_KEY="/etc/apt/keyrings/php.gpg"
   local SOURCE_KEY="/srv/provision/core/php/apt-keys/php.gpg"
   local NEEDS_UPDATE=0

@@ -1,2 +1,2 @@
-# Provides PHP
-deb [signed-by=/etc/apt/keyrings/php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main
+# Provides PHP (unified deb.sury.org repository)
+deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ noble main
