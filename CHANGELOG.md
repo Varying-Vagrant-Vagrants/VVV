@@ -55,6 +55,7 @@ permalink: /docs/en-US/changelog/
 ### Maintenance
 
 * Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
+* Replaced ntp/ntpdate with chrony for VM clock sync on all releases (ntp/ntpdate were removed in Ubuntu 26.04); the old packages are purged on reprovision ( #2796 )
 * Modernized GPG key management for PHP, Nginx, and MariaDB
   - Keys downloaded from official sources: Ubuntu keyserver, nginx.org, MariaDB
   - Added comprehensive error handling and validation
