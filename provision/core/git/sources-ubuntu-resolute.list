@@ -1,0 +1,3 @@
+# TODO: switch suite to resolute once git-lfs publishes a resolute (Ubuntu 26.04) suite; using noble until then
+deb [signed-by=/etc/apt/keyrings/github_git-lfs-archive-keyring.gpg] https://packagecloud.io/github/git-lfs/ubuntu/ noble main
+deb-src [signed-by=/etc/apt/keyrings/github_git-lfs-archive-keyring.gpg] https://packagecloud.io/github/git-lfs/ubuntu/ noble main

@@ -49,10 +49,6 @@ function vvv_register_packages() {
     neovim
     nano
 
-    # ntp service to keep clock current
-    ntp
-    ntpdate
-
     # Required for i18n tools
     gettext
 
@@ -69,6 +65,10 @@ function vvv_register_packages() {
     stow
     fzf
     tmux
+
+    # chrony keeps the VM clock current (replaces the older ntp/ntpdate,
+    # which were removed in Ubuntu 26.04)
+    chrony
   )
 }
 vvv_add_hook register_apt_packages vvv_register_packages 0
@@ -90,11 +90,14 @@ function vvv_register_apt_sources() {
 vvv_add_hook register_apt_sources vvv_register_apt_sources 0
 
 function vvv_register_keys() {
-  if ! vvv_apt_keys_has 'Varying Vagrant Vagrants'; then
-    # Apply the VVV signing key
-    vvv_info " * Applying the VVV mirror signing key..."
-    apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
-  fi
+  # The VVV mirror this key signs is only enabled on older releases (e.g. bionic),
+  # which still rely on the legacy apt-key trust store. apt-key was removed in
+  # Ubuntu 26.04+, so skip cleanly where it no longer exists.
+  command -v apt-key >/dev/null 2>&1 || return 0
+  # apt-key add is idempotent, so re-importing on each run is harmless and lets
+  # VVV core avoid depending on the legacy vvv_apt_keys_has() lookup.
+  vvv_info " * Applying the VVV mirror signing key..."
+  apt-key add /srv/provision/core/vvv/apt-keys/varying-vagrant-vagrants_keyserver_ubuntu.key
 }
 vvv_add_hook register_apt_sources vvv_register_keys 0
 
@@ -108,6 +111,16 @@ function vvv_before_packages() {
   fi
 }
 vvv_add_hook before_packages vvv_before_packages 0
+
+function vvv_remove_legacy_ntp() {
+  # chrony now keeps the clock current on every release. Remove ntp/ntpdate if a
+  # previous provision installed them, so two NTP daemons don't contend for UDP/123.
+  if vvv_is_apt_pkg_installed "ntp" || vvv_is_apt_pkg_installed "ntpdate"; then
+    vvv_info " * Removing legacy ntp/ntpdate packages (replaced by chrony)"
+    apt-get --yes purge ntp ntpdate
+  fi
+}
+vvv_add_hook before_packages vvv_remove_legacy_ntp 0
 
 function shyaml_setup() {
   # Shyaml
@@ -137,13 +150,13 @@ export -f shyaml_setup
 
 vvv_add_hook after_packages shyaml_setup 0
 
-function vvv_ntp_restart() {
+function vvv_chrony_restart() {
   if [ ! -f /.dockerenv ]; then
-    service ntp restart
+    service chrony restart
   fi
 }
 
-vvv_add_hook services_restart vvv_ntp_restart
+vvv_add_hook services_restart vvv_chrony_restart
 
 function cleanup_vvv(){
   if test -f "/tmp/hosts"; then

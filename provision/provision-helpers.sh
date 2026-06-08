@@ -325,6 +325,8 @@ export -f noroot
 #
 # @arg $1 string a key string to test
 function vvv_apt_keys_has() {
+  # apt-key was removed in Ubuntu 26.04+; treat keys as not-present when it is gone.
+  command -v apt-key >/dev/null 2>&1 || return 1
   local keys=$( apt-key list )
   if [[ ! $( echo "${keys}" | grep "$1") ]]; then
     return 1
@@ -683,9 +685,12 @@ vvv_apt_update() {
   fi
 
   vvv_info " * Updating apt keys"
-  if ! apt-key update -y; then
-    vvv_error " * Updating apt keys failed"
-    return 1
+  # apt-key was removed in Ubuntu 26.04+; only refresh the legacy keyring where it exists.
+  if command -v apt-key >/dev/null 2>&1; then
+    if ! apt-key update -y; then
+      vvv_error " * Updating apt keys failed"
+      return 1
+    fi
   fi
 
   # Update all of the package references before installing anything
