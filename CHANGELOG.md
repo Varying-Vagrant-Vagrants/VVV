@@ -54,6 +54,7 @@ permalink: /docs/en-US/changelog/
 ### Maintenance
 
 * Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
+* Migrated PHP packages for supported releases (jammy/noble/resolute) from the Launchpad PPA to the unified packages.sury.org repository, ahead of the PPA being retired ( #2797 )
 * Modernized GPG key management for PHP, Nginx, and MariaDB
   - Keys downloaded from official sources: Ubuntu keyserver, nginx.org, MariaDB
   - Added comprehensive error handling and validation

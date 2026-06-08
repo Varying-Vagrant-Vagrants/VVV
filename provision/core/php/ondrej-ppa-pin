@@ -1,4 +1,8 @@
 Package: *
+Pin: release o=deb.sury.org
+Pin-Priority: 1001
+
+Package: *
 Pin: release o=LP-PPA-ondrej-php
 Pin-Priority: 1001
 
