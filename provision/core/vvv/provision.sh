@@ -49,10 +49,6 @@ function vvv_register_packages() {
     neovim
     nano
 
-    # ntp service to keep clock current
-    ntp
-    ntpdate
-
     # Required for i18n tools
     gettext
 
@@ -70,6 +66,14 @@ function vvv_register_packages() {
     fzf
     tmux
   )
+
+  # Time sync: ntp/ntpdate were removed in Ubuntu 26.04. Use chrony there
+  # (the modern NTP daemon, in main), and the classic packages on older releases.
+  if dpkg --compare-versions "$(lsb_release -sr)" ge "26.04"; then
+    VVV_PACKAGE_LIST+=( chrony )
+  else
+    VVV_PACKAGE_LIST+=( ntp ntpdate )
+  fi
 }
 vvv_add_hook register_apt_packages vvv_register_packages 0
 
@@ -142,7 +146,12 @@ vvv_add_hook after_packages shyaml_setup 0
 
 function vvv_ntp_restart() {
   if [ ! -f /.dockerenv ]; then
-    service ntp restart
+    # ntp was replaced by chrony on Ubuntu 26.04+
+    if dpkg --compare-versions "$(lsb_release -sr)" ge "26.04"; then
+      service chrony restart
+    else
+      service ntp restart
+    fi
   fi
 }
 
