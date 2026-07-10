@@ -15,7 +15,9 @@ vagrant plugin install --local
 vagrant up --provision
 ```
 
-When it's done, visit [http://vvv.test](http://vvv.test).
+This will create a VM capable of hosting sites.
+
+When it's done, visit [http://vvv.test](http://vvv.test) to see the default sites, or add a new site via `config/config.yml` and it will create a new site under the `www` subfolder.
 
 The online documentation contains more detailed [installation instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/).
 

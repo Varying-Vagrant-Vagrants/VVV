@@ -68,15 +68,130 @@ vvv_add_hook register_apt_packages php_register_apt_packages
 
 
 function php_register_apt_keys() {
-  cp -f "/srv/provision/core/php/apt-keys/php.gpg" "/etc/apt/trusted.gpg.d/php.gpg"
+  # Modern approach: copy GPG key to keyrings directory
+  # This replaces the deprecated apt-key add method
+  # IMPORTANT: Keys must be installed BEFORE sources are registered
+  #
+  # NOTE: We use Launchpad PPA keys because packages.sury.org blocks VM/automated access
+  # with HTTP 418. The Launchpad PPA mirrors the same packages with different signing keys.
 
-  if ! vvv_apt_keys_has 'Ondřej'; then
-    # Apply the PHP signing key
-    vvv_info " * Applying the Ondřej PHP signing key..."
-    apt-key add /srv/provision/core/php/apt-keys/ondrej_keyserver_ubuntu.key
+  local DEST_KEY="/etc/apt/keyrings/php.gpg"
+  local SOURCE_KEY="/srv/provision/core/php/apt-keys/php.gpg"
+  local NEEDS_UPDATE=0
+
+  # Launchpad PPA key IDs for Ondřej Surý's PHP PPA
+  local KEY_ID_1="71DAEAAB4AD4CAB6"  # 2024 key
+  local KEY_ID_2="4F4EA0AAE5267A6C"  # 2009 key (legacy)
+  local KEYSERVER="https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x"
+
+  mkdir -p /etc/apt/keyrings
+
+  # Check if we need to update the key
+  if [ -f "${DEST_KEY}" ]; then
+    # Check if the existing key is expired
+    if command -v gpg &> /dev/null; then
+      if gpg --show-keys "${DEST_KEY}" 2>/dev/null | grep -q "expired"; then
+        vvv_warn " * Installed PHP GPG key has expired, will update"
+        NEEDS_UPDATE=1
+      else
+        # Check if the key contains the required Launchpad key IDs
+        local KEY_OUTPUT
+        KEY_OUTPUT=$(gpg --show-keys "${DEST_KEY}" 2>/dev/null || echo "")
+        if ! echo "${KEY_OUTPUT}" | grep -q "${KEY_ID_1}"; then
+          vvv_warn " * PHP GPG key is missing Launchpad PPA key ${KEY_ID_1}, will update"
+          NEEDS_UPDATE=1
+        fi
+      fi
+    fi
+  else
+    # Key doesn't exist
+    NEEDS_UPDATE=1
+  fi
+
+  # If we need to update, download from Launchpad keyserver
+  if [ "${NEEDS_UPDATE}" -eq 1 ] || [ ! -f "${DEST_KEY}" ]; then
+    vvv_info " * Downloading Launchpad PPA keys for Ondřej PHP repository"
+
+    # Create temporary file for combining keys
+    local TEMP_KEY
+    TEMP_KEY=$(mktemp) || {
+      vvv_error " ! Failed to create temporary file for key download"
+      return 1
+    }
+
+    # Download and combine both Launchpad keys
+    local DOWNLOAD_SUCCESS=0
+    if curl -fsSL "${KEYSERVER}${KEY_ID_1}" -o "${TEMP_KEY}.1.asc" && \
+       curl -fsSL "${KEYSERVER}${KEY_ID_2}" -o "${TEMP_KEY}.2.asc"; then
+      # Dearmor keys (convert from ASCII to binary format required by APT)
+      if gpg --dearmor < "${TEMP_KEY}.1.asc" > "${TEMP_KEY}.1" 2>/dev/null && \
+         gpg --dearmor < "${TEMP_KEY}.2.asc" > "${TEMP_KEY}.2" 2>/dev/null; then
+        # Combine both binary keys into single keyring
+        cat "${TEMP_KEY}.1" "${TEMP_KEY}.2" > "${TEMP_KEY}"
+        DOWNLOAD_SUCCESS=1
+        vvv_success " * Downloaded and dearmored Launchpad PPA keys"
+      else
+        vvv_error " ! Failed to dearmor GPG keys"
+        rm -f "${TEMP_KEY}" "${TEMP_KEY}.1" "${TEMP_KEY}.2" "${TEMP_KEY}.1.asc" "${TEMP_KEY}.2.asc"
+        return 1
+      fi
+    else
+      vvv_error " ! Failed to download Launchpad PPA keys from ${KEYSERVER}"
+      rm -f "${TEMP_KEY}" "${TEMP_KEY}.1" "${TEMP_KEY}.2" "${TEMP_KEY}.1.asc" "${TEMP_KEY}.2.asc"
+
+      # Try to use existing source key as fallback
+      if [ -f "${SOURCE_KEY}" ]; then
+        vvv_warn " * Attempting to use existing key from ${SOURCE_KEY}"
+        # Check if source key needs dearmoring
+        if head -1 "${SOURCE_KEY}" | grep -q "BEGIN PGP"; then
+          vvv_info " * Dearmoring existing key"
+          gpg --dearmor < "${SOURCE_KEY}" > "${TEMP_KEY}" 2>/dev/null || {
+            cp -f "${SOURCE_KEY}" "${TEMP_KEY}"
+          }
+        else
+          cp -f "${SOURCE_KEY}" "${TEMP_KEY}"
+        fi
+        DOWNLOAD_SUCCESS=1
+      else
+        return 1
+      fi
+    fi
+
+    if [ "${DOWNLOAD_SUCCESS}" -eq 1 ]; then
+      # Install the key
+      vvv_info " * Installing Ondřej PHP Launchpad PPA keys to ${DEST_KEY}"
+      if cp -f "${TEMP_KEY}" "${DEST_KEY}"; then
+        chmod 644 "${DEST_KEY}"
+
+        # Also save to source location for future use
+        mkdir -p "$(dirname "${SOURCE_KEY}")"
+        cp -f "${DEST_KEY}" "${SOURCE_KEY}"
+
+        # Legacy support: also copy to trusted.gpg.d for older Ubuntu versions
+        cp -f "${DEST_KEY}" "/etc/apt/trusted.gpg.d/php.gpg"
+        chmod 644 /etc/apt/trusted.gpg.d/php.gpg
+
+        vvv_success " * PHP Launchpad PPA keys installed successfully"
+      else
+        vvv_error " ! Failed to copy PHP GPG key to ${DEST_KEY}"
+        rm -f "${TEMP_KEY}" "${TEMP_KEY}.1" "${TEMP_KEY}.2"
+        return 1
+      fi
+    fi
+
+    # Cleanup temporary files
+    rm -f "${TEMP_KEY}" "${TEMP_KEY}.1" "${TEMP_KEY}.2" "${TEMP_KEY}.1.asc" "${TEMP_KEY}.2.asc"
+
+    # Verify the key was installed successfully
+    if [ ! -f "${DEST_KEY}" ]; then
+      vvv_error " ! PHP GPG key was not successfully installed to ${DEST_KEY}"
+      return 1
+    fi
+  else
+    vvv_info " * PHP Launchpad PPA GPG key is up to date"
   fi
 }
-vvv_add_hook register_apt_sources php_register_apt_keys
+vvv_add_hook register_apt_keys php_register_apt_keys
 
 function phpfpm_setup() {
   # Copy php-fpm configs from local
