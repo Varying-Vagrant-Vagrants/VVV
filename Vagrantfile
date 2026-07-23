@@ -479,6 +479,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+  config.vagrant.plugins << 'vagrant-libvirt' if vvv_config['vm_config']['provider'] == 'libvirt'
+
   # The vbguest plugin has issues for some users, so we're going to disable it for now
   config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
 
