@@ -6,6 +6,12 @@ permalink: /docs/en-US/changelog/
 
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+* Added experimental support for the libvirt provider with two-way VirtioFS file synchronization (tested on Debian 13 / Fedora 44)
+
 ## 3.16
 
 ### Enhancements

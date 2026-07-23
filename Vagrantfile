@@ -266,6 +266,9 @@ end
 defaults['private_network_ip'] = '192.168.56.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
+if vvv_config['vm_config']['provider'] == 'libvirt'
+  puts "#{yellow}WARNING: The libvirt provider is experimental and not yet considered stable.#{creset}"
+end
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
 vvv_config['vagrant-plugins'] = {} unless vvv_config['vagrant-plugins']
