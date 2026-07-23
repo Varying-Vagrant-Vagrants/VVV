@@ -123,6 +123,7 @@ vm_config:
   # provider: parallels
   # provider: vmware_desktop
   # provider: docker
+  # provider: libvirt
 
 # General VVV options
 general:
