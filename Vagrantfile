@@ -268,6 +268,10 @@ defaults['private_network_ip'] = '192.168.56.4'
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
 if vvv_config['vm_config']['provider'] == 'libvirt'
   puts "#{yellow}WARNING: The libvirt provider is experimental and not yet considered stable.#{creset}"
+
+  # Synchronizes host UID/GID with guest to avoid file ownership issues
+  host_uid = `id -u`.strip
+  host_gid = `id -g`.strip
 end
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
