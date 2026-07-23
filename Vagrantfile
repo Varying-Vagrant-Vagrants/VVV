@@ -31,6 +31,10 @@ mount_options_vmware_mysql = ['umask=000']
 mount_options_vmware_log = ['umask=000']
 mount_options_vmware_www = ['umask=002']
 
+mount_options_libvirt_mysql = ['dmode=775', 'fmode=664']
+mount_options_libvirt_log = ['dmode=777', 'fmode=666']
+mount_options_libvirt_www = ['dmode=775', 'fmode=774']
+
 def sudo_warnings
   red = "\033[38;5;9m" # 124m"
   creset = "\033[0m"
@@ -262,6 +266,13 @@ end
 defaults['private_network_ip'] = '192.168.56.4'
 
 vvv_config['vm_config'] = defaults.merge(vvv_config['vm_config'])
+if vvv_config['vm_config']['provider'] == 'libvirt'
+  puts "#{yellow}WARNING: The libvirt provider is experimental and not yet considered stable.#{creset}"
+
+  # Synchronizes host UID/GID with guest to avoid file ownership issues
+  host_uid = `id -u`.strip
+  host_gid = `id -g`.strip
+end
 vvv_config['hosts'] = vvv_config['hosts'].uniq
 
 vvv_config['vagrant-plugins'] = {} unless vvv_config['vagrant-plugins']
@@ -366,6 +377,8 @@ if show_logo
     provider_version = 'n/a'
   when 'docker'
     provider_version = `docker -v`.gsub("Docker version ", "")
+  when 'libvirt'
+    provider_version = `virsh --version`.gsub("\n", "")
   else
     provider_version = '??'
   end
@@ -448,6 +461,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.linked_clone = true
   end
 
+  # Configuration options for libvirt provider.
+  config.vm.provider :libvirt do |v|
+    v.qemu_use_session = false          # use qemu:///system
+    v.memorybacking :access, :mode => "shared"
+    v.memory = vvv_config['vm_config']['memory']
+    v.cpus = vvv_config['vm_config']['cores']
+    # Use the system libvirt instance for full feature support
+    v.cpu_mode = 'host-passthrough'
+  end
+
   # Auto Download Vagrant plugins, supported from Vagrant 2.2.0
   unless Vagrant.has_plugin?('vagrant-hostsupdater') && Vagrant.has_plugin?('vagrant-goodhosts') && Vagrant.has_plugin?('vagrant-hostsmanager')
     if File.file?(File.join(vagrant_dir, 'vagrant-goodhosts.gem'))
@@ -459,6 +482,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       config.vagrant.plugins = ['vagrant-goodhosts']
     end
   end
+
+  config.vagrant.plugins << 'vagrant-libvirt' if vvv_config['vm_config']['provider'] == 'libvirt'
 
   # The vbguest plugin has issues for some users, so we're going to disable it for now
   config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
@@ -500,6 +525,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # so we're using the most popular box available in the box catalog as a temporary measure.
     override.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
     override.vm.box_version = ">=2404.0.2503"
+  end
+
+  config.vm.provider :libvirt do |v, override|
+    override.vm.box = 'bento/ubuntu-24.04'
+    v.graphics_type = 'vnc'
   end
 
   # Docker use image.
@@ -687,6 +717,36 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       next if args['skip_provisioning']
       if args['local_dir'] != File.join(vagrant_dir, 'www', site)
         override.vm.synced_folder args['local_dir'], args['vm_dir'], mount_options: mount_options_docker_www
+      end
+    end
+  end
+
+  config.vm.provider :libvirt do |_v, override|
+    # Use virtio-fs synced folders with libvirt for two-way live sharing
+
+    # Core shares (two-way host <-> guest)
+    override.vm.synced_folder 'database/sql/', '/srv/database', type: 'virtiofs'
+    override.vm.synced_folder 'config/', '/srv/config', type: 'virtiofs'
+    override.vm.synced_folder 'provision/', '/srv/provision', type: 'virtiofs'
+    override.vm.synced_folder 'certificates/', '/srv/certificates', create: true, type: 'virtiofs'
+
+    # Web root and logs
+    override.vm.synced_folder 'www/', '/srv/www', owner: 'vagrant', group: 'www-data', type: 'virtiofs'
+
+    override.vm.synced_folder 'log/memcached', '/var/log/memcached', owner: 'root', create: true, group: 'root', type: 'virtiofs'
+    override.vm.synced_folder 'log/nginx', '/var/log/nginx', owner: 'root', create: true, group: 'root', type: 'virtiofs'
+    override.vm.synced_folder 'log/php', '/var/log/php', create: true, owner: 'root', group: 'root', type: 'virtiofs'
+    override.vm.synced_folder 'log/provisioners', '/var/log/provisioners', create: true, owner: 'root', group: 'root', type: 'virtiofs'
+
+    if use_db_share == true
+      # Disabled on libvirt when using virtio-fs for reliability; MariaDB data will remain inside the VM
+      puts "VVV: libvirt provider - database/data shared folder is disabled when using virtio-fs. Data will be stored inside the VM."
+    end
+
+    vvv_config['sites'].each do |site, args|
+      next if args['skip_provisioning']
+      if args['local_dir'] != File.join(vagrant_dir, 'www', site)
+        override.vm.synced_folder args['local_dir'], args['vm_dir'], owner: 'vagrant', group: 'www-data', type: 'virtiofs'
       end
     end
   end
