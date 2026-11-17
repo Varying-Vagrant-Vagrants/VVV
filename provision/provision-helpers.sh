@@ -133,7 +133,7 @@ function check_network_connection_to_host() {
   if cmd_exists curl; then
     retry_count=0
     while [ ${retry_count} -lt ${max_retries} ]; do
-      if curl -s --connect-timeout 5 --max-time 10 --head "${url}" >/dev/null 2>&1; then
+      if curl -s --fail --connect-timeout 5 --max-time 10 --head "${url}" >/dev/null 2>&1; then
         vvv_success " ✔ curl connected successfully to <url>${url}</url>"
         return 0
       fi
@@ -675,6 +675,44 @@ function vvv_parallel_hook() {
 }
 export -f vvv_parallel_hook
 
+# @description Reads apt-get update output and explains each server that failed, and why.
+#
+# @arg $1 string Path to a file containing the apt-get update output
+vvv_explain_apt_update_failure() {
+  local line url host message
+  declare -A reported=()
+
+  while IFS= read -r line; do
+    if [[ "${line}" != *"Failed to fetch"* && "${line}" != *"does not have a Release file"* ]]; then
+      continue
+    fi
+    if [[ ! "${line}" =~ (https?://[^/[:space:]\']+) ]]; then
+      continue
+    fi
+    url="${BASH_REMATCH[1]}"
+    host="${url#*://}"
+
+    if [[ "${line}" =~ [[:space:]](5[0-9][0-9])[[:space:]]+([^[]*[^[:space:][]) ]]; then
+      message="${host} returned ${BASH_REMATCH[1]} ${BASH_REMATCH[2]}. That server is having problems. This is not a VVV bug or a problem with your network. Wait a while then run <b>vagrant up --provision</b><error> again."
+    elif [[ "${line}" =~ [[:space:]](4[0-9][0-9])[[:space:]]+([^[]*[^[:space:][]) ]]; then
+      message="${host} returned ${BASH_REMATCH[1]} ${BASH_REMATCH[2]}. The package repository refused the request, or has moved or been removed."
+    elif [[ "${line}" == *"does not have a Release file"* ]]; then
+      message="${host} has no package list for this Ubuntu version. The package repository may have moved or been removed."
+    elif [[ "${line}" == *"resolving"* || "${line}" == *"Could not resolve"* ]]; then
+      message="The VM could not look up ${host}. Check your internet connection, DNS, VPN or proxy settings."
+    elif [[ "${line}" == *"timed out"* || "${line}" == *"Could not connect"* || "${line}" == *"Unable to connect"* || "${line}" == *"Connection failed"* ]]; then
+      message="The VM could not connect to ${host}. Check your internet connection, firewall, VPN or proxy settings."
+    else
+      message="apt could not download package lists from ${host}. See the apt output above for details."
+    fi
+
+    if [[ -z "${reported[${message}]}" ]]; then
+      reported[${message}]=1
+      vvv_error " ! ${message}"
+    fi
+  done < "${1}"
+}
+
 # @description Updates Apt keys then fetches Apt updates.
 vvv_apt_update() {
   # Check if we've already updated apt during this provisioning run
@@ -695,10 +733,16 @@ vvv_apt_update() {
     vvv_warn " * Failed to clean apt lists, continuing anyway"
   fi
 
-  if ! apt-get update -y --fix-missing; then
+  local apt_output
+  apt_output=$(mktemp)
+  apt-get update -y --fix-missing 2>&1 | tee "${apt_output}"
+  if [ "${PIPESTATUS[0]}" -ne 0 ]; then
     vvv_error " * apt-get update failed"
+    vvv_explain_apt_update_failure "${apt_output}"
+    rm "${apt_output}"
     return 1
   fi
+  rm "${apt_output}"
 
   # Mark that we've successfully updated apt cache
   export VVV_APT_UPDATED=1
