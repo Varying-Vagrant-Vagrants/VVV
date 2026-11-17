@@ -36,7 +36,6 @@ function php_register_apt_packages() {
     "php${VVV_BASE_PHPVERSION}-dev"
 
     # Extra PHP modules that we find useful
-    "php-pear"
     "php${VVV_BASE_PHPVERSION}-pcov"
     "php${VVV_BASE_PHPVERSION}-ssh2"
     "php${VVV_BASE_PHPVERSION}-yaml"
