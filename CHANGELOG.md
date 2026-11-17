@@ -56,6 +56,7 @@ permalink: /docs/en-US/changelog/
 ### Maintenance
 
 * Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
+* PHP on Ubuntu 22.04 and 24.04 now comes from packages.sury.org instead of Ondřej Surý's Launchpad PPA, which is being retired. Existing VMs switch over on their next provision ( #2797 )
 * Modernized GPG key management for PHP, Nginx, and MariaDB
   - Keys downloaded from official sources: Ubuntu keyserver, nginx.org, MariaDB
   - Added comprehensive error handling and validation

@@ -187,6 +187,7 @@ function network_check() {
   # If you need to modify this list, contact us on GitHub with the changes.
   declare -a hosts_to_test=(
     "https://ppa.launchpadcontent.net"     # Needed for core ubuntu packages
+    "https://packages.sury.org/php/"       # PHP
     "https://wordpress.org"                # WordPress!!
     "https://github.com"                   # Needed for dashboard, extensions, etc
     "https://raw.githubusercontent.com"    # Some scripts and provisioners rely on this

@@ -76,6 +76,25 @@ jobs:
             echo "updated=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Check and update packages.sury.org PHP GPG key
+        id: sury-key
+        run: |
+          KEY_FILE="provision/core/php/apt-keys/sury-php.gpg"
+          KEY_URL="https://packages.sury.org/php/apt.gpg"
+
+          if [ -f "$KEY_FILE" ] && ! gpg --show-keys "$KEY_FILE" 2>/dev/null | grep -q "expired"; then
+            echo "✅ packages.sury.org PHP GPG key is valid"
+            echo "updated=false" >> $GITHUB_OUTPUT
+          else
+            echo "📥 Downloading packages.sury.org PHP GPG key from $KEY_URL"
+            if curl -fsSL "$KEY_URL" -o "$KEY_FILE"; then
+              echo "updated=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Failed to download packages.sury.org PHP GPG key"
+              exit 1
+            fi
+          fi
+
       - name: Check and update Nginx GPG key
         id: nginx-key
         run: |
@@ -152,6 +171,7 @@ jobs:
         id: check-updates
         run: |
           if [ "${{ steps.php-key.outputs.updated }}" = "true" ] || \
+             [ "${{ steps.sury-key.outputs.updated }}" = "true" ] || \
              [ "${{ steps.nginx-key.outputs.updated }}" = "true" ] || \
              [ "${{ steps.mariadb-key.outputs.updated }}" = "true" ]; then
             echo "has_updates=true" >> $GITHUB_OUTPUT
@@ -159,6 +179,7 @@ jobs:
             # Build update summary
             SUMMARY="Updated GPG keys:\n"
             [ "${{ steps.php-key.outputs.updated }}" = "true" ] && SUMMARY="${SUMMARY}- PHP (Ondřej Surý PPA)\n"
+            [ "${{ steps.sury-key.outputs.updated }}" = "true" ] && SUMMARY="${SUMMARY}- PHP (packages.sury.org)\n"
             [ "${{ steps.nginx-key.outputs.updated }}" = "true" ] && SUMMARY="${SUMMARY}- Nginx\n"
             [ "${{ steps.mariadb-key.outputs.updated }}" = "true" ] && SUMMARY="${SUMMARY}- MariaDB\n"
 
@@ -184,6 +205,7 @@ jobs:
             This automated update ensures APT package repositories can be verified.
             Keys are downloaded from official sources:
             - PHP: Launchpad PPA keys from Ubuntu keyserver (71DAEAAB4AD4CAB6, 4F4EA0AAE5267A6C)
+            - PHP: https://packages.sury.org/php/apt.gpg
             - Nginx: https://nginx.org/keys/nginx_signing.key
             - MariaDB: https://supplychain.mariadb.com/mariadb-keyring-2019.gpg
           branch: update-gpg-keys
@@ -209,6 +231,7 @@ jobs:
 
             All keys are downloaded from official upstream sources:
             - **PHP**: Launchpad PPA keys from Ubuntu keyserver (IDs: 71DAEAAB4AD4CAB6, 4F4EA0AAE5267A6C)
+            - **PHP**: https://packages.sury.org/php/apt.gpg
             - **Nginx**: https://nginx.org/keys/nginx_signing.key
             - **MariaDB**: https://supplychain.mariadb.com/mariadb-keyring-2019.gpg
 

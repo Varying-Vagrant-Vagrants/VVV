@@ -9,10 +9,19 @@ function php_before_packages() {
 }
 vvv_add_hook before_packages php_before_packages
 
+# @description Prints the path of the PHP apt source file for this OS and release
+function php_apt_source_file() {
+  local OSID OSCODENAME
+  OSID=$(lsb_release --id --short)
+  OSCODENAME=$(lsb_release --codename --short)
+  echo "/srv/provision/core/php/sources-${OSID,,}-${OSCODENAME,,}.list"
+}
+
 function php_register_apt_sources() {
   local OSID=$(lsb_release --id --short)
   local OSCODENAME=$(lsb_release --codename --short)
-  local APTSOURCE="/srv/provision/core/php/sources-${OSID,,}-${OSCODENAME,,}.list"
+  local APTSOURCE
+  APTSOURCE=$(php_apt_source_file)
   if [ -f "${APTSOURCE}" ]; then
     cp -f "${APTSOURCE}" "/etc/apt/sources.list.d/vvv-php-sources.list"
   else
@@ -67,13 +76,59 @@ function php_register_apt_packages() {
 vvv_add_hook register_apt_packages php_register_apt_packages
 
 
+# @description Installs the signing key for packages.sury.org, which provides PHP on Ubuntu 22.04 and newer
+function php_install_sury_key() {
+  local SOURCE_KEY="/srv/provision/core/php/apt-keys/sury-php.gpg"
+  local DEST_KEY="/etc/apt/keyrings/sury-php.gpg"
+  local KEY_URL="https://packages.sury.org/php/apt.gpg"
+
+  mkdir -p /etc/apt/keyrings
+
+  if [ -f "${DEST_KEY}" ] && ! gpg --show-keys "${DEST_KEY}" 2>/dev/null | grep -q "expired"; then
+    vvv_info " * packages.sury.org PHP signing key is up to date"
+    return 0
+  fi
+
+  if gpg --show-keys "${SOURCE_KEY}" 2>/dev/null | grep -q "expired"; then
+    vvv_warn " * The packages.sury.org PHP signing key in VVV has expired, downloading a new one from ${KEY_URL}"
+    if ! curl -fsSL "${KEY_URL}" -o "${SOURCE_KEY}"; then
+      vvv_error " ! Failed to download the packages.sury.org PHP signing key from ${KEY_URL}"
+      return 1
+    fi
+  fi
+
+  vvv_info " * Installing the packages.sury.org PHP signing key to ${DEST_KEY}"
+  if ! cp -f "${SOURCE_KEY}" "${DEST_KEY}"; then
+    vvv_error " ! Failed to copy the packages.sury.org PHP signing key to ${DEST_KEY}"
+    return 1
+  fi
+  chmod 644 "${DEST_KEY}"
+  vvv_success " * packages.sury.org PHP signing key installed"
+}
+
+# @description Installs the signing keys needed by this OS release's PHP apt source
 function php_register_apt_keys() {
+  # IMPORTANT: Keys must be installed BEFORE sources are registered
+  local APTSOURCE
+  APTSOURCE=$(php_apt_source_file)
+
+  if grep -q "signed-by=/etc/apt/keyrings/sury-php.gpg" "${APTSOURCE}" 2>/dev/null; then
+    php_install_sury_key || return 1
+  fi
+
+  if grep -q "signed-by=/etc/apt/keyrings/php.gpg" "${APTSOURCE}" 2>/dev/null; then
+    php_install_launchpad_keys || return 1
+  elif [ -f /etc/apt/keyrings/php.gpg ] || [ -f /etc/apt/trusted.gpg.d/php.gpg ]; then
+    vvv_info " * Removing the Launchpad PPA PHP keys, they are no longer used"
+    rm -f /etc/apt/keyrings/php.gpg /etc/apt/trusted.gpg.d/php.gpg
+  fi
+}
+vvv_add_hook register_apt_keys php_register_apt_keys
+
+# @description Installs the Launchpad PPA keys for Ondřej Surý's PHP PPA, used on Ubuntu releases older than 22.04
+function php_install_launchpad_keys() {
   # Modern approach: copy GPG key to keyrings directory
   # This replaces the deprecated apt-key add method
-  # IMPORTANT: Keys must be installed BEFORE sources are registered
-  #
-  # NOTE: We use Launchpad PPA keys because packages.sury.org blocks VM/automated access
-  # with HTTP 418. The Launchpad PPA mirrors the same packages with different signing keys.
 
   local DEST_KEY="/etc/apt/keyrings/php.gpg"
   local SOURCE_KEY="/srv/provision/core/php/apt-keys/php.gpg"
@@ -191,7 +246,6 @@ function php_register_apt_keys() {
     vvv_info " * PHP Launchpad PPA GPG key is up to date"
   fi
 }
-vvv_add_hook register_apt_keys php_register_apt_keys
 
 function phpfpm_setup() {
   # Copy php-fpm configs from local
