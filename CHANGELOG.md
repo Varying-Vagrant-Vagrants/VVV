@@ -64,6 +64,7 @@ permalink: /docs/en-US/changelog/
   - Fallback to existing keys if downloads fail
 * Added security documentation for eval usage in hook system
 * Improved function input validation across helper and site provisioning scripts
+* New VMs no longer install `php-pear`, as VVV does not use `pear` or `pecl`. Existing VMs keep it
 
 ## 3.15.1 ( 2025 May 21st )
 
