@@ -1,2 +1,2 @@
 # Provides PHP
-deb [signed-by=/etc/apt/keyrings/php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main
+deb [signed-by=/etc/apt/keyrings/sury-php.gpg] https://packages.sury.org/php/ jammy main
