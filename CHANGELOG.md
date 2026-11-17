@@ -27,6 +27,8 @@ permalink: /docs/en-US/changelog/
 ### Bug Fixes
 
 * Fixes an issue in Parallels folder mounts ( #2776 )
+* When `apt-get update` fails, provisioning now names each server that failed and says whether it was a server outage, a moved or removed repository, or a local network or DNS problem
+* The network check now treats HTTP errors such as 503 as a failure, so a Launchpad outage is reported at the start of provisioning
 * **Fixed critical GPG key mismatch causing "repository is not signed" errors for PHP PPA**
   - Launchpad PPA repository now uses correct Launchpad GPG keys from Ubuntu keyserver
   - Keys are properly converted from ASCII-armored to binary format for APT
@@ -54,6 +56,7 @@ permalink: /docs/en-US/changelog/
 ### Maintenance
 
 * Regenerated Sequel Pro/Sequel Ace SPF file. ( #2773 )
+* PHP on Ubuntu 22.04 and 24.04 now comes from packages.sury.org instead of Ondřej Surý's Launchpad PPA, which is being retired. Existing VMs switch over on their next provision ( #2797 )
 * Modernized GPG key management for PHP, Nginx, and MariaDB
   - Keys downloaded from official sources: Ubuntu keyserver, nginx.org, MariaDB
   - Added comprehensive error handling and validation
